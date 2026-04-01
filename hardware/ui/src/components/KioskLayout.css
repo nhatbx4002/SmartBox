@@ -1,0 +1,186 @@
+/* =============================================
+   SMARTBOX KIOSK — Layout Shell
+   Screen: 800×480px fixed, no scroll
+   Style: Dark terminal / industrial orange
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  background: #0A0A0A;
+  color: #E8E8E8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Root layout ── */
+.kiosk-root {
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  height: 480px;
+  overflow: hidden;
+  background: #0A0A0A;
+  margin: 0 auto;
+  border: 3px solid #1a1a1a;
+  border-radius: 6px;
+}
+
+/* ════════════════════════════════════════════
+   HEADER  (36px)
+   ════════════════════════════════════════════ */
+.kiosk-header {
+  height: 36px;
+  min-height: 36px;
+  background: #111111;
+  border-bottom: 1px solid #1e1e1e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-back-btn {
+  border: 1px solid #2a2a2a;
+  border-radius: 5px;
+  background: transparent;
+  color: #888;
+  font-size: 9px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: border-color 150ms, color 150ms, transform 80ms;
+  flex-shrink: 0;
+}
+.header-back-btn:hover { border-color: #444; color: #ccc; }
+.header-back-btn:active { transform: scale(0.96); }
+
+.header-brand-icon {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.header-system-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FF6600;
+  font-style: italic;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.header-env-badge {
+  font-size: 7px;
+  font-weight: 700;
+  color: #333;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  padding: 1px 5px;
+  letter-spacing: 0.5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.header-temp {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.temp-icon { font-size: 11px; }
+.temp-value {
+  font-size: 10px;
+  font-weight: 600;
+  color: #FF6600;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.header-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+}
+.clock-time {
+  font-size: 12px;
+  font-weight: 700;
+  color: #E8E8E8;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.2;
+}
+.clock-date {
+  font-size: 8px;
+  color: #555;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.2;
+}
+
+/* ════════════════════════════════════════════
+   MAIN CONTENT  (fills remaining space)
+   ════════════════════════════════════════════ */
+.kiosk-main {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ════════════════════════════════════════════
+   FOOTER  (28px)
+   ════════════════════════════════════════════ */
+.kiosk-footer {
+  height: 28px;
+  min-height: 28px;
+  background: #111111;
+  border-top: 1px solid #1e1e1e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer-terminal {
+  font-size: 8px;
+  font-weight: 700;
+  color: #FF6600;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+}
+.footer-sep { color: #2a2a2a; font-size: 8px; }
+.footer-id {
+  font-size: 8px;
+  color: #444;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.footer-right {}
+.footer-warning {
+  font-size: 8px;
+  color: #666;
+  font-style: italic;
+}

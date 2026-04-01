@@ -1,0 +1,116 @@
+/* SupportScreen */
+.sup-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 8px;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.sup-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.sup-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FF6600;
+  letter-spacing: 1px;
+}
+.sup-hotline {
+  font-size: 9px;
+  color: #555;
+}
+
+.sup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.faq-item {
+  background: #111111;
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.faq-item[open] { border-color: rgba(255, 102, 0, 0.3); }
+
+.faq-q {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.faq-q::-webkit-details-marker { display: none; }
+
+.faq-num {
+  font-size: 7px;
+  font-weight: 700;
+  color: #FF6600;
+  background: rgba(255, 102, 0, 0.1);
+  border: 1px solid rgba(255, 102, 0, 0.3);
+  border-radius: 3px;
+  padding: 1px 4px;
+  flex-shrink: 0;
+}
+.faq-text {
+  font-size: 9px;
+  font-weight: 600;
+  color: #ccc;
+  flex: 1;
+}
+.faq-arrow {
+  font-size: 7px;
+  color: #444;
+  flex-shrink: 0;
+  transition: transform 150ms;
+}
+.faq-item[open] .faq-arrow { transform: rotate(180deg); }
+
+.faq-a {
+  padding: 6px 10px 8px;
+  font-size: 8px;
+  color: #555;
+  line-height: 1.5;
+  border-top: 1px solid #1a1a1a;
+}
+
+.sup-footer {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.sup-call-btn,
+.sup-chat-btn {
+  flex: 1;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: opacity 150ms, transform 80ms;
+}
+.sup-call-btn {
+  border: 1px solid rgba(255, 102, 0, 0.4);
+  background: rgba(255, 102, 0, 0.1);
+  color: #FF6600;
+}
+.sup-chat-btn {
+  border: 1px solid #2a2a2a;
+  background: #111111;
+  color: #888;
+}
+.sup-call-btn:hover, .sup-chat-btn:hover { opacity: 0.85; }
+.sup-call-btn:active, .sup-chat-btn:active { transform: scale(0.98); }

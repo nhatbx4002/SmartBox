@@ -1,0 +1,99 @@
+/* RentScreen */
+.rent-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 8px;
+  gap: 10px;
+}
+
+.rent-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.rent-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FF6600;
+  letter-spacing: 1px;
+}
+.rent-sub {
+  font-size: 9px;
+  color: #555;
+}
+
+.rent-plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  flex: 1;
+}
+
+.plan-card {
+  border: 1px solid #1e1e1e;
+  border-radius: 10px;
+  background: #111111;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 6px;
+  position: relative;
+  transition: transform 120ms, border-color 150ms, box-shadow 150ms;
+}
+.plan-card:hover { border-color: rgba(255, 102, 0, 0.4); box-shadow: inset 0 0 20px rgba(255, 102, 0, 0.04); }
+.plan-card:active { transform: scale(0.97); }
+.plan-card.popular {
+  border-color: rgba(255, 102, 0, 0.5);
+  box-shadow: inset 0 0 30px rgba(255, 102, 0, 0.08);
+}
+
+.plan-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 6px;
+  font-weight: 700;
+  color: #FF6600;
+  background: rgba(255, 102, 0, 0.15);
+  border: 1px solid rgba(255, 102, 0, 0.3);
+  border-radius: 3px;
+  padding: 1px 4px;
+  letter-spacing: 0.5px;
+}
+
+.plan-period {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ccc;
+  letter-spacing: 0.3px;
+}
+.plan-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #FF6600;
+  font-family: 'JetBrains Mono', monospace;
+}
+.plan-per {
+  font-size: 8px;
+  color: #444;
+}
+
+.rent-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8px;
+  color: #444;
+  background: #111111;
+  border: 1px solid #1a1a1a;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* Share otp/phone styles from their own CSS files */
+/* (they are imported in the component files) */

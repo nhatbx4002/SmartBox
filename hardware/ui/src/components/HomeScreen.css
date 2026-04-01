@@ -1,0 +1,248 @@
+/* HomeScreen — Spec layout: 1 big card + 2 bottom cards */
+.home-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px 6px;
+  gap: 7px;
+  overflow: hidden;
+}
+
+/* ── Header label ── */
+.home-welcome {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.welcome-accent {
+  width: 3px;
+  height: 16px;
+  background: #FF6600;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.welcome-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #FF6600;
+  letter-spacing: 1px;
+}
+.welcome-sub {
+  font-size: 8px;
+  color: #444;
+}
+
+/* ════════════════════════════════════════════
+   MAIN CARD — GỬI/NHẬN ĐỒ (orange, full-width)
+   ════════════════════════════════════════════ */
+.home-main-card {
+  flex: 1;
+  min-height: 0;
+  border: none;
+  border-radius: 12px;
+  background: #FF6600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.home-main-card:hover { opacity: 0.95; }
+.home-main-card:active { transform: scale(0.985); }
+
+/* Semi-transparent down arrow bg */
+.main-card-bg-arrow {
+  position: absolute;
+  bottom: -10px;
+  right: -5px;
+  font-size: 100px;
+  color: rgba(0,0,0,0.15);
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* FAST TRACK badge */
+.main-card-badge {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 8px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.5);
+  letter-spacing: 1px;
+}
+
+.main-card-icon {
+  width: 52px;
+  height: 52px;
+  color: rgba(0,0,0,0.85);
+  position: relative;
+  z-index: 1;
+}
+.main-card-icon svg { width: 100%; height: 100%; }
+
+.main-card-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.9);
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+}
+.main-card-sub {
+  font-size: 8px;
+  color: rgba(0,0,0,0.5);
+  position: relative;
+  z-index: 1;
+}
+
+/* Dropdown menu */
+.deposit-menu {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  background: #FF6600;
+  border-top: 1px solid rgba(0,0,0,0.2);
+  z-index: 10;
+  animation: slideUp 150ms ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.deposit-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 100ms;
+  -webkit-tap-highlight-color: transparent;
+}
+.deposit-menu-item:active { background: rgba(0,0,0,0.1); }
+
+.deposit-menu-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.15);
+  margin: 0 14px;
+}
+
+.menu-item-icon { font-size: 20px; flex-shrink: 0; }
+.menu-item-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.85);
+  letter-spacing: 0.5px;
+}
+.menu-item-sub {
+  font-size: 8px;
+  color: rgba(0,0,0,0.5);
+}
+
+/* ════════════════════════════════════════════
+   BOTTOM ROW — 2 small cards
+   ════════════════════════════════════════════ */
+.home-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  flex-shrink: 0;
+  height: 88px;
+}
+
+.home-small-card {
+  border: 1px solid #1a1a1a;
+  border-radius: 10px;
+  background: #111111;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px;
+  transition: transform 120ms ease, border-color 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.home-small-card:hover { border-color: #2a2a2a; }
+.home-small-card:active { transform: scale(0.97); }
+
+.small-card-icon {
+  width: 32px;
+  height: 32px;
+}
+.small-card-icon svg { width: 100%; height: 100%; }
+
+.card-rent .small-card-icon { color: #4CAF50; }
+.card-support .small-card-icon { color: #9C27B0; }
+
+.small-card-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.card-rent .small-card-title    { color: #4CAF50; }
+.card-support .small-card-title { color: #9C27B0; }
+
+.small-card-sub {
+  font-size: 7px;
+  color: #444;
+  text-align: center;
+}
+
+/* ── Status bar ── */
+.home-status {
+  display: flex;
+  align-items: center;
+  background: #111111;
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 5px 12px;
+  flex-shrink: 0;
+  gap: 0;
+}
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  justify-content: center;
+}
+.status-divider {
+  width: 1px;
+  height: 12px;
+  background: #222;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot.available { background: #22c55e; box-shadow: 0 0 4px #22c55e; }
+.status-dot.occupied  { background: #2196F3; box-shadow: 0 0 4px #2196F3; }
+.status-dot.reserved  { background: #f59e0b; box-shadow: 0 0 4px #f59e0b; }
+.status-label { font-size: 8px; color: #555; }
+.status-value {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ccc;
+  font-family: 'JetBrains Mono', monospace;
+}
