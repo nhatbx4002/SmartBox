@@ -1,90 +1,93 @@
-/* InputOTPScreen — Large touch confirm */
+/* InputOTPScreen */
 .otp-root {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 16px 8px;
-  gap: 10px;
+  padding: 14px 16px 14px;
+  gap: 14px;
   overflow: hidden;
 }
 
-/* Header */
 .otp-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   flex-shrink: 0;
   align-self: flex-start;
 }
 .header-accent {
-  width: 3px;
-  height: 18px;
+  width: 4px;
+  height: 20px;
+  background: #FF6600;
   border-radius: 2px;
   flex-shrink: 0;
 }
 .otp-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
+  color: #FF6600;
   letter-spacing: 0.5px;
 }
 .otp-sub {
-  font-size: 8px;
-  color: #444;
+  font-size: 11px;
+  color: #888;
 }
 
-/* Phone hint */
+/* Color variants */
+.otp-header[data-color="#2196F3"] .header-accent { background: #2196F3; }
+.otp-header[data-color="#2196F3"] .otp-title { color: #2196F3; }
+.otp-header[data-color="#4CAF50"] .header-accent { background: #4CAF50; }
+.otp-header[data-color="#4CAF50"] .otp-title { color: #4CAF50; }
+
 .otp-phone-hint {
-  font-size: 9px;
-  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #888;
   align-self: flex-start;
 }
 .otp-phone {
   font-weight: 600;
   color: #ccc;
-  font-family: 'JetBrains Mono', monospace;
 }
+.otp-timer {
+  font-weight: 700;
+  color: #FF6600;
+  font-size: 13px;
+}
+.otp-timer[data-color="#2196F3"] { color: #2196F3; }
 
 /* OTP boxes */
 .otp-boxes {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
   flex-shrink: 0;
+  flex: 1;
+  align-items: center;
 }
 .otp-box {
-  width: 42px;
-  height: 52px;
-  border: 1.5px solid #222;
+  width: 52px;
+  height: 68px;
+  border: 2px solid #2a2a2a;
   border-radius: 10px;
   background: #111111;
   color: #E8E8E8;
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
   text-align: center;
   outline: none;
   caret-color: transparent;
-  transition: border-color 150ms, box-shadow 150ms;
 }
-.otp-box:focus {
-  box-shadow: 0 0 0 2px rgba(255,102,0,0.2);
-}
-.otp-box.otp-filled { border-color: #333; }
-.otp-box.otp-error {
-  border-color: #ef4444;
-  animation: shake 0.3s ease;
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
+.otp-box.filled { border-color: #444; }
+.otp-box.error { border-color: #ef4444; }
 
 .otp-error-msg {
-  font-size: 9px;
+  font-size: 11px;
   color: #ef4444;
 }
 
@@ -95,16 +98,14 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  flex: 1;
-  justify-content: flex-end;
-  padding-bottom: 4px;
+  flex-shrink: 0;
 }
 
 .otp-resend-btn {
   border: none;
   background: transparent;
-  color: #555;
-  font-size: 9px;
+  color: #888;
+  font-size: 11px;
   font-family: inherit;
   cursor: pointer;
   padding: 4px;
@@ -112,49 +113,35 @@
   text-underline-offset: 2px;
 }
 
-/* Big confirm button */
+/* Confirm button */
 .otp-confirm-btn {
   width: 100%;
-  max-width: 380px;
-  height: 56px;
+  height: 60px;
   border: none;
   border-radius: 12px;
   background: #222;
   color: #444;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 1px;
+  cursor: not-allowed;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  cursor: not-allowed;
-  transition: background 250ms ease, color 250ms ease, transform 100ms ease, box-shadow 250ms ease;
-  position: relative;
 }
-.otp-confirm-btn.ready {
-  cursor: pointer;
-  animation: pulse-confirm 2s ease-in-out infinite;
-}
-@keyframes pulse-confirm {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.1); }
-}
-.otp-confirm-btn.ready:active { transform: scale(0.98); }
+.otp-confirm-btn.ready { cursor: pointer; }
+.otp-confirm-btn.ready[data-color="#FF6600"] { background: #FF6600; color: #fff; }
+.otp-confirm-btn.ready[data-color="#2196F3"] { background: #2196F3; color: #fff; }
+.otp-confirm-btn.ready[data-color="#4CAF50"] { background: #4CAF50; color: #fff; }
 
-.confirm-icon {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1;
-  color: inherit;
-}
 .confirm-label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 1px;
 }
 .confirm-hint {
-  font-size: 8px;
-  color: #444;
+  font-size: 11px;
   font-weight: 400;
-  position: absolute;
-  bottom: 6px;
+  opacity: 0.7;
 }

@@ -53,7 +53,7 @@ const danger = [
 ] as const;
 
 export const theme = createTheme({
-  fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif",
+  fontFamily: "'Be Vietnam Pro', -apple-system, sans-serif",
   primaryColor: "primary",
   colors: {
     primary,

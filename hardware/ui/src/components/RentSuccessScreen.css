@@ -1,0 +1,177 @@
+/* RentSuccessScreen */
+
+/* Locker open step */
+.locker-open-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.locker-open-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(76,175,80,0.15);
+  border: 2px solid #4CAF50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locker-open-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #4CAF50;
+  letter-spacing: 1px;
+}
+
+.locker-open-locker {
+  font-size: 48px;
+  font-weight: 800;
+  color: #4CAF50;
+}
+
+.locker-open-hint {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+}
+
+.locker-done-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+  height: 64px;
+  border: none;
+  border-radius: 14px;
+  background: #4CAF50;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.locker-open-timer {
+  font-size: 12px;
+  color: #555;
+}
+
+/* OTP result step */
+.otp-result-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.otp-result-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255,102,0,0.15);
+  border: 2px solid #FF6600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.otp-result-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FF6600;
+  letter-spacing: 1px;
+}
+
+.otp-result-locker {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.otp-code-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #111111;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 20px 32px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.otp-code-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 1px;
+}
+
+.otp-code-value {
+  font-size: 36px;
+  font-weight: 800;
+  color: #FF6600;
+  letter-spacing: 4px;
+}
+
+.otp-code-desc {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+}
+
+.otp-reminder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 10px;
+  padding: 10px 16px;
+  max-width: 320px;
+  width: 100%;
+}
+
+.otp-reminder span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f59e0b;
+  line-height: 1.4;
+}
+
+.otp-tx {
+  font-size: 11px;
+  color: #555;
+}
+
+.otp-done-btn {
+  width: 100%;
+  max-width: 320px;
+  height: 56px;
+  border: none;
+  border-radius: 12px;
+  background: #FF6600;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

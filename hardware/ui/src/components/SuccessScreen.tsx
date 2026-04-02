@@ -9,7 +9,7 @@ interface Props {
   lockerCode?: string;
   transactionId?: string;
   type?: "deposit" | "pickup" | "rent";
-  autoClose?: number; // seconds
+  autoClose?: number;
 }
 
 export default function SuccessScreen({
@@ -22,10 +22,8 @@ export default function SuccessScreen({
 }: Props) {
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(autoClose);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const openTimer = setTimeout(() => setIsOpen(true), 100);
     const tick = setInterval(() => {
       setCountdown((c) => {
         if (c <= 1) { clearInterval(tick); return 0; }
@@ -33,30 +31,35 @@ export default function SuccessScreen({
       });
     }, 1000);
     const closeTimer = setTimeout(() => navigate("/"), autoClose * 1000);
-    return () => { clearTimeout(openTimer); clearInterval(tick); clearTimeout(closeTimer); };
+    return () => { clearInterval(tick); clearTimeout(closeTimer); };
   }, [autoClose, navigate]);
 
-  const icons: Record<string, string> = {
-    deposit: "📥",
-    pickup: "📤",
-    rent: "🔒",
+  const colorMap: Record<string, string> = {
+    deposit: "#FF6600",
+    pickup: "#2196F3",
+    rent: "#4CAF50",
   };
+  const color = colorMap[type] ?? colorMap.deposit;
 
   return (
     <KioskLayout>
       <div className="success-root">
-        <div className={`success-card ${isOpen ? "open" : ""}`}>
-          {/* Check icon */}
+        <div className="success-card" data-color={color}>
           <div className="success-icon-wrap">
-            <div className="success-check-ring" />
-            <div className="success-check">✓</div>
+            <svg viewBox="0 0 24 24" fill="none" width="32" height="32">
+              <path
+                d="M5 13l4 4L19 7"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
 
-          <div className="success-icon-emoji">{icons[type]}</div>
           <div className="success-title">{title}</div>
           {subtitle && <div className="success-sub">{subtitle}</div>}
 
-          {/* Info grid */}
           {(lockerCode || transactionId) && (
             <div className="success-info-grid">
               {lockerCode && (
@@ -74,7 +77,6 @@ export default function SuccessScreen({
             </div>
           )}
 
-          {/* Countdown */}
           <div className="success-countdown">
             <div className="countdown-ring">
               <svg viewBox="0 0 36 36">
@@ -82,13 +84,12 @@ export default function SuccessScreen({
                 <circle
                   cx="18" cy="18" r="16"
                   fill="none"
-                  stroke="#FF6600"
+                  stroke={color}
                   strokeWidth="2"
                   strokeDasharray={`${2 * Math.PI * 16}`}
                   strokeDashoffset={`${2 * Math.PI * 16 * (1 - countdown / autoClose)}`}
                   strokeLinecap="round"
                   transform="rotate(-90 18 18)"
-                  style={{ transition: "stroke-dashoffset 1s linear" }}
                 />
               </svg>
               <span className="countdown-num">{countdown}</span>
@@ -97,7 +98,7 @@ export default function SuccessScreen({
           </div>
 
           <button className="success-btn" onClick={() => navigate("/")}>
-            ← Quay về màn hình chính
+            Quay về màn hình chính
           </button>
         </div>
       </div>

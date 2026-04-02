@@ -36,24 +36,6 @@ export interface Transaction {
   status: "success" | "failed" | "cancelled";
 }
 
-export interface ScreenFlow {
-  type:
-    | "home"
-    | "deposit"
-    | "deposit-phone"
-    | "deposit-size"
-    | "deposit-otp"
-    | "deposit-confirm"
-    | "pickup"
-    | "pickup-phone"
-    | "pickup-otp"
-    | "pickup-confirm"
-    | "admin"
-    | "settings";
-  title: string;
-  subtitle?: string;
-}
-
 export const LOCKER_SIZE_LABELS: Record<LockerSize, string> = {
   small: "Nhỏ (20x30x40cm)",
   medium: "Vừa (30x40x50cm)",

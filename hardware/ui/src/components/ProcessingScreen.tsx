@@ -5,7 +5,6 @@ import "./ProcessingScreen.css";
 interface Props {
   message?: string;
   sub?: string;
-  nextPath?: string;
   type?: "deposit" | "pickup" | "rent";
   step?: number;
   totalSteps?: number;
@@ -30,10 +29,10 @@ export default function ProcessingScreen({
     return () => clearInterval(interval);
   }, []);
 
-  const icons: Record<string, string> = {
-    deposit: "📥",
-    pickup: "📤",
-    rent: "🔒",
+  const iconMap: Record<string, string> = {
+    deposit: "GỬI",
+    pickup: "NHẬN",
+    rent: "THUÊ",
   };
 
   return (
@@ -41,7 +40,7 @@ export default function ProcessingScreen({
       <div className="proc-root">
         <div className="proc-card">
           <div className="proc-icon-wrap">
-            <span className="proc-icon">{icons[type]}</span>
+            <span className="proc-icon">{iconMap[type] ?? "OK"}</span>
           </div>
 
           <div className="proc-spinner" />
@@ -49,7 +48,6 @@ export default function ProcessingScreen({
           <div className="proc-msg">{message}</div>
           <div className="proc-sub">{sub}</div>
 
-          {/* Progress bar */}
           <div className="proc-progress-track">
             <div
               className="proc-progress-fill"
@@ -58,14 +56,13 @@ export default function ProcessingScreen({
           </div>
           <div className="proc-pct">{Math.round(Math.min(progress, 100))}%</div>
 
-          {/* Steps */}
           <div className="proc-steps">
             {Array.from({ length: totalSteps }, (_, i) => (
               <div
                 key={i}
-                className={`proc-step ${i < step ? "done" : i === step ? "active" : ""}`}
+                className={`proc-step${i < step ? " done" : ""}${i === step ? " active" : ""}`}
               >
-                {i < step ? "✓" : i + 1}
+                {i < step ? "OK" : i + 1}
               </div>
             ))}
           </div>
