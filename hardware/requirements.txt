@@ -1,0 +1,24 @@
+# SmartBox Pi Agent — Python Dependencies
+# =============================================
+# Cài đặt: pip install -r requirements.txt
+
+# ── UI / Display ──────────────────────────────────────────────
+PySide6==6.7.2                # Qt for Python (PySide6 >= 6.6)
+
+# ── MQTT ─────────────────────────────────────────────────────
+paho-mqtt==2.0.0               # MQTT client (Pi ↔ Backend)
+
+# ── GPIO / Hardware ──────────────────────────────────────────
+# RPi.GPIO==0.7.1              # GPIO control (uncomment khi chạy trên Pi thật)
+# gpiozero==2.0                # Simplified GPIO (alternative to RPi.GPIO)
+smbus2==0.4.2                  # I2C GPIO expander access (MCU2317)
+
+# ── HTTP / API ───────────────────────────────────────────────
+requests==2.31.0               # REST API calls to backend
+urllib3==2.2.1                # HTTP client (dependency)
+
+# ── Config ───────────────────────────────────────────────────
+PyYAML==6.0.1                 # Đọc config.yaml
+
+# ── Utilities ────────────────────────────────────────────────
+python-dateutil==2.8.2         # Datetime parsing

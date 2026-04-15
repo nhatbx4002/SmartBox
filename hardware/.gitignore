@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+/docs
+/CLAUDE.md
+/.claude
+/eager-hatching-hummingbird.md
+/SCREEN_FLOW_MAP.md
+/serialized-noodling-abelson-2026-04-15.md

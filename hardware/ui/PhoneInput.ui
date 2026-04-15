@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#Form {
+    background-color: #070707;
+    color: #F3EEEA;
+    font-family: &quot;Segoe UI&quot;;
+}
+
+/* ===== Title ===== */
+QLabel#labelTitle {
+    background: transparent;
+    color: #F2ECE7;
+    font-size: 25px;
+    font-weight: 800;
+    qproperty-alignment: AlignCenter;
+}
+
+/* ===== Card ===== */
+QFrame#formCard {
+    background-color: rgba(34, 26, 24, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+}
+
+/* ===== Label nhỏ ===== */
+QLabel#labelTitleCard {
+    background: transparent;
+    color: #B69080;
+    font-weight: 700;
+}
+
+/* ===== Input container ===== */
+QFrame#frame {
+    background-color: #3A3938;
+    border: none;
+    border-bottom: 3px solid #FF6A00;
+    border-radius: 14px;
+}
+
+/* ===== Input text ===== */
+QLineEdit#input {
+    background: transparent;
+    border: none;
+    color: #F7F3F0;
+    font-weight: 800;
+    padding-left: 12px;
+    selection-background-color: #FF6A00;
+}
+
+/* focus nhẹ */
+QLineEdit#input:focus {
+    color: #FFFFFF;
+}
+
+/* placeholder */
+QLineEdit#input::placeholder {
+    color: rgba(255,255,255,0.35);
+}
+
+/* ===== Button ===== */
+QPushButton#btnConfirm {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #F3B294,
+        stop:1 #FF7200
+    );
+    color: #2A140B;
+    border: none;
+    border-radius: 14px;
+    font-weight: 900;
+}
+
+/* hover */
+QPushButton#btnConfirm:hover {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #F7B99D,
+        stop:1 #FF7C14
+    );
+}
+
+/* pressed */
+QPushButton#btnConfirm:pressed {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #E6A88A,
+        stop:1 #E56700
+    );
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_5">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <property name="leftMargin">
+      <number>100</number>
+     </property>
+     <property name="topMargin">
+      <number>30</number>
+     </property>
+     <property name="rightMargin">
+      <number>100</number>
+     </property>
+     <property name="bottomMargin">
+      <number>30</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelTitle">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Nhập số điện thoại của bạn</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="formCard">
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="labelTitleCard">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Số điện thoại liên lạc</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QLineEdit" name="input">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>70</height>
+                </size>
+               </property>
+               <property name="maxLength">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Policy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>25</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnConfirm">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Tiếp tục</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

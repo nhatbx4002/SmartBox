@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* ===== ROOT ===== */
+QWidget#Form {
+    background-color: #000000;
+    color: #F2F2F2;
+    font-family: &quot;Segoe UI&quot;;
+}
+
+/* ===== 2 CARD CHÍNH ===== */
+QFrame#frameStatusCard,
+QFrame#frameTimerCard {
+    background: qlineargradient(
+        x1: 0, y1: 0, x2: 1, y2: 1,
+        stop: 0 #1A1A1F,
+        stop: 1 #131318
+    );
+    border: none;
+    border-radius: 22px;
+}
+
+/* ===== CARD TRẠNG THÁI ===== */
+QLabel#labelStatusTitle {
+    background: transparent;
+    color: #E9A889;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+QLabel#labelBoxName {
+    background: transparent;
+    color: #FFFFFF;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+QLabel#labelBoxState {
+    background: transparent;
+    color: #F2A07D;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+QLabel#labelInstruction {
+    background: transparent;
+    color: #F4A07A;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+/* ===== ICON BOX ===== */
+QFrame#frame_3 {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 16px;
+}
+
+QFrame#frame_3 QLabel#label {
+    background: transparent;
+    color: #F2A886;
+    border: none;
+}
+
+/* ===== CARD THỜI GIAN ===== */
+QLabel#labelTimerTitle {
+    background: transparent;
+    color: #E3A487;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* bỏ toàn bộ border phần thời gian */
+QLabel#labelTimerValue,
+QLabel#labelTimerUnit {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #FF7A00;
+}
+
+QLabel#labelTimerValue {
+    font-size: 56px;
+    font-weight: 900;
+}
+
+QLabel#labelTimerUnit {
+    font-size: 24px;
+    font-weight: 800;
+    padding-left: 2px;
+}
+
+/* nếu cái viền cam vẫn còn do label auto selected/focus */
+QLabel#labelTimerTitle,
+QLabel#labelTimerValue,
+QLabel#labelTimerUnit {
+    selection-background-color: transparent;
+    selection-color: inherit;
+}
+
+/* ===== BUTTON COMPLETE ===== */
+QPushButton#btnComplete {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #F0B08D,
+        stop:1 #FF7A00
+    );
+    color: #4B210F;
+    border: none;
+    border-radius: 18px;
+    font-size: 24px;
+    font-weight: 900;
+    padding-left: 22px;
+    padding-right: 22px;
+    text-align: center;
+
+}
+
+QPushButton#btnComplete:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #F6BC9C,
+        stop:1 #FF8D23
+    );
+}
+
+QPushButton#btnComplete:pressed {
+    background: #E56D00;
+    color: #3A170A;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+     <property name="leftMargin">
+      <number>20</number>
+     </property>
+     <property name="topMargin">
+      <number>10</number>
+     </property>
+     <property name="rightMargin">
+      <number>20</number>
+     </property>
+     <property name="bottomMargin">
+      <number>20</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="layoutTop" stretch="2,1">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frameStatusCard">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <widget class="QWidget" name="">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>459</width>
+            <height>151</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QLabel" name="labelStatusTitle">
+               <property name="text">
+                <string>Trạng thái ô tủ</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelBoxName">
+               <property name="text">
+                <string>Tủ 1 </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelBoxState">
+               <property name="text">
+                <string>Đang mở</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelInstruction">
+               <property name="text">
+                <string>Vui lòng bỏ đồ và đóng tủ ....</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QFrame" name="frame_3">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Shape::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Shadow::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../resources.qrc">:/icons/assets/icon/OpenSucesspage.png</pixmap>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignmentFlag::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frameTimerCard">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <widget class="QLabel" name="labelTimerTitle">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>10</y>
+            <width>91</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Thời gian còn lại</string>
+          </property>
+         </widget>
+         <widget class="QWidget" name="">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>90</y>
+            <width>122</width>
+            <height>81</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="labelTimerValue">
+             <property name="text">
+              <string>60</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelTimerUnit">
+             <property name="text">
+              <string>s</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnComplete">
+       <property name="text">
+        <string>Hoàn tất</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

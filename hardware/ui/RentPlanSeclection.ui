@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RentPlanSelection</class>
+ <widget class="QWidget" name="RentPlanSelection">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* =========================
+   MAIN CONTENT
+   ========================= */
+
+QWidget {
+    background-color: #050505;
+    color: #F2F2F2;
+    font-family: &quot;Segoe UI&quot;, &quot;Arial&quot;, sans-serif;
+}
+
+
+/* =========================
+   TITLE + SUBTITLE
+   ========================= */
+
+QLabel#labelTitle {
+    color: #F3F3F3;
+    font-size: 26px;
+    font-weight: 700;
+    background: transparent;
+    padding: 0px;
+}
+
+QLabel#labelSizeSelection {
+    color: #E5AE8A;
+    font-size: 16px;
+    font-weight: 600;
+    background: transparent;
+    padding: 0px;
+}
+
+
+/* =========================
+   PLAN CARD BASE
+   ========================= */
+
+QFrame#framePlan1,
+QFrame#framePlan2,
+QFrame#framePlan3 {
+    background-color: #141414;
+    border: 1px solid #1E1E1E;
+    border-left: 6px solid #35E08A;
+    border-radius: 12px;
+}
+
+
+/* hover nhẹ cho đẹp */
+QFrame#framePlan1:hover,
+QFrame#framePlan2:hover,
+QFrame#framePlan3:hover {
+    background-color: #181818;
+    border: 1px solid #2A2A2A;
+    border-left: 6px solid #42F39A;
+}
+
+
+/* nếu muốn plan đang chọn nổi hơn thì dùng cái này
+   rồi sau này set property hoặc đổi objectName riêng */
+QFrame#framePlan1 {
+    background-color: #161616;
+}
+
+
+/* =========================
+   PLAN TITLE
+   ========================= */
+
+QLabel#labelPlanTitle1,
+QLabel#labelPlanTitle2,
+QLabel#labelPlanTitle3 {
+    color: #F4F4F4;
+    font-size: 20px;
+    font-weight: 700;
+    background: transparent;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+/* =========================
+   PLAN SUBTITLE
+   ========================= */
+
+QLabel#labelPlanSubtitle1,
+QLabel#labelPlanSubtitle2,
+QLabel#labelPlanSubtitle3 {
+    color: #D9B19A;
+    font-size: 13px;
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+/* =========================
+   PLAN PRICE
+   cover luôn tên hiện tại: labelPlanPrice
+   và tên mới nên dùng: labelPlanPrice1/2/3
+   ========================= */
+
+QLabel#labelPlanPrice,
+QLabel#labelPlanPrice1,
+QLabel#labelPlanPrice2,
+QLabel#labelPlanPrice3 {
+    color: #41E38C;
+    font-size: 20px;
+    font-weight: 700;
+    background: transparent;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+/* =========================
+   PLAN ARROW
+   cover luôn tên hiện tại: next
+   và tên mới nên dùng: labelNext1/2/3
+   ========================= */
+
+QLabel#next,
+QLabel#labelNext1,
+QLabel#labelNext2,
+QLabel#labelNext3 {
+    color: #9B7B6F;
+    font-size: 24px;
+    font-weight: 700;
+    background: transparent;
+    border: none;
+    padding: 0px 6px 0px 6px;
+    margin: 0px;
+}
+
+
+/* =========================
+   OPTIONAL:
+   nếu bên trong card còn có label khác
+   thì ép nền trong suốt cho sạch
+   ========================= */
+
+QFrame#framePlan1 QLabel,
+QFrame#framePlan2 QLabel,
+QFrame#framePlan3 QLabel {
+    background: transparent;
+}
+
+
+/* =========================
+   OPTIONAL:
+   bỏ viền xấu khi focus
+   ========================= */
+
+QFrame#framePlan1:focus,
+QFrame#framePlan2:focus,
+QFrame#framePlan3:focus,
+QLabel#labelPlanTitle1:focus,
+QLabel#labelPlanTitle2:focus,
+QLabel#labelPlanTitle3:focus,
+QLabel#labelPlanSubtitle1:focus,
+QLabel#labelPlanSubtitle2:focus,
+QLabel#labelPlanSubtitle3:focus,
+QLabel#labelPlanPrice:focus,
+QLabel#labelPlanPrice1:focus,
+QLabel#labelPlanPrice2:focus,
+QLabel#labelPlanPrice3:focus,
+QLabel#next:focus,
+QLabel#labelNext1:focus,
+QLabel#labelNext2:focus,
+QLabel#labelNext3:focus {
+    outline: none;
+    border: none;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_5">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelTitle">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Chọn gói thuê phù hợp với bạn</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelSizeSelection">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Bạn đã chọn Size 1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="framePlan1">
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="labelPlanTitle1">
+            <property name="text">
+             <string>Thuê theo lượt</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelPlanSubtitle1">
+            <property name="text">
+             <string>Một lần gửi</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>470</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelPlanPrice">
+          <property name="text">
+           <string>15.000đ</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="next">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../resources.qrc">:/icons/assets/icon/rentPlantNext.png</pixmap>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="framePlan2">
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="labelPlanTitle2">
+            <property name="text">
+             <string>Thuê nhiều lượt</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelPlanSubtitle2">
+            <property name="text">
+             <string>Một lần gửi</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer2">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>441</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelPlanPrice2">
+          <property name="text">
+           <string>120.000đ</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="next2">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../resources.qrc">:/icons/assets/icon/rentPlantNext.png</pixmap>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="framePlan3">
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="labelPlanTitle3">
+            <property name="text">
+             <string>Thuê theo tháng</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelPlanSubtitle3">
+            <property name="text">
+             <string>Một lần gửi</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer3">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>441</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelPlanPrice3">
+          <property name="text">
+           <string>450.000đ</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="next3">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../resources.qrc">:/icons/assets/icon/rentPlantNext.png</pixmap>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <zorder>framePlan1</zorder>
+  <zorder>labelSizeSelection</zorder>
+  <zorder>framePlan2</zorder>
+  <zorder>framePlan3</zorder>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

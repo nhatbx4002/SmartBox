@@ -1,0 +1,44 @@
+<RCC>
+  <qresource prefix="/">
+    <file>assets/icon/BackIcon.png</file>
+    <file>assets/icon/ConfirmationIcon.png</file>
+    <file>assets/icon/footerIcon.png</file>
+    <file>assets/icon/headerIcon.png</file>
+    <file>assets/icon/HomeIcon.png</file>
+    <file>assets/icon/LargeIcon.png</file>
+    <file>assets/icon/LocationIcon.png</file>
+    <file>assets/icon/maru.png</file>
+    <file>assets/icon/OpenNowIcon.png</file>
+    <file>assets/icon/OpenSucesspage.png</file>
+    <file>assets/icon/ReceiveIcon.png</file>
+    <file>assets/icon/RentIcon.png</file>
+    <file>assets/icon/rentPlantNext.png</file>
+    <file>assets/icon/SendIcon.png</file>
+    <file>assets/icon/SmallIcon.png</file>
+    <file>assets/icon/SuccessfullIcon.png</file>
+    <file>assets/icon/supportIcon.png</file>
+    <file>assets/icon/SupportPageIcon.png</file>
+    <file>assets/icon/UsingLaterIcon.png</file>
+  </qresource>
+  <qresource prefix="/icons">
+    <file>assets/icon/BackIcon.png</file>
+    <file>assets/icon/ConfirmationIcon.png</file>
+    <file>assets/icon/footerIcon.png</file>
+    <file>assets/icon/headerIcon.png</file>
+    <file>assets/icon/HomeIcon.png</file>
+    <file>assets/icon/LargeIcon.png</file>
+    <file>assets/icon/LocationIcon.png</file>
+    <file>assets/icon/maru.png</file>
+    <file>assets/icon/OpenNowIcon.png</file>
+    <file>assets/icon/OpenSucesspage.png</file>
+    <file>assets/icon/ReceiveIcon.png</file>
+    <file>assets/icon/RentIcon.png</file>
+    <file>assets/icon/rentPlantNext.png</file>
+    <file>assets/icon/SendIcon.png</file>
+    <file>assets/icon/SmallIcon.png</file>
+    <file>assets/icon/SuccessfullIcon.png</file>
+    <file>assets/icon/supportIcon.png</file>
+    <file>assets/icon/SupportPageIcon.png</file>
+    <file>assets/icon/UsingLaterIcon.png</file>
+  </qresource>
+</RCC>
