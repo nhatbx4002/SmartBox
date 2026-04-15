@@ -15,8 +15,9 @@ class MCU2317Driver(HardwareBase):
         self.config = config or {}
         self._gpio = self._import_gpio()
         self._addr = self._parse_int(self.config.get("mcu2317", {}).get("address", 0x20), default=0x20)
-        self._smbus = None
+        self._mcp = None
         self._led_pins: Dict[str, int] = {}
+        self._led_outputs: Dict[str, Any] = {}
         self._sensor_pins: Dict[str, int] = {}
         self._row_pins: list[int] = []
         self._col_pins: list[int] = []
@@ -58,27 +59,42 @@ class MCU2317Driver(HardwareBase):
 
         mcu_config = self.config.get("mcu2317", {})
         led_pins = mcu_config.get("led_pins", {}) or {"A1": 0}
-        self._led_pins = {str(locker_id): self._parse_int(pin_index, default=0) for locker_id, pin_index in led_pins.items()}
-
-        bus_id = self._parse_int(mcu_config.get("bus", 1), default=1)
-        try:
-            from smbus2 import SMBus  # type: ignore
-        except ImportError:
-            print("[MCU2317] smbus2 is not installed; LED control over I2C is disabled.")
-        else:
-            try:
-                smbus = SMBus(bus_id)
-                smbus.read_byte(self._addr)
-            except OSError as exc:
-                print(f"[MCU2317] I2C probe failed at 0x{self._addr:02X}: {exc}")
-            else:
-                self._smbus = smbus
+        self._led_pins = {
+            str(locker_id): self._parse_int(pin_index, default=0)
+            for locker_id, pin_index in led_pins.items()
+        }
+        self._setup_mcp23017()
 
         keypad_config = self.config.get("keypad", {})
         self._row_pins = [self._parse_int(pin, default=0) for pin in keypad_config.get("rows", [21, 20, 16, 12])]
         self._col_pins = [self._parse_int(pin, default=0) for pin in keypad_config.get("cols", [26, 19, 13, 6])]
         self._configure_keypad()
         self._start_keypad_reader()
+
+    def _setup_mcp23017(self) -> None:
+        try:
+            import board  # type: ignore
+            import busio  # type: ignore
+            from adafruit_mcp230xx.mcp23017 import MCP23017  # type: ignore
+        except ImportError:
+            print("[MCU2317] MCP23017 libraries are not installed; LED control over I2C is disabled.")
+            return
+
+        try:
+            i2c = busio.I2C(board.SCL, board.SDA)
+            self._mcp = MCP23017(i2c, address=self._addr)
+            for locker_id, pin_index in self._led_pins.items():
+                pin = self._mcp.get_pin(pin_index)
+                pin.switch_to_output(value=False)
+                self._led_outputs[locker_id] = pin
+        except Exception as exc:
+            self._mcp = None
+            self._led_outputs = {}
+            print(f"[MCU2317] MCP23017 setup failed at 0x{self._addr:02X}: {exc}")
+            return
+
+        lockers = ", ".join(sorted(self._led_outputs))
+        print(f"[MCU2317] MCP23017 ready at 0x{self._addr:02X} with lockers: {lockers}")
 
     def _configure_keypad(self) -> None:
         gpio = self._gpio
@@ -93,7 +109,6 @@ class MCU2317Driver(HardwareBase):
             gpio.output(row_pin, gpio.HIGH)
 
         for col_pin in self._col_pins:
-            # Active-low scan: idle columns stay HIGH, pressed key pulls the active row LOW onto the column.
             gpio.setup(col_pin, gpio.IN, pull_up_down=gpio.PUD_UP)
 
     def _start_keypad_reader(self) -> None:
@@ -139,32 +154,33 @@ class MCU2317Driver(HardwareBase):
                 self._last_key = None
             time.sleep(0.01)
 
-    def _write_led(self, pin_index: int, state: bool) -> None:
-        if self._smbus is None:
-            return
-
-        with self._i2c_lock:
-            try:
-                current = self._smbus.read_byte(self._addr)
-                if state:
-                    new_value = current | (1 << pin_index)
-                else:
-                    new_value = current & ~(1 << pin_index)
-                self._smbus.write_byte(self._addr, new_value)
-            except OSError as exc:
-                print(f"[MCU2317] I2C write failed at 0x{self._addr:02X}: {exc}")
-
     def open_locker(self, locker_id: str) -> None:
         pin_index = self._led_pins.get(locker_id)
         if pin_index is None:
             raise ValueError(f"Locker {locker_id} is not configured.")
-        self._write_led(pin_index, True)
+        led = self._led_outputs.get(locker_id)
+        if led is None:
+            print(f"[MCU2317] Locker {locker_id} has no MCP23017 output configured.")
+            return
+        with self._i2c_lock:
+            try:
+                led.value = True
+            except Exception as exc:
+                print(f"[MCU2317] Failed to turn ON locker {locker_id}: {exc}")
 
     def close_locker(self, locker_id: str) -> None:
         pin_index = self._led_pins.get(locker_id)
         if pin_index is None:
             raise ValueError(f"Locker {locker_id} is not configured.")
-        self._write_led(pin_index, False)
+        led = self._led_outputs.get(locker_id)
+        if led is None:
+            print(f"[MCU2317] Locker {locker_id} has no MCP23017 output configured.")
+            return
+        with self._i2c_lock:
+            try:
+                led.value = False
+            except Exception as exc:
+                print(f"[MCU2317] Failed to turn OFF locker {locker_id}: {exc}")
 
     def is_door_closed(self, locker_id: str) -> bool:
         sensor_pin = self._sensor_pins.get(locker_id)

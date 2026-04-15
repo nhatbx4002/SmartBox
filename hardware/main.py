@@ -15,6 +15,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWi
 from api_client import ApiClient
 from app_state import AppState
 from hardware import HardwareManager, LockerController
+from hardware.base import HardwareBase
 from screens import (
     HomeScreen,
     LoadingScreen,
@@ -32,9 +33,13 @@ class SmartBoxApp(QMainWindow):
         super().__init__()
         self._qt_resources = resources_rc
         self.setWindowTitle("SmartBox")
-        self.setFixedSize(800, 480)
 
         self.config = self._load_config()
+        self.fullscreen = bool(self.config.get("app", {}).get("fullscreen", HardwareBase.is_pi_environment()))
+        if self.fullscreen:
+            self.resize(800, 480)
+        else:
+            self.setFixedSize(800, 480)
         self.loader = QUiLoader()
         self.state = AppState()
         self.state.configure(
@@ -44,6 +49,7 @@ class SmartBoxApp(QMainWindow):
 
         self.api = ApiClient(self.config.get("api", {}))
         self.hw = HardwareManager(self.config, parent=self)
+        print(f"[HARDWARE] Active driver: {self.hw.__class__.__name__}")
         self.locker = LockerController(self.hw)
         self._click_map: Dict[int, object] = {}
         self._history = []
@@ -244,7 +250,10 @@ class SmartBoxApp(QMainWindow):
 def main() -> int:
     app = QApplication(sys.argv)
     window = SmartBoxApp()
-    window.show()
+    if window.fullscreen:
+        window.showFullScreen()
+    else:
+        window.show()
     return app.exec()
 
 
