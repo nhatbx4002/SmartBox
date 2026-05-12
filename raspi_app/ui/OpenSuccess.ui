@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainContent</class>
+ <widget class="QWidget" name="mainContent">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>1152</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#mainContent {
+    background-color: #0A0A0A;
+    border: none;
+}
+QFrame#leftContent {
+    background-color: #0A0A0A;
+    border: none;
+}
+
+QFrame#rightContent {
+    background-color: #0A0A0A;
+    border-left: 2px solid #333333;
+}
+</string>
+  </property>
+  <widget class="QFrame" name="leftContent">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>432</width>
+     <height>1152</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#doorIconBox {
+    background-color: #FF6600;
+    border: none;
+    border-radius: 12px;
+}
+QLabel#lblDoorIcon {
+    color: #0A0A0A;
+    font-size: 62px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QLabel#lblOpenStatus {
+    color: #FFB085;
+    font-size: 18px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QLabel#lblLockerName {
+    color: #FFFFFF;
+    font-size: 48px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QLabel#lblLockerSize {
+    color: #888888;
+    font-size: 20px;
+    font-weight: 500;
+    background-color: transparent;
+}
+QLabel#lblInstruction {
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 500;
+    background-color: transparent;
+}
+QPushButton#btnFinish {
+    background-color: #FF6600;
+    border: none;
+    border-radius: 14px;
+    color: #0A0A0A;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+QPushButton#btnFinish:pressed {
+    background-color: #D95700;
+}
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QFrame" name="doorIconBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>40</y>
+      <width>120</width>
+      <height>120</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lblDoorIcon">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../resources.qrc">:/assets/OpenLockerIcon.png</pixmap>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="lblOpenStatus">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>200</y>
+      <width>350</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>MỞ TỦ THÀNH CÔNG</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblLockerName">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>250</y>
+      <width>350</width>
+      <height>140</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tủ A - Ngăn
+A1</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblLockerSize">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>400</y>
+      <width>350</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Size 1 (Nhỏ)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblInstruction">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>465</y>
+      <width>350</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vui lòng cất đồ vào tủ và đóng cửa thật kỹ.</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnFinish">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>1060</y>
+      <width>352</width>
+      <height>72</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>HOÀN TẤT</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="rightContent">
+   <property name="geometry">
+    <rect>
+     <x>432</x>
+     <y>0</y>
+     <width>288</width>
+     <height>1152</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#timerCard {
+    background-color: #1C1C1C;
+    border: 2px solid #333333;
+    border-radius: 20px;
+}
+QLabel#lblTimerTitle {
+    color: #888888;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: transparent;
+}
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QFrame" name="timerCard">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>390</y>
+      <width>244</width>
+      <height>285</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel#lblTimerNumber {
+    color: #FFB596;
+    font-size: 78px;
+    font-weight: 900;
+    background-color: transparent;
+}
+
+QLabel#lblTimerUnit {
+    color: #FFB596;
+    font-size: 28px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QFrame#timerDivider {
+    background-color: #FF6600;
+    border: none;
+}
+QLabel#lblTimerWarning {
+    color: #888888;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: transparent;
+}
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <widget class="QLabel" name="lblTimerTitle">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>35</y>
+       <width>204</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Thời gian đóng cửa</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblTimerNumber">
+     <property name="geometry">
+      <rect>
+       <x>25</x>
+       <y>85</y>
+       <width>160</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>120</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblTimerUnit">
+     <property name="geometry">
+      <rect>
+       <x>187</x>
+       <y>118</y>
+       <width>35</width>
+       <height>50</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>s</string>
+     </property>
+    </widget>
+    <widget class="QFrame" name="timerDivider">
+     <property name="geometry">
+      <rect>
+       <x>92</x>
+       <y>190</y>
+       <width>60</width>
+       <height>5</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblTimerWarning">
+     <property name="geometry">
+      <rect>
+       <x>28</x>
+       <y>215</y>
+       <width>188</width>
+       <height>52</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Cửa sẽ tự động khóa sau khi hết thời gian.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="securityBox">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>700</y>
+      <width>244</width>
+      <height>120</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QFrame#securityBox {
+    background-color: #1C1C1C;
+    border: 2px solid #333333;
+    border-radius: 20px;
+}
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <widget class="QLabel" name="lblSecurityIcon">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>244</width>
+       <height>120</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="../resources.qrc">:/assets/SecurityIcon.png</pixmap>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

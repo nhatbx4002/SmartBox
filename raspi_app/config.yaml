@@ -1,0 +1,27 @@
+api:
+  base_url: "http://localhost:5000"
+  timeout: 10
+
+hardware:
+  driver: "mcu2317"
+
+mcu2317:
+  bus: 1
+  address: 0x20
+  led_pins:
+    A1: 0
+
+gpio:
+  sensor_1: 22
+  sensor_2: 23
+
+support:
+  hotline: "1900 1234"
+
+app:
+  countdown_open: 60
+  countdown_default: 60
+  screen_width: 720
+  screen_height: 1280
+  header_height: 80
+  footer_height: 48

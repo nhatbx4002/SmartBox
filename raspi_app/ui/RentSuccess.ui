@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainContent</class>
+ <widget class="QWidget" name="mainContent">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>1152</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#mainContent {
+    background-color: #050505;
+    border: none;
+}
+QLabel#lblSuccessTitle {
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QLabel#lblLockerInfo {
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 500;
+    background-color: transparent;
+}
+QFrame#pinBox {
+    background-color: #111111;
+    border: 2px dashed #FF6600;
+    border-radius: 18px;
+}</string>
+  </property>
+  <widget class="QFrame" name="successCircle">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>140</y>
+     <width>160</width>
+     <height>160</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#successCircle {
+    background-color: transparent;
+    border: 8px solid #2E7D32;
+    border-radius: 80px;
+}
+QLabel#lblSuccessCheck {
+    color: #FFFFFF;
+    font-size: 76px;
+    font-weight: 700;
+    background-color: transparent;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblSuccessCheck">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>-10</y>
+      <width>160</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../resources.qrc">:/assets/checkBoxIcon.png</pixmap>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="lblSuccessTitle">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>330</y>
+     <width>600</width>
+     <height>52</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>THUÊ TỦ THÀNH CÔNG</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblLockerInfo">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>392</y>
+     <width>560</width>
+     <height>36</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Tủ A - Ngăn A1 (Size Nhỏ)</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QFrame" name="pinBox">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>500</y>
+     <width>640</width>
+     <height>180</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel#lblPinLabel {
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 500;
+    background-color: transparent;
+}
+QLabel#lblPinCode {
+    color: #FF6600;
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background-color: transparent;
+}
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblPinLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>35</y>
+      <width>560</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mã mở tủ của bạn:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblPinCode">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>82</y>
+      <width>560</width>
+      <height>72</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>847 291</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="btnOpenNow">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>730</y>
+     <width>640</width>
+     <height>110</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#btnOpenNow {
+    background-color: #2E7D32;
+    border: none;
+    border-radius: 18px;
+}
+QLabel#lblOpenNowTitle {
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 900;
+    background-color: transparent;
+}
+
+QLabel#lblOpenNowDesc {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: transparent;
+}
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblOpenNowTitle">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>25</y>
+      <width>560</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>MỞ TỦ NGAY</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblOpenNowDesc">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>62</y>
+      <width>560</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Để cất đồ vào tủ ngay bây giờ</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="btnUseLater">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>865</y>
+     <width>640</width>
+     <height>110</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#btnUseLater {
+    background-color: #1C1C1C;
+    border: 2px solid #FF6600;
+    border-radius: 18px;
+}
+QLabel#lblUseLaterTitle {
+    color: #FF6600;
+    font-size: 24px;
+    font-weight: 900;
+    background-color: transparent;
+}
+
+QLabel#lblUseLaterDesc {
+    color: #888888;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: transparent;
+}
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblUseLaterTitle">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>25</y>
+      <width>560</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DÙNG SAU</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblUseLaterDesc">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>62</y>
+      <width>560</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lưu lại mã và quay lại sau</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="lblPinWarning">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>1020</y>
+     <width>560</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel#lblPinWarning {
+    color: #888888;
+    font-size: 14px;
+    font-style: italic;
+    background-color: transparent;
+}
+</string>
+   </property>
+   <property name="text">
+    <string> Lưu ý: Mã này chỉ có hiệu lực trong thời gian gói thuê.</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

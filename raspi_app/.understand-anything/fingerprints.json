@@ -1,0 +1,479 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "241c16413349b34b8ffdf37ed8faa966decd9224",
+  "generatedAt": "2026-05-09T04:41:50.194Z",
+  "files": {
+    ".claude/settings.local.json": {
+      "filePath": ".claude/settings.local.json",
+      "contentHash": "80b324da10d26273d1c9fe85574fb457f12a6fafa3bb6bb3db2fc6a9517ed80c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "assets/icons/.gitkeep": {
+      "filePath": "assets/icons/.gitkeep",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "97fd3f2baa2c25c48cbc6792b9ecfd355cc1f29ec567773039cf442db833332c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 107,
+      "hasStructuralAnalysis": true
+    },
+    "config.yaml": {
+      "filePath": "config.yaml",
+      "contentHash": "2ba51a232cb40fbb8eff96ed8868c8986119810582e9b3cb919212b150f4e15a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "docs/DESIGN_PROMPTS.md": {
+      "filePath": "docs/DESIGN_PROMPTS.md",
+      "contentHash": "1d715dd3819faa9db7d0b3d7f015fb8d9ce2be2ad4fcccdd926ad131ae33fb3a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 536,
+      "hasStructuralAnalysis": true
+    },
+    "docs/superpowers/UI_DOCUMENTATION.md": {
+      "filePath": "docs/superpowers/UI_DOCUMENTATION.md",
+      "contentHash": "874fef3b44f2bc936927bc6232d3bc91903a97cfed8fa70a25203612d3fe92d9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 396,
+      "hasStructuralAnalysis": true
+    },
+    "main.py": {
+      "filePath": "main.py",
+      "contentHash": "2a325edfe2b2c3c82d8ac3b448a0fbe34d9451b769b96c89aafd2f476fd2e4cb",
+      "functions": [
+        {
+          "name": "load_ui",
+          "params": [
+            "ui_path"
+          ],
+          "returnType": "QWidget",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "update_clock",
+          "params": [
+            "label"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": true,
+          "lineCount": 35
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QApplication",
+            "QWidget"
+          ]
+        },
+        {
+          "source": "PySide6.QtUiTools",
+          "specifiers": [
+            "QUiLoader"
+          ]
+        },
+        {
+          "source": "PySide6.QtCore",
+          "specifiers": [
+            "QTimer"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime"
+          ]
+        },
+        {
+          "source": "resources_rc",
+          "specifiers": [
+            "resources_rc"
+          ]
+        }
+      ],
+      "exports": [
+        "load_ui",
+        "update_clock",
+        "main"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "requirements.txt": {
+      "filePath": "requirements.txt",
+      "contentHash": "8edabcb57159f8929579b521a7558e40a80e7114e9e693550967a0b3c0353f4e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "resources_rc.py": {
+      "filePath": "resources_rc.py",
+      "contentHash": "8f171f95a4a65649ad4dab4fdba8b62bcdde74e36af252de2fabb80c843f4600",
+      "functions": [
+        {
+          "name": "qInitResources",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "qCleanupResources",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "PySide6",
+          "specifiers": [
+            "QtCore"
+          ]
+        }
+      ],
+      "exports": [
+        "qInitResources",
+        "qCleanupResources"
+      ],
+      "totalLines": 5857,
+      "hasStructuralAnalysis": true
+    },
+    "resources.qrc": {
+      "filePath": "resources.qrc",
+      "contentHash": "2f7a920cb7208d888236c44aecae6c45a6997ba6e6c2b721ee71a0875f0fea24",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "SCREEN_FLOW_MAP.md": {
+      "filePath": "SCREEN_FLOW_MAP.md",
+      "contentHash": "a5f4c163006321437ec9a91cb8ceb87369a487097ccb88a58603c5828f9afac1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 520,
+      "hasStructuralAnalysis": true
+    },
+    "screens/__init__.py": {
+      "filePath": "screens/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "services/__init__.py": {
+      "filePath": "services/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "services/api_client.py": {
+      "filePath": "services/api_client.py",
+      "contentHash": "c952fde4981fdca232b56362500c998c90689bb4be2aab2e02497f4311cddab3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "services/gpio_controller.py": {
+      "filePath": "services/gpio_controller.py",
+      "contentHash": "01b7096a79274b69726127ef261300ddf181b121532d239f7c80944e31908b1a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "services/mqtt_client.py": {
+      "filePath": "services/mqtt_client.py",
+      "contentHash": "359fc2a3d84b5e6ae3a3266b6a31c3889df299c9047e380d5147f28afc1b3839",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "test_ui.py": {
+      "filePath": "test_ui.py",
+      "contentHash": "61bd02680c01bc7d91f7037c78ee3caddf53f5d745550f28ffe21aeede4be994",
+      "functions": [
+        {
+          "name": "load_ui",
+          "params": [
+            "ui_path"
+          ],
+          "returnType": "QWidget",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "update_clock",
+          "params": [
+            "label"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "clock_timer",
+          "params": [
+            "parent"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "test_dashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "test_header",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "test_footer",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "list_available_screens",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QApplication",
+            "QMainWindow",
+            "QWidget",
+            "QStackedWidget"
+          ]
+        },
+        {
+          "source": "PySide6.QtUiTools",
+          "specifiers": [
+            "QUiLoader"
+          ]
+        },
+        {
+          "source": "PySide6.QtCore",
+          "specifiers": [
+            "QTimer"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime"
+          ]
+        }
+      ],
+      "exports": [
+        "load_ui",
+        "update_clock",
+        "clock_timer",
+        "test_dashboard",
+        "test_header",
+        "test_footer",
+        "list_available_screens",
+        "main"
+      ],
+      "totalLines": 121,
+      "hasStructuralAnalysis": true
+    },
+    "ui_handle.md": {
+      "filePath": "ui_handle.md",
+      "contentHash": "d427a6acae4fc7d7361a1263ac8e24b20ffd4052e328a300f224776e058acccd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": true
+    },
+    "ui/__init__.py": {
+      "filePath": "ui/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "ui/components/__init__.py": {
+      "filePath": "ui/components/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "ui/components/Footers.ui": {
+      "filePath": "ui/components/Footers.ui",
+      "contentHash": "58dee6ebce3a288686b64efc1e953b2ed76b8a8809678bf5447b577271cfa579",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 116,
+      "hasStructuralAnalysis": false
+    },
+    "ui/components/Headers.ui": {
+      "filePath": "ui/components/Headers.ui",
+      "contentHash": "2055a8463f51e5dba3d4993922103c7a80a3ac4c202ff4001d52269951f82984",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 109,
+      "hasStructuralAnalysis": false
+    },
+    "ui/Dashboard.ui": {
+      "filePath": "ui/Dashboard.ui",
+      "contentHash": "6831defb5a7f575267cff7cd3177f8b2980c2b37c5352b3bb1a32fb01ccb3846",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 534,
+      "hasStructuralAnalysis": false
+    },
+    "ui/OTPInput.ui": {
+      "filePath": "ui/OTPInput.ui",
+      "contentHash": "0aa53dd826bfb4df662c8bf7a61d69784cc0a6e144f7f20e7eb57a1a58950681",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 511,
+      "hasStructuralAnalysis": false
+    },
+    "ui/PhoneNumberInput.ui": {
+      "filePath": "ui/PhoneNumberInput.ui",
+      "contentHash": "c2b14685577d10c878c5a42e291c96c2528700ab7c6549e254798f7bc49a4acf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 325,
+      "hasStructuralAnalysis": false
+    },
+    "ui/RentPlan.ui": {
+      "filePath": "ui/RentPlan.ui",
+      "contentHash": "e08183f0fe053e58b2dab55f69ae4b777c8937a431d6cdf91f056ed4364d4e68",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 509,
+      "hasStructuralAnalysis": false
+    }
+  }
+}

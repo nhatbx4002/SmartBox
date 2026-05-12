@@ -1,0 +1,988 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "raspi_app",
+    "languages": [
+      "json",
+      "markdown",
+      "python",
+      "qrc",
+      "txt",
+      "ui",
+      "unknown",
+      "yaml"
+    ],
+    "frameworks": [
+      "Paho MQTT",
+      "PySide6",
+      "PyYAML",
+      "Requests"
+    ],
+    "description": "No description available",
+    "analyzedAt": "2026-05-09T04:40:20.758Z",
+    "gitCommitHash": "241c16413349b34b8ffdf37ed8faa966decd9224"
+  },
+  "nodes": [
+    {
+      "id": "config:.claude/settings.local.json",
+      "type": "config",
+      "name": "settings.local.json",
+      "filePath": ".claude/settings.local.json",
+      "summary": "Local agent/tooling permissions for this repository, controlling which shell commands are allowed without additional prompts.",
+      "tags": [
+        "project-file",
+        "support",
+        "repository"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:config.yaml",
+      "type": "config",
+      "name": "config.yaml",
+      "filePath": "config.yaml",
+      "summary": "Runtime configuration for API connection settings, hardware GPIO pins, support information, countdowns, and kiosk screen dimensions.",
+      "tags": [
+        "configuration",
+        "hardware",
+        "runtime-settings"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:requirements.txt",
+      "type": "config",
+      "name": "requirements.txt",
+      "filePath": "requirements.txt",
+      "summary": "Python dependency manifest for the PySide6 SmartBox kiosk app, including MQTT, HTTP, and YAML packages.",
+      "tags": [
+        "configuration",
+        "dependencies",
+        "python"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "Project guidance for agents working in this repository, including architecture, build commands, and UI design rules.",
+      "tags": [
+        "documentation",
+        "architecture",
+        "ui-design"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/DESIGN_PROMPTS.md",
+      "type": "document",
+      "name": "DESIGN_PROMPTS.md",
+      "filePath": "docs/DESIGN_PROMPTS.md",
+      "summary": "Design prompt reference documenting target layouts, typography, colors, and visual requirements for the SmartBox UI.",
+      "tags": [
+        "documentation",
+        "architecture",
+        "ui-design"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/superpowers/UI_DOCUMENTATION.md",
+      "type": "document",
+      "name": "UI_DOCUMENTATION.md",
+      "filePath": "docs/superpowers/UI_DOCUMENTATION.md",
+      "summary": "UI documentation describing the PySide6 screen structure, layout assets, and component responsibilities.",
+      "tags": [
+        "documentation",
+        "architecture",
+        "ui-design"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:SCREEN_FLOW_MAP.md",
+      "type": "document",
+      "name": "SCREEN_FLOW_MAP.md",
+      "filePath": "SCREEN_FLOW_MAP.md",
+      "summary": "Screen-flow documentation mapping the SmartBox kiosk screens, navigation paths, and implementation status.",
+      "tags": [
+        "documentation",
+        "architecture",
+        "ui-design"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:ui_handle.md",
+      "type": "document",
+      "name": "ui_handle.md",
+      "filePath": "ui_handle.md",
+      "summary": "Short implementation note describing UI handling and screen wiring expectations.",
+      "tags": [
+        "documentation",
+        "architecture",
+        "ui-design"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:assets/icons/.gitkeep",
+      "type": "file",
+      "name": ".gitkeep",
+      "filePath": "assets/icons/.gitkeep",
+      "summary": "Placeholder file preserving the assets/icons directory in version control for future SmartBox icon assets.",
+      "tags": [
+        "project-file",
+        "support",
+        "repository"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:main.py",
+      "type": "file",
+      "name": "main.py",
+      "filePath": "main.py",
+      "summary": "Application entry point that creates the PySide6 QApplication, applies the dark kiosk stylesheet, loads Dashboard.ui, starts the clock timer, and runs the SmartBox dashboard window.",
+      "tags": [
+        "entry-point",
+        "pyside6",
+        "kiosk-ui",
+        "clock"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:resources_rc.py",
+      "type": "file",
+      "name": "resources_rc.py",
+      "filePath": "resources_rc.py",
+      "summary": "Generated PySide6 resource module embedding images and icons from resources.qrc for runtime use by Qt Designer screens.",
+      "tags": [
+        "generated-resource",
+        "qt-resource",
+        "assets"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:resources.qrc",
+      "type": "file",
+      "name": "resources.qrc",
+      "filePath": "resources.qrc",
+      "summary": "Qt resource collection listing the SmartBox image and icon assets compiled into resources_rc.py.",
+      "tags": [
+        "qt-resource",
+        "assets",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "screens/__init__.py",
+      "summary": "Python package marker for screens, allowing the directory to be imported as a module.",
+      "tags": [
+        "package",
+        "module",
+        "python"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "services/__init__.py",
+      "summary": "Python package marker for services, allowing the directory to be imported as a module.",
+      "tags": [
+        "service",
+        "integration",
+        "placeholder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/api_client.py",
+      "type": "file",
+      "name": "api_client.py",
+      "filePath": "services/api_client.py",
+      "summary": "Placeholder service module reserved for SmartBox api client integration.",
+      "tags": [
+        "service",
+        "integration",
+        "placeholder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/gpio_controller.py",
+      "type": "file",
+      "name": "gpio_controller.py",
+      "filePath": "services/gpio_controller.py",
+      "summary": "Placeholder service module reserved for SmartBox gpio controller integration.",
+      "tags": [
+        "service",
+        "integration",
+        "placeholder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/mqtt_client.py",
+      "type": "file",
+      "name": "mqtt_client.py",
+      "filePath": "services/mqtt_client.py",
+      "summary": "Placeholder service module reserved for SmartBox mqtt client integration.",
+      "tags": [
+        "service",
+        "integration",
+        "placeholder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:test_ui.py",
+      "type": "file",
+      "name": "test_ui.py",
+      "filePath": "test_ui.py",
+      "summary": "Manual PySide6 smoke-test runner for loading dashboard, header, and footer UI files and verifying they render with the shared kiosk stylesheet.",
+      "tags": [
+        "test",
+        "ui-smoke-test",
+        "pyside6",
+        "manual-runner"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ui/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "ui/__init__.py",
+      "summary": "Python package marker for ui, allowing the directory to be imported as a module.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ui/components/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "ui/components/__init__.py",
+      "summary": "Python package marker for ui/components, allowing the directory to be imported as a module.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ui/components/Footers.ui",
+      "type": "file",
+      "name": "Footers.ui",
+      "filePath": "ui/components/Footers.ui",
+      "summary": "Reusable Qt Designer footer component with version and status labels for SmartBox kiosk screens.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ui/components/Headers.ui",
+      "type": "file",
+      "name": "Headers.ui",
+      "filePath": "ui/components/Headers.ui",
+      "summary": "Reusable Qt Designer header component with logo, app name, and time label for SmartBox kiosk screens.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ui/Dashboard.ui",
+      "type": "file",
+      "name": "Dashboard.ui",
+      "filePath": "ui/Dashboard.ui",
+      "summary": "Qt Designer definition for the SmartBox dashboard screen, including the action cards for send, receive, rent, support, and the promotional content area.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/OTPInput.ui",
+      "type": "file",
+      "name": "OTPInput.ui",
+      "filePath": "ui/OTPInput.ui",
+      "summary": "Qt Designer definition for the OTP verification screen with six OTP input boxes, keypad controls, confirmation actions, and support QR section.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/PhoneNumberInput.ui",
+      "type": "file",
+      "name": "PhoneNumberInput.ui",
+      "filePath": "ui/PhoneNumberInput.ui",
+      "summary": "Qt Designer definition for the phone-number entry screen used in the rental flow, including numeric keypad controls and confirmation buttons.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/RentPlan.ui",
+      "type": "file",
+      "name": "RentPlan.ui",
+      "filePath": "ui/RentPlan.ui",
+      "summary": "Qt Designer definition for the rent-plan selection screen with single-use, multi-use, and monthly plan cards plus a continue action.",
+      "tags": [
+        "ui",
+        "qt-designer",
+        "kiosk-screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:main.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "main.py",
+      "lineRange": [
+        22,
+        56
+      ],
+      "summary": "Bootstraps the SmartBox kiosk window by creating the Qt application, loading the dashboard UI, configuring the clock timer, and entering the event loop.",
+      "tags": [
+        "entry-point",
+        "pyside6",
+        "event-loop"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:test_ui.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        80,
+        116
+      ],
+      "summary": "Dispatches manual UI smoke tests based on the requested screen name and launches the selected widget in a PySide6 event loop.",
+      "tags": [
+        "test",
+        "pyside6",
+        "ui-loader"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:test_ui.py:test_dashboard",
+      "type": "function",
+      "name": "test_dashboard",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        36,
+        45
+      ],
+      "summary": "Loads and displays the dashboard Qt Designer screen for manual verification.",
+      "tags": [
+        "test",
+        "pyside6",
+        "ui-loader"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:test_ui.py:test_header",
+      "type": "function",
+      "name": "test_header",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        48,
+        57
+      ],
+      "summary": "Loads and displays the header Qt Designer screen for manual verification.",
+      "tags": [
+        "test",
+        "pyside6",
+        "ui-loader"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "config:config.yaml",
+      "target": "file:main.py",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:config.yaml",
+      "target": "file:services/api_client.py",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:config.yaml",
+      "target": "file:services/gpio_controller.py",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:config.yaml",
+      "target": "file:services/mqtt_client.py",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:requirements.txt",
+      "target": "file:main.py",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "config:.claude/settings.local.json",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "file:main.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/DESIGN_PROMPTS.md",
+      "target": "file:main.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/DESIGN_PROMPTS.md",
+      "target": "file:ui/Dashboard.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/DESIGN_PROMPTS.md",
+      "target": "file:ui/OTPInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/DESIGN_PROMPTS.md",
+      "target": "file:ui/PhoneNumberInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/DESIGN_PROMPTS.md",
+      "target": "file:ui/RentPlan.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
+      "target": "file:main.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
+      "target": "file:ui/Dashboard.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
+      "target": "file:ui/OTPInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
+      "target": "file:ui/PhoneNumberInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
+      "target": "file:ui/RentPlan.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:SCREEN_FLOW_MAP.md",
+      "target": "file:main.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:SCREEN_FLOW_MAP.md",
+      "target": "file:ui/Dashboard.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:SCREEN_FLOW_MAP.md",
+      "target": "file:ui/OTPInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:SCREEN_FLOW_MAP.md",
+      "target": "file:ui/PhoneNumberInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:SCREEN_FLOW_MAP.md",
+      "target": "file:ui/RentPlan.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:ui_handle.md",
+      "target": "file:main.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:ui_handle.md",
+      "target": "file:ui/Dashboard.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:ui_handle.md",
+      "target": "file:ui/OTPInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:ui_handle.md",
+      "target": "file:ui/PhoneNumberInput.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:ui_handle.md",
+      "target": "file:ui/RentPlan.ui",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:assets/icons/.gitkeep",
+      "target": "file:resources.qrc",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:main.py",
+      "target": "file:resources_rc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:main.py",
+      "target": "file:test_ui.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:main.py",
+      "target": "file:ui/Dashboard.ui",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:main.py",
+      "target": "function:main.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:main.py",
+      "target": "function:main.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:resources_rc.py",
+      "target": "file:ui/Dashboard.ui",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:resources.qrc",
+      "target": "file:resources_rc.py",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:screens/__init__.py",
+      "target": "file:main.py",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:services/__init__.py",
+      "target": "file:services/api_client.py",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:services/__init__.py",
+      "target": "file:services/gpio_controller.py",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:services/__init__.py",
+      "target": "file:services/mqtt_client.py",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "file:ui/components/Footers.ui",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "file:ui/components/Headers.ui",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "file:ui/Dashboard.ui",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:test_dashboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:test_dashboard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:test_header",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:test_header",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:ui/__init__.py",
+      "target": "file:ui/Dashboard.ui",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:ui/components/__init__.py",
+      "target": "file:ui/components/Headers.ui",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:ui/components/Footers.ui",
+      "target": "file:test_ui.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:ui/components/Headers.ui",
+      "target": "file:test_ui.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:ui/Dashboard.ui",
+      "target": "file:test_ui.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:ui/Dashboard.ui",
+      "target": "file:ui/components/Footers.ui",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:ui/Dashboard.ui",
+      "target": "file:ui/components/Headers.ui",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:application-runtime",
+      "name": "Application Runtime",
+      "description": "PySide6 startup code, runtime settings, dependency manifest, and package entry files used to launch the SmartBox kiosk.",
+      "nodeIds": [
+        "file:main.py",
+        "config:config.yaml",
+        "config:requirements.txt",
+        "file:screens/__init__.py",
+        "file:ui/__init__.py"
+      ]
+    },
+    {
+      "id": "layer:ui-screens",
+      "name": "UI Screens",
+      "description": "Qt Designer screen definitions that make up the main SmartBox kiosk user journeys.",
+      "nodeIds": [
+        "file:ui/Dashboard.ui",
+        "file:ui/OTPInput.ui",
+        "file:ui/PhoneNumberInput.ui",
+        "file:ui/RentPlan.ui"
+      ]
+    },
+    {
+      "id": "layer:ui-components",
+      "name": "UI Components",
+      "description": "Reusable Qt Designer header and footer components shared by kiosk screens.",
+      "nodeIds": [
+        "file:ui/components/__init__.py",
+        "file:ui/components/Headers.ui",
+        "file:ui/components/Footers.ui"
+      ]
+    },
+    {
+      "id": "layer:resources-assets",
+      "name": "Resources & Assets",
+      "description": "Qt resource collection and generated resource module that provide images and icons to the UI.",
+      "nodeIds": [
+        "file:resources.qrc",
+        "file:resources_rc.py",
+        "file:assets/icons/.gitkeep"
+      ]
+    },
+    {
+      "id": "layer:services",
+      "name": "Services",
+      "description": "Reserved integration modules for API, GPIO, and MQTT communication around the kiosk UI.",
+      "nodeIds": [
+        "file:services/__init__.py",
+        "file:services/api_client.py",
+        "file:services/gpio_controller.py",
+        "file:services/mqtt_client.py"
+      ]
+    },
+    {
+      "id": "layer:documentation-tooling",
+      "name": "Documentation & Tooling",
+      "description": "Repository instructions, UI documentation, design references, local tool settings, and manual UI smoke-test support.",
+      "nodeIds": [
+        "document:CLAUDE.md",
+        "document:SCREEN_FLOW_MAP.md",
+        "document:docs/DESIGN_PROMPTS.md",
+        "document:docs/superpowers/UI_DOCUMENTATION.md",
+        "document:ui_handle.md",
+        "config:.claude/settings.local.json",
+        "file:test_ui.py"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Map",
+      "description": "Start with the screen-flow map to understand the SmartBox kiosk journeys before opening code. It explains how the dashboard, phone entry, OTP, rent plan, and support screens fit together.",
+      "nodeIds": [
+        "document:SCREEN_FLOW_MAP.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Runtime Entry",
+      "description": "The main entry point creates the PySide6 application, applies the shared dark kiosk stylesheet, loads Dashboard.ui, and starts the live clock. This is the best code file for seeing how Designer-authored UI files become a running window.",
+      "nodeIds": [
+        "file:main.py",
+        "function:main.py:main"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Dashboard Screen",
+      "description": "The dashboard UI file defines the first operational screen users see, including send, receive, rent, support, and promotional areas. It depends on the shared visual resource pipeline and provides the navigation surface for the rest of the kiosk flow.",
+      "nodeIds": [
+        "file:ui/Dashboard.ui",
+        "file:ui/components/Headers.ui",
+        "file:ui/components/Footers.ui"
+      ],
+      "languageLesson": "Qt Designer .ui files are XML layouts loaded at runtime by QUiLoader, so object names such as btnSend or lblClock become the handles Python code uses."
+    },
+    {
+      "order": 4,
+      "title": "Rental Inputs",
+      "description": "The phone-number and OTP screens model the input-heavy part of the rental flow. Together they show the keypad pattern, validation affordances, backspace/clear actions, and support fallback expected from a kiosk interface.",
+      "nodeIds": [
+        "file:ui/PhoneNumberInput.ui",
+        "file:ui/OTPInput.ui"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Plan Selection",
+      "description": "The rent-plan UI presents the available rental packages after identity or phone entry. Its cards and continue button establish the final selection step before the app would hand off to service and hardware integrations.",
+      "nodeIds": [
+        "file:ui/RentPlan.ui"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Resources",
+      "description": "The Qt resource collection lists image and icon assets, while the generated Python resource module embeds them for runtime use. This is why the app imports resources_rc before loading Designer screens that reference compiled assets.",
+      "nodeIds": [
+        "file:resources.qrc",
+        "file:resources_rc.py"
+      ],
+      "languageLesson": "Qt resource files are compiled into Python modules so UI layouts can reference assets through Qt's resource system instead of direct filesystem paths."
+    },
+    {
+      "order": 7,
+      "title": "Configuration",
+      "description": "The YAML config and dependency manifest define the app's runtime environment: API endpoint, GPIO pins, support details, screen dimensions, PySide6, MQTT, HTTP, and YAML packages. Read these before implementing the service placeholders because they describe the external systems the UI is expected to coordinate.",
+      "nodeIds": [
+        "config:config.yaml",
+        "config:requirements.txt"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Integration Services",
+      "description": "The services package reserves module boundaries for API, GPIO, and MQTT integration. The files are placeholders now, but their names show where hardware control, network calls, and message-broker behavior should land as the kiosk grows past static UI loading.",
+      "nodeIds": [
+        "file:services/api_client.py",
+        "file:services/gpio_controller.py",
+        "file:services/mqtt_client.py"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "UI Verification",
+      "description": "The manual smoke-test runner loads individual screens with the same PySide6 UI loader and stylesheet used by the app. It is useful for checking screen files independently while iterating on Designer layouts.",
+      "nodeIds": [
+        "file:test_ui.py",
+        "function:test_ui.py:main",
+        "function:test_ui.py:test_dashboard"
+      ]
+    },
+    {
+      "order": 10,
+      "title": "Design Guidance",
+      "description": "The design prompt and UI documentation files capture the intended visual system, component responsibilities, and implementation notes. Use them as the reference layer when reconciling code behavior with expected kiosk screen design.",
+      "nodeIds": [
+        "document:docs/DESIGN_PROMPTS.md",
+        "document:docs/superpowers/UI_DOCUMENTATION.md",
+        "document:ui_handle.md"
+      ]
+    }
+  ]
+}
