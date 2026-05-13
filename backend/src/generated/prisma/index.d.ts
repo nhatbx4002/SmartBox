@@ -34,6 +34,11 @@ export type Location = $Result.DefaultSelection<Prisma.$LocationPayload>
  */
 export type Cabinet = $Result.DefaultSelection<Prisma.$CabinetPayload>
 /**
+ * Model McpDevice
+ * 
+ */
+export type McpDevice = $Result.DefaultSelection<Prisma.$McpDevicePayload>
+/**
  * Model Compartment
  * 
  */
@@ -440,6 +445,16 @@ export class PrismaClient<
     * ```
     */
   get cabinet(): Prisma.CabinetDelegate<ExtArgs>;
+
+  /**
+   * `prisma.mcpDevice`: Exposes CRUD operations for the **McpDevice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more McpDevices
+    * const mcpDevices = await prisma.mcpDevice.findMany()
+    * ```
+    */
+  get mcpDevice(): Prisma.McpDeviceDelegate<ExtArgs>;
 
   /**
    * `prisma.compartment`: Exposes CRUD operations for the **Compartment** model.
@@ -955,6 +970,7 @@ export namespace Prisma {
     User: 'User',
     Location: 'Location',
     Cabinet: 'Cabinet',
+    McpDevice: 'McpDevice',
     Compartment: 'Compartment',
     CompartmentStatus: 'CompartmentStatus',
     PricePlan: 'PricePlan',
@@ -977,7 +993,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "admin" | "user" | "location" | "cabinet" | "compartment" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "notification" | "userSession"
+      modelProps: "admin" | "user" | "location" | "cabinet" | "mcpDevice" | "compartment" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "notification" | "userSession"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1258,6 +1274,76 @@ export namespace Prisma {
           count: {
             args: Prisma.CabinetCountArgs<ExtArgs>
             result: $Utils.Optional<CabinetCountAggregateOutputType> | number
+          }
+        }
+      }
+      McpDevice: {
+        payload: Prisma.$McpDevicePayload<ExtArgs>
+        fields: Prisma.McpDeviceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.McpDeviceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.McpDeviceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>
+          }
+          findFirst: {
+            args: Prisma.McpDeviceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.McpDeviceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>
+          }
+          findMany: {
+            args: Prisma.McpDeviceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>[]
+          }
+          create: {
+            args: Prisma.McpDeviceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>
+          }
+          createMany: {
+            args: Prisma.McpDeviceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.McpDeviceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>[]
+          }
+          delete: {
+            args: Prisma.McpDeviceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>
+          }
+          update: {
+            args: Prisma.McpDeviceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>
+          }
+          deleteMany: {
+            args: Prisma.McpDeviceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.McpDeviceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.McpDeviceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpDevicePayload>
+          }
+          aggregate: {
+            args: Prisma.McpDeviceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMcpDevice>
+          }
+          groupBy: {
+            args: Prisma.McpDeviceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<McpDeviceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.McpDeviceCountArgs<ExtArgs>
+            result: $Utils.Optional<McpDeviceCountAggregateOutputType> | number
           }
         }
       }
@@ -1993,11 +2079,13 @@ export namespace Prisma {
 
   export type CabinetCountOutputType = {
     compartments: number
+    mcpDevices: number
     logs: number
   }
 
   export type CabinetCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     compartments?: boolean | CabinetCountOutputTypeCountCompartmentsArgs
+    mcpDevices?: boolean | CabinetCountOutputTypeCountMcpDevicesArgs
     logs?: boolean | CabinetCountOutputTypeCountLogsArgs
   }
 
@@ -2022,8 +2110,55 @@ export namespace Prisma {
   /**
    * CabinetCountOutputType without action
    */
+  export type CabinetCountOutputTypeCountMcpDevicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: McpDeviceWhereInput
+  }
+
+  /**
+   * CabinetCountOutputType without action
+   */
   export type CabinetCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LockerLogWhereInput
+  }
+
+
+  /**
+   * Count Type McpDeviceCountOutputType
+   */
+
+  export type McpDeviceCountOutputType = {
+    lockCompartments: number
+    sensorCompartments: number
+  }
+
+  export type McpDeviceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lockCompartments?: boolean | McpDeviceCountOutputTypeCountLockCompartmentsArgs
+    sensorCompartments?: boolean | McpDeviceCountOutputTypeCountSensorCompartmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * McpDeviceCountOutputType without action
+   */
+  export type McpDeviceCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDeviceCountOutputType
+     */
+    select?: McpDeviceCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * McpDeviceCountOutputType without action
+   */
+  export type McpDeviceCountOutputTypeCountLockCompartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompartmentWhereInput
+  }
+
+  /**
+   * McpDeviceCountOutputType without action
+   */
+  export type McpDeviceCountOutputTypeCountSensorCompartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompartmentWhereInput
   }
 
 
@@ -5119,28 +5254,14 @@ export namespace Prisma {
 
   export type AggregateCabinet = {
     _count: CabinetCountAggregateOutputType | null
-    _avg: CabinetAvgAggregateOutputType | null
-    _sum: CabinetSumAggregateOutputType | null
     _min: CabinetMinAggregateOutputType | null
     _max: CabinetMaxAggregateOutputType | null
-  }
-
-  export type CabinetAvgAggregateOutputType = {
-    mcp23017Bus: number | null
-    mcp23017Address: number | null
-  }
-
-  export type CabinetSumAggregateOutputType = {
-    mcp23017Bus: number | null
-    mcp23017Address: number | null
   }
 
   export type CabinetMinAggregateOutputType = {
     id: string | null
     locationId: string | null
     name: string | null
-    mcp23017Bus: number | null
-    mcp23017Address: number | null
     status: $Enums.CabinetStatus | null
     lastHeartbeatAt: Date | null
     createdAt: Date | null
@@ -5151,8 +5272,6 @@ export namespace Prisma {
     id: string | null
     locationId: string | null
     name: string | null
-    mcp23017Bus: number | null
-    mcp23017Address: number | null
     status: $Enums.CabinetStatus | null
     lastHeartbeatAt: Date | null
     createdAt: Date | null
@@ -5163,8 +5282,6 @@ export namespace Prisma {
     id: number
     locationId: number
     name: number
-    mcp23017Bus: number
-    mcp23017Address: number
     status: number
     lastHeartbeatAt: number
     createdAt: number
@@ -5173,22 +5290,10 @@ export namespace Prisma {
   }
 
 
-  export type CabinetAvgAggregateInputType = {
-    mcp23017Bus?: true
-    mcp23017Address?: true
-  }
-
-  export type CabinetSumAggregateInputType = {
-    mcp23017Bus?: true
-    mcp23017Address?: true
-  }
-
   export type CabinetMinAggregateInputType = {
     id?: true
     locationId?: true
     name?: true
-    mcp23017Bus?: true
-    mcp23017Address?: true
     status?: true
     lastHeartbeatAt?: true
     createdAt?: true
@@ -5199,8 +5304,6 @@ export namespace Prisma {
     id?: true
     locationId?: true
     name?: true
-    mcp23017Bus?: true
-    mcp23017Address?: true
     status?: true
     lastHeartbeatAt?: true
     createdAt?: true
@@ -5211,8 +5314,6 @@ export namespace Prisma {
     id?: true
     locationId?: true
     name?: true
-    mcp23017Bus?: true
-    mcp23017Address?: true
     status?: true
     lastHeartbeatAt?: true
     createdAt?: true
@@ -5258,18 +5359,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: CabinetAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: CabinetSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: CabinetMinAggregateInputType
@@ -5300,8 +5389,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CabinetCountAggregateInputType | true
-    _avg?: CabinetAvgAggregateInputType
-    _sum?: CabinetSumAggregateInputType
     _min?: CabinetMinAggregateInputType
     _max?: CabinetMaxAggregateInputType
   }
@@ -5310,15 +5397,11 @@ export namespace Prisma {
     id: string
     locationId: string
     name: string
-    mcp23017Bus: number
-    mcp23017Address: number
     status: $Enums.CabinetStatus
     lastHeartbeatAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: CabinetCountAggregateOutputType | null
-    _avg: CabinetAvgAggregateOutputType | null
-    _sum: CabinetSumAggregateOutputType | null
     _min: CabinetMinAggregateOutputType | null
     _max: CabinetMaxAggregateOutputType | null
   }
@@ -5341,14 +5424,13 @@ export namespace Prisma {
     id?: boolean
     locationId?: boolean
     name?: boolean
-    mcp23017Bus?: boolean
-    mcp23017Address?: boolean
     status?: boolean
     lastHeartbeatAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     location?: boolean | LocationDefaultArgs<ExtArgs>
     compartments?: boolean | Cabinet$compartmentsArgs<ExtArgs>
+    mcpDevices?: boolean | Cabinet$mcpDevicesArgs<ExtArgs>
     logs?: boolean | Cabinet$logsArgs<ExtArgs>
     _count?: boolean | CabinetCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cabinet"]>
@@ -5357,8 +5439,6 @@ export namespace Prisma {
     id?: boolean
     locationId?: boolean
     name?: boolean
-    mcp23017Bus?: boolean
-    mcp23017Address?: boolean
     status?: boolean
     lastHeartbeatAt?: boolean
     createdAt?: boolean
@@ -5370,8 +5450,6 @@ export namespace Prisma {
     id?: boolean
     locationId?: boolean
     name?: boolean
-    mcp23017Bus?: boolean
-    mcp23017Address?: boolean
     status?: boolean
     lastHeartbeatAt?: boolean
     createdAt?: boolean
@@ -5381,6 +5459,7 @@ export namespace Prisma {
   export type CabinetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | LocationDefaultArgs<ExtArgs>
     compartments?: boolean | Cabinet$compartmentsArgs<ExtArgs>
+    mcpDevices?: boolean | Cabinet$mcpDevicesArgs<ExtArgs>
     logs?: boolean | Cabinet$logsArgs<ExtArgs>
     _count?: boolean | CabinetCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -5393,14 +5472,13 @@ export namespace Prisma {
     objects: {
       location: Prisma.$LocationPayload<ExtArgs>
       compartments: Prisma.$CompartmentPayload<ExtArgs>[]
+      mcpDevices: Prisma.$McpDevicePayload<ExtArgs>[]
       logs: Prisma.$LockerLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       locationId: string
       name: string
-      mcp23017Bus: number
-      mcp23017Address: number
       status: $Enums.CabinetStatus
       lastHeartbeatAt: Date | null
       createdAt: Date
@@ -5771,6 +5849,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     location<T extends LocationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LocationDefaultArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     compartments<T extends Cabinet$compartmentsArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$compartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompartmentPayload<ExtArgs>, T, "findMany"> | Null>
+    mcpDevices<T extends Cabinet$mcpDevicesArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$mcpDevicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findMany"> | Null>
     logs<T extends Cabinet$logsArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LockerLogPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5804,8 +5883,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Cabinet", 'String'>
     readonly locationId: FieldRef<"Cabinet", 'String'>
     readonly name: FieldRef<"Cabinet", 'String'>
-    readonly mcp23017Bus: FieldRef<"Cabinet", 'Int'>
-    readonly mcp23017Address: FieldRef<"Cabinet", 'Int'>
     readonly status: FieldRef<"Cabinet", 'CabinetStatus'>
     readonly lastHeartbeatAt: FieldRef<"Cabinet", 'DateTime'>
     readonly createdAt: FieldRef<"Cabinet", 'DateTime'>
@@ -6148,6 +6225,26 @@ export namespace Prisma {
   }
 
   /**
+   * Cabinet.mcpDevices
+   */
+  export type Cabinet$mcpDevicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    where?: McpDeviceWhereInput
+    orderBy?: McpDeviceOrderByWithRelationInput | McpDeviceOrderByWithRelationInput[]
+    cursor?: McpDeviceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: McpDeviceScalarFieldEnum | McpDeviceScalarFieldEnum[]
+  }
+
+  /**
    * Cabinet.logs
    */
   export type Cabinet$logsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6183,6 +6280,1051 @@ export namespace Prisma {
 
 
   /**
+   * Model McpDevice
+   */
+
+  export type AggregateMcpDevice = {
+    _count: McpDeviceCountAggregateOutputType | null
+    _avg: McpDeviceAvgAggregateOutputType | null
+    _sum: McpDeviceSumAggregateOutputType | null
+    _min: McpDeviceMinAggregateOutputType | null
+    _max: McpDeviceMaxAggregateOutputType | null
+  }
+
+  export type McpDeviceAvgAggregateOutputType = {
+    bus: number | null
+    address: number | null
+  }
+
+  export type McpDeviceSumAggregateOutputType = {
+    bus: number | null
+    address: number | null
+  }
+
+  export type McpDeviceMinAggregateOutputType = {
+    id: string | null
+    cabinetId: string | null
+    bus: number | null
+    address: number | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type McpDeviceMaxAggregateOutputType = {
+    id: string | null
+    cabinetId: string | null
+    bus: number | null
+    address: number | null
+    name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type McpDeviceCountAggregateOutputType = {
+    id: number
+    cabinetId: number
+    bus: number
+    address: number
+    name: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type McpDeviceAvgAggregateInputType = {
+    bus?: true
+    address?: true
+  }
+
+  export type McpDeviceSumAggregateInputType = {
+    bus?: true
+    address?: true
+  }
+
+  export type McpDeviceMinAggregateInputType = {
+    id?: true
+    cabinetId?: true
+    bus?: true
+    address?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type McpDeviceMaxAggregateInputType = {
+    id?: true
+    cabinetId?: true
+    bus?: true
+    address?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type McpDeviceCountAggregateInputType = {
+    id?: true
+    cabinetId?: true
+    bus?: true
+    address?: true
+    name?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type McpDeviceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which McpDevice to aggregate.
+     */
+    where?: McpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpDevices to fetch.
+     */
+    orderBy?: McpDeviceOrderByWithRelationInput | McpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: McpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned McpDevices
+    **/
+    _count?: true | McpDeviceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: McpDeviceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: McpDeviceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: McpDeviceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: McpDeviceMaxAggregateInputType
+  }
+
+  export type GetMcpDeviceAggregateType<T extends McpDeviceAggregateArgs> = {
+        [P in keyof T & keyof AggregateMcpDevice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMcpDevice[P]>
+      : GetScalarType<T[P], AggregateMcpDevice[P]>
+  }
+
+
+
+
+  export type McpDeviceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: McpDeviceWhereInput
+    orderBy?: McpDeviceOrderByWithAggregationInput | McpDeviceOrderByWithAggregationInput[]
+    by: McpDeviceScalarFieldEnum[] | McpDeviceScalarFieldEnum
+    having?: McpDeviceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: McpDeviceCountAggregateInputType | true
+    _avg?: McpDeviceAvgAggregateInputType
+    _sum?: McpDeviceSumAggregateInputType
+    _min?: McpDeviceMinAggregateInputType
+    _max?: McpDeviceMaxAggregateInputType
+  }
+
+  export type McpDeviceGroupByOutputType = {
+    id: string
+    cabinetId: string
+    bus: number
+    address: number
+    name: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: McpDeviceCountAggregateOutputType | null
+    _avg: McpDeviceAvgAggregateOutputType | null
+    _sum: McpDeviceSumAggregateOutputType | null
+    _min: McpDeviceMinAggregateOutputType | null
+    _max: McpDeviceMaxAggregateOutputType | null
+  }
+
+  type GetMcpDeviceGroupByPayload<T extends McpDeviceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<McpDeviceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof McpDeviceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], McpDeviceGroupByOutputType[P]>
+            : GetScalarType<T[P], McpDeviceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type McpDeviceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cabinetId?: boolean
+    bus?: boolean
+    address?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+    lockCompartments?: boolean | McpDevice$lockCompartmentsArgs<ExtArgs>
+    sensorCompartments?: boolean | McpDevice$sensorCompartmentsArgs<ExtArgs>
+    _count?: boolean | McpDeviceCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["mcpDevice"]>
+
+  export type McpDeviceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cabinetId?: boolean
+    bus?: boolean
+    address?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["mcpDevice"]>
+
+  export type McpDeviceSelectScalar = {
+    id?: boolean
+    cabinetId?: boolean
+    bus?: boolean
+    address?: boolean
+    name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type McpDeviceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+    lockCompartments?: boolean | McpDevice$lockCompartmentsArgs<ExtArgs>
+    sensorCompartments?: boolean | McpDevice$sensorCompartmentsArgs<ExtArgs>
+    _count?: boolean | McpDeviceCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type McpDeviceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }
+
+  export type $McpDevicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "McpDevice"
+    objects: {
+      cabinet: Prisma.$CabinetPayload<ExtArgs>
+      lockCompartments: Prisma.$CompartmentPayload<ExtArgs>[]
+      sensorCompartments: Prisma.$CompartmentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      cabinetId: string
+      bus: number
+      address: number
+      name: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["mcpDevice"]>
+    composites: {}
+  }
+
+  type McpDeviceGetPayload<S extends boolean | null | undefined | McpDeviceDefaultArgs> = $Result.GetResult<Prisma.$McpDevicePayload, S>
+
+  type McpDeviceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<McpDeviceFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: McpDeviceCountAggregateInputType | true
+    }
+
+  export interface McpDeviceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['McpDevice'], meta: { name: 'McpDevice' } }
+    /**
+     * Find zero or one McpDevice that matches the filter.
+     * @param {McpDeviceFindUniqueArgs} args - Arguments to find a McpDevice
+     * @example
+     * // Get one McpDevice
+     * const mcpDevice = await prisma.mcpDevice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends McpDeviceFindUniqueArgs>(args: SelectSubset<T, McpDeviceFindUniqueArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one McpDevice that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {McpDeviceFindUniqueOrThrowArgs} args - Arguments to find a McpDevice
+     * @example
+     * // Get one McpDevice
+     * const mcpDevice = await prisma.mcpDevice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends McpDeviceFindUniqueOrThrowArgs>(args: SelectSubset<T, McpDeviceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first McpDevice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpDeviceFindFirstArgs} args - Arguments to find a McpDevice
+     * @example
+     * // Get one McpDevice
+     * const mcpDevice = await prisma.mcpDevice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends McpDeviceFindFirstArgs>(args?: SelectSubset<T, McpDeviceFindFirstArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first McpDevice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpDeviceFindFirstOrThrowArgs} args - Arguments to find a McpDevice
+     * @example
+     * // Get one McpDevice
+     * const mcpDevice = await prisma.mcpDevice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends McpDeviceFindFirstOrThrowArgs>(args?: SelectSubset<T, McpDeviceFindFirstOrThrowArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more McpDevices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpDeviceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all McpDevices
+     * const mcpDevices = await prisma.mcpDevice.findMany()
+     * 
+     * // Get first 10 McpDevices
+     * const mcpDevices = await prisma.mcpDevice.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const mcpDeviceWithIdOnly = await prisma.mcpDevice.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends McpDeviceFindManyArgs>(args?: SelectSubset<T, McpDeviceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a McpDevice.
+     * @param {McpDeviceCreateArgs} args - Arguments to create a McpDevice.
+     * @example
+     * // Create one McpDevice
+     * const McpDevice = await prisma.mcpDevice.create({
+     *   data: {
+     *     // ... data to create a McpDevice
+     *   }
+     * })
+     * 
+     */
+    create<T extends McpDeviceCreateArgs>(args: SelectSubset<T, McpDeviceCreateArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many McpDevices.
+     * @param {McpDeviceCreateManyArgs} args - Arguments to create many McpDevices.
+     * @example
+     * // Create many McpDevices
+     * const mcpDevice = await prisma.mcpDevice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends McpDeviceCreateManyArgs>(args?: SelectSubset<T, McpDeviceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many McpDevices and returns the data saved in the database.
+     * @param {McpDeviceCreateManyAndReturnArgs} args - Arguments to create many McpDevices.
+     * @example
+     * // Create many McpDevices
+     * const mcpDevice = await prisma.mcpDevice.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many McpDevices and only return the `id`
+     * const mcpDeviceWithIdOnly = await prisma.mcpDevice.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends McpDeviceCreateManyAndReturnArgs>(args?: SelectSubset<T, McpDeviceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a McpDevice.
+     * @param {McpDeviceDeleteArgs} args - Arguments to delete one McpDevice.
+     * @example
+     * // Delete one McpDevice
+     * const McpDevice = await prisma.mcpDevice.delete({
+     *   where: {
+     *     // ... filter to delete one McpDevice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends McpDeviceDeleteArgs>(args: SelectSubset<T, McpDeviceDeleteArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one McpDevice.
+     * @param {McpDeviceUpdateArgs} args - Arguments to update one McpDevice.
+     * @example
+     * // Update one McpDevice
+     * const mcpDevice = await prisma.mcpDevice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends McpDeviceUpdateArgs>(args: SelectSubset<T, McpDeviceUpdateArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more McpDevices.
+     * @param {McpDeviceDeleteManyArgs} args - Arguments to filter McpDevices to delete.
+     * @example
+     * // Delete a few McpDevices
+     * const { count } = await prisma.mcpDevice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends McpDeviceDeleteManyArgs>(args?: SelectSubset<T, McpDeviceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more McpDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpDeviceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many McpDevices
+     * const mcpDevice = await prisma.mcpDevice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends McpDeviceUpdateManyArgs>(args: SelectSubset<T, McpDeviceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one McpDevice.
+     * @param {McpDeviceUpsertArgs} args - Arguments to update or create a McpDevice.
+     * @example
+     * // Update or create a McpDevice
+     * const mcpDevice = await prisma.mcpDevice.upsert({
+     *   create: {
+     *     // ... data to create a McpDevice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the McpDevice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends McpDeviceUpsertArgs>(args: SelectSubset<T, McpDeviceUpsertArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of McpDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpDeviceCountArgs} args - Arguments to filter McpDevices to count.
+     * @example
+     * // Count the number of McpDevices
+     * const count = await prisma.mcpDevice.count({
+     *   where: {
+     *     // ... the filter for the McpDevices we want to count
+     *   }
+     * })
+    **/
+    count<T extends McpDeviceCountArgs>(
+      args?: Subset<T, McpDeviceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], McpDeviceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a McpDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpDeviceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends McpDeviceAggregateArgs>(args: Subset<T, McpDeviceAggregateArgs>): Prisma.PrismaPromise<GetMcpDeviceAggregateType<T>>
+
+    /**
+     * Group by McpDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpDeviceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends McpDeviceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: McpDeviceGroupByArgs['orderBy'] }
+        : { orderBy?: McpDeviceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, McpDeviceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMcpDeviceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the McpDevice model
+   */
+  readonly fields: McpDeviceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for McpDevice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__McpDeviceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    cabinet<T extends CabinetDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CabinetDefaultArgs<ExtArgs>>): Prisma__CabinetClient<$Result.GetResult<Prisma.$CabinetPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    lockCompartments<T extends McpDevice$lockCompartmentsArgs<ExtArgs> = {}>(args?: Subset<T, McpDevice$lockCompartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompartmentPayload<ExtArgs>, T, "findMany"> | Null>
+    sensorCompartments<T extends McpDevice$sensorCompartmentsArgs<ExtArgs> = {}>(args?: Subset<T, McpDevice$sensorCompartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompartmentPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the McpDevice model
+   */ 
+  interface McpDeviceFieldRefs {
+    readonly id: FieldRef<"McpDevice", 'String'>
+    readonly cabinetId: FieldRef<"McpDevice", 'String'>
+    readonly bus: FieldRef<"McpDevice", 'Int'>
+    readonly address: FieldRef<"McpDevice", 'Int'>
+    readonly name: FieldRef<"McpDevice", 'String'>
+    readonly createdAt: FieldRef<"McpDevice", 'DateTime'>
+    readonly updatedAt: FieldRef<"McpDevice", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * McpDevice findUnique
+   */
+  export type McpDeviceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which McpDevice to fetch.
+     */
+    where: McpDeviceWhereUniqueInput
+  }
+
+  /**
+   * McpDevice findUniqueOrThrow
+   */
+  export type McpDeviceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which McpDevice to fetch.
+     */
+    where: McpDeviceWhereUniqueInput
+  }
+
+  /**
+   * McpDevice findFirst
+   */
+  export type McpDeviceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which McpDevice to fetch.
+     */
+    where?: McpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpDevices to fetch.
+     */
+    orderBy?: McpDeviceOrderByWithRelationInput | McpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for McpDevices.
+     */
+    cursor?: McpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of McpDevices.
+     */
+    distinct?: McpDeviceScalarFieldEnum | McpDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * McpDevice findFirstOrThrow
+   */
+  export type McpDeviceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which McpDevice to fetch.
+     */
+    where?: McpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpDevices to fetch.
+     */
+    orderBy?: McpDeviceOrderByWithRelationInput | McpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for McpDevices.
+     */
+    cursor?: McpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of McpDevices.
+     */
+    distinct?: McpDeviceScalarFieldEnum | McpDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * McpDevice findMany
+   */
+  export type McpDeviceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which McpDevices to fetch.
+     */
+    where?: McpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpDevices to fetch.
+     */
+    orderBy?: McpDeviceOrderByWithRelationInput | McpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing McpDevices.
+     */
+    cursor?: McpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpDevices.
+     */
+    skip?: number
+    distinct?: McpDeviceScalarFieldEnum | McpDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * McpDevice create
+   */
+  export type McpDeviceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a McpDevice.
+     */
+    data: XOR<McpDeviceCreateInput, McpDeviceUncheckedCreateInput>
+  }
+
+  /**
+   * McpDevice createMany
+   */
+  export type McpDeviceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many McpDevices.
+     */
+    data: McpDeviceCreateManyInput | McpDeviceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * McpDevice createManyAndReturn
+   */
+  export type McpDeviceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many McpDevices.
+     */
+    data: McpDeviceCreateManyInput | McpDeviceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * McpDevice update
+   */
+  export type McpDeviceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a McpDevice.
+     */
+    data: XOR<McpDeviceUpdateInput, McpDeviceUncheckedUpdateInput>
+    /**
+     * Choose, which McpDevice to update.
+     */
+    where: McpDeviceWhereUniqueInput
+  }
+
+  /**
+   * McpDevice updateMany
+   */
+  export type McpDeviceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update McpDevices.
+     */
+    data: XOR<McpDeviceUpdateManyMutationInput, McpDeviceUncheckedUpdateManyInput>
+    /**
+     * Filter which McpDevices to update
+     */
+    where?: McpDeviceWhereInput
+  }
+
+  /**
+   * McpDevice upsert
+   */
+  export type McpDeviceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the McpDevice to update in case it exists.
+     */
+    where: McpDeviceWhereUniqueInput
+    /**
+     * In case the McpDevice found by the `where` argument doesn't exist, create a new McpDevice with this data.
+     */
+    create: XOR<McpDeviceCreateInput, McpDeviceUncheckedCreateInput>
+    /**
+     * In case the McpDevice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<McpDeviceUpdateInput, McpDeviceUncheckedUpdateInput>
+  }
+
+  /**
+   * McpDevice delete
+   */
+  export type McpDeviceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter which McpDevice to delete.
+     */
+    where: McpDeviceWhereUniqueInput
+  }
+
+  /**
+   * McpDevice deleteMany
+   */
+  export type McpDeviceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which McpDevices to delete
+     */
+    where?: McpDeviceWhereInput
+  }
+
+  /**
+   * McpDevice.lockCompartments
+   */
+  export type McpDevice$lockCompartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Compartment
+     */
+    select?: CompartmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompartmentInclude<ExtArgs> | null
+    where?: CompartmentWhereInput
+    orderBy?: CompartmentOrderByWithRelationInput | CompartmentOrderByWithRelationInput[]
+    cursor?: CompartmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompartmentScalarFieldEnum | CompartmentScalarFieldEnum[]
+  }
+
+  /**
+   * McpDevice.sensorCompartments
+   */
+  export type McpDevice$sensorCompartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Compartment
+     */
+    select?: CompartmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompartmentInclude<ExtArgs> | null
+    where?: CompartmentWhereInput
+    orderBy?: CompartmentOrderByWithRelationInput | CompartmentOrderByWithRelationInput[]
+    cursor?: CompartmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompartmentScalarFieldEnum | CompartmentScalarFieldEnum[]
+  }
+
+  /**
+   * McpDevice without action
+   */
+  export type McpDeviceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Compartment
    */
 
@@ -6211,6 +7353,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
+    lockMcpDeviceId: string | null
+    sensorMcpDeviceId: string | null
     status: $Enums.CompartmentAvailability | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6223,6 +7367,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
+    lockMcpDeviceId: string | null
+    sensorMcpDeviceId: string | null
     status: $Enums.CompartmentAvailability | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6235,6 +7381,8 @@ export namespace Prisma {
     size: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId: number
+    sensorMcpDeviceId: number
     status: number
     createdAt: number
     updatedAt: number
@@ -6259,6 +7407,8 @@ export namespace Prisma {
     size?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
+    lockMcpDeviceId?: true
+    sensorMcpDeviceId?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -6271,6 +7421,8 @@ export namespace Prisma {
     size?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
+    lockMcpDeviceId?: true
+    sensorMcpDeviceId?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -6283,6 +7435,8 @@ export namespace Prisma {
     size?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
+    lockMcpDeviceId?: true
+    sensorMcpDeviceId?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -6382,6 +7536,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId: string | null
+    sensorMcpDeviceId: string | null
     status: $Enums.CompartmentAvailability
     createdAt: Date
     updatedAt: Date
@@ -6413,10 +7569,14 @@ export namespace Prisma {
     size?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
+    lockMcpDeviceId?: boolean
+    sensorMcpDeviceId?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+    lockMcpDevice?: boolean | Compartment$lockMcpDeviceArgs<ExtArgs>
+    sensorMcpDevice?: boolean | Compartment$sensorMcpDeviceArgs<ExtArgs>
     rentals?: boolean | Compartment$rentalsArgs<ExtArgs>
     logs?: boolean | Compartment$logsArgs<ExtArgs>
     realtimeStatus?: boolean | Compartment$realtimeStatusArgs<ExtArgs>
@@ -6430,10 +7590,14 @@ export namespace Prisma {
     size?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
+    lockMcpDeviceId?: boolean
+    sensorMcpDeviceId?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+    lockMcpDevice?: boolean | Compartment$lockMcpDeviceArgs<ExtArgs>
+    sensorMcpDevice?: boolean | Compartment$sensorMcpDeviceArgs<ExtArgs>
   }, ExtArgs["result"]["compartment"]>
 
   export type CompartmentSelectScalar = {
@@ -6443,6 +7607,8 @@ export namespace Prisma {
     size?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
+    lockMcpDeviceId?: boolean
+    sensorMcpDeviceId?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6450,6 +7616,8 @@ export namespace Prisma {
 
   export type CompartmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+    lockMcpDevice?: boolean | Compartment$lockMcpDeviceArgs<ExtArgs>
+    sensorMcpDevice?: boolean | Compartment$sensorMcpDeviceArgs<ExtArgs>
     rentals?: boolean | Compartment$rentalsArgs<ExtArgs>
     logs?: boolean | Compartment$logsArgs<ExtArgs>
     realtimeStatus?: boolean | Compartment$realtimeStatusArgs<ExtArgs>
@@ -6457,12 +7625,16 @@ export namespace Prisma {
   }
   export type CompartmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+    lockMcpDevice?: boolean | Compartment$lockMcpDeviceArgs<ExtArgs>
+    sensorMcpDevice?: boolean | Compartment$sensorMcpDeviceArgs<ExtArgs>
   }
 
   export type $CompartmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Compartment"
     objects: {
       cabinet: Prisma.$CabinetPayload<ExtArgs>
+      lockMcpDevice: Prisma.$McpDevicePayload<ExtArgs> | null
+      sensorMcpDevice: Prisma.$McpDevicePayload<ExtArgs> | null
       rentals: Prisma.$RentalPayload<ExtArgs>[]
       logs: Prisma.$LockerLogPayload<ExtArgs>[]
       realtimeStatus: Prisma.$CompartmentStatusPayload<ExtArgs> | null
@@ -6474,6 +7646,8 @@ export namespace Prisma {
       size: $Enums.CompartmentSize
       mcp23017PinLock: number
       mcp23017PinSensor: number
+      lockMcpDeviceId: string | null
+      sensorMcpDeviceId: string | null
       status: $Enums.CompartmentAvailability
       createdAt: Date
       updatedAt: Date
@@ -6842,6 +8016,8 @@ export namespace Prisma {
   export interface Prisma__CompartmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     cabinet<T extends CabinetDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CabinetDefaultArgs<ExtArgs>>): Prisma__CabinetClient<$Result.GetResult<Prisma.$CabinetPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    lockMcpDevice<T extends Compartment$lockMcpDeviceArgs<ExtArgs> = {}>(args?: Subset<T, Compartment$lockMcpDeviceArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    sensorMcpDevice<T extends Compartment$sensorMcpDeviceArgs<ExtArgs> = {}>(args?: Subset<T, Compartment$sensorMcpDeviceArgs<ExtArgs>>): Prisma__McpDeviceClient<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     rentals<T extends Compartment$rentalsArgs<ExtArgs> = {}>(args?: Subset<T, Compartment$rentalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RentalPayload<ExtArgs>, T, "findMany"> | Null>
     logs<T extends Compartment$logsArgs<ExtArgs> = {}>(args?: Subset<T, Compartment$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LockerLogPayload<ExtArgs>, T, "findMany"> | Null>
     realtimeStatus<T extends Compartment$realtimeStatusArgs<ExtArgs> = {}>(args?: Subset<T, Compartment$realtimeStatusArgs<ExtArgs>>): Prisma__CompartmentStatusClient<$Result.GetResult<Prisma.$CompartmentStatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
@@ -6880,6 +8056,8 @@ export namespace Prisma {
     readonly size: FieldRef<"Compartment", 'CompartmentSize'>
     readonly mcp23017PinLock: FieldRef<"Compartment", 'Int'>
     readonly mcp23017PinSensor: FieldRef<"Compartment", 'Int'>
+    readonly lockMcpDeviceId: FieldRef<"Compartment", 'String'>
+    readonly sensorMcpDeviceId: FieldRef<"Compartment", 'String'>
     readonly status: FieldRef<"Compartment", 'CompartmentAvailability'>
     readonly createdAt: FieldRef<"Compartment", 'DateTime'>
     readonly updatedAt: FieldRef<"Compartment", 'DateTime'>
@@ -7198,6 +8376,36 @@ export namespace Prisma {
      * Filter which Compartments to delete
      */
     where?: CompartmentWhereInput
+  }
+
+  /**
+   * Compartment.lockMcpDevice
+   */
+  export type Compartment$lockMcpDeviceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    where?: McpDeviceWhereInput
+  }
+
+  /**
+   * Compartment.sensorMcpDevice
+   */
+  export type Compartment$sensorMcpDeviceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpDevice
+     */
+    select?: McpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpDeviceInclude<ExtArgs> | null
+    where?: McpDeviceWhereInput
   }
 
   /**
@@ -13539,8 +14747,6 @@ export namespace Prisma {
     id: 'id',
     locationId: 'locationId',
     name: 'name',
-    mcp23017Bus: 'mcp23017Bus',
-    mcp23017Address: 'mcp23017Address',
     status: 'status',
     lastHeartbeatAt: 'lastHeartbeatAt',
     createdAt: 'createdAt',
@@ -13550,6 +14756,19 @@ export namespace Prisma {
   export type CabinetScalarFieldEnum = (typeof CabinetScalarFieldEnum)[keyof typeof CabinetScalarFieldEnum]
 
 
+  export const McpDeviceScalarFieldEnum: {
+    id: 'id',
+    cabinetId: 'cabinetId',
+    bus: 'bus',
+    address: 'address',
+    name: 'name',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type McpDeviceScalarFieldEnum = (typeof McpDeviceScalarFieldEnum)[keyof typeof McpDeviceScalarFieldEnum]
+
+
   export const CompartmentScalarFieldEnum: {
     id: 'id',
     cabinetId: 'cabinetId',
@@ -13557,6 +14776,8 @@ export namespace Prisma {
     size: 'size',
     mcp23017PinLock: 'mcp23017PinLock',
     mcp23017PinSensor: 'mcp23017PinSensor',
+    lockMcpDeviceId: 'lockMcpDeviceId',
+    sensorMcpDeviceId: 'sensorMcpDeviceId',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -13792,20 +15013,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'CabinetStatus'
    */
   export type EnumCabinetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CabinetStatus'>
@@ -13816,6 +15023,20 @@ export namespace Prisma {
    * Reference to a field of type 'CabinetStatus[]'
    */
   export type ListEnumCabinetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CabinetStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -14217,14 +15438,13 @@ export namespace Prisma {
     id?: StringFilter<"Cabinet"> | string
     locationId?: StringFilter<"Cabinet"> | string
     name?: StringFilter<"Cabinet"> | string
-    mcp23017Bus?: IntFilter<"Cabinet"> | number
-    mcp23017Address?: IntFilter<"Cabinet"> | number
     status?: EnumCabinetStatusFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
     createdAt?: DateTimeFilter<"Cabinet"> | Date | string
     updatedAt?: DateTimeFilter<"Cabinet"> | Date | string
     location?: XOR<LocationRelationFilter, LocationWhereInput>
     compartments?: CompartmentListRelationFilter
+    mcpDevices?: McpDeviceListRelationFilter
     logs?: LockerLogListRelationFilter
   }
 
@@ -14232,14 +15452,13 @@ export namespace Prisma {
     id?: SortOrder
     locationId?: SortOrder
     name?: SortOrder
-    mcp23017Bus?: SortOrder
-    mcp23017Address?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     location?: LocationOrderByWithRelationInput
     compartments?: CompartmentOrderByRelationAggregateInput
+    mcpDevices?: McpDeviceOrderByRelationAggregateInput
     logs?: LockerLogOrderByRelationAggregateInput
   }
 
@@ -14250,14 +15469,13 @@ export namespace Prisma {
     NOT?: CabinetWhereInput | CabinetWhereInput[]
     locationId?: StringFilter<"Cabinet"> | string
     name?: StringFilter<"Cabinet"> | string
-    mcp23017Bus?: IntFilter<"Cabinet"> | number
-    mcp23017Address?: IntFilter<"Cabinet"> | number
     status?: EnumCabinetStatusFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
     createdAt?: DateTimeFilter<"Cabinet"> | Date | string
     updatedAt?: DateTimeFilter<"Cabinet"> | Date | string
     location?: XOR<LocationRelationFilter, LocationWhereInput>
     compartments?: CompartmentListRelationFilter
+    mcpDevices?: McpDeviceListRelationFilter
     logs?: LockerLogListRelationFilter
   }, "id">
 
@@ -14265,17 +15483,13 @@ export namespace Prisma {
     id?: SortOrder
     locationId?: SortOrder
     name?: SortOrder
-    mcp23017Bus?: SortOrder
-    mcp23017Address?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CabinetCountOrderByAggregateInput
-    _avg?: CabinetAvgOrderByAggregateInput
     _max?: CabinetMaxOrderByAggregateInput
     _min?: CabinetMinOrderByAggregateInput
-    _sum?: CabinetSumOrderByAggregateInput
   }
 
   export type CabinetScalarWhereWithAggregatesInput = {
@@ -14285,12 +15499,84 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Cabinet"> | string
     locationId?: StringWithAggregatesFilter<"Cabinet"> | string
     name?: StringWithAggregatesFilter<"Cabinet"> | string
-    mcp23017Bus?: IntWithAggregatesFilter<"Cabinet"> | number
-    mcp23017Address?: IntWithAggregatesFilter<"Cabinet"> | number
     status?: EnumCabinetStatusWithAggregatesFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableWithAggregatesFilter<"Cabinet"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Cabinet"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Cabinet"> | Date | string
+  }
+
+  export type McpDeviceWhereInput = {
+    AND?: McpDeviceWhereInput | McpDeviceWhereInput[]
+    OR?: McpDeviceWhereInput[]
+    NOT?: McpDeviceWhereInput | McpDeviceWhereInput[]
+    id?: StringFilter<"McpDevice"> | string
+    cabinetId?: StringFilter<"McpDevice"> | string
+    bus?: IntFilter<"McpDevice"> | number
+    address?: IntFilter<"McpDevice"> | number
+    name?: StringNullableFilter<"McpDevice"> | string | null
+    createdAt?: DateTimeFilter<"McpDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"McpDevice"> | Date | string
+    cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+    lockCompartments?: CompartmentListRelationFilter
+    sensorCompartments?: CompartmentListRelationFilter
+  }
+
+  export type McpDeviceOrderByWithRelationInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    name?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    cabinet?: CabinetOrderByWithRelationInput
+    lockCompartments?: CompartmentOrderByRelationAggregateInput
+    sensorCompartments?: CompartmentOrderByRelationAggregateInput
+  }
+
+  export type McpDeviceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    cabinetId_bus_address?: McpDeviceCabinetIdBusAddressCompoundUniqueInput
+    AND?: McpDeviceWhereInput | McpDeviceWhereInput[]
+    OR?: McpDeviceWhereInput[]
+    NOT?: McpDeviceWhereInput | McpDeviceWhereInput[]
+    cabinetId?: StringFilter<"McpDevice"> | string
+    bus?: IntFilter<"McpDevice"> | number
+    address?: IntFilter<"McpDevice"> | number
+    name?: StringNullableFilter<"McpDevice"> | string | null
+    createdAt?: DateTimeFilter<"McpDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"McpDevice"> | Date | string
+    cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+    lockCompartments?: CompartmentListRelationFilter
+    sensorCompartments?: CompartmentListRelationFilter
+  }, "id" | "cabinetId_bus_address">
+
+  export type McpDeviceOrderByWithAggregationInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    name?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: McpDeviceCountOrderByAggregateInput
+    _avg?: McpDeviceAvgOrderByAggregateInput
+    _max?: McpDeviceMaxOrderByAggregateInput
+    _min?: McpDeviceMinOrderByAggregateInput
+    _sum?: McpDeviceSumOrderByAggregateInput
+  }
+
+  export type McpDeviceScalarWhereWithAggregatesInput = {
+    AND?: McpDeviceScalarWhereWithAggregatesInput | McpDeviceScalarWhereWithAggregatesInput[]
+    OR?: McpDeviceScalarWhereWithAggregatesInput[]
+    NOT?: McpDeviceScalarWhereWithAggregatesInput | McpDeviceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"McpDevice"> | string
+    cabinetId?: StringWithAggregatesFilter<"McpDevice"> | string
+    bus?: IntWithAggregatesFilter<"McpDevice"> | number
+    address?: IntWithAggregatesFilter<"McpDevice"> | number
+    name?: StringNullableWithAggregatesFilter<"McpDevice"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"McpDevice"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"McpDevice"> | Date | string
   }
 
   export type CompartmentWhereInput = {
@@ -14303,10 +15589,14 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
+    lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
+    sensorMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
     status?: EnumCompartmentAvailabilityFilter<"Compartment"> | $Enums.CompartmentAvailability
     createdAt?: DateTimeFilter<"Compartment"> | Date | string
     updatedAt?: DateTimeFilter<"Compartment"> | Date | string
     cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+    lockMcpDevice?: XOR<McpDeviceNullableRelationFilter, McpDeviceWhereInput> | null
+    sensorMcpDevice?: XOR<McpDeviceNullableRelationFilter, McpDeviceWhereInput> | null
     rentals?: RentalListRelationFilter
     logs?: LockerLogListRelationFilter
     realtimeStatus?: XOR<CompartmentStatusNullableRelationFilter, CompartmentStatusWhereInput> | null
@@ -14319,10 +15609,14 @@ export namespace Prisma {
     size?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
+    lockMcpDeviceId?: SortOrderInput | SortOrder
+    sensorMcpDeviceId?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     cabinet?: CabinetOrderByWithRelationInput
+    lockMcpDevice?: McpDeviceOrderByWithRelationInput
+    sensorMcpDevice?: McpDeviceOrderByWithRelationInput
     rentals?: RentalOrderByRelationAggregateInput
     logs?: LockerLogOrderByRelationAggregateInput
     realtimeStatus?: CompartmentStatusOrderByWithRelationInput
@@ -14339,10 +15633,14 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
+    lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
+    sensorMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
     status?: EnumCompartmentAvailabilityFilter<"Compartment"> | $Enums.CompartmentAvailability
     createdAt?: DateTimeFilter<"Compartment"> | Date | string
     updatedAt?: DateTimeFilter<"Compartment"> | Date | string
     cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+    lockMcpDevice?: XOR<McpDeviceNullableRelationFilter, McpDeviceWhereInput> | null
+    sensorMcpDevice?: XOR<McpDeviceNullableRelationFilter, McpDeviceWhereInput> | null
     rentals?: RentalListRelationFilter
     logs?: LockerLogListRelationFilter
     realtimeStatus?: XOR<CompartmentStatusNullableRelationFilter, CompartmentStatusWhereInput> | null
@@ -14355,6 +15653,8 @@ export namespace Prisma {
     size?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
+    lockMcpDeviceId?: SortOrderInput | SortOrder
+    sensorMcpDeviceId?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14375,6 +15675,8 @@ export namespace Prisma {
     size?: EnumCompartmentSizeWithAggregatesFilter<"Compartment"> | $Enums.CompartmentSize
     mcp23017PinLock?: IntWithAggregatesFilter<"Compartment"> | number
     mcp23017PinSensor?: IntWithAggregatesFilter<"Compartment"> | number
+    lockMcpDeviceId?: StringNullableWithAggregatesFilter<"Compartment"> | string | null
+    sensorMcpDeviceId?: StringNullableWithAggregatesFilter<"Compartment"> | string | null
     status?: EnumCompartmentAvailabilityWithAggregatesFilter<"Compartment"> | $Enums.CompartmentAvailability
     createdAt?: DateTimeWithAggregatesFilter<"Compartment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Compartment"> | Date | string
@@ -15138,14 +16440,13 @@ export namespace Prisma {
   export type CabinetCreateInput = {
     id?: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location: LocationCreateNestedOneWithoutCabinetsInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
   }
 
@@ -15153,27 +16454,25 @@ export namespace Prisma {
     id?: string
     locationId: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
   }
 
@@ -15181,13 +16480,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
@@ -15195,8 +16493,6 @@ export namespace Prisma {
     id?: string
     locationId: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
@@ -15206,8 +16502,6 @@ export namespace Prisma {
   export type CabinetUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15218,10 +16512,85 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type McpDeviceCreateInput = {
+    id?: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinet: CabinetCreateNestedOneWithoutMcpDevicesInput
+    lockCompartments?: CompartmentCreateNestedManyWithoutLockMcpDeviceInput
+    sensorCompartments?: CompartmentCreateNestedManyWithoutSensorMcpDeviceInput
+  }
+
+  export type McpDeviceUncheckedCreateInput = {
+    id?: string
+    cabinetId: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lockCompartments?: CompartmentUncheckedCreateNestedManyWithoutLockMcpDeviceInput
+    sensorCompartments?: CompartmentUncheckedCreateNestedManyWithoutSensorMcpDeviceInput
+  }
+
+  export type McpDeviceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinet?: CabinetUpdateOneRequiredWithoutMcpDevicesNestedInput
+    lockCompartments?: CompartmentUpdateManyWithoutLockMcpDeviceNestedInput
+    sensorCompartments?: CompartmentUpdateManyWithoutSensorMcpDeviceNestedInput
+  }
+
+  export type McpDeviceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockCompartments?: CompartmentUncheckedUpdateManyWithoutLockMcpDeviceNestedInput
+    sensorCompartments?: CompartmentUncheckedUpdateManyWithoutSensorMcpDeviceNestedInput
+  }
+
+  export type McpDeviceCreateManyInput = {
+    id?: string
+    cabinetId: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type McpDeviceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type McpDeviceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15236,6 +16605,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     cabinet: CabinetCreateNestedOneWithoutCompartmentsInput
+    lockMcpDevice?: McpDeviceCreateNestedOneWithoutLockCompartmentsInput
+    sensorMcpDevice?: McpDeviceCreateNestedOneWithoutSensorCompartmentsInput
     rentals?: RentalCreateNestedManyWithoutCompartmentInput
     logs?: LockerLogCreateNestedManyWithoutCompartmentInput
     realtimeStatus?: CompartmentStatusCreateNestedOneWithoutCompartmentInput
@@ -15248,6 +16619,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    sensorMcpDeviceId?: string | null
     status?: $Enums.CompartmentAvailability
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15266,6 +16639,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cabinet?: CabinetUpdateOneRequiredWithoutCompartmentsNestedInput
+    lockMcpDevice?: McpDeviceUpdateOneWithoutLockCompartmentsNestedInput
+    sensorMcpDevice?: McpDeviceUpdateOneWithoutSensorCompartmentsNestedInput
     rentals?: RentalUpdateManyWithoutCompartmentNestedInput
     logs?: LockerLogUpdateManyWithoutCompartmentNestedInput
     realtimeStatus?: CompartmentStatusUpdateOneWithoutCompartmentNestedInput
@@ -15278,6 +16653,8 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15293,6 +16670,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    sensorMcpDeviceId?: string | null
     status?: $Enums.CompartmentAvailability
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15316,6 +16695,8 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16192,17 +17573,6 @@ export namespace Prisma {
     _max?: NestedEnumLocationStatusFilter<$PrismaModel>
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type EnumCabinetStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.CabinetStatus | EnumCabinetStatusFieldRefInput<$PrismaModel>
     in?: $Enums.CabinetStatus[] | ListEnumCabinetStatusFieldRefInput<$PrismaModel>
@@ -16232,6 +17602,12 @@ export namespace Prisma {
     none?: CompartmentWhereInput
   }
 
+  export type McpDeviceListRelationFilter = {
+    every?: McpDeviceWhereInput
+    some?: McpDeviceWhereInput
+    none?: McpDeviceWhereInput
+  }
+
   export type LockerLogListRelationFilter = {
     every?: LockerLogWhereInput
     some?: LockerLogWhereInput
@@ -16239,6 +17615,10 @@ export namespace Prisma {
   }
 
   export type CompartmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type McpDeviceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16250,25 +17630,16 @@ export namespace Prisma {
     id?: SortOrder
     locationId?: SortOrder
     name?: SortOrder
-    mcp23017Bus?: SortOrder
-    mcp23017Address?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type CabinetAvgOrderByAggregateInput = {
-    mcp23017Bus?: SortOrder
-    mcp23017Address?: SortOrder
-  }
-
   export type CabinetMaxOrderByAggregateInput = {
     id?: SortOrder
     locationId?: SortOrder
     name?: SortOrder
-    mcp23017Bus?: SortOrder
-    mcp23017Address?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrder
     createdAt?: SortOrder
@@ -16279,33 +17650,10 @@ export namespace Prisma {
     id?: SortOrder
     locationId?: SortOrder
     name?: SortOrder
-    mcp23017Bus?: SortOrder
-    mcp23017Address?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type CabinetSumOrderByAggregateInput = {
-    mcp23017Bus?: SortOrder
-    mcp23017Address?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumCabinetStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -16332,6 +17680,84 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type CabinetRelationFilter = {
+    is?: CabinetWhereInput
+    isNot?: CabinetWhereInput
+  }
+
+  export type McpDeviceCabinetIdBusAddressCompoundUniqueInput = {
+    cabinetId: string
+    bus: number
+    address: number
+  }
+
+  export type McpDeviceCountOrderByAggregateInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type McpDeviceAvgOrderByAggregateInput = {
+    bus?: SortOrder
+    address?: SortOrder
+  }
+
+  export type McpDeviceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type McpDeviceMinOrderByAggregateInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type McpDeviceSumOrderByAggregateInput = {
+    bus?: SortOrder
+    address?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type EnumCompartmentSizeFilter<$PrismaModel = never> = {
     equals?: $Enums.CompartmentSize | EnumCompartmentSizeFieldRefInput<$PrismaModel>
     in?: $Enums.CompartmentSize[] | ListEnumCompartmentSizeFieldRefInput<$PrismaModel>
@@ -16346,9 +17772,9 @@ export namespace Prisma {
     not?: NestedEnumCompartmentAvailabilityFilter<$PrismaModel> | $Enums.CompartmentAvailability
   }
 
-  export type CabinetRelationFilter = {
-    is?: CabinetWhereInput
-    isNot?: CabinetWhereInput
+  export type McpDeviceNullableRelationFilter = {
+    is?: McpDeviceWhereInput | null
+    isNot?: McpDeviceWhereInput | null
   }
 
   export type CompartmentStatusNullableRelationFilter = {
@@ -16368,6 +17794,8 @@ export namespace Prisma {
     size?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
+    lockMcpDeviceId?: SortOrder
+    sensorMcpDeviceId?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -16385,6 +17813,8 @@ export namespace Prisma {
     size?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
+    lockMcpDeviceId?: SortOrder
+    sensorMcpDeviceId?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -16397,6 +17827,8 @@ export namespace Prisma {
     size?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
+    lockMcpDeviceId?: SortOrder
+    sensorMcpDeviceId?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17177,6 +18609,13 @@ export namespace Prisma {
     connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
   }
 
+  export type McpDeviceCreateNestedManyWithoutCabinetInput = {
+    create?: XOR<McpDeviceCreateWithoutCabinetInput, McpDeviceUncheckedCreateWithoutCabinetInput> | McpDeviceCreateWithoutCabinetInput[] | McpDeviceUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutCabinetInput | McpDeviceCreateOrConnectWithoutCabinetInput[]
+    createMany?: McpDeviceCreateManyCabinetInputEnvelope
+    connect?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+  }
+
   export type LockerLogCreateNestedManyWithoutCabinetInput = {
     create?: XOR<LockerLogCreateWithoutCabinetInput, LockerLogUncheckedCreateWithoutCabinetInput> | LockerLogCreateWithoutCabinetInput[] | LockerLogUncheckedCreateWithoutCabinetInput[]
     connectOrCreate?: LockerLogCreateOrConnectWithoutCabinetInput | LockerLogCreateOrConnectWithoutCabinetInput[]
@@ -17191,19 +18630,18 @@ export namespace Prisma {
     connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
   }
 
+  export type McpDeviceUncheckedCreateNestedManyWithoutCabinetInput = {
+    create?: XOR<McpDeviceCreateWithoutCabinetInput, McpDeviceUncheckedCreateWithoutCabinetInput> | McpDeviceCreateWithoutCabinetInput[] | McpDeviceUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutCabinetInput | McpDeviceCreateOrConnectWithoutCabinetInput[]
+    createMany?: McpDeviceCreateManyCabinetInputEnvelope
+    connect?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+  }
+
   export type LockerLogUncheckedCreateNestedManyWithoutCabinetInput = {
     create?: XOR<LockerLogCreateWithoutCabinetInput, LockerLogUncheckedCreateWithoutCabinetInput> | LockerLogCreateWithoutCabinetInput[] | LockerLogUncheckedCreateWithoutCabinetInput[]
     connectOrCreate?: LockerLogCreateOrConnectWithoutCabinetInput | LockerLogCreateOrConnectWithoutCabinetInput[]
     createMany?: LockerLogCreateManyCabinetInputEnvelope
     connect?: LockerLogWhereUniqueInput | LockerLogWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type EnumCabinetStatusFieldUpdateOperationsInput = {
@@ -17236,6 +18674,20 @@ export namespace Prisma {
     deleteMany?: CompartmentScalarWhereInput | CompartmentScalarWhereInput[]
   }
 
+  export type McpDeviceUpdateManyWithoutCabinetNestedInput = {
+    create?: XOR<McpDeviceCreateWithoutCabinetInput, McpDeviceUncheckedCreateWithoutCabinetInput> | McpDeviceCreateWithoutCabinetInput[] | McpDeviceUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutCabinetInput | McpDeviceCreateOrConnectWithoutCabinetInput[]
+    upsert?: McpDeviceUpsertWithWhereUniqueWithoutCabinetInput | McpDeviceUpsertWithWhereUniqueWithoutCabinetInput[]
+    createMany?: McpDeviceCreateManyCabinetInputEnvelope
+    set?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    disconnect?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    delete?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    connect?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    update?: McpDeviceUpdateWithWhereUniqueWithoutCabinetInput | McpDeviceUpdateWithWhereUniqueWithoutCabinetInput[]
+    updateMany?: McpDeviceUpdateManyWithWhereWithoutCabinetInput | McpDeviceUpdateManyWithWhereWithoutCabinetInput[]
+    deleteMany?: McpDeviceScalarWhereInput | McpDeviceScalarWhereInput[]
+  }
+
   export type LockerLogUpdateManyWithoutCabinetNestedInput = {
     create?: XOR<LockerLogCreateWithoutCabinetInput, LockerLogUncheckedCreateWithoutCabinetInput> | LockerLogCreateWithoutCabinetInput[] | LockerLogUncheckedCreateWithoutCabinetInput[]
     connectOrCreate?: LockerLogCreateOrConnectWithoutCabinetInput | LockerLogCreateOrConnectWithoutCabinetInput[]
@@ -17264,6 +18716,20 @@ export namespace Prisma {
     deleteMany?: CompartmentScalarWhereInput | CompartmentScalarWhereInput[]
   }
 
+  export type McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput = {
+    create?: XOR<McpDeviceCreateWithoutCabinetInput, McpDeviceUncheckedCreateWithoutCabinetInput> | McpDeviceCreateWithoutCabinetInput[] | McpDeviceUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutCabinetInput | McpDeviceCreateOrConnectWithoutCabinetInput[]
+    upsert?: McpDeviceUpsertWithWhereUniqueWithoutCabinetInput | McpDeviceUpsertWithWhereUniqueWithoutCabinetInput[]
+    createMany?: McpDeviceCreateManyCabinetInputEnvelope
+    set?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    disconnect?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    delete?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    connect?: McpDeviceWhereUniqueInput | McpDeviceWhereUniqueInput[]
+    update?: McpDeviceUpdateWithWhereUniqueWithoutCabinetInput | McpDeviceUpdateWithWhereUniqueWithoutCabinetInput[]
+    updateMany?: McpDeviceUpdateManyWithWhereWithoutCabinetInput | McpDeviceUpdateManyWithWhereWithoutCabinetInput[]
+    deleteMany?: McpDeviceScalarWhereInput | McpDeviceScalarWhereInput[]
+  }
+
   export type LockerLogUncheckedUpdateManyWithoutCabinetNestedInput = {
     create?: XOR<LockerLogCreateWithoutCabinetInput, LockerLogUncheckedCreateWithoutCabinetInput> | LockerLogCreateWithoutCabinetInput[] | LockerLogUncheckedCreateWithoutCabinetInput[]
     connectOrCreate?: LockerLogCreateOrConnectWithoutCabinetInput | LockerLogCreateOrConnectWithoutCabinetInput[]
@@ -17278,10 +18744,128 @@ export namespace Prisma {
     deleteMany?: LockerLogScalarWhereInput | LockerLogScalarWhereInput[]
   }
 
+  export type CabinetCreateNestedOneWithoutMcpDevicesInput = {
+    create?: XOR<CabinetCreateWithoutMcpDevicesInput, CabinetUncheckedCreateWithoutMcpDevicesInput>
+    connectOrCreate?: CabinetCreateOrConnectWithoutMcpDevicesInput
+    connect?: CabinetWhereUniqueInput
+  }
+
+  export type CompartmentCreateNestedManyWithoutLockMcpDeviceInput = {
+    create?: XOR<CompartmentCreateWithoutLockMcpDeviceInput, CompartmentUncheckedCreateWithoutLockMcpDeviceInput> | CompartmentCreateWithoutLockMcpDeviceInput[] | CompartmentUncheckedCreateWithoutLockMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutLockMcpDeviceInput | CompartmentCreateOrConnectWithoutLockMcpDeviceInput[]
+    createMany?: CompartmentCreateManyLockMcpDeviceInputEnvelope
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+  }
+
+  export type CompartmentCreateNestedManyWithoutSensorMcpDeviceInput = {
+    create?: XOR<CompartmentCreateWithoutSensorMcpDeviceInput, CompartmentUncheckedCreateWithoutSensorMcpDeviceInput> | CompartmentCreateWithoutSensorMcpDeviceInput[] | CompartmentUncheckedCreateWithoutSensorMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutSensorMcpDeviceInput | CompartmentCreateOrConnectWithoutSensorMcpDeviceInput[]
+    createMany?: CompartmentCreateManySensorMcpDeviceInputEnvelope
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+  }
+
+  export type CompartmentUncheckedCreateNestedManyWithoutLockMcpDeviceInput = {
+    create?: XOR<CompartmentCreateWithoutLockMcpDeviceInput, CompartmentUncheckedCreateWithoutLockMcpDeviceInput> | CompartmentCreateWithoutLockMcpDeviceInput[] | CompartmentUncheckedCreateWithoutLockMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutLockMcpDeviceInput | CompartmentCreateOrConnectWithoutLockMcpDeviceInput[]
+    createMany?: CompartmentCreateManyLockMcpDeviceInputEnvelope
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+  }
+
+  export type CompartmentUncheckedCreateNestedManyWithoutSensorMcpDeviceInput = {
+    create?: XOR<CompartmentCreateWithoutSensorMcpDeviceInput, CompartmentUncheckedCreateWithoutSensorMcpDeviceInput> | CompartmentCreateWithoutSensorMcpDeviceInput[] | CompartmentUncheckedCreateWithoutSensorMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutSensorMcpDeviceInput | CompartmentCreateOrConnectWithoutSensorMcpDeviceInput[]
+    createMany?: CompartmentCreateManySensorMcpDeviceInputEnvelope
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type CabinetUpdateOneRequiredWithoutMcpDevicesNestedInput = {
+    create?: XOR<CabinetCreateWithoutMcpDevicesInput, CabinetUncheckedCreateWithoutMcpDevicesInput>
+    connectOrCreate?: CabinetCreateOrConnectWithoutMcpDevicesInput
+    upsert?: CabinetUpsertWithoutMcpDevicesInput
+    connect?: CabinetWhereUniqueInput
+    update?: XOR<XOR<CabinetUpdateToOneWithWhereWithoutMcpDevicesInput, CabinetUpdateWithoutMcpDevicesInput>, CabinetUncheckedUpdateWithoutMcpDevicesInput>
+  }
+
+  export type CompartmentUpdateManyWithoutLockMcpDeviceNestedInput = {
+    create?: XOR<CompartmentCreateWithoutLockMcpDeviceInput, CompartmentUncheckedCreateWithoutLockMcpDeviceInput> | CompartmentCreateWithoutLockMcpDeviceInput[] | CompartmentUncheckedCreateWithoutLockMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutLockMcpDeviceInput | CompartmentCreateOrConnectWithoutLockMcpDeviceInput[]
+    upsert?: CompartmentUpsertWithWhereUniqueWithoutLockMcpDeviceInput | CompartmentUpsertWithWhereUniqueWithoutLockMcpDeviceInput[]
+    createMany?: CompartmentCreateManyLockMcpDeviceInputEnvelope
+    set?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    disconnect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    delete?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    update?: CompartmentUpdateWithWhereUniqueWithoutLockMcpDeviceInput | CompartmentUpdateWithWhereUniqueWithoutLockMcpDeviceInput[]
+    updateMany?: CompartmentUpdateManyWithWhereWithoutLockMcpDeviceInput | CompartmentUpdateManyWithWhereWithoutLockMcpDeviceInput[]
+    deleteMany?: CompartmentScalarWhereInput | CompartmentScalarWhereInput[]
+  }
+
+  export type CompartmentUpdateManyWithoutSensorMcpDeviceNestedInput = {
+    create?: XOR<CompartmentCreateWithoutSensorMcpDeviceInput, CompartmentUncheckedCreateWithoutSensorMcpDeviceInput> | CompartmentCreateWithoutSensorMcpDeviceInput[] | CompartmentUncheckedCreateWithoutSensorMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutSensorMcpDeviceInput | CompartmentCreateOrConnectWithoutSensorMcpDeviceInput[]
+    upsert?: CompartmentUpsertWithWhereUniqueWithoutSensorMcpDeviceInput | CompartmentUpsertWithWhereUniqueWithoutSensorMcpDeviceInput[]
+    createMany?: CompartmentCreateManySensorMcpDeviceInputEnvelope
+    set?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    disconnect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    delete?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    update?: CompartmentUpdateWithWhereUniqueWithoutSensorMcpDeviceInput | CompartmentUpdateWithWhereUniqueWithoutSensorMcpDeviceInput[]
+    updateMany?: CompartmentUpdateManyWithWhereWithoutSensorMcpDeviceInput | CompartmentUpdateManyWithWhereWithoutSensorMcpDeviceInput[]
+    deleteMany?: CompartmentScalarWhereInput | CompartmentScalarWhereInput[]
+  }
+
+  export type CompartmentUncheckedUpdateManyWithoutLockMcpDeviceNestedInput = {
+    create?: XOR<CompartmentCreateWithoutLockMcpDeviceInput, CompartmentUncheckedCreateWithoutLockMcpDeviceInput> | CompartmentCreateWithoutLockMcpDeviceInput[] | CompartmentUncheckedCreateWithoutLockMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutLockMcpDeviceInput | CompartmentCreateOrConnectWithoutLockMcpDeviceInput[]
+    upsert?: CompartmentUpsertWithWhereUniqueWithoutLockMcpDeviceInput | CompartmentUpsertWithWhereUniqueWithoutLockMcpDeviceInput[]
+    createMany?: CompartmentCreateManyLockMcpDeviceInputEnvelope
+    set?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    disconnect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    delete?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    update?: CompartmentUpdateWithWhereUniqueWithoutLockMcpDeviceInput | CompartmentUpdateWithWhereUniqueWithoutLockMcpDeviceInput[]
+    updateMany?: CompartmentUpdateManyWithWhereWithoutLockMcpDeviceInput | CompartmentUpdateManyWithWhereWithoutLockMcpDeviceInput[]
+    deleteMany?: CompartmentScalarWhereInput | CompartmentScalarWhereInput[]
+  }
+
+  export type CompartmentUncheckedUpdateManyWithoutSensorMcpDeviceNestedInput = {
+    create?: XOR<CompartmentCreateWithoutSensorMcpDeviceInput, CompartmentUncheckedCreateWithoutSensorMcpDeviceInput> | CompartmentCreateWithoutSensorMcpDeviceInput[] | CompartmentUncheckedCreateWithoutSensorMcpDeviceInput[]
+    connectOrCreate?: CompartmentCreateOrConnectWithoutSensorMcpDeviceInput | CompartmentCreateOrConnectWithoutSensorMcpDeviceInput[]
+    upsert?: CompartmentUpsertWithWhereUniqueWithoutSensorMcpDeviceInput | CompartmentUpsertWithWhereUniqueWithoutSensorMcpDeviceInput[]
+    createMany?: CompartmentCreateManySensorMcpDeviceInputEnvelope
+    set?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    disconnect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    delete?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
+    update?: CompartmentUpdateWithWhereUniqueWithoutSensorMcpDeviceInput | CompartmentUpdateWithWhereUniqueWithoutSensorMcpDeviceInput[]
+    updateMany?: CompartmentUpdateManyWithWhereWithoutSensorMcpDeviceInput | CompartmentUpdateManyWithWhereWithoutSensorMcpDeviceInput[]
+    deleteMany?: CompartmentScalarWhereInput | CompartmentScalarWhereInput[]
+  }
+
   export type CabinetCreateNestedOneWithoutCompartmentsInput = {
     create?: XOR<CabinetCreateWithoutCompartmentsInput, CabinetUncheckedCreateWithoutCompartmentsInput>
     connectOrCreate?: CabinetCreateOrConnectWithoutCompartmentsInput
     connect?: CabinetWhereUniqueInput
+  }
+
+  export type McpDeviceCreateNestedOneWithoutLockCompartmentsInput = {
+    create?: XOR<McpDeviceCreateWithoutLockCompartmentsInput, McpDeviceUncheckedCreateWithoutLockCompartmentsInput>
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutLockCompartmentsInput
+    connect?: McpDeviceWhereUniqueInput
+  }
+
+  export type McpDeviceCreateNestedOneWithoutSensorCompartmentsInput = {
+    create?: XOR<McpDeviceCreateWithoutSensorCompartmentsInput, McpDeviceUncheckedCreateWithoutSensorCompartmentsInput>
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutSensorCompartmentsInput
+    connect?: McpDeviceWhereUniqueInput
   }
 
   export type RentalCreateNestedManyWithoutCompartmentInput = {
@@ -17338,6 +18922,26 @@ export namespace Prisma {
     upsert?: CabinetUpsertWithoutCompartmentsInput
     connect?: CabinetWhereUniqueInput
     update?: XOR<XOR<CabinetUpdateToOneWithWhereWithoutCompartmentsInput, CabinetUpdateWithoutCompartmentsInput>, CabinetUncheckedUpdateWithoutCompartmentsInput>
+  }
+
+  export type McpDeviceUpdateOneWithoutLockCompartmentsNestedInput = {
+    create?: XOR<McpDeviceCreateWithoutLockCompartmentsInput, McpDeviceUncheckedCreateWithoutLockCompartmentsInput>
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutLockCompartmentsInput
+    upsert?: McpDeviceUpsertWithoutLockCompartmentsInput
+    disconnect?: McpDeviceWhereInput | boolean
+    delete?: McpDeviceWhereInput | boolean
+    connect?: McpDeviceWhereUniqueInput
+    update?: XOR<XOR<McpDeviceUpdateToOneWithWhereWithoutLockCompartmentsInput, McpDeviceUpdateWithoutLockCompartmentsInput>, McpDeviceUncheckedUpdateWithoutLockCompartmentsInput>
+  }
+
+  export type McpDeviceUpdateOneWithoutSensorCompartmentsNestedInput = {
+    create?: XOR<McpDeviceCreateWithoutSensorCompartmentsInput, McpDeviceUncheckedCreateWithoutSensorCompartmentsInput>
+    connectOrCreate?: McpDeviceCreateOrConnectWithoutSensorCompartmentsInput
+    upsert?: McpDeviceUpsertWithoutSensorCompartmentsInput
+    disconnect?: McpDeviceWhereInput | boolean
+    delete?: McpDeviceWhereInput | boolean
+    connect?: McpDeviceWhereUniqueInput
+    update?: XOR<XOR<McpDeviceUpdateToOneWithWhereWithoutSensorCompartmentsInput, McpDeviceUpdateWithoutSensorCompartmentsInput>, McpDeviceUncheckedUpdateWithoutSensorCompartmentsInput>
   }
 
   export type RentalUpdateManyWithoutCompartmentNestedInput = {
@@ -17889,6 +19493,30 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedEnumCabinetStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CabinetStatus | EnumCabinetStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CabinetStatus[] | ListEnumCabinetStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CabinetStatus[] | ListEnumCabinetStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCabinetStatusWithAggregatesFilter<$PrismaModel> | $Enums.CabinetStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCabinetStatusFilter<$PrismaModel>
+    _max?: NestedEnumCabinetStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -17914,30 +19542,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedEnumCabinetStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.CabinetStatus | EnumCabinetStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.CabinetStatus[] | ListEnumCabinetStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.CabinetStatus[] | ListEnumCabinetStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumCabinetStatusWithAggregatesFilter<$PrismaModel> | $Enums.CabinetStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumCabinetStatusFilter<$PrismaModel>
-    _max?: NestedEnumCabinetStatusFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumCompartmentSizeFilter<$PrismaModel = never> = {
@@ -18390,26 +19994,24 @@ export namespace Prisma {
   export type CabinetCreateWithoutLocationInput = {
     id?: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateWithoutLocationInput = {
     id?: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
   }
 
@@ -18446,8 +20048,6 @@ export namespace Prisma {
     id?: StringFilter<"Cabinet"> | string
     locationId?: StringFilter<"Cabinet"> | string
     name?: StringFilter<"Cabinet"> | string
-    mcp23017Bus?: IntFilter<"Cabinet"> | number
-    mcp23017Address?: IntFilter<"Cabinet"> | number
     status?: EnumCabinetStatusFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
     createdAt?: DateTimeFilter<"Cabinet"> | Date | string
@@ -18494,6 +20094,8 @@ export namespace Prisma {
     status?: $Enums.CompartmentAvailability
     createdAt?: Date | string
     updatedAt?: Date | string
+    lockMcpDevice?: McpDeviceCreateNestedOneWithoutLockCompartmentsInput
+    sensorMcpDevice?: McpDeviceCreateNestedOneWithoutSensorCompartmentsInput
     rentals?: RentalCreateNestedManyWithoutCompartmentInput
     logs?: LockerLogCreateNestedManyWithoutCompartmentInput
     realtimeStatus?: CompartmentStatusCreateNestedOneWithoutCompartmentInput
@@ -18505,6 +20107,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    sensorMcpDeviceId?: string | null
     status?: $Enums.CompartmentAvailability
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18520,6 +20124,38 @@ export namespace Prisma {
 
   export type CompartmentCreateManyCabinetInputEnvelope = {
     data: CompartmentCreateManyCabinetInput | CompartmentCreateManyCabinetInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type McpDeviceCreateWithoutCabinetInput = {
+    id?: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lockCompartments?: CompartmentCreateNestedManyWithoutLockMcpDeviceInput
+    sensorCompartments?: CompartmentCreateNestedManyWithoutSensorMcpDeviceInput
+  }
+
+  export type McpDeviceUncheckedCreateWithoutCabinetInput = {
+    id?: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lockCompartments?: CompartmentUncheckedCreateNestedManyWithoutLockMcpDeviceInput
+    sensorCompartments?: CompartmentUncheckedCreateNestedManyWithoutSensorMcpDeviceInput
+  }
+
+  export type McpDeviceCreateOrConnectWithoutCabinetInput = {
+    where: McpDeviceWhereUniqueInput
+    create: XOR<McpDeviceCreateWithoutCabinetInput, McpDeviceUncheckedCreateWithoutCabinetInput>
+  }
+
+  export type McpDeviceCreateManyCabinetInputEnvelope = {
+    data: McpDeviceCreateManyCabinetInput | McpDeviceCreateManyCabinetInput[]
     skipDuplicates?: boolean
   }
 
@@ -18622,9 +20258,40 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
+    lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
+    sensorMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
     status?: EnumCompartmentAvailabilityFilter<"Compartment"> | $Enums.CompartmentAvailability
     createdAt?: DateTimeFilter<"Compartment"> | Date | string
     updatedAt?: DateTimeFilter<"Compartment"> | Date | string
+  }
+
+  export type McpDeviceUpsertWithWhereUniqueWithoutCabinetInput = {
+    where: McpDeviceWhereUniqueInput
+    update: XOR<McpDeviceUpdateWithoutCabinetInput, McpDeviceUncheckedUpdateWithoutCabinetInput>
+    create: XOR<McpDeviceCreateWithoutCabinetInput, McpDeviceUncheckedCreateWithoutCabinetInput>
+  }
+
+  export type McpDeviceUpdateWithWhereUniqueWithoutCabinetInput = {
+    where: McpDeviceWhereUniqueInput
+    data: XOR<McpDeviceUpdateWithoutCabinetInput, McpDeviceUncheckedUpdateWithoutCabinetInput>
+  }
+
+  export type McpDeviceUpdateManyWithWhereWithoutCabinetInput = {
+    where: McpDeviceScalarWhereInput
+    data: XOR<McpDeviceUpdateManyMutationInput, McpDeviceUncheckedUpdateManyWithoutCabinetInput>
+  }
+
+  export type McpDeviceScalarWhereInput = {
+    AND?: McpDeviceScalarWhereInput | McpDeviceScalarWhereInput[]
+    OR?: McpDeviceScalarWhereInput[]
+    NOT?: McpDeviceScalarWhereInput | McpDeviceScalarWhereInput[]
+    id?: StringFilter<"McpDevice"> | string
+    cabinetId?: StringFilter<"McpDevice"> | string
+    bus?: IntFilter<"McpDevice"> | number
+    address?: IntFilter<"McpDevice"> | number
+    name?: StringNullableFilter<"McpDevice"> | string | null
+    createdAt?: DateTimeFilter<"McpDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"McpDevice"> | Date | string
   }
 
   export type LockerLogUpsertWithWhereUniqueWithoutCabinetInput = {
@@ -18660,16 +20327,195 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"LockerLog"> | Date | string
   }
 
-  export type CabinetCreateWithoutCompartmentsInput = {
+  export type CabinetCreateWithoutMcpDevicesInput = {
     id?: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location: LocationCreateNestedOneWithoutCabinetsInput
+    compartments?: CompartmentCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetUncheckedCreateWithoutMcpDevicesInput = {
+    id?: string
+    locationId: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetCreateOrConnectWithoutMcpDevicesInput = {
+    where: CabinetWhereUniqueInput
+    create: XOR<CabinetCreateWithoutMcpDevicesInput, CabinetUncheckedCreateWithoutMcpDevicesInput>
+  }
+
+  export type CompartmentCreateWithoutLockMcpDeviceInput = {
+    id?: string
+    name: string
+    size: $Enums.CompartmentSize
+    mcp23017PinLock: number
+    mcp23017PinSensor: number
+    status?: $Enums.CompartmentAvailability
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinet: CabinetCreateNestedOneWithoutCompartmentsInput
+    sensorMcpDevice?: McpDeviceCreateNestedOneWithoutSensorCompartmentsInput
+    rentals?: RentalCreateNestedManyWithoutCompartmentInput
+    logs?: LockerLogCreateNestedManyWithoutCompartmentInput
+    realtimeStatus?: CompartmentStatusCreateNestedOneWithoutCompartmentInput
+  }
+
+  export type CompartmentUncheckedCreateWithoutLockMcpDeviceInput = {
+    id?: string
+    cabinetId: string
+    name: string
+    size: $Enums.CompartmentSize
+    mcp23017PinLock: number
+    mcp23017PinSensor: number
+    sensorMcpDeviceId?: string | null
+    status?: $Enums.CompartmentAvailability
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rentals?: RentalUncheckedCreateNestedManyWithoutCompartmentInput
+    logs?: LockerLogUncheckedCreateNestedManyWithoutCompartmentInput
+    realtimeStatus?: CompartmentStatusUncheckedCreateNestedOneWithoutCompartmentInput
+  }
+
+  export type CompartmentCreateOrConnectWithoutLockMcpDeviceInput = {
+    where: CompartmentWhereUniqueInput
+    create: XOR<CompartmentCreateWithoutLockMcpDeviceInput, CompartmentUncheckedCreateWithoutLockMcpDeviceInput>
+  }
+
+  export type CompartmentCreateManyLockMcpDeviceInputEnvelope = {
+    data: CompartmentCreateManyLockMcpDeviceInput | CompartmentCreateManyLockMcpDeviceInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompartmentCreateWithoutSensorMcpDeviceInput = {
+    id?: string
+    name: string
+    size: $Enums.CompartmentSize
+    mcp23017PinLock: number
+    mcp23017PinSensor: number
+    status?: $Enums.CompartmentAvailability
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinet: CabinetCreateNestedOneWithoutCompartmentsInput
+    lockMcpDevice?: McpDeviceCreateNestedOneWithoutLockCompartmentsInput
+    rentals?: RentalCreateNestedManyWithoutCompartmentInput
+    logs?: LockerLogCreateNestedManyWithoutCompartmentInput
+    realtimeStatus?: CompartmentStatusCreateNestedOneWithoutCompartmentInput
+  }
+
+  export type CompartmentUncheckedCreateWithoutSensorMcpDeviceInput = {
+    id?: string
+    cabinetId: string
+    name: string
+    size: $Enums.CompartmentSize
+    mcp23017PinLock: number
+    mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    status?: $Enums.CompartmentAvailability
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rentals?: RentalUncheckedCreateNestedManyWithoutCompartmentInput
+    logs?: LockerLogUncheckedCreateNestedManyWithoutCompartmentInput
+    realtimeStatus?: CompartmentStatusUncheckedCreateNestedOneWithoutCompartmentInput
+  }
+
+  export type CompartmentCreateOrConnectWithoutSensorMcpDeviceInput = {
+    where: CompartmentWhereUniqueInput
+    create: XOR<CompartmentCreateWithoutSensorMcpDeviceInput, CompartmentUncheckedCreateWithoutSensorMcpDeviceInput>
+  }
+
+  export type CompartmentCreateManySensorMcpDeviceInputEnvelope = {
+    data: CompartmentCreateManySensorMcpDeviceInput | CompartmentCreateManySensorMcpDeviceInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CabinetUpsertWithoutMcpDevicesInput = {
+    update: XOR<CabinetUpdateWithoutMcpDevicesInput, CabinetUncheckedUpdateWithoutMcpDevicesInput>
+    create: XOR<CabinetCreateWithoutMcpDevicesInput, CabinetUncheckedCreateWithoutMcpDevicesInput>
+    where?: CabinetWhereInput
+  }
+
+  export type CabinetUpdateToOneWithWhereWithoutMcpDevicesInput = {
+    where?: CabinetWhereInput
+    data: XOR<CabinetUpdateWithoutMcpDevicesInput, CabinetUncheckedUpdateWithoutMcpDevicesInput>
+  }
+
+  export type CabinetUpdateWithoutMcpDevicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+  }
+
+  export type CabinetUncheckedUpdateWithoutMcpDevicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+  }
+
+  export type CompartmentUpsertWithWhereUniqueWithoutLockMcpDeviceInput = {
+    where: CompartmentWhereUniqueInput
+    update: XOR<CompartmentUpdateWithoutLockMcpDeviceInput, CompartmentUncheckedUpdateWithoutLockMcpDeviceInput>
+    create: XOR<CompartmentCreateWithoutLockMcpDeviceInput, CompartmentUncheckedCreateWithoutLockMcpDeviceInput>
+  }
+
+  export type CompartmentUpdateWithWhereUniqueWithoutLockMcpDeviceInput = {
+    where: CompartmentWhereUniqueInput
+    data: XOR<CompartmentUpdateWithoutLockMcpDeviceInput, CompartmentUncheckedUpdateWithoutLockMcpDeviceInput>
+  }
+
+  export type CompartmentUpdateManyWithWhereWithoutLockMcpDeviceInput = {
+    where: CompartmentScalarWhereInput
+    data: XOR<CompartmentUpdateManyMutationInput, CompartmentUncheckedUpdateManyWithoutLockMcpDeviceInput>
+  }
+
+  export type CompartmentUpsertWithWhereUniqueWithoutSensorMcpDeviceInput = {
+    where: CompartmentWhereUniqueInput
+    update: XOR<CompartmentUpdateWithoutSensorMcpDeviceInput, CompartmentUncheckedUpdateWithoutSensorMcpDeviceInput>
+    create: XOR<CompartmentCreateWithoutSensorMcpDeviceInput, CompartmentUncheckedCreateWithoutSensorMcpDeviceInput>
+  }
+
+  export type CompartmentUpdateWithWhereUniqueWithoutSensorMcpDeviceInput = {
+    where: CompartmentWhereUniqueInput
+    data: XOR<CompartmentUpdateWithoutSensorMcpDeviceInput, CompartmentUncheckedUpdateWithoutSensorMcpDeviceInput>
+  }
+
+  export type CompartmentUpdateManyWithWhereWithoutSensorMcpDeviceInput = {
+    where: CompartmentScalarWhereInput
+    data: XOR<CompartmentUpdateManyMutationInput, CompartmentUncheckedUpdateManyWithoutSensorMcpDeviceInput>
+  }
+
+  export type CabinetCreateWithoutCompartmentsInput = {
+    id?: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    location: LocationCreateNestedOneWithoutCabinetsInput
+    mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
   }
 
@@ -18677,18 +20523,71 @@ export namespace Prisma {
     id?: string
     locationId: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetCreateOrConnectWithoutCompartmentsInput = {
     where: CabinetWhereUniqueInput
     create: XOR<CabinetCreateWithoutCompartmentsInput, CabinetUncheckedCreateWithoutCompartmentsInput>
+  }
+
+  export type McpDeviceCreateWithoutLockCompartmentsInput = {
+    id?: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinet: CabinetCreateNestedOneWithoutMcpDevicesInput
+    sensorCompartments?: CompartmentCreateNestedManyWithoutSensorMcpDeviceInput
+  }
+
+  export type McpDeviceUncheckedCreateWithoutLockCompartmentsInput = {
+    id?: string
+    cabinetId: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sensorCompartments?: CompartmentUncheckedCreateNestedManyWithoutSensorMcpDeviceInput
+  }
+
+  export type McpDeviceCreateOrConnectWithoutLockCompartmentsInput = {
+    where: McpDeviceWhereUniqueInput
+    create: XOR<McpDeviceCreateWithoutLockCompartmentsInput, McpDeviceUncheckedCreateWithoutLockCompartmentsInput>
+  }
+
+  export type McpDeviceCreateWithoutSensorCompartmentsInput = {
+    id?: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinet: CabinetCreateNestedOneWithoutMcpDevicesInput
+    lockCompartments?: CompartmentCreateNestedManyWithoutLockMcpDeviceInput
+  }
+
+  export type McpDeviceUncheckedCreateWithoutSensorCompartmentsInput = {
+    id?: string
+    cabinetId: string
+    bus?: number
+    address?: number
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lockCompartments?: CompartmentUncheckedCreateNestedManyWithoutLockMcpDeviceInput
+  }
+
+  export type McpDeviceCreateOrConnectWithoutSensorCompartmentsInput = {
+    where: McpDeviceWhereUniqueInput
+    create: XOR<McpDeviceCreateWithoutSensorCompartmentsInput, McpDeviceUncheckedCreateWithoutSensorCompartmentsInput>
   }
 
   export type RentalCreateWithoutCompartmentInput = {
@@ -18808,13 +20707,12 @@ export namespace Prisma {
   export type CabinetUpdateWithoutCompartmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
   }
 
@@ -18822,13 +20720,78 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+  }
+
+  export type McpDeviceUpsertWithoutLockCompartmentsInput = {
+    update: XOR<McpDeviceUpdateWithoutLockCompartmentsInput, McpDeviceUncheckedUpdateWithoutLockCompartmentsInput>
+    create: XOR<McpDeviceCreateWithoutLockCompartmentsInput, McpDeviceUncheckedCreateWithoutLockCompartmentsInput>
+    where?: McpDeviceWhereInput
+  }
+
+  export type McpDeviceUpdateToOneWithWhereWithoutLockCompartmentsInput = {
+    where?: McpDeviceWhereInput
+    data: XOR<McpDeviceUpdateWithoutLockCompartmentsInput, McpDeviceUncheckedUpdateWithoutLockCompartmentsInput>
+  }
+
+  export type McpDeviceUpdateWithoutLockCompartmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinet?: CabinetUpdateOneRequiredWithoutMcpDevicesNestedInput
+    sensorCompartments?: CompartmentUpdateManyWithoutSensorMcpDeviceNestedInput
+  }
+
+  export type McpDeviceUncheckedUpdateWithoutLockCompartmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sensorCompartments?: CompartmentUncheckedUpdateManyWithoutSensorMcpDeviceNestedInput
+  }
+
+  export type McpDeviceUpsertWithoutSensorCompartmentsInput = {
+    update: XOR<McpDeviceUpdateWithoutSensorCompartmentsInput, McpDeviceUncheckedUpdateWithoutSensorCompartmentsInput>
+    create: XOR<McpDeviceCreateWithoutSensorCompartmentsInput, McpDeviceUncheckedCreateWithoutSensorCompartmentsInput>
+    where?: McpDeviceWhereInput
+  }
+
+  export type McpDeviceUpdateToOneWithWhereWithoutSensorCompartmentsInput = {
+    where?: McpDeviceWhereInput
+    data: XOR<McpDeviceUpdateWithoutSensorCompartmentsInput, McpDeviceUncheckedUpdateWithoutSensorCompartmentsInput>
+  }
+
+  export type McpDeviceUpdateWithoutSensorCompartmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinet?: CabinetUpdateOneRequiredWithoutMcpDevicesNestedInput
+    lockCompartments?: CompartmentUpdateManyWithoutLockMcpDeviceNestedInput
+  }
+
+  export type McpDeviceUncheckedUpdateWithoutSensorCompartmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockCompartments?: CompartmentUncheckedUpdateManyWithoutLockMcpDeviceNestedInput
   }
 
   export type RentalUpsertWithWhereUniqueWithoutCompartmentInput = {
@@ -18898,6 +20861,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     cabinet: CabinetCreateNestedOneWithoutCompartmentsInput
+    lockMcpDevice?: McpDeviceCreateNestedOneWithoutLockCompartmentsInput
+    sensorMcpDevice?: McpDeviceCreateNestedOneWithoutSensorCompartmentsInput
     rentals?: RentalCreateNestedManyWithoutCompartmentInput
     logs?: LockerLogCreateNestedManyWithoutCompartmentInput
   }
@@ -18909,6 +20874,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    sensorMcpDeviceId?: string | null
     status?: $Enums.CompartmentAvailability
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18942,6 +20909,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cabinet?: CabinetUpdateOneRequiredWithoutCompartmentsNestedInput
+    lockMcpDevice?: McpDeviceUpdateOneWithoutLockCompartmentsNestedInput
+    sensorMcpDevice?: McpDeviceUpdateOneWithoutSensorCompartmentsNestedInput
     rentals?: RentalUpdateManyWithoutCompartmentNestedInput
     logs?: LockerLogUpdateManyWithoutCompartmentNestedInput
   }
@@ -18953,6 +20922,8 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19065,6 +21036,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     cabinet: CabinetCreateNestedOneWithoutCompartmentsInput
+    lockMcpDevice?: McpDeviceCreateNestedOneWithoutLockCompartmentsInput
+    sensorMcpDevice?: McpDeviceCreateNestedOneWithoutSensorCompartmentsInput
     logs?: LockerLogCreateNestedManyWithoutCompartmentInput
     realtimeStatus?: CompartmentStatusCreateNestedOneWithoutCompartmentInput
   }
@@ -19076,6 +21049,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    sensorMcpDeviceId?: string | null
     status?: $Enums.CompartmentAvailability
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19215,6 +21190,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cabinet?: CabinetUpdateOneRequiredWithoutCompartmentsNestedInput
+    lockMcpDevice?: McpDeviceUpdateOneWithoutLockCompartmentsNestedInput
+    sensorMcpDevice?: McpDeviceUpdateOneWithoutSensorCompartmentsNestedInput
     logs?: LockerLogUpdateManyWithoutCompartmentNestedInput
     realtimeStatus?: CompartmentStatusUpdateOneWithoutCompartmentNestedInput
   }
@@ -19226,6 +21203,8 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19291,27 +21270,25 @@ export namespace Prisma {
   export type CabinetCreateWithoutLogsInput = {
     id?: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location: LocationCreateNestedOneWithoutCabinetsInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateWithoutLogsInput = {
     id?: string
     locationId: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetCreateOrConnectWithoutLogsInput = {
@@ -19329,6 +21306,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     cabinet: CabinetCreateNestedOneWithoutCompartmentsInput
+    lockMcpDevice?: McpDeviceCreateNestedOneWithoutLockCompartmentsInput
+    sensorMcpDevice?: McpDeviceCreateNestedOneWithoutSensorCompartmentsInput
     rentals?: RentalCreateNestedManyWithoutCompartmentInput
     realtimeStatus?: CompartmentStatusCreateNestedOneWithoutCompartmentInput
   }
@@ -19340,6 +21319,8 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    sensorMcpDeviceId?: string | null
     status?: $Enums.CompartmentAvailability
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19409,27 +21390,25 @@ export namespace Prisma {
   export type CabinetUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type CompartmentUpsertWithoutLogsInput = {
@@ -19453,6 +21432,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cabinet?: CabinetUpdateOneRequiredWithoutCompartmentsNestedInput
+    lockMcpDevice?: McpDeviceUpdateOneWithoutLockCompartmentsNestedInput
+    sensorMcpDevice?: McpDeviceUpdateOneWithoutSensorCompartmentsNestedInput
     rentals?: RentalUpdateManyWithoutCompartmentNestedInput
     realtimeStatus?: CompartmentStatusUpdateOneWithoutCompartmentNestedInput
   }
@@ -19464,6 +21445,8 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19817,8 +21800,6 @@ export namespace Prisma {
   export type CabinetCreateManyLocationInput = {
     id?: string
     name: string
-    mcp23017Bus?: number
-    mcp23017Address?: number
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
     createdAt?: Date | string
@@ -19828,34 +21809,30 @@ export namespace Prisma {
   export type CabinetUpdateWithoutLocationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateWithoutLocationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateManyWithoutLocationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    mcp23017Bus?: IntFieldUpdateOperationsInput | number
-    mcp23017Address?: IntFieldUpdateOperationsInput | number
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19868,7 +21845,18 @@ export namespace Prisma {
     size: $Enums.CompartmentSize
     mcp23017PinLock: number
     mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    sensorMcpDeviceId?: string | null
     status?: $Enums.CompartmentAvailability
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type McpDeviceCreateManyCabinetInput = {
+    id?: string
+    bus?: number
+    address?: number
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19895,6 +21883,8 @@ export namespace Prisma {
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockMcpDevice?: McpDeviceUpdateOneWithoutLockCompartmentsNestedInput
+    sensorMcpDevice?: McpDeviceUpdateOneWithoutSensorCompartmentsNestedInput
     rentals?: RentalUpdateManyWithoutCompartmentNestedInput
     logs?: LockerLogUpdateManyWithoutCompartmentNestedInput
     realtimeStatus?: CompartmentStatusUpdateOneWithoutCompartmentNestedInput
@@ -19906,6 +21896,8 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19920,7 +21912,40 @@ export namespace Prisma {
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type McpDeviceUpdateWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockCompartments?: CompartmentUpdateManyWithoutLockMcpDeviceNestedInput
+    sensorCompartments?: CompartmentUpdateManyWithoutSensorMcpDeviceNestedInput
+  }
+
+  export type McpDeviceUncheckedUpdateWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockCompartments?: CompartmentUncheckedUpdateManyWithoutLockMcpDeviceNestedInput
+    sensorCompartments?: CompartmentUncheckedUpdateManyWithoutSensorMcpDeviceNestedInput
+  }
+
+  export type McpDeviceUncheckedUpdateManyWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19962,6 +21987,122 @@ export namespace Prisma {
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompartmentCreateManyLockMcpDeviceInput = {
+    id?: string
+    cabinetId: string
+    name: string
+    size: $Enums.CompartmentSize
+    mcp23017PinLock: number
+    mcp23017PinSensor: number
+    sensorMcpDeviceId?: string | null
+    status?: $Enums.CompartmentAvailability
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompartmentCreateManySensorMcpDeviceInput = {
+    id?: string
+    cabinetId: string
+    name: string
+    size: $Enums.CompartmentSize
+    mcp23017PinLock: number
+    mcp23017PinSensor: number
+    lockMcpDeviceId?: string | null
+    status?: $Enums.CompartmentAvailability
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompartmentUpdateWithoutLockMcpDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    mcp23017PinLock?: IntFieldUpdateOperationsInput | number
+    mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinet?: CabinetUpdateOneRequiredWithoutCompartmentsNestedInput
+    sensorMcpDevice?: McpDeviceUpdateOneWithoutSensorCompartmentsNestedInput
+    rentals?: RentalUpdateManyWithoutCompartmentNestedInput
+    logs?: LockerLogUpdateManyWithoutCompartmentNestedInput
+    realtimeStatus?: CompartmentStatusUpdateOneWithoutCompartmentNestedInput
+  }
+
+  export type CompartmentUncheckedUpdateWithoutLockMcpDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    mcp23017PinLock?: IntFieldUpdateOperationsInput | number
+    mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rentals?: RentalUncheckedUpdateManyWithoutCompartmentNestedInput
+    logs?: LockerLogUncheckedUpdateManyWithoutCompartmentNestedInput
+    realtimeStatus?: CompartmentStatusUncheckedUpdateOneWithoutCompartmentNestedInput
+  }
+
+  export type CompartmentUncheckedUpdateManyWithoutLockMcpDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    mcp23017PinLock?: IntFieldUpdateOperationsInput | number
+    mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompartmentUpdateWithoutSensorMcpDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    mcp23017PinLock?: IntFieldUpdateOperationsInput | number
+    mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinet?: CabinetUpdateOneRequiredWithoutCompartmentsNestedInput
+    lockMcpDevice?: McpDeviceUpdateOneWithoutLockCompartmentsNestedInput
+    rentals?: RentalUpdateManyWithoutCompartmentNestedInput
+    logs?: LockerLogUpdateManyWithoutCompartmentNestedInput
+    realtimeStatus?: CompartmentStatusUpdateOneWithoutCompartmentNestedInput
+  }
+
+  export type CompartmentUncheckedUpdateWithoutSensorMcpDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    mcp23017PinLock?: IntFieldUpdateOperationsInput | number
+    mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rentals?: RentalUncheckedUpdateManyWithoutCompartmentNestedInput
+    logs?: LockerLogUncheckedUpdateManyWithoutCompartmentNestedInput
+    realtimeStatus?: CompartmentStatusUncheckedUpdateOneWithoutCompartmentNestedInput
+  }
+
+  export type CompartmentUncheckedUpdateManyWithoutSensorMcpDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    mcp23017PinLock?: IntFieldUpdateOperationsInput | number
+    mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
+    lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RentalCreateManyCompartmentInput = {
@@ -20234,6 +22375,10 @@ export namespace Prisma {
      */
     export type CabinetCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CabinetCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use McpDeviceCountOutputTypeDefaultArgs instead
+     */
+    export type McpDeviceCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = McpDeviceCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use CompartmentCountOutputTypeDefaultArgs instead
      */
     export type CompartmentCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CompartmentCountOutputTypeDefaultArgs<ExtArgs>
@@ -20261,6 +22406,10 @@ export namespace Prisma {
      * @deprecated Use CabinetDefaultArgs instead
      */
     export type CabinetArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CabinetDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use McpDeviceDefaultArgs instead
+     */
+    export type McpDeviceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = McpDeviceDefaultArgs<ExtArgs>
     /**
      * @deprecated Use CompartmentDefaultArgs instead
      */

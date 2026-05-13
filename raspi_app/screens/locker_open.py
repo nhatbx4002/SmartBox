@@ -4,6 +4,7 @@ from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QLabel, QPushButton
 
 from screens.base import BaseController
+from services.api_client import ApiError
 from services.config_loader import get_config_value
 
 
@@ -23,6 +24,7 @@ class LockerOpenController(BaseController):
         self.timer.timeout.connect(self._tick)
         self.remaining = 0
         self.compartment_id = ""
+        self.finished = False
 
     def on_enter(self, data: dict | None = None) -> None:
         compartment = self.state.compartment_data
@@ -31,13 +33,19 @@ class LockerOpenController(BaseController):
             return
 
         self.compartment_id = compartment.id
+        self.finished = False
         self.remaining = int(get_config_value(self.config, "app.countdown_open", 60))
         size_text = "Size 1 (Nhỏ)" if compartment.size == "SMALL" else "Size 2 (Lớn)"
 
         self.status_label.setText("MỞ TỦ THÀNH CÔNG")
-        self.locker_name_label.setText(compartment.name)
+        self.locker_name_label.setText(self._locker_text())
         self.locker_size_label.setText(size_text)
-        self.instruction_label.setText("Vui lòng bỏ đồ vào tủ rồi đóng cửa thật kỹ")
+
+        is_pickup = self.state.mode == "pickup"
+        self.instruction_label.setText(
+            "Vui lòng lấy đồ và đóng cửa thật kỹ" if is_pickup else "Vui lòng bỏ đồ vào tủ rồi đóng cửa thật kỹ"
+        )
+        self.finish_button.setEnabled(False)
         self.timer_label.setStyleSheet("")
         self._render_timer()
 
@@ -63,8 +71,35 @@ class LockerOpenController(BaseController):
             self.timer_label.setStyleSheet("color: #EF4444;")
 
     def _finish(self) -> None:
+        if self.finished or self.remaining > 0:
+            return
+        self.finished = True
+        self.finish_button.setEnabled(False)
         self.timer.stop()
         if self.compartment_id:
             self.gpio_controller.lock(self.compartment_id)
             self.mqtt_client.publish_lock(self.compartment_id)
-        self.go_home()
+
+        # Pickup mode: mark rental as complete so compartment becomes AVAILABLE
+        if self.state.mode == "pickup" and self.state.rental_data:
+            try:
+                self.api_client.complete_rental(self.state.rental_data.id)
+            except ApiError as e:
+                print(f"[locker_open] complete_rental failed: {e}")
+
+        return_route = self.app.history[-1] if self.app.history else None
+        if return_route != "/rent-success":
+            self.state.reset_rent_flow()
+
+        self.go_back()
+
+    def _locker_text(self) -> str:
+        rental = self.state.rental_data
+        compartment = self.state.compartment_data
+        if compartment is None:
+            return ""
+
+        compartment_name = rental.compartment_name if rental and rental.compartment_name else compartment.name
+        if "Ngăn" in compartment_name or compartment.locker_name in compartment_name:
+            return compartment_name
+        return f"{compartment.locker_name} - Ngăn {compartment_name}"

@@ -11,8 +11,15 @@ router.get(
     const cabinets = await prisma.cabinet.findMany({
       where: cabinetId ? { id: cabinetId } : {},
       include: {
+        mcpDevices: {
+          orderBy: [{ bus: 'asc' }, { address: 'asc' }],
+        },
         compartments: {
-          include: { realtimeStatus: true },
+          include: {
+            realtimeStatus: true,
+            lockMcpDevice: true,
+            sensorMcpDevice: true,
+          },
           orderBy: { name: 'asc' },
         },
       },

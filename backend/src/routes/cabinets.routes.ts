@@ -19,8 +19,6 @@ const cabinetCreateSchema = z.object({
   id: z.string().optional(),
   locationId: z.string().min(1),
   name: z.string().min(1),
-  mcp23017Bus: z.number().int().optional(),
-  mcp23017Address: z.number().int().optional(),
 });
 
 const cabinetUpdateSchema = cabinetCreateSchema.partial().extend({

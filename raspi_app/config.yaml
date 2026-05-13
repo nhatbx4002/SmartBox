@@ -1,9 +1,9 @@
 api:
-  base_url: "http://localhost:3000"
+  base_url: "http://192.168.1.29:3001"
   timeout: 10
 
 mqtt:
-  broker: "localhost"
+  broker: "192.168.1.29"
   port: 1883
   username: ""
   password: ""
@@ -11,12 +11,6 @@ mqtt:
 hardware:
   driver: "mcu2317"
   cabinet_id: "cabinet-a"
-
-mcu2317:
-  bus: 1
-  address: 0x20
-  led_pins:
-    A1: 0
 
 gpio:
   sensor_1: 22

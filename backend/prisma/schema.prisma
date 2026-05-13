@@ -154,18 +154,33 @@ model Cabinet {
   id              String        @id @default(cuid())
   locationId      String
   name            String
-  mcp23017Bus     Int           @default(1)
-  mcp23017Address Int           @default(32)
   status          CabinetStatus @default(ACTIVE)
   lastHeartbeatAt DateTime?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   location        Location      @relation(fields: [locationId], references: [id])
   compartments    Compartment[]
+  mcpDevices      McpDevice[]
   logs            LockerLog[]
 
   @@index([locationId])
   @@index([status])
+}
+
+model McpDevice {
+  id                 String        @id @default(cuid())
+  cabinetId          String
+  bus                Int           @default(1)
+  address            Int           @default(32)
+  name               String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  cabinet            Cabinet       @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+  lockCompartments   Compartment[] @relation("LockMcp")
+  sensorCompartments Compartment[] @relation("SensorMcp")
+
+  @@unique([cabinetId, bus, address])
+  @@index([cabinetId])
 }
 
 model Compartment {
@@ -175,16 +190,22 @@ model Compartment {
   size              CompartmentSize
   mcp23017PinLock   Int
   mcp23017PinSensor Int
+  lockMcpDeviceId   String?
+  sensorMcpDeviceId String?
   status            CompartmentAvailability @default(AVAILABLE)
   createdAt         DateTime                @default(now())
   updatedAt         DateTime                @updatedAt
   cabinet           Cabinet                 @relation(fields: [cabinetId], references: [id])
+  lockMcpDevice     McpDevice?              @relation("LockMcp", fields: [lockMcpDeviceId], references: [id], onDelete: SetNull)
+  sensorMcpDevice   McpDevice?              @relation("SensorMcp", fields: [sensorMcpDeviceId], references: [id], onDelete: SetNull)
   rentals           Rental[]
   logs              LockerLog[]
   realtimeStatus    CompartmentStatus?
 
   @@unique([cabinetId, name])
   @@index([cabinetId])
+  @@index([lockMcpDeviceId])
+  @@index([sensorMcpDeviceId])
   @@index([status])
 }
 

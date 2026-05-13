@@ -26,21 +26,43 @@ export async function createRental(input: {
   const plan = await prisma.pricePlan.findFirst({
     where: { id: input.planId, size: input.size, isActive: true },
   });
-  if (!plan) throw NotFoundError('Price plan not found');
+  console.log(`[createRental] looking for plan id="${input.planId}" size=${input.size}:`, plan ? `found "${plan.name}"` : 'NOT FOUND');
+  if (!plan) {
+    // Debug: log all plans for this size
+    const allPlans = await prisma.pricePlan.findMany({ where: { size: input.size, isActive: true }, select: { id: true, name: true } });
+    console.log(`[createRental] available plans for size=${input.size}:`, allPlans);
+    throw NotFoundError(`Khong tim thay goi ${input.size === CompartmentSize.SMALL ? 'Size 1' : 'Size 2'} phu hop`);
+  }
+
+  const cabinetFilter = input.cabinetId ? { id: input.cabinetId } : {};
+  const cabinet = await prisma.cabinet.findFirst({ where: cabinetFilter });
+  if (!cabinet) throw NotFoundError('Cabinet not found');
+  if (cabinet.status !== CabinetStatus.ACTIVE) {
+    throw BadRequestError(`Cabinet "${cabinet.name}" hien dang ${cabinet.status.toLowerCase()}`);
+  }
+
+  // Debug: log all compartments for this cabinet
+  const allCompartments = await prisma.compartment.findMany({
+    where: { cabinetId: cabinet.id },
+    select: { id: true, name: true, size: true, status: true },
+  });
+  console.log(`[createRental] cabinet="${cabinet.id}" size=${input.size} compartments:`, allCompartments);
 
   const compartment = await prisma.compartment.findFirst({
     where: {
       size: input.size,
       status: CompartmentAvailability.AVAILABLE,
       cabinet: {
-        status: CabinetStatus.ACTIVE,
         id: input.cabinetId ?? undefined,
+        status: CabinetStatus.ACTIVE,
       },
     },
     include: { cabinet: true },
     orderBy: [{ cabinetId: 'asc' }, { name: 'asc' }],
   });
-  if (!compartment) throw BadRequestError('No available compartment');
+  if (!compartment) {
+    throw BadRequestError(`Khong con ngho trong — ngho "${cabinet.name}" da het cho ${input.size === CompartmentSize.SMALL ? 'Size 1' : 'Size 2'}`);
+  }
 
   const code = await generateUniqueCode();
   const codeHash = await bcrypt.hash(code, 10);

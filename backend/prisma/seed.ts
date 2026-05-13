@@ -2,6 +2,8 @@ import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import {
   AdminRole,
+  CabinetStatus,
+  CompartmentAvailability,
   CompartmentSize,
   PrismaClient,
   RentalType,
@@ -39,6 +41,15 @@ async function seedPlans() {
   }
 }
 
+async function resetDemoCabinetData() {
+  await prisma.lockerLog.deleteMany({});
+  await prisma.rental.deleteMany({});
+  await prisma.compartmentStatus.deleteMany({});
+  await prisma.compartment.deleteMany({});
+  await prisma.mcpDevice.deleteMany({});
+  await prisma.cabinet.deleteMany({});
+}
+
 async function seedLocationsAndCabinets() {
   const bachKhoa = await prisma.location.upsert({
     where: { id: 'loc-bach-khoa' },
@@ -66,29 +77,59 @@ async function seedLocationsAndCabinets() {
 
   const cabinetA = await prisma.cabinet.upsert({
     where: { id: 'cabinet-a' },
-    update: {},
+    update: {
+      locationId: bachKhoa.id,
+      name: 'Tu A',
+      status: CabinetStatus.ACTIVE,
+    },
     create: {
       id: 'cabinet-a',
       locationId: bachKhoa.id,
       name: 'Tu A',
-      mcp23017Bus: 1,
-      mcp23017Address: 32,
+      status: CabinetStatus.ACTIVE,
     },
   });
 
-  await seedCompartments(cabinetA.id);
+  const mcpDevice = await prisma.mcpDevice.upsert({
+    where: { id: 'mcp-cabinet-a-0x21' },
+    update: {
+      cabinetId: cabinetA.id,
+      bus: 1,
+      address: 0x21,
+      name: 'MCP Demo 0x21',
+    },
+    create: {
+      id: 'mcp-cabinet-a-0x21',
+      cabinetId: cabinetA.id,
+      bus: 1,
+      address: 0x21,
+      name: 'MCP Demo 0x21',
+    },
+  });
+
+  await seedCompartments(cabinetA.id, mcpDevice.id);
 }
 
-async function seedCompartments(cabinetId: string) {
+async function seedCompartments(cabinetId: string, mcpDeviceId: string) {
   const compartment = await prisma.compartment.upsert({
     where: { cabinetId_name: { cabinetId, name: 'A1' } },
-    update: {},
+    update: {
+      size: CompartmentSize.SMALL,
+      mcp23017PinLock: 0,
+      mcp23017PinSensor: 12,
+      lockMcpDeviceId: mcpDeviceId,
+      sensorMcpDeviceId: mcpDeviceId,
+      status: CompartmentAvailability.AVAILABLE,
+    },
     create: {
       name: 'A1',
       cabinetId,
       size: CompartmentSize.SMALL,
       mcp23017PinLock: 0,
       mcp23017PinSensor: 12,
+      lockMcpDeviceId: mcpDeviceId,
+      sensorMcpDeviceId: mcpDeviceId,
+      status: CompartmentAvailability.AVAILABLE,
     },
   });
 
@@ -114,6 +155,7 @@ async function seedAdmin() {
 
 async function main() {
   await seedPlans();
+  await resetDemoCabinetData();
   await seedLocationsAndCabinets();
   await seedAdmin();
   console.log('Seed completed');

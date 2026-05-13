@@ -12,7 +12,7 @@ import { prisma } from '../lib/prisma';
 
 export async function listCabinets() {
   return prisma.cabinet.findMany({
-    include: { location: true, compartments: { include: { realtimeStatus: true } } },
+    include: { location: true, mcpDevices: true, compartments: { include: { realtimeStatus: true } } },
     orderBy: { createdAt: 'asc' },
   });
 }
@@ -20,7 +20,7 @@ export async function listCabinets() {
 export async function getCabinet(id: string) {
   const cabinet = await prisma.cabinet.findUnique({
     where: { id },
-    include: { location: true, compartments: { include: { realtimeStatus: true } } },
+    include: { location: true, mcpDevices: true, compartments: { include: { realtimeStatus: true } } },
   });
   if (!cabinet) throw NotFoundError('Cabinet not found');
   return cabinet;
@@ -30,15 +30,13 @@ export async function createCabinet(input: {
   id?: string;
   locationId: string;
   name: string;
-  mcp23017Bus?: number;
-  mcp23017Address?: number;
 }) {
   return prisma.cabinet.create({ data: input });
 }
 
 export async function updateCabinet(
   id: string,
-  input: Partial<{ locationId: string; name: string; mcp23017Bus: number; mcp23017Address: number; status: CabinetStatus }>,
+  input: Partial<{ locationId: string; name: string; status: CabinetStatus }>,
 ) {
   await getCabinet(id);
   return prisma.cabinet.update({ where: { id }, data: input });

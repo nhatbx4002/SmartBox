@@ -96,6 +96,18 @@ class ApiClient:
         data = self._parse_response(response)
         return self._rental_from_response(data), self._compartment_from_response(data)
 
+    def complete_rental(self, rental_id: str) -> None:
+        if self.mock:
+            return
+
+        response = requests.post(
+            f"{self.base_url}/api/rentals/{rental_id}/complete",
+            timeout=self.timeout,
+        )
+        if not response.ok:
+            data = self._parse_response(response)
+            raise ApiError(data.get("error", {}).get("message", "Không thể kết thúc cho thuê") if isinstance(data, dict) else str(data), response.status_code)
+
     def _parse_response(self, response: requests.Response):
         if response.ok:
             payload = response.json()

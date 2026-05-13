@@ -160,10 +160,18 @@ exports.Prisma.CabinetScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
   name: 'name',
-  mcp23017Bus: 'mcp23017Bus',
-  mcp23017Address: 'mcp23017Address',
   status: 'status',
   lastHeartbeatAt: 'lastHeartbeatAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.McpDeviceScalarFieldEnum = {
+  id: 'id',
+  cabinetId: 'cabinetId',
+  bus: 'bus',
+  address: 'address',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -175,6 +183,8 @@ exports.Prisma.CompartmentScalarFieldEnum = {
   size: 'size',
   mcp23017PinLock: 'mcp23017PinLock',
   mcp23017PinSensor: 'mcp23017PinSensor',
+  lockMcpDeviceId: 'lockMcpDeviceId',
+  sensorMcpDeviceId: 'sensorMcpDeviceId',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -387,6 +397,7 @@ exports.Prisma.ModelName = {
   User: 'User',
   Location: 'Location',
   Cabinet: 'Cabinet',
+  McpDevice: 'McpDevice',
   Compartment: 'Compartment',
   CompartmentStatus: 'CompartmentStatus',
   PricePlan: 'PricePlan',
