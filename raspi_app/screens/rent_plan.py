@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QPushButton, QWidget
 
 from screens.base import BaseController
@@ -36,11 +35,8 @@ class RentPlanController(BaseController):
         }
         self.button_styles = {plan_id: button.styleSheet() for plan_id, button in self.plan_buttons.items()}
         self.plans_by_id: dict[str, Plan] = {}
-        self.expanded_group = "single"
-
         self.child("btnBackMain", QPushButton).clicked.connect(lambda: self.navigate("/rent-size"))
         self.continue_button.clicked.connect(lambda: self.navigate("/rent-phone"))
-        self._wire_card_expand_handlers()
         for plan_id, button in self.plan_buttons.items():
             button.setCheckable(True)
             button.clicked.connect(lambda _checked=False, value=plan_id: self._select_plan(value))
@@ -53,7 +49,6 @@ class RentPlanController(BaseController):
         size_text = "Size 1 (Nhỏ)" if self.state.selected_size == "SMALL" else "Size 2 (Lớn)"
         self.selected_size_label.setText(f"Bạn đã chọn {size_text}")
         self._load_plans()
-        self.expanded_group = self._group_for_selected_plan() or "single"
         self._apply_group_layout()
         self._apply_selection()
 
@@ -77,7 +72,6 @@ class RentPlanController(BaseController):
         self.state.payment_method = None
         self.state.rental_data = None
         self.state.compartment_data = None
-        self.expanded_group = self._group_for_plan(plan_id)
         self._apply_group_layout()
         self._apply_selection()
 
@@ -92,55 +86,16 @@ class RentPlanController(BaseController):
             button.setStyleSheet(style)
         self.continue_button.setEnabled(selected_id is not None)
 
-    def _wire_card_expand_handlers(self) -> None:
-        clickable_labels = {
-            "single": ["lblPlanSingleTitle", "lblPlanSingleSubtitle"],
-            "multi": ["lblPlanMultiTitle", "lblPlanMultiSubtitle"],
-            "monthly": ["lblPlanMonthlyTitle", "lblPlanMonthlySubtitle"],
-        }
-        for group, card in self.cards.items():
-            self._make_expand_target(card, group)
-            for label_name in clickable_labels[group]:
-                self._make_expand_target(self.child(label_name, QLabel), group)
-
-    def _make_expand_target(self, widget: QWidget, group: str) -> None:
-        widget.setCursor(Qt.PointingHandCursor)
-
-        def mouse_press_event(event):
-            self._expand_group(group)
-            event.accept()
-
-        widget.mousePressEvent = mouse_press_event
-
-    def _expand_group(self, group: str) -> None:
-        if self.expanded_group == group:
-            return
-        self.expanded_group = group
-        self._apply_group_layout()
-
     def _apply_group_layout(self) -> None:
         y = 220
         gap = 40
         width = 656
         x = 32
-        collapsed_height = 99
         expanded_height = 170
 
         for group in ["single", "multi", "monthly"]:
-            expanded = group == self.expanded_group
-            height = expanded_height if expanded else collapsed_height
+            height = expanded_height
             self.cards[group].setGeometry(x, y, width, height)
             for plan_id in self.groups[group]:
-                self.plan_buttons[plan_id].setVisible(expanded)
+                self.plan_buttons[plan_id].setVisible(True)
             y += height + gap
-
-    def _group_for_selected_plan(self) -> str | None:
-        if not self.state.selected_plan:
-            return None
-        return self._group_for_plan(self.state.selected_plan.id)
-
-    def _group_for_plan(self, plan_id: str) -> str:
-        for group, plan_ids in self.groups.items():
-            if plan_id in plan_ids:
-                return group
-        return "single"

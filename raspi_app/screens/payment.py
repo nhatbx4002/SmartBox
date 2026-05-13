@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from PySide6.QtWidgets import QLabel, QPushButton
 
-from screens.base import BaseController
+from screens.base import BaseController, process_events
+from services.api_client import ApiError
 from services.formatters import format_currency
 
 
@@ -14,6 +15,7 @@ class PaymentController(BaseController):
         self.amount_label = self.child("lblAmount", QLabel)
         self.plan_info_label = self.child("lblPlanInfo", QLabel)
         self.pay_button = self.child("btnPayNow", QPushButton)
+        self.pay_button_text = self.pay_button.text()
         self.method_buttons: dict[str, QPushButton] = {
             "MOMO": self.child("btnPaymentMomo", QPushButton),
             "ZALOPAY": self.child("btnPaymentZalo", QPushButton),
@@ -34,6 +36,7 @@ class PaymentController(BaseController):
         self.amount_label.setText(format_currency(self.state.selected_plan.price))
         size_text = "Size 1" if self.state.selected_size == "SMALL" else "Size 2"
         self.plan_info_label.setText(f"{size_text} - {self.state.selected_plan.name}")
+        self.pay_button.setText(self.pay_button_text)
         self._apply_selection()
 
     def _select_method(self, method: str) -> None:
@@ -52,12 +55,30 @@ class PaymentController(BaseController):
     def _pay_now(self) -> None:
         if not self.state.selected_plan or not self.state.payment_method:
             return
-        rental, compartment = self.api_client.create_rental(
-            phone=self.state.phone,
-            size=self.state.selected_size,
-            plan_id=self.state.selected_plan.id,
-            payment_method=self.state.payment_method,
-        )
+
+        self.pay_button.setEnabled(False)
+        self.pay_button.setText("ĐANG XỬ LÝ...")
+        process_events()
+        try:
+            rental, compartment = self.api_client.create_rental(
+                phone=self.state.phone,
+                size=self.state.selected_size,
+                plan_id=self.state.selected_plan.id,
+                payment_method=self.state.payment_method,
+                cabinet_id=getattr(self.app, "cabinet_id", None),
+            )
+        except ApiError as error:
+            self._show_payment_error(error.message)
+            return
+        except Exception as error:
+            self._show_payment_error(f"Lỗi kết nối: {error}")
+            return
+
         self.state.rental_data = rental
         self.state.compartment_data = compartment
         self.navigate("/rent-success")
+
+    def _show_payment_error(self, message: str) -> None:
+        self.plan_info_label.setText(f"Không thể thanh toán: {message}")
+        self.pay_button.setText(self.pay_button_text)
+        self.pay_button.setEnabled(True)
