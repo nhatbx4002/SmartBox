@@ -91,19 +91,19 @@ async function seedLocationsAndCabinets() {
   });
 
   const mcpDevice = await prisma.mcpDevice.upsert({
-    where: { id: 'mcp-cabinet-a-0x21' },
+    where: { id: 'mcp-cabinet-a-0x20' },
     update: {
       cabinetId: cabinetA.id,
       bus: 1,
-      address: 0x21,
-      name: 'MCP Demo 0x21',
+      address: 32,
+      name: 'MCP Demo 0x20',
     },
     create: {
-      id: 'mcp-cabinet-a-0x21',
+      id: 'mcp-cabinet-a-0x20',
       cabinetId: cabinetA.id,
       bus: 1,
-      address: 0x21,
-      name: 'MCP Demo 0x21',
+      address: 32,
+      name: 'MCP Demo 0x20',
     },
   });
 

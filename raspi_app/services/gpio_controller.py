@@ -53,6 +53,8 @@ class GpioController:
                 self.pin_map[key] = pin
                 self.pin_target_map[key] = (bus, address, pin)
 
+        print(f"[GPIO] loaded MCP pin targets from backend: {self.pin_target_map}")
+
     def unlock(self, compartment_id: str, duration: int = 3) -> bool:
         if self.mock:
             self.lock_state[compartment_id] = "UNLOCKED"
@@ -65,11 +67,12 @@ class GpioController:
 
         try:
             bus_number, address, pin = self._target_for_compartment(compartment_id)
+            print(f"[GPIO] unlock target compartment={compartment_id} bus={bus_number} address={address} pin={pin}")
             with SMBus(bus_number) as bus:
                 self._configure_output(bus, address, pin)
-                self._write_pin(bus, address, pin, high=True)
-                time.sleep(duration)
                 self._write_pin(bus, address, pin, high=False)
+                time.sleep(duration)
+                self._write_pin(bus, address, pin, high=True)
             return True
         except Exception as error:
             print(f"[GPIO ERROR] unlock failed: {error}")
@@ -87,9 +90,10 @@ class GpioController:
 
         try:
             bus_number, address, pin = self._target_for_compartment(compartment_id)
+            print(f"[GPIO] lock target compartment={compartment_id} bus={bus_number} address={address} pin={pin}")
             with SMBus(bus_number) as bus:
                 self._configure_output(bus, address, pin)
-                self._write_pin(bus, address, pin, high=False)
+                self._write_pin(bus, address, pin, high=True)
             return True
         except Exception as error:
             print(f"[GPIO ERROR] lock failed: {error}")
