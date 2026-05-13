@@ -26,13 +26,18 @@ class KioskApp(QWidget):
         super().__init__()
         self.config = load_config()
         self.state = AppState()
+        self.cabinet_id = get_config_value(self.config, "hardware.cabinet_id", "cabinet-a")
         self.api_client = ApiClient(
             base_url=get_config_value(self.config, "api.base_url", "http://localhost:5000"),
             timeout=get_config_value(self.config, "api.timeout", 10),
-            mock=True,
+            mock=False,
         )
-        self.mqtt_client = MqttClient(mock=True)
-        self.gpio_controller = GpioController(mock=True)
+        self.gpio_controller = GpioController(mock=False)
+        self.gpio_controller.load_from_backend(self.api_client, self.cabinet_id)
+        self.mqtt_client = MqttClient(self.config, cabinet_id=self.cabinet_id, mock=False)
+        self.mqtt_client.connect()
+        self.mqtt_client.subscribe_unlock(self.cabinet_id, self.gpio_controller.unlock)
+        self.mqtt_client.subscribe_lock(self.cabinet_id, self.gpio_controller.lock)
         self.stack = QStackedWidget(self)
         self.controllers = {}
         self.history: list[str] = []
@@ -89,6 +94,10 @@ class KioskApp(QWidget):
             return
         route = self.history.pop()
         self.navigate(route, replace=True)
+
+    def closeEvent(self, event) -> None:
+        self.mqtt_client.disconnect()
+        super().closeEvent(event)
 
 
 def main():

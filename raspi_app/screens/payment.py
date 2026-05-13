@@ -57,6 +57,7 @@ class PaymentController(BaseController):
             size=self.state.selected_size,
             plan_id=self.state.selected_plan.id,
             payment_method=self.state.payment_method,
+            cabinet_id=getattr(self.app, "cabinet_id", None),
         )
         self.state.rental_data = rental
         self.state.compartment_data = compartment

@@ -1,9 +1,16 @@
 api:
-  base_url: "http://localhost:5000"
+  base_url: "http://localhost:3000"
   timeout: 10
+
+mqtt:
+  broker: "localhost"
+  port: 1883
+  username: ""
+  password: ""
 
 hardware:
   driver: "mcu2317"
+  cabinet_id: "cabinet-a"
 
 mcu2317:
   bus: 1
