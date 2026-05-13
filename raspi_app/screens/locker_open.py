@@ -43,6 +43,9 @@ class LockerOpenController(BaseController):
 
         self.gpio_controller.unlock(self.compartment_id, duration=3)
         self.mqtt_client.publish_unlock(self.compartment_id, duration=3)
+        rental_id = self.state.rental_data.id if self.state.rental_data else None
+        if rental_id:
+            self.mqtt_client.publish_door_opened(self.compartment_id, rental_id)
         self.timer.start(1000)
 
     def on_exit(self) -> None:

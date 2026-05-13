@@ -97,3 +97,14 @@ class MqttClient:
         }
         if not self.mock and self._client is not None:
             self._client.publish(topic, json.dumps(payload), qos=1)
+
+    def publish_door_opened(self, compartment_id: str, rental_id: str) -> None:
+        """Notify backend that the door was physically opened for a rental."""
+        topic = f"smartbox/{self.cabinet_id}/event/{compartment_id}"
+        payload = {"event": "opened", "rentalId": rental_id}
+        self.last_event = {
+            "topic": topic,
+            "payload": payload,
+        }
+        if not self.mock and self._client is not None:
+            self._client.publish(topic, json.dumps(payload), qos=1)

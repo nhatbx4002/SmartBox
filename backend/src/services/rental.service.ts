@@ -158,8 +158,14 @@ export async function handleUnlock(rentalId: string) {
     where: { id: rentalId },
     include: { compartment: true },
   });
-  if (!rental) throw NotFoundError('Rental not found');
-  if (rental.openCount >= rental.maxOpens) throw BadRequestError('Open limit reached');
+  if (!rental) return;
+
+  if (rental.status !== RentalStatus.ACTIVE) return;
+
+  if (rental.openCount >= rental.maxOpens) {
+    await completeRental(rentalId);
+    return;
+  }
 
   return prisma.rental.update({
     where: { id: rentalId },
