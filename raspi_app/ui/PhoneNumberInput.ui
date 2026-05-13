@@ -107,7 +107,7 @@ QLabel#lblPrefix {
     font-weight: 900;
 }
 
-QLineEdit#linePhone {
+QLineEdit#lineEdit {
     background: transparent;
     border: none;
     color: #F2F2F2;
