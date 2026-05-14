@@ -26,8 +26,6 @@ export declare function createRental(input: {
                 updatedAt: Date;
                 status: import("../generated/prisma").$Enums.CabinetStatus;
                 locationId: string;
-                mcp23017Bus: number;
-                mcp23017Address: number;
                 lastHeartbeatAt: Date | null;
             };
         } & {
@@ -40,6 +38,8 @@ export declare function createRental(input: {
             size: import("../generated/prisma").$Enums.CompartmentSize;
             mcp23017PinLock: number;
             mcp23017PinSensor: number;
+            lockMcpDeviceId: string | null;
+            sensorMcpDeviceId: string | null;
         };
         pricePlan: {
             id: string;
@@ -79,8 +79,6 @@ export declare function createRental(input: {
             updatedAt: Date;
             status: import("../generated/prisma").$Enums.CabinetStatus;
             locationId: string;
-            mcp23017Bus: number;
-            mcp23017Address: number;
             lastHeartbeatAt: Date | null;
         };
     } & {
@@ -93,6 +91,8 @@ export declare function createRental(input: {
         size: import("../generated/prisma").$Enums.CompartmentSize;
         mcp23017PinLock: number;
         mcp23017PinSensor: number;
+        lockMcpDeviceId: string | null;
+        sensorMcpDeviceId: string | null;
     };
 }>;
 export declare function getByCode(code: string): Promise<{
@@ -114,8 +114,6 @@ export declare function getByCode(code: string): Promise<{
             updatedAt: Date;
             status: import("../generated/prisma").$Enums.CabinetStatus;
             locationId: string;
-            mcp23017Bus: number;
-            mcp23017Address: number;
             lastHeartbeatAt: Date | null;
         };
         realtimeStatus: {
@@ -135,6 +133,8 @@ export declare function getByCode(code: string): Promise<{
         size: import("../generated/prisma").$Enums.CompartmentSize;
         mcp23017PinLock: number;
         mcp23017PinSensor: number;
+        lockMcpDeviceId: string | null;
+        sensorMcpDeviceId: string | null;
     };
     pricePlan: {
         id: string;
@@ -186,5 +186,5 @@ export declare function handleUnlock(rentalId: string): Promise<{
     paymentMethod: import("../generated/prisma").$Enums.PaymentMethod;
     paidAt: Date | null;
     status: import("../generated/prisma").$Enums.RentalStatus;
-}>;
+} | undefined>;
 //# sourceMappingURL=rental.service.d.ts.map

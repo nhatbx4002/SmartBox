@@ -45,7 +45,7 @@ class LockerOpenController(BaseController):
         self.instruction_label.setText(
             "Vui lòng lấy đồ và đóng cửa thật kỹ" if is_pickup else "Vui lòng bỏ đồ vào tủ rồi đóng cửa thật kỹ"
         )
-        self.finish_button.setEnabled(False)
+        self.finish_button.setEnabled(True)
         self.timer_label.setStyleSheet("")
         self._render_timer()
 
@@ -73,7 +73,7 @@ class LockerOpenController(BaseController):
             self.timer_label.setStyleSheet("color: #EF4444;")
 
     def _finish(self) -> None:
-        if self.finished or self.remaining > 0:
+        if self.finished:
             return
         self.finished = True
         self.finish_button.setEnabled(False)
@@ -89,11 +89,8 @@ class LockerOpenController(BaseController):
             except ApiError as e:
                 print(f"[locker_open] complete_rental failed: {e}")
 
-        return_route = self.app.history[-1] if self.app.history else None
-        if return_route != "/rent-success":
-            self.state.reset_rent_flow()
-
-        self.go_back()
+        self.state.reset_all()
+        self.go_home()
 
     def _locker_text(self) -> str:
         rental = self.state.rental_data

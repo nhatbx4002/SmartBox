@@ -14,29 +14,47 @@ const prisma_1 = require("../generated/prisma");
 const errors_1 = require("../lib/errors");
 const qr_1 = require("../lib/qr");
 const prisma_2 = require("../lib/prisma");
-const locker_service_1 = require("./locker.service");
 const notification_service_1 = require("./notification.service");
 const prisma_3 = require("../generated/prisma");
 async function createRental(input) {
     const plan = await prisma_2.prisma.pricePlan.findFirst({
         where: { id: input.planId, size: input.size, isActive: true },
     });
-    if (!plan)
-        throw (0, errors_1.NotFoundError)('Price plan not found');
+    console.log(`[createRental] looking for plan id="${input.planId}" size=${input.size}:`, plan ? `found "${plan.name}"` : 'NOT FOUND');
+    if (!plan) {
+        // Debug: log all plans for this size
+        const allPlans = await prisma_2.prisma.pricePlan.findMany({ where: { size: input.size, isActive: true }, select: { id: true, name: true } });
+        console.log(`[createRental] available plans for size=${input.size}:`, allPlans);
+        throw (0, errors_1.NotFoundError)(`Khong tim thay goi ${input.size === prisma_1.CompartmentSize.SMALL ? 'Size 1' : 'Size 2'} phu hop`);
+    }
+    const cabinetFilter = input.cabinetId ? { id: input.cabinetId } : {};
+    const cabinet = await prisma_2.prisma.cabinet.findFirst({ where: cabinetFilter });
+    if (!cabinet)
+        throw (0, errors_1.NotFoundError)('Cabinet not found');
+    if (cabinet.status !== prisma_1.CabinetStatus.ACTIVE) {
+        throw (0, errors_1.BadRequestError)(`Cabinet "${cabinet.name}" hien dang ${cabinet.status.toLowerCase()}`);
+    }
+    // Debug: log all compartments for this cabinet
+    const allCompartments = await prisma_2.prisma.compartment.findMany({
+        where: { cabinetId: cabinet.id },
+        select: { id: true, name: true, size: true, status: true },
+    });
+    console.log(`[createRental] cabinet="${cabinet.id}" size=${input.size} compartments:`, allCompartments);
     const compartment = await prisma_2.prisma.compartment.findFirst({
         where: {
             size: input.size,
             status: prisma_1.CompartmentAvailability.AVAILABLE,
             cabinet: {
-                status: prisma_1.CabinetStatus.ACTIVE,
                 id: input.cabinetId ?? undefined,
+                status: prisma_1.CabinetStatus.ACTIVE,
             },
         },
         include: { cabinet: true },
         orderBy: [{ cabinetId: 'asc' }, { name: 'asc' }],
     });
-    if (!compartment)
-        throw (0, errors_1.BadRequestError)('No available compartment');
+    if (!compartment) {
+        throw (0, errors_1.BadRequestError)(`Khong con ngho trong — ngho "${cabinet.name}" da het cho ${input.size === prisma_1.CompartmentSize.SMALL ? 'Size 1' : 'Size 2'}`);
+    }
     const code = await generateUniqueCode();
     const codeHash = await bcrypt_1.default.hash(code, 10);
     const expiresAt = new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000);
@@ -91,7 +109,6 @@ async function createRental(input) {
         body: `Your rental code is ${code}.`,
         data: { rentalId: rental.id, compartmentId: rental.compartmentId },
     });
-    await (0, locker_service_1.unlockCompartment)(rental.compartment.cabinetId, rental.compartment.name, rental.id);
     return { rental: { ...rental, qrToken: (0, qr_1.signQrToken)(rental.id, expiresAt) }, code, compartment: rental.compartment };
 }
 async function getByCode(code) {
@@ -142,9 +159,13 @@ async function handleUnlock(rentalId) {
         include: { compartment: true },
     });
     if (!rental)
-        throw (0, errors_1.NotFoundError)('Rental not found');
-    if (rental.openCount >= rental.maxOpens)
-        throw (0, errors_1.BadRequestError)('Open limit reached');
+        return;
+    if (rental.status !== prisma_1.RentalStatus.ACTIVE)
+        return;
+    if (rental.openCount >= rental.maxOpens) {
+        await completeRental(rentalId);
+        return;
+    }
     return prisma_2.prisma.rental.update({
         where: { id: rentalId },
         data: {

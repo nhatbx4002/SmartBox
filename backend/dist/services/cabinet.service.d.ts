@@ -30,7 +30,18 @@ export declare function listCabinets(): Promise<({
         size: import("../generated/prisma").$Enums.CompartmentSize;
         mcp23017PinLock: number;
         mcp23017PinSensor: number;
+        lockMcpDeviceId: string | null;
+        sensorMcpDeviceId: string | null;
     })[];
+    mcpDevices: {
+        id: string;
+        name: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        cabinetId: string;
+        address: number;
+        bus: number;
+    }[];
 } & {
     id: string;
     name: string;
@@ -38,8 +49,6 @@ export declare function listCabinets(): Promise<({
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
     locationId: string;
-    mcp23017Bus: number;
-    mcp23017Address: number;
     lastHeartbeatAt: Date | null;
 })[]>;
 export declare function getCabinet(id: string): Promise<{
@@ -73,7 +82,18 @@ export declare function getCabinet(id: string): Promise<{
         size: import("../generated/prisma").$Enums.CompartmentSize;
         mcp23017PinLock: number;
         mcp23017PinSensor: number;
+        lockMcpDeviceId: string | null;
+        sensorMcpDeviceId: string | null;
     })[];
+    mcpDevices: {
+        id: string;
+        name: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        cabinetId: string;
+        address: number;
+        bus: number;
+    }[];
 } & {
     id: string;
     name: string;
@@ -81,16 +101,12 @@ export declare function getCabinet(id: string): Promise<{
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
     locationId: string;
-    mcp23017Bus: number;
-    mcp23017Address: number;
     lastHeartbeatAt: Date | null;
 }>;
 export declare function createCabinet(input: {
     id?: string;
     locationId: string;
     name: string;
-    mcp23017Bus?: number;
-    mcp23017Address?: number;
 }): Promise<{
     id: string;
     name: string;
@@ -98,15 +114,11 @@ export declare function createCabinet(input: {
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
     locationId: string;
-    mcp23017Bus: number;
-    mcp23017Address: number;
     lastHeartbeatAt: Date | null;
 }>;
 export declare function updateCabinet(id: string, input: Partial<{
     locationId: string;
     name: string;
-    mcp23017Bus: number;
-    mcp23017Address: number;
     status: CabinetStatus;
 }>): Promise<{
     id: string;
@@ -115,8 +127,6 @@ export declare function updateCabinet(id: string, input: Partial<{
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
     locationId: string;
-    mcp23017Bus: number;
-    mcp23017Address: number;
     lastHeartbeatAt: Date | null;
 }>;
 export declare function deleteCabinet(id: string): Promise<{
@@ -126,8 +136,6 @@ export declare function deleteCabinet(id: string): Promise<{
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
     locationId: string;
-    mcp23017Bus: number;
-    mcp23017Address: number;
     lastHeartbeatAt: Date | null;
 }>;
 export declare function updateCompartmentStatus(compartmentId: string, lockStatus: LockStatus, doorStatus: DoorStatus): Promise<{
@@ -144,8 +152,6 @@ export declare function updateHeartbeat(cabinetId: string): Promise<{
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
     locationId: string;
-    mcp23017Bus: number;
-    mcp23017Address: number;
     lastHeartbeatAt: Date | null;
 }>;
 export declare function getAvailableCompartments(size?: CompartmentSize): Promise<({
@@ -169,8 +175,6 @@ export declare function getAvailableCompartments(size?: CompartmentSize): Promis
         updatedAt: Date;
         status: import("../generated/prisma").$Enums.CabinetStatus;
         locationId: string;
-        mcp23017Bus: number;
-        mcp23017Address: number;
         lastHeartbeatAt: Date | null;
     };
     realtimeStatus: {
@@ -190,5 +194,7 @@ export declare function getAvailableCompartments(size?: CompartmentSize): Promis
     size: import("../generated/prisma").$Enums.CompartmentSize;
     mcp23017PinLock: number;
     mcp23017PinSensor: number;
+    lockMcpDeviceId: string | null;
+    sensorMcpDeviceId: string | null;
 })[]>;
 //# sourceMappingURL=cabinet.service.d.ts.map

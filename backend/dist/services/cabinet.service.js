@@ -14,14 +14,14 @@ const socket_1 = require("../lib/socket");
 const prisma_2 = require("../lib/prisma");
 async function listCabinets() {
     return prisma_2.prisma.cabinet.findMany({
-        include: { location: true, compartments: { include: { realtimeStatus: true } } },
+        include: { location: true, mcpDevices: true, compartments: { include: { realtimeStatus: true } } },
         orderBy: { createdAt: 'asc' },
     });
 }
 async function getCabinet(id) {
     const cabinet = await prisma_2.prisma.cabinet.findUnique({
         where: { id },
-        include: { location: true, compartments: { include: { realtimeStatus: true } } },
+        include: { location: true, mcpDevices: true, compartments: { include: { realtimeStatus: true } } },
     });
     if (!cabinet)
         throw (0, errors_1.NotFoundError)('Cabinet not found');

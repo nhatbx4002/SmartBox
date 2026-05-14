@@ -12,7 +12,6 @@ import {
 import { BadRequestError, NotFoundError } from '../lib/errors';
 import { signQrToken } from '../lib/qr';
 import { prisma } from '../lib/prisma';
-import { unlockCompartment } from './locker.service';
 import { createNotification } from './notification.service';
 import { NotificationType } from '../generated/prisma';
 
@@ -125,8 +124,6 @@ export async function createRental(input: {
     body: `Your rental code is ${code}.`,
     data: { rentalId: rental.id, compartmentId: rental.compartmentId },
   });
-
-  await unlockCompartment(rental.compartment.cabinetId, rental.compartment.name, rental.id);
 
   return { rental: { ...rental, qrToken: signQrToken(rental.id, expiresAt) }, code, compartment: rental.compartment };
 }
