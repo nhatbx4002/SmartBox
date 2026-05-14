@@ -70,9 +70,9 @@ class GpioController:
             print(f"[GPIO] unlock target compartment={compartment_id} bus={bus_number} address={address} pin={pin}")
             with SMBus(bus_number) as bus:
                 self._configure_output(bus, address, pin)
-                self._write_pin(bus, address, pin, high=False)
-                time.sleep(duration)
                 self._write_pin(bus, address, pin, high=True)
+                time.sleep(duration)
+                self._write_pin(bus, address, pin, high=False)
             return True
         except Exception as error:
             print(f"[GPIO ERROR] unlock failed: {error}")
@@ -93,7 +93,7 @@ class GpioController:
             print(f"[GPIO] lock target compartment={compartment_id} bus={bus_number} address={address} pin={pin}")
             with SMBus(bus_number) as bus:
                 self._configure_output(bus, address, pin)
-                self._write_pin(bus, address, pin, high=True)
+                self._write_pin(bus, address, pin, high=False)
             return True
         except Exception as error:
             print(f"[GPIO ERROR] lock failed: {error}")
