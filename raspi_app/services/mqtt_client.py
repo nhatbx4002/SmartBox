@@ -108,3 +108,13 @@ class MqttClient:
         }
         if not self.mock and self._client is not None:
             self._client.publish(topic, json.dumps(payload), qos=1)
+
+    def publish_heartbeat(self) -> None:
+        topic = f"smartbox/{self.cabinet_id}/heartbeat"
+        payload = {"cabinetId": self.cabinet_id}
+        self.last_event = {
+            "topic": topic,
+            "payload": payload,
+        }
+        if not self.mock and self._client is not None:
+            self._client.publish(topic, json.dumps(payload), qos=1)

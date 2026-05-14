@@ -1,5 +1,6 @@
 import sys
 
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication, QStackedWidget, QVBoxLayout, QWidget
 
 import resources_rc
@@ -38,6 +39,10 @@ class KioskApp(QWidget):
         self.mqtt_client.connect()
         self.mqtt_client.subscribe_unlock(self.cabinet_id, self.gpio_controller.unlock)
         self.mqtt_client.subscribe_lock(self.cabinet_id, self.gpio_controller.lock)
+        self.heartbeat_timer = QTimer(self)
+        self.heartbeat_timer.timeout.connect(self._publish_heartbeat)
+        self.heartbeat_timer.start(int(get_config_value(self.config, "mqtt.heartbeat_interval_ms", 30000)))
+        self._publish_heartbeat()
         self.stack = QStackedWidget(self)
         self.controllers = {}
         self.history: list[str] = []
@@ -95,7 +100,15 @@ class KioskApp(QWidget):
         route = self.history.pop()
         self.navigate(route, replace=True)
 
+    def _publish_heartbeat(self) -> None:
+        try:
+            self.mqtt_client.publish_heartbeat()
+            print(f"[heartbeat] published for cabinet={self.cabinet_id}")
+        except Exception as error:
+            print(f"[heartbeat] publish failed: {error}")
+
     def closeEvent(self, event) -> None:
+        self.heartbeat_timer.stop()
         self.mqtt_client.disconnect()
         super().closeEvent(event)
 

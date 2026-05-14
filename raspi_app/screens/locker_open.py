@@ -32,7 +32,7 @@ class LockerOpenController(BaseController):
             self.go_home()
             return
 
-        self.compartment_id = compartment.id
+        self.compartment_id = self._compartment_key()
         self.finished = False
         self.remaining = int(get_config_value(self.config, "app.countdown_open", 60))
         size_text = "Size 1 (Nhỏ)" if compartment.size == "SMALL" else "Size 2 (Lớn)"
@@ -49,7 +49,9 @@ class LockerOpenController(BaseController):
         self.timer_label.setStyleSheet("")
         self._render_timer()
 
-        self.gpio_controller.unlock(self.compartment_id, duration=3)
+        print(f"[locker_open] opening compartment key={self.compartment_id}")
+        opened = self.gpio_controller.unlock(self.compartment_id, duration=3)
+        print(f"[locker_open] gpio unlock result={opened}")
         self.mqtt_client.publish_unlock(self.compartment_id, duration=3)
         rental_id = self.state.rental_data.id if self.state.rental_data else None
         if rental_id:
@@ -103,3 +105,12 @@ class LockerOpenController(BaseController):
         if "Ngăn" in compartment_name or compartment.locker_name in compartment_name:
             return compartment_name
         return f"{compartment.locker_name} - Ngăn {compartment_name}"
+
+    def _compartment_key(self) -> str:
+        rental = self.state.rental_data
+        compartment = self.state.compartment_data
+        if rental and rental.compartment_name:
+            return rental.compartment_name
+        if compartment is None:
+            return ""
+        return compartment.id

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import time
-
 try:
     from smbus2 import SMBus
 except ImportError:
@@ -71,8 +69,6 @@ class GpioController:
             with SMBus(bus_number) as bus:
                 self._configure_output(bus, address, pin)
                 self._write_pin(bus, address, pin, high=True)
-                time.sleep(duration)
-                self._write_pin(bus, address, pin, high=False)
             return True
         except Exception as error:
             print(f"[GPIO ERROR] unlock failed: {error}")
