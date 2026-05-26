@@ -6,4 +6,7 @@ node_modules
 /raspi_app/tests
 
 backend/.env
-
+**/node_modules
+**/dist
+**/build
+**/docs
