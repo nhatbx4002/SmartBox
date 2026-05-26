@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainContent</class>
+ <widget class="QWidget" name="mainContent">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>1152</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#mainContent {
+    background-color: #050505;
+    border: none;
+}
+QFrame#processingCard {
+    background-color: #070707;
+    border: none;
+    border-radius: 28px;
+}
+QLabel#lblProcessingText {
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QFrame#progressTrack {
+    background-color: #3A3A3A;
+    border: none;
+    border-radius: 6px;
+}
+QProgressBar#progressVerify {
+    background-color: #3A3A3A;
+    border: none;
+    border-radius: 6px;
+}
+
+QProgressBar#progressVerify::chunk {
+    background-color: #FF6600;
+    border-radius: 6px;
+}
+QLabel#lblProgressPercent {
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 900;
+    background-color: transparent;
+}
+</string>
+  </property>
+  <widget class="QFrame" name="processingCard">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>415</y>
+     <width>656</width>
+     <height>245</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblProcessingIcon">
+    <property name="geometry">
+     <rect>
+      <x>278</x>
+      <y>28</y>
+      <width>100</width>
+      <height>70</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../resources.qrc">:/assets/LoadingIconBox.png</pixmap>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblProcessingText">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>104</y>
+      <width>496</width>
+      <height>38</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Đang xác minh...</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressVerify">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>166</y>
+      <width>496</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>72</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Horizontal</enum>
+    </property>
+    <property name="textDirection">
+     <enum>QProgressBar::Direction::TopToBottom</enum>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

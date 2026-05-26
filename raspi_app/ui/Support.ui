@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainContent</class>
+ <widget class="QWidget" name="mainContent">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>721</width>
+    <height>1152</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#mainContent {
+    background-color: #050505;
+    border: none;
+}
+QPushButton#btnBack {
+    background-color: #1C1C1C;
+    border: 2px solid #333333;
+    border-radius: 8px;
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 800;
+    text-align: center;
+}
+
+QPushButton#btnBack:pressed {
+    background-color: #252525;
+    color: #FF6600;
+}
+QLabel#lblSupportTitle {
+    color: #FFFFFF;
+    font-size: 48px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QFrame#hotlineCard {
+    background-color: #1C1C1C;
+    border: 2px solid #333333;
+    border-left: 8px solid #FF6600;
+    border-radius: 20px;
+}
+QLabel#lblFaqTitle {
+    color: #FFFFFF;
+    font-size: 26px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QFrame#faqItem1,
+QFrame#faqItem2,
+QFrame#faqItem3,
+QFrame#faqItem4 {
+    background-color: #101010;
+    border: 1px solid #333333;
+    border-radius: 16px;
+}
+QLabel#lblFaq1Category,
+QLabel#lblFaq2Category,
+QLabel#lblFaq3Category,
+QLabel#lblFaq4Category {
+    color: #FF6600;
+    font-size: 13px;
+    font-weight: 900;
+    background-color: transparent;
+}
+QLabel#lblFaq1Question,
+QLabel#lblFaq2Question,
+QLabel#lblFaq3Question,
+QLabel#lblFaq4Question {
+    color: #FFFFFF;
+    font-size: 21px;
+    font-weight: 800;
+    background-color: transparent;
+}
+QLabel#lblFaq1Answer,
+QLabel#lblFaq2Answer,
+QLabel#lblFaq3Answer,
+QLabel#lblFaq4Answer {
+    color: #BDBDBD;
+    font-size: 15px;
+    font-weight: 500;
+    background-color: transparent;
+}
+</string>
+  </property>
+  <widget class="QPushButton" name="btnBack">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>32</y>
+     <width>158</width>
+     <height>64</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string> ←  Quay lại</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblSupportTitle">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>135</y>
+     <width>656</width>
+     <height>72</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Hỗ trợ &amp; FAQ</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QFrame" name="hotlineCard">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>235</y>
+     <width>656</width>
+     <height>220</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel#lblSupportIcon {
+    color: #FF6600;
+    font-size: 28px;
+    background-color: transparent;
+}
+
+QLabel#lblSupportSmall {
+    color: #BDBDBD;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background-color: transparent;
+}
+
+QLabel#lblHotline {
+    color: #FF6600;
+    font-size: 46px;
+    font-weight: 900;
+    background-color: transparent;
+}
+
+QLabel#lblHotlineDesc {
+    color: #C8C8C8;
+    font-size: 19px;
+    font-weight: 500;
+    background-color: transparent;
+}
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblSupportIcon">
+    <property name="geometry">
+     <rect>
+      <x>36</x>
+      <y>38</y>
+      <width>32</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../resources.qrc">:/assets/SupportIconPage.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblSupportSmall">
+    <property name="geometry">
+     <rect>
+      <x>82</x>
+      <y>36</y>
+      <width>260</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CẦN HỖ TRỢ NGAY?</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblHotline">
+    <property name="geometry">
+     <rect>
+      <x>36</x>
+      <y>82</y>
+      <width>580</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1900 11111111</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblHotlineDesc">
+    <property name="geometry">
+     <rect>
+      <x>36</x>
+      <y>158</y>
+      <width>580</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string> Đội ngũ kỹ thuật viên của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7 trong mọi tình huống khẩn cấp.</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="lblFaqTitle">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>485</y>
+     <width>656</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>▣  CÂU HỎI THƯỜNG GẶP</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="faqItem1">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>530</y>
+     <width>656</width>
+     <height>125</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblFaq1Category">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>16</y>
+      <width>200</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>HƯỚNG DẪN</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq1Question">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>42</y>
+      <width>560</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string> Làm thế nào để thuê tủ?</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq1Answer">
+    <property name="geometry">
+     <rect>
+      <x>24</x>
+      <y>76</y>
+      <width>590</width>
+      <height>38</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Chọn THUÊ TỦ, chọn kích thước, chọn gói thuê, nhập số điện thoại và hoàn tất thanh toán.</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="faqItem2">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>670</y>
+     <width>656</width>
+     <height>125</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblFaq2Category">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>16</y>
+      <width>200</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>BẢO MẬT</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq2Question">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>42</y>
+      <width>560</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tôi quên mã PIN thì phải làm sao?</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq2Answer">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>76</y>
+      <width>590</width>
+      <height>38</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Liên hệ hotline và cung cấp số điện thoại đã dùng khi thuê tủ để được xác minh và hỗ trợ mở tủ.</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="faqItem3">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>810</y>
+     <width>656</width>
+     <height>125</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblFaq3Category">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>16</y>
+      <width>200</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>THANH TOÁN</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq3Question">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>42</y>
+      <width>560</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Chính sách hoàn tiền như thế nào?</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq3Answer">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>76</y>
+      <width>590</width>
+      <height>38</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tiền hoàn được xử lý theo trạng thái giao dịch và thời gian sử dụng thực tế. Vui lòng liên hệ hỗ trợ.</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="faqItem4">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>950</y>
+     <width>656</width>
+     <height>125</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QLabel" name="lblFaq4Category">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>16</y>
+      <width>200</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>QUY ĐỊNH</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq4Question">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>42</y>
+      <width>560</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Thời gian thuê tối đa là bao lâu?</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFaq4Answer">
+    <property name="geometry">
+     <rect>
+      <x>22</x>
+      <y>76</y>
+      <width>590</width>
+      <height>38</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Thời gian thuê tối đa phụ thuộc vào gói bạn chọn. Hệ thống sẽ thông báo trước khi hết hạn.</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

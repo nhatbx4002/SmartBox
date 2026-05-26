@@ -1,1 +1,13 @@
-**/node_modules/
+
+
+node_modules
+/docs/plans
+/raspi_app/tests
+
+backend/.env
+**/node_modules
+**/dist
+**/build
+**/docs
+**/.env
+**/tests

@@ -1,0 +1,2381 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "f61223830afa04fcd31477081f091b389c1c6148",
+  "generatedAt": "2026-05-19T10:07:26.551Z",
+  "files": {
+    "prisma/seed.ts": {
+      "filePath": "prisma/seed.ts",
+      "contentHash": "c5683e3867ee9bffbff8674eb75f793076450f9401b8a700b6f954e72207c69a",
+      "functions": [
+        {
+          "name": "seedPlans",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "resetDemoCabinetData",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "seedLocationsAndCabinets",
+          "params": [],
+          "exported": false,
+          "lineCount": 59
+        },
+        {
+          "name": "seedCompartments",
+          "params": [
+            "cabinetId",
+            "mcpDeviceId"
+          ],
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "seedAdmin",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "bcrypt",
+          "specifiers": [
+            "bcrypt"
+          ]
+        },
+        {
+          "source": "../src/generated/prisma",
+          "specifiers": [
+            "AdminRole",
+            "CabinetStatus",
+            "CompartmentAvailability",
+            "CompartmentSize",
+            "PrismaClient",
+            "RentalType"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 172,
+      "hasStructuralAnalysis": true
+    },
+    "src/index.ts": {
+      "filePath": "src/index.ts",
+      "contentHash": "c8e09ed797d34663d1a487e58eabebb8afea3cf195aa38c4a4cc8055e21c14c6",
+      "functions": [
+        {
+          "name": "bootstrap",
+          "params": [],
+          "exported": false,
+          "lineCount": 55
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "cors",
+          "specifiers": [
+            "cors"
+          ]
+        },
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "http",
+          "specifiers": [
+            "createServer"
+          ]
+        },
+        {
+          "source": "./routes/auth.routes",
+          "specifiers": [
+            "authRoutes"
+          ]
+        },
+        {
+          "source": "./routes/admin.locations.routes",
+          "specifiers": [
+            "adminLocationsRoutes"
+          ]
+        },
+        {
+          "source": "./routes/audit.routes",
+          "specifiers": [
+            "auditRoutes"
+          ]
+        },
+        {
+          "source": "./routes/cabinets.routes",
+          "specifiers": [
+            "cabinetsRoutes"
+          ]
+        },
+        {
+          "source": "./routes/dashboard.routes",
+          "specifiers": [
+            "dashboardRoutes"
+          ]
+        },
+        {
+          "source": "./routes/locations.routes",
+          "specifiers": [
+            "locationsRoutes"
+          ]
+        },
+        {
+          "source": "./routes/lockers.routes",
+          "specifiers": [
+            "lockersRoutes"
+          ]
+        },
+        {
+          "source": "./routes/notifications.routes",
+          "specifiers": [
+            "notificationsRoutes"
+          ]
+        },
+        {
+          "source": "./routes/provisioning.routes",
+          "specifiers": [
+            "provisioningRoutes"
+          ]
+        },
+        {
+          "source": "./routes/rentals.admin.routes",
+          "specifiers": [
+            "rentalsAdminRoutes"
+          ]
+        },
+        {
+          "source": "./routes/rentals.routes",
+          "specifiers": [
+            "rentalsRoutes"
+          ]
+        },
+        {
+          "source": "./routes/system.routes",
+          "specifiers": [
+            "systemRoutes"
+          ]
+        },
+        {
+          "source": "./jobs/expiryChecker",
+          "specifiers": [
+            "startExpiryChecker"
+          ]
+        },
+        {
+          "source": "./jobs/heartbeatMonitor",
+          "specifiers": [
+            "startHeartbeatMonitor"
+          ]
+        },
+        {
+          "source": "./lib/mqtt",
+          "specifiers": [
+            "connectMqtt"
+          ]
+        },
+        {
+          "source": "./lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "./lib/socket",
+          "specifiers": [
+            "initSocket"
+          ]
+        },
+        {
+          "source": "./middleware/errorHandler",
+          "specifiers": [
+            "errorHandler"
+          ]
+        },
+        {
+          "source": "./middleware/requestLogger",
+          "specifiers": [
+            "requestLogger"
+          ]
+        },
+        {
+          "source": "./mqtt/handlers",
+          "specifiers": [
+            "setupMqttHandlers"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 86,
+      "hasStructuralAnalysis": true
+    },
+    "src/jobs/expiryChecker.ts": {
+      "filePath": "src/jobs/expiryChecker.ts",
+      "contentHash": "5385a05766a5510573d5c63f755f5d6df3f3ae1938b9c9bbfb91cb3ea4aee9f2",
+      "functions": [
+        {
+          "name": "startExpiryChecker",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node-cron",
+          "specifiers": [
+            "cron"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "CompartmentAvailability",
+            "LockerAction",
+            "RentalStatus"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../services/notification.service",
+          "specifiers": [
+            "sendRentalExpired"
+          ]
+        }
+      ],
+      "exports": [
+        "startExpiryChecker"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "src/jobs/heartbeatMonitor.ts": {
+      "filePath": "src/jobs/heartbeatMonitor.ts",
+      "contentHash": "f2b8a7a202db88f3153c5eff256713323dafb9173257ddd1b535f81cfdddaee8",
+      "functions": [
+        {
+          "name": "startHeartbeatMonitor",
+          "params": [],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node-cron",
+          "specifiers": [
+            "cron"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "CabinetStatus"
+          ]
+        },
+        {
+          "source": "../lib/socket",
+          "specifiers": [
+            "emitCabinetStatus"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../services/notification.service",
+          "specifiers": [
+            "sendCabinetOffline"
+          ]
+        }
+      ],
+      "exports": [
+        "startHeartbeatMonitor"
+      ],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/errors.ts": {
+      "filePath": "src/lib/errors.ts",
+      "contentHash": "7ee6bdab4d78c8d6abc7eae9e410dc2c16457a27a52d0d8a2702336a868224df",
+      "functions": [
+        {
+          "name": "NotFoundError",
+          "params": [
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "UnauthorizedError",
+          "params": [
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "BadRequestError",
+          "params": [
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "ForbiddenError",
+          "params": [
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "AppError",
+          "methods": [
+            "constructor"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "imports": [],
+      "exports": [
+        "AppError",
+        "NotFoundError",
+        "UnauthorizedError",
+        "BadRequestError",
+        "ForbiddenError"
+      ],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/jwt.ts": {
+      "filePath": "src/lib/jwt.ts",
+      "contentHash": "1719d8d4b479db77556dd54300bc5e50e6de355e2aecc4981b4dc2fe8983b7e7",
+      "functions": [
+        {
+          "name": "signToken",
+          "params": [
+            "payload",
+            "secret",
+            "expiresIn"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "verifyToken",
+          "params": [
+            "token",
+            "secret"
+          ],
+          "returnType": "JwtPayload",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsonwebtoken",
+          "specifiers": [
+            "jwt",
+            "JwtPayload",
+            "SignOptions"
+          ]
+        }
+      ],
+      "exports": [
+        "signToken",
+        "verifyToken"
+      ],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/mqtt.ts": {
+      "filePath": "src/lib/mqtt.ts",
+      "contentHash": "2cdcb1574af62ce04d416b80d2bf1f0fe3a03cdccae58ae8dfe3cf5cd9e1c987",
+      "functions": [
+        {
+          "name": "topicMatches",
+          "params": [
+            "pattern",
+            "topic"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "connectMqtt",
+          "params": [
+            "options"
+          ],
+          "returnType": "Promise<MqttClient>",
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "getMqttClient",
+          "params": [],
+          "returnType": "MqttClient",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "publishMqtt",
+          "params": [
+            "topic",
+            "payload"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "subscribeMqtt",
+          "params": [
+            "topic",
+            "handler"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "mqtt",
+          "specifiers": [
+            "mqtt",
+            "MqttClient"
+          ]
+        }
+      ],
+      "exports": [
+        "connectMqtt",
+        "getMqttClient",
+        "publishMqtt",
+        "subscribeMqtt"
+      ],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/prisma.ts": {
+      "filePath": "src/lib/prisma.ts",
+      "contentHash": "bb783fb6202274bb2bf85b92d30ca9addfd8d5cd5744174a39b7bece23676b87",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "PrismaClient"
+          ]
+        }
+      ],
+      "exports": [
+        "prisma"
+      ],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/qr.ts": {
+      "filePath": "src/lib/qr.ts",
+      "contentHash": "30ff8a74ca7c0affe4c2daf6b1e3a3abf09c370963e638ea806ec154ab0061a4",
+      "functions": [
+        {
+          "name": "getQrSecret",
+          "params": [],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "signPayload",
+          "params": [
+            "payload"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "signQrToken",
+          "params": [
+            "rentalId",
+            "expiresAt"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "verifyQrToken",
+          "params": [
+            "token"
+          ],
+          "returnType": "{ rentalId: string; expiresAt: Date } | null",
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "crypto",
+          "specifiers": [
+            "crypto"
+          ]
+        }
+      ],
+      "exports": [
+        "signQrToken",
+        "verifyQrToken"
+      ],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/socket.ts": {
+      "filePath": "src/lib/socket.ts",
+      "contentHash": "7a94ce9e556a133507b930a20641e2c6647c9e841e65b87a4de8d9c239d0352e",
+      "functions": [
+        {
+          "name": "initSocket",
+          "params": [
+            "httpServer"
+          ],
+          "returnType": "Server",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "getSocket",
+          "params": [],
+          "returnType": "Server",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "emitCabinetStatus",
+          "params": [
+            "cabinetId",
+            "status"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "emitCompartmentStatus",
+          "params": [
+            "cabinetId",
+            "compartmentId",
+            "status"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "http",
+          "specifiers": [
+            "HttpServer"
+          ]
+        },
+        {
+          "source": "socket.io",
+          "specifiers": [
+            "Server",
+            "Socket"
+          ]
+        }
+      ],
+      "exports": [
+        "initSocket",
+        "getSocket",
+        "emitCabinetStatus",
+        "emitCompartmentStatus"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/middleware/asyncHandler.ts": {
+      "filePath": "src/middleware/asyncHandler.ts",
+      "contentHash": "8923d41355ee3ab38ec1e3edc0adf5e51fa57129d48c8807adbeece3fe69a1a5",
+      "functions": [
+        {
+          "name": "asyncHandler",
+          "params": [
+            "handler"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "NextFunction",
+            "Request",
+            "Response"
+          ]
+        }
+      ],
+      "exports": [
+        "asyncHandler"
+      ],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "src/middleware/auth.ts": {
+      "filePath": "src/middleware/auth.ts",
+      "contentHash": "bf1026e16fd88e76a7ea9087b562e787b3f7d12a1eb7afce06d2272744f33a4e",
+      "functions": [
+        {
+          "name": "readAdminFromRequest",
+          "params": [
+            "req"
+          ],
+          "returnType": "{ id: string; email: string; role: string }",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "requireAdmin",
+          "params": [
+            "req",
+            "_res",
+            "next"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "requireSuperAdmin",
+          "params": [
+            "req",
+            "_res",
+            "next"
+          ],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "NextFunction",
+            "Request",
+            "Response"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "ForbiddenError",
+            "UnauthorizedError"
+          ]
+        },
+        {
+          "source": "../lib/jwt",
+          "specifiers": [
+            "verifyToken"
+          ]
+        }
+      ],
+      "exports": [
+        "requireAdmin",
+        "requireSuperAdmin"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "src/middleware/errorHandler.ts": {
+      "filePath": "src/middleware/errorHandler.ts",
+      "contentHash": "5a720765fec9a7f9fcdf852a16f536cf8f2db107c443a57bc5340fc55f9bf1cd",
+      "functions": [
+        {
+          "name": "errorHandler",
+          "params": [
+            "error",
+            "_req",
+            "res",
+            "_next"
+          ],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "NextFunction",
+            "Request",
+            "Response"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "AppError"
+          ]
+        }
+      ],
+      "exports": [
+        "errorHandler"
+      ],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "src/middleware/requestLogger.ts": {
+      "filePath": "src/middleware/requestLogger.ts",
+      "contentHash": "51f2013aec18d44bee7a9aa30fca5b19fd330e35754adf8dcff2980d13bb2216",
+      "functions": [
+        {
+          "name": "requestLogger",
+          "params": [
+            "req",
+            "res",
+            "next"
+          ],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "NextFunction",
+            "Request",
+            "Response"
+          ]
+        }
+      ],
+      "exports": [
+        "requestLogger"
+      ],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "src/middleware/validate.ts": {
+      "filePath": "src/middleware/validate.ts",
+      "contentHash": "94a05d920fb9f9fed8bdf65365ebd83a9614ab8956fdd4cd353c3db866e3390f",
+      "functions": [
+        {
+          "name": "validate",
+          "params": [
+            "schema"
+          ],
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "NextFunction",
+            "Request",
+            "Response"
+          ]
+        },
+        {
+          "source": "zod",
+          "specifiers": [
+            "ZodSchema"
+          ]
+        }
+      ],
+      "exports": [
+        "validate"
+      ],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    "src/mqtt/handlers.ts": {
+      "filePath": "src/mqtt/handlers.ts",
+      "contentHash": "926e5892cdf1988f99384ac77988f2fc3632f7d92f0e7fd203f9ff694fd40f53",
+      "functions": [
+        {
+          "name": "setupMqttHandlers",
+          "params": [],
+          "exported": true,
+          "lineCount": 38
+        },
+        {
+          "name": "isLockStatus",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isDoorStatus",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "DoorStatus",
+            "LockStatus"
+          ]
+        },
+        {
+          "source": "../lib/mqtt",
+          "specifiers": [
+            "subscribeMqtt"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../services/cabinet.service",
+          "specifiers": [
+            "updateCompartmentStatus",
+            "updateHeartbeat"
+          ]
+        },
+        {
+          "source": "../services/rental.service",
+          "specifiers": [
+            "handleUnlock"
+          ]
+        }
+      ],
+      "exports": [
+        "setupMqttHandlers"
+      ],
+      "totalLines": 63,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/admin.locations.routes.ts": {
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "contentHash": "2be8942d883234f6b37d1743906281abc1b2b301ec39b83cdba16058731bda3f",
+      "functions": [
+        {
+          "name": "ensureLocation",
+          "params": [
+            "id"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "auditLocation",
+          "params": [
+            "req",
+            "action",
+            "resourceId",
+            "details"
+          ],
+          "exported": false,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "zod",
+          "specifiers": [
+            "z"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "AuditAction",
+            "LocationStatus"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "NotFoundError"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../middleware/auth",
+          "specifiers": [
+            "requireAdmin",
+            "requireSuperAdmin"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../middleware/validate",
+          "specifiers": [
+            "validate"
+          ]
+        },
+        {
+          "source": "../services/audit.service",
+          "specifiers": [
+            "createAuditLog"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 100,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/audit.routes.ts": {
+      "filePath": "src/routes/audit.routes.ts",
+      "contentHash": "11c5d5f36d56edb5579f501c29ffccb014a0364d1b0d352ea9bc3cb861628ac9",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "AuditAction"
+          ]
+        },
+        {
+          "source": "../middleware/auth",
+          "specifiers": [
+            "requireAdmin"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../services/audit.service",
+          "specifiers": [
+            "listAuditLogs"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/auth.routes.ts": {
+      "filePath": "src/routes/auth.routes.ts",
+      "contentHash": "11590ef83b0a981293663cc366dd2a9c2808d339cf004e18fe3dc6788fe40d0d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "zod",
+          "specifiers": [
+            "z"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../middleware/validate",
+          "specifiers": [
+            "validate"
+          ]
+        },
+        {
+          "source": "../services/auth.service",
+          "specifiers": [
+            "adminLogin",
+            "refreshToken",
+            "verifyPin"
+          ]
+        },
+        {
+          "source": "../services/audit.service",
+          "specifiers": [
+            "createAuditLog"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "AuditAction"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/cabinets.routes.ts": {
+      "filePath": "src/routes/cabinets.routes.ts",
+      "contentHash": "e6edb718edd09c25e6229ca1baf99d3bc896e483c997136e102e16eed0b74e92",
+      "functions": [
+        {
+          "name": "auditCabinet",
+          "params": [
+            "req",
+            "action",
+            "resourceId",
+            "details"
+          ],
+          "exported": false,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "zod",
+          "specifiers": [
+            "z"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "AuditAction",
+            "CabinetStatus"
+          ]
+        },
+        {
+          "source": "../middleware/auth",
+          "specifiers": [
+            "requireAdmin"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../middleware/validate",
+          "specifiers": [
+            "validate"
+          ]
+        },
+        {
+          "source": "../services/cabinet.service",
+          "specifiers": [
+            "createCabinet",
+            "deleteCabinet",
+            "getCabinet",
+            "listCabinets",
+            "updateCabinet"
+          ]
+        },
+        {
+          "source": "../services/audit.service",
+          "specifiers": [
+            "createAuditLog"
+          ]
+        },
+        {
+          "source": "../services/locker.service",
+          "specifiers": [
+            "unlockCompartment"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 101,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/dashboard.routes.ts": {
+      "filePath": "src/routes/dashboard.routes.ts",
+      "contentHash": "5272a50be204db83393fd6629426f8ad646fea01ccc7f071807a9f58cb2faa37",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../middleware/auth",
+          "specifiers": [
+            "requireAdmin"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../services/dashboard.service",
+          "specifiers": [
+            "getDashboardStats"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/locations.routes.ts": {
+      "filePath": "src/routes/locations.routes.ts",
+      "contentHash": "58f363749c8c7fdb4209e591cf58171aef624deacfdc75d8e7aa386062b0365d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "LocationStatus"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "NotFoundError"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/lockers.routes.ts": {
+      "filePath": "src/routes/lockers.routes.ts",
+      "contentHash": "6e23461d753c1fd897282ef9891b9a73d6f410e801bf5084ff5e9efa459c6e9c",
+      "functions": [
+        {
+          "name": "parseCompartmentSize",
+          "params": [
+            "size"
+          ],
+          "returnType": "CompartmentSize",
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "CompartmentSize"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "BadRequestError"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../services/cabinet.service",
+          "specifiers": [
+            "getAvailableCompartments"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/notifications.routes.ts": {
+      "filePath": "src/routes/notifications.routes.ts",
+      "contentHash": "9e8ea4dd217f6165213879a7a5d5883c6e5a0805dade7f51cf5bd370071bae8a",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "NotFoundError"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../services/notification.service",
+          "specifiers": [
+            "listNotifications",
+            "markAllNotificationsRead"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/provisioning.routes.ts": {
+      "filePath": "src/routes/provisioning.routes.ts",
+      "contentHash": "0e256db47878fdb5b7495e94bd503a4d22cea65264c37b13a24ba9bc945d5bc8",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/rentals.admin.routes.ts": {
+      "filePath": "src/routes/rentals.admin.routes.ts",
+      "contentHash": "f246c79ab7e862ffa8d752d5e929f78e0950ef0d765e2c3777ae1817396a8ba0",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "AuditAction"
+          ]
+        },
+        {
+          "source": "../middleware/auth",
+          "specifiers": [
+            "requireAdmin"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "NotFoundError"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../services/audit.service",
+          "specifiers": [
+            "createAuditLog"
+          ]
+        },
+        {
+          "source": "../services/rental.service",
+          "specifiers": [
+            "cancelRental"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/rentals.routes.ts": {
+      "filePath": "src/routes/rentals.routes.ts",
+      "contentHash": "ea56402fb25ed9893c1c7421ba0e23597a016cae9fda4f540915ddca8db18433",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "zod",
+          "specifiers": [
+            "z"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "CompartmentSize",
+            "PaymentMethod"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../middleware/validate",
+          "specifiers": [
+            "validate"
+          ]
+        },
+        {
+          "source": "../services/auth.service",
+          "specifiers": [
+            "verifyPin"
+          ]
+        },
+        {
+          "source": "../services/rental.service",
+          "specifiers": [
+            "completeRental",
+            "createRental",
+            "getByCode",
+            "handleUnlock"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 79,
+      "hasStructuralAnalysis": true
+    },
+    "src/routes/system.routes.ts": {
+      "filePath": "src/routes/system.routes.ts",
+      "contentHash": "3f252a1e77735865cb9a852f1450ba3c0a76728b39889f47b18beb5e7742d171",
+      "functions": [
+        {
+          "name": "resolveCompartmentId",
+          "params": [
+            "cabinetId",
+            "compartmentId",
+            "compartmentName"
+          ],
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "zod",
+          "specifiers": [
+            "z"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "DoorStatus",
+            "LockStatus"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "BadRequestError"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../middleware/asyncHandler",
+          "specifiers": [
+            "asyncHandler"
+          ]
+        },
+        {
+          "source": "../middleware/validate",
+          "specifiers": [
+            "validate"
+          ]
+        },
+        {
+          "source": "../services/cabinet.service",
+          "specifiers": [
+            "updateCompartmentStatus",
+            "updateHeartbeat"
+          ]
+        },
+        {
+          "source": "../services/rental.service",
+          "specifiers": [
+            "handleUnlock"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "src/services/audit.service.ts": {
+      "filePath": "src/services/audit.service.ts",
+      "contentHash": "bd842fa34a5e78edf77d0e375751ad0b512f218351117451afea31e7e03d2012",
+      "functions": [
+        {
+          "name": "createAuditLog",
+          "params": [
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "listAuditLogs",
+          "params": [
+            "filters"
+          ],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "buildCreatedAtFilter",
+          "params": [
+            "startDate",
+            "endDate"
+          ],
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "AuditAction",
+            "Prisma"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "createAuditLog",
+        "listAuditLogs"
+      ],
+      "totalLines": 70,
+      "hasStructuralAnalysis": true
+    },
+    "src/services/auth.service.ts": {
+      "filePath": "src/services/auth.service.ts",
+      "contentHash": "fdc1cce9849aad597fba99ef654e2aae5a7fa1e488062903281efddaad10626b",
+      "functions": [
+        {
+          "name": "adminLogin",
+          "params": [
+            "email",
+            "password"
+          ],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "refreshToken",
+          "params": [
+            "refreshTokenValue"
+          ],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "verifyPin",
+          "params": [
+            "code"
+          ],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "requireEnv",
+          "params": [
+            "name"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "bcrypt",
+          "specifiers": [
+            "bcrypt"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "RentalStatus"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "BadRequestError",
+            "NotFoundError",
+            "UnauthorizedError"
+          ]
+        },
+        {
+          "source": "../lib/jwt",
+          "specifiers": [
+            "signToken",
+            "verifyToken"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "adminLogin",
+        "refreshToken",
+        "verifyPin"
+      ],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "src/services/cabinet.service.ts": {
+      "filePath": "src/services/cabinet.service.ts",
+      "contentHash": "8efde40900e1af3bbea7f3129ab91dac844a9bb1a2dec3e2c78f1425e22846bc",
+      "functions": [
+        {
+          "name": "listCabinets",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "getCabinet",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "createCabinet",
+          "params": [
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "updateCabinet",
+          "params": [
+            "id",
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "deleteCabinet",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "updateCompartmentStatus",
+          "params": [
+            "compartmentId",
+            "lockStatus",
+            "doorStatus"
+          ],
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "updateHeartbeat",
+          "params": [
+            "cabinetId"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "getAvailableCompartments",
+          "params": [
+            "size"
+          ],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "CabinetStatus",
+            "CompartmentAvailability",
+            "CompartmentSize",
+            "DoorStatus",
+            "LockStatus",
+            "LockerAction"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "NotFoundError"
+          ]
+        },
+        {
+          "source": "../lib/socket",
+          "specifiers": [
+            "emitCabinetStatus",
+            "emitCompartmentStatus"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "listCabinets",
+        "getCabinet",
+        "createCabinet",
+        "updateCabinet",
+        "deleteCabinet",
+        "updateCompartmentStatus",
+        "updateHeartbeat",
+        "getAvailableCompartments"
+      ],
+      "totalLines": 96,
+      "hasStructuralAnalysis": true
+    },
+    "src/services/dashboard.service.ts": {
+      "filePath": "src/services/dashboard.service.ts",
+      "contentHash": "b33565d9c27c8c25843b603521aebb15196e6fa4ce960b1f856eb8ebfe8cffe5",
+      "functions": [
+        {
+          "name": "getDashboardStats",
+          "params": [],
+          "exported": true,
+          "lineCount": 55
+        },
+        {
+          "name": "buildRevenueByDay",
+          "params": [
+            "sevenDayStart",
+            "paidRentals"
+          ],
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "startOfDay",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "formatDateKey",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "CabinetStatus",
+            "CompartmentAvailability",
+            "PaymentStatus",
+            "RentalStatus"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "getDashboardStats"
+      ],
+      "totalLines": 97,
+      "hasStructuralAnalysis": true
+    },
+    "src/services/locker.service.ts": {
+      "filePath": "src/services/locker.service.ts",
+      "contentHash": "317c239921e5a37073add50da36596ce971f96d1c9911a072ae95b7459f6ade4",
+      "functions": [
+        {
+          "name": "unlockCompartment",
+          "params": [
+            "cabinetId",
+            "compartmentIdOrName",
+            "rentalId"
+          ],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "lockCompartment",
+          "params": [
+            "cabinetId",
+            "compartmentIdOrName"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "findCompartment",
+          "params": [
+            "cabinetId",
+            "compartmentIdOrName"
+          ],
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "LockerAction"
+          ]
+        },
+        {
+          "source": "../lib/mqtt",
+          "specifiers": [
+            "publishMqtt"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "unlockCompartment",
+        "lockCompartment"
+      ],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "src/services/notification.service.ts": {
+      "filePath": "src/services/notification.service.ts",
+      "contentHash": "c127e169432084c920b78c2d4ddded68c93d42a4e61bd3c199cbd4315fbec6e6",
+      "functions": [
+        {
+          "name": "createNotification",
+          "params": [
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "listNotifications",
+          "params": [
+            "filters"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "markAllNotificationsRead",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "sendRentalExpired",
+          "params": [
+            "rentalId"
+          ],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "sendCabinetOffline",
+          "params": [
+            "cabinetId"
+          ],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "NotificationType",
+            "Prisma"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "createNotification",
+        "listNotifications",
+        "markAllNotificationsRead",
+        "sendRentalExpired",
+        "sendCabinetOffline"
+      ],
+      "totalLines": 67,
+      "hasStructuralAnalysis": true
+    },
+    "src/services/rental.service.ts": {
+      "filePath": "src/services/rental.service.ts",
+      "contentHash": "f569313775a1ba27e9c1d25276a081f668449d271350a50466d68c85769cc910",
+      "functions": [
+        {
+          "name": "createRental",
+          "params": [
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 112
+        },
+        {
+          "name": "getByCode",
+          "params": [
+            "code"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "completeRental",
+          "params": [
+            "rentalId"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "cancelRental",
+          "params": [
+            "rentalId",
+            "adminId"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "handleUnlock",
+          "params": [
+            "rentalId"
+          ],
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "generateUniqueCode",
+          "params": [],
+          "returnType": "Promise<string>",
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "bcrypt",
+          "specifiers": [
+            "bcrypt"
+          ]
+        },
+        {
+          "source": "crypto",
+          "specifiers": [
+            "crypto"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "CabinetStatus",
+            "CompartmentAvailability",
+            "CompartmentSize",
+            "LockerAction",
+            "PaymentMethod",
+            "PaymentStatus",
+            "RentalStatus"
+          ]
+        },
+        {
+          "source": "../lib/errors",
+          "specifiers": [
+            "BadRequestError",
+            "NotFoundError"
+          ]
+        },
+        {
+          "source": "../lib/qr",
+          "specifiers": [
+            "signQrToken"
+          ]
+        },
+        {
+          "source": "../lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "./notification.service",
+          "specifiers": [
+            "createNotification"
+          ]
+        },
+        {
+          "source": "../generated/prisma",
+          "specifiers": [
+            "NotificationType"
+          ]
+        }
+      ],
+      "exports": [
+        "createRental",
+        "getByCode",
+        "completeRental",
+        "cancelRental",
+        "handleUnlock"
+      ],
+      "totalLines": 213,
+      "hasStructuralAnalysis": true
+    },
+    "test/audit.service.test.ts": {
+      "filePath": "test/audit.service.test.ts",
+      "contentHash": "3a2d7cc0060b3b0bb9da5509887051fb6f3833853f00eda83724257aef39dcec",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "../src/lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../src/services/audit.service",
+          "specifiers": [
+            "createAuditLog",
+            "listAuditLogs"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 108,
+      "hasStructuralAnalysis": true
+    },
+    "test/dashboard.service.test.ts": {
+      "filePath": "test/dashboard.service.test.ts",
+      "contentHash": "4bd97b057d7c28c9c88d2f6d514fe81a37781414abc55051dbd6aec33e32b53e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "../src/lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../src/services/dashboard.service",
+          "specifiers": [
+            "getDashboardStats"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "test/mqtt.test.ts": {
+      "filePath": "test/mqtt.test.ts",
+      "contentHash": "e409acf43efaf771a701377a8b6b52b8f1b3afeb81f0a3f09d6722b313b69ed1",
+      "functions": [],
+      "classes": [
+        {
+          "name": "FakeMqttClient",
+          "methods": [
+            "publish",
+            "subscribe"
+          ],
+          "properties": [
+            "connected"
+          ],
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:events",
+          "specifiers": [
+            "EventEmitter"
+          ]
+        },
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "mqtt",
+          "specifiers": [
+            "mqtt"
+          ]
+        },
+        {
+          "source": "../src/lib/mqtt",
+          "specifiers": [
+            "connectMqtt"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "test/notification.service.test.ts": {
+      "filePath": "test/notification.service.test.ts",
+      "contentHash": "10371d99130d90ef67890f92357f99f0a9201c742b168d810da70a2dc01b5afd",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "../src/lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../src/services/notification.service",
+          "specifiers": [
+            "listNotifications",
+            "markAllNotificationsRead"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "test/qr.test.ts": {
+      "filePath": "test/qr.test.ts",
+      "contentHash": "4e09ab3420439cd3fe5db15b46ca3902f522eb79b434c0a69140613516cc4e49",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "../src/lib/qr",
+          "specifiers": [
+            "signQrToken",
+            "verifyQrToken"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": true
+    },
+    "test/rental.service.test.ts": {
+      "filePath": "test/rental.service.test.ts",
+      "contentHash": "50e1eb1a0e2fbae90c64f4b6f222de670b084d94300d03ce6568e79914e949b9",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "specifiers": [
+            "test"
+          ]
+        },
+        {
+          "source": "../src/generated/prisma",
+          "specifiers": [
+            "CabinetStatus",
+            "CompartmentAvailability",
+            "CompartmentSize",
+            "PaymentMethod"
+          ]
+        },
+        {
+          "source": "../src/lib/prisma",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../src/services/rental.service",
+          "specifiers": [
+            "createRental"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 102,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

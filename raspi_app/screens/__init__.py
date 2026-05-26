@@ -1,0 +1,1 @@
+"""SmartBox kiosk screen controllers."""

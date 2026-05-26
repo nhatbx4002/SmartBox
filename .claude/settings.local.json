@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "WebSearch",
+      "WebFetch(domain:vietqr.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(python3 \"C:/Users/bnhat/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"sidebar navigation dark mode\" --domain style -n 5 -f markdown)",
+      "Bash(npm install *)",
+      "Bash(rtk npm *)",
+      "Skill(ui-ux-pro-max:ui-ux-pro-max)",
+      "Skill(ui-ux-pro-max:ui-ux-pro-max:*)",
+      "Bash(python3 \"C:\\\\Users\\\\bnhat\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"B2B SaaS admin panel dark mode smart locker management\" --design-system -p \"SmartBox Admin\" -f markdown)",
+      "Bash(python3 \"C:\\\\Users\\\\bnhat\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"dark mode brutalism\" --domain style -n 5)",
+      "Bash(python3 \"C:\\\\Users\\\\bnhat\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"admin dashboard real-time data table\" --domain chart -n 5)",
+      "Bash(python3 \"C:\\\\Users\\\\bnhat\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"sans serif monospace professional\" --domain typography -n 5)"
+    ]
+  }
+}

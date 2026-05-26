@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"d:\\\\DATN_Project\\\\SmartBox\\\\hardware\")",
+      "Bash(dir \"d:\\\\DATN_Project\\\\SmartBox\")",
+      "Bash(dir \"d:\\\\DATN_Project\\\\SmartBox\\\\hardware\\\\hardware\")",
+      "Bash(dir \"d:\\\\DATN_Project\\\\SmartBox\\\\hardware\\\\hardware\\\\__pycache__\")",
+      "Bash(pnpm --version)",
+      "Read(//c/Users/bnhat/.claude/plugins/cache/understand-anything/understand-anything/2.6.3/**)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm --filter @understand-anything/core build)"
+    ]
+  },
+  "enabledPlugins": {
+    "understand-anything@understand-anything": true
+  }
+}

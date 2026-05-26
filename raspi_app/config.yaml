@@ -1,0 +1,28 @@
+api:
+  base_url: "http://192.168.1.29:3001"
+  timeout: 10
+
+mqtt:
+  broker: "192.168.1.29"
+  port: 1883
+  username: ""
+  password: ""
+
+hardware:
+  driver: "mcu2317"
+  cabinet_id: "cabinet-a"
+
+gpio:
+  sensor_1: 22
+  sensor_2: 23
+
+support:
+  hotline: "1900 1234"
+
+app:
+  countdown_open: 60
+  countdown_default: 60
+  screen_width: 720
+  screen_height: 1280
+  header_height: 80
+  footer_height: 48

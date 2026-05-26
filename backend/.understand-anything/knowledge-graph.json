@@ -1,0 +1,5353 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "smartbox-backend",
+    "languages": [
+      "json",
+      "prisma",
+      "sql",
+      "typescript"
+    ],
+    "frameworks": [
+      "express"
+    ],
+    "description": "Backend service for the SmartBox application.",
+    "analyzedAt": "2026-05-19T10:07:26.246Z",
+    "gitCommitHash": "f61223830afa04fcd31477081f091b389c1c6148"
+  },
+  "nodes": [
+    {
+      "id": "config:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "Node package manifest defining backend scripts and dependencies.",
+      "tags": [
+        "config",
+        "json",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:prisma/init.sql",
+      "type": "file",
+      "name": "init.sql",
+      "filePath": "prisma/init.sql",
+      "summary": "File starting with: ALTER DATABASE smartbox SET timezone TO 'Asia/Ho_Chi_Minh';",
+      "tags": [
+        "data",
+        "sql",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma",
+      "type": "schema",
+      "name": "schema.prisma",
+      "filePath": "prisma/schema.prisma",
+      "summary": "Prisma schema defining the database datasource, client generator, and data models.",
+      "tags": [
+        "config",
+        "prisma",
+        "express"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:Admin",
+      "type": "schema",
+      "name": "Admin",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        121,
+        121
+      ],
+      "summary": "Prisma model Admin.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:User",
+      "type": "schema",
+      "name": "User",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        133,
+        133
+      ],
+      "summary": "Prisma model User.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:Location",
+      "type": "schema",
+      "name": "Location",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        149,
+        149
+      ],
+      "summary": "Prisma model Location.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:Cabinet",
+      "type": "schema",
+      "name": "Cabinet",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        165,
+        165
+      ],
+      "summary": "Prisma model Cabinet.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:McpDevice",
+      "type": "schema",
+      "name": "McpDevice",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        183,
+        183
+      ],
+      "summary": "Prisma model McpDevice.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:Compartment",
+      "type": "schema",
+      "name": "Compartment",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        199,
+        199
+      ],
+      "summary": "Prisma model Compartment.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:CompartmentStatus",
+      "type": "schema",
+      "name": "CompartmentStatus",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        225,
+        225
+      ],
+      "summary": "Prisma model CompartmentStatus.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:PricePlan",
+      "type": "schema",
+      "name": "PricePlan",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        236,
+        236
+      ],
+      "summary": "Prisma model PricePlan.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:Rental",
+      "type": "schema",
+      "name": "Rental",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        254,
+        254
+      ],
+      "summary": "Prisma model Rental.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:LockerLog",
+      "type": "schema",
+      "name": "LockerLog",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        284,
+        284
+      ],
+      "summary": "Prisma model LockerLog.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:AuditLog",
+      "type": "schema",
+      "name": "AuditLog",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        308,
+        308
+      ],
+      "summary": "Prisma model AuditLog.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:Notification",
+      "type": "schema",
+      "name": "Notification",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        325,
+        325
+      ],
+      "summary": "Prisma model Notification.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:prisma/schema.prisma:UserSession",
+      "type": "schema",
+      "name": "UserSession",
+      "filePath": "prisma/schema.prisma",
+      "lineRange": [
+        340,
+        340
+      ],
+      "summary": "Prisma model UserSession.",
+      "tags": [
+        "prisma",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:prisma/seed.ts",
+      "type": "file",
+      "name": "seed.ts",
+      "filePath": "prisma/seed.ts",
+      "summary": "Source file containing functions: seedPlans, resetDemoCabinetData, seedLocationsAndCabinets, seedCompartments, seedAdmin, main.",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:prisma/seed.ts:seedPlans",
+      "type": "function",
+      "name": "seedPlans",
+      "filePath": "prisma/seed.ts",
+      "lineRange": [
+        34,
+        42
+      ],
+      "summary": "Function seedPlans.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:prisma/seed.ts:resetDemoCabinetData",
+      "type": "function",
+      "name": "resetDemoCabinetData",
+      "filePath": "prisma/seed.ts",
+      "lineRange": [
+        44,
+        51
+      ],
+      "summary": "Function resetDemoCabinetData.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:prisma/seed.ts:seedLocationsAndCabinets",
+      "type": "function",
+      "name": "seedLocationsAndCabinets",
+      "filePath": "prisma/seed.ts",
+      "lineRange": [
+        53,
+        111
+      ],
+      "summary": "Function seedLocationsAndCabinets.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:prisma/seed.ts:seedCompartments",
+      "type": "function",
+      "name": "seedCompartments",
+      "filePath": "prisma/seed.ts",
+      "lineRange": [
+        113,
+        141
+      ],
+      "summary": "Function seedCompartments.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:prisma/seed.ts:seedAdmin",
+      "type": "function",
+      "name": "seedAdmin",
+      "filePath": "prisma/seed.ts",
+      "lineRange": [
+        143,
+        154
+      ],
+      "summary": "Function seedAdmin.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:prisma/seed.ts:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "prisma/seed.ts",
+      "lineRange": [
+        156,
+        162
+      ],
+      "summary": "Function main.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "src/index.ts",
+      "summary": "Source file containing functions: bootstrap.",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/index.ts:bootstrap",
+      "type": "function",
+      "name": "bootstrap",
+      "filePath": "src/index.ts",
+      "lineRange": [
+        26,
+        80
+      ],
+      "summary": "Function bootstrap.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/index.ts:get:/api/plans",
+      "type": "endpoint",
+      "name": "GET /api/plans",
+      "filePath": "src/index.ts",
+      "lineRange": [
+        42,
+        42
+      ],
+      "summary": "Express route handler for GET /api/plans.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/index.ts:get:/api/health",
+      "type": "endpoint",
+      "name": "GET /api/health",
+      "filePath": "src/index.ts",
+      "lineRange": [
+        66,
+        66
+      ],
+      "summary": "Express route handler for GET /api/health.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/jobs/expiryChecker.ts",
+      "type": "file",
+      "name": "expiryChecker.ts",
+      "filePath": "src/jobs/expiryChecker.ts",
+      "summary": "Source file containing functions: startExpiryChecker.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "jobs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/jobs/expiryChecker.ts:startExpiryChecker",
+      "type": "function",
+      "name": "startExpiryChecker",
+      "filePath": "src/jobs/expiryChecker.ts",
+      "lineRange": [
+        6,
+        39
+      ],
+      "summary": "Function startExpiryChecker.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/jobs/heartbeatMonitor.ts",
+      "type": "file",
+      "name": "heartbeatMonitor.ts",
+      "filePath": "src/jobs/heartbeatMonitor.ts",
+      "summary": "Source file containing functions: startHeartbeatMonitor.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "jobs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/jobs/heartbeatMonitor.ts:startHeartbeatMonitor",
+      "type": "function",
+      "name": "startHeartbeatMonitor",
+      "filePath": "src/jobs/heartbeatMonitor.ts",
+      "lineRange": [
+        7,
+        34
+      ],
+      "summary": "Function startHeartbeatMonitor.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/errors.ts",
+      "type": "file",
+      "name": "errors.ts",
+      "filePath": "src/lib/errors.ts",
+      "summary": "Source file containing functions: NotFoundError, UnauthorizedError, BadRequestError, ForbiddenError; classes/types: AppError.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "utilities"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/errors.ts:NotFoundError",
+      "type": "function",
+      "name": "NotFoundError",
+      "filePath": "src/lib/errors.ts",
+      "lineRange": [
+        11,
+        11
+      ],
+      "summary": "Function NotFoundError.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/errors.ts:UnauthorizedError",
+      "type": "function",
+      "name": "UnauthorizedError",
+      "filePath": "src/lib/errors.ts",
+      "lineRange": [
+        12,
+        12
+      ],
+      "summary": "Function UnauthorizedError.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/errors.ts:BadRequestError",
+      "type": "function",
+      "name": "BadRequestError",
+      "filePath": "src/lib/errors.ts",
+      "lineRange": [
+        13,
+        13
+      ],
+      "summary": "Function BadRequestError.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/errors.ts:ForbiddenError",
+      "type": "function",
+      "name": "ForbiddenError",
+      "filePath": "src/lib/errors.ts",
+      "lineRange": [
+        14,
+        14
+      ],
+      "summary": "Function ForbiddenError.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/lib/errors.ts:AppError",
+      "type": "class",
+      "name": "AppError",
+      "filePath": "src/lib/errors.ts",
+      "lineRange": [
+        1,
+        9
+      ],
+      "summary": "Class or type AppError.",
+      "tags": [
+        "class",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/jwt.ts",
+      "type": "file",
+      "name": "jwt.ts",
+      "filePath": "src/lib/jwt.ts",
+      "summary": "Source file containing functions: signToken, verifyToken.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "utilities"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/jwt.ts:signToken",
+      "type": "function",
+      "name": "signToken",
+      "filePath": "src/lib/jwt.ts",
+      "lineRange": [
+        3,
+        6
+      ],
+      "summary": "Function signToken.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/jwt.ts:verifyToken",
+      "type": "function",
+      "name": "verifyToken",
+      "filePath": "src/lib/jwt.ts",
+      "lineRange": [
+        8,
+        10
+      ],
+      "summary": "Function verifyToken.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/mqtt.ts",
+      "type": "file",
+      "name": "mqtt.ts",
+      "filePath": "src/lib/mqtt.ts",
+      "summary": "Source file containing functions: topicMatches, connectMqtt, getMqttClient, publishMqtt, subscribeMqtt.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "utilities"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/mqtt.ts:topicMatches",
+      "type": "function",
+      "name": "topicMatches",
+      "filePath": "src/lib/mqtt.ts",
+      "lineRange": [
+        10,
+        22
+      ],
+      "summary": "Function topicMatches.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/mqtt.ts:connectMqtt",
+      "type": "function",
+      "name": "connectMqtt",
+      "filePath": "src/lib/mqtt.ts",
+      "lineRange": [
+        24,
+        53
+      ],
+      "summary": "Function connectMqtt.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/mqtt.ts:getMqttClient",
+      "type": "function",
+      "name": "getMqttClient",
+      "filePath": "src/lib/mqtt.ts",
+      "lineRange": [
+        55,
+        58
+      ],
+      "summary": "Function getMqttClient.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/mqtt.ts:publishMqtt",
+      "type": "function",
+      "name": "publishMqtt",
+      "filePath": "src/lib/mqtt.ts",
+      "lineRange": [
+        60,
+        67
+      ],
+      "summary": "Function publishMqtt.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/mqtt.ts:subscribeMqtt",
+      "type": "function",
+      "name": "subscribeMqtt",
+      "filePath": "src/lib/mqtt.ts",
+      "lineRange": [
+        69,
+        91
+      ],
+      "summary": "Function subscribeMqtt.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/prisma.ts",
+      "type": "file",
+      "name": "prisma.ts",
+      "filePath": "src/lib/prisma.ts",
+      "summary": "File starting with: import { PrismaClient } from '../generated/prisma';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "utilities"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/qr.ts",
+      "type": "file",
+      "name": "qr.ts",
+      "filePath": "src/lib/qr.ts",
+      "summary": "Source file containing functions: getQrSecret, signPayload, signQrToken, verifyQrToken.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "utilities"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/qr.ts:getQrSecret",
+      "type": "function",
+      "name": "getQrSecret",
+      "filePath": "src/lib/qr.ts",
+      "lineRange": [
+        8,
+        14
+      ],
+      "summary": "Function getQrSecret.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/qr.ts:signPayload",
+      "type": "function",
+      "name": "signPayload",
+      "filePath": "src/lib/qr.ts",
+      "lineRange": [
+        16,
+        18
+      ],
+      "summary": "Function signPayload.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/qr.ts:signQrToken",
+      "type": "function",
+      "name": "signQrToken",
+      "filePath": "src/lib/qr.ts",
+      "lineRange": [
+        20,
+        26
+      ],
+      "summary": "Function signQrToken.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/qr.ts:verifyQrToken",
+      "type": "function",
+      "name": "verifyQrToken",
+      "filePath": "src/lib/qr.ts",
+      "lineRange": [
+        28,
+        50
+      ],
+      "summary": "Function verifyQrToken.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/lib/socket.ts",
+      "type": "file",
+      "name": "socket.ts",
+      "filePath": "src/lib/socket.ts",
+      "summary": "Source file containing functions: initSocket, getSocket, emitCabinetStatus, emitCompartmentStatus.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "utilities"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/socket.ts:initSocket",
+      "type": "function",
+      "name": "initSocket",
+      "filePath": "src/lib/socket.ts",
+      "lineRange": [
+        6,
+        18
+      ],
+      "summary": "Function initSocket.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/socket.ts:getSocket",
+      "type": "function",
+      "name": "getSocket",
+      "filePath": "src/lib/socket.ts",
+      "lineRange": [
+        20,
+        23
+      ],
+      "summary": "Function getSocket.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/socket.ts:emitCabinetStatus",
+      "type": "function",
+      "name": "emitCabinetStatus",
+      "filePath": "src/lib/socket.ts",
+      "lineRange": [
+        25,
+        27
+      ],
+      "summary": "Function emitCabinetStatus.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/lib/socket.ts:emitCompartmentStatus",
+      "type": "function",
+      "name": "emitCompartmentStatus",
+      "filePath": "src/lib/socket.ts",
+      "lineRange": [
+        29,
+        31
+      ],
+      "summary": "Function emitCompartmentStatus.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/middleware/asyncHandler.ts",
+      "type": "file",
+      "name": "asyncHandler.ts",
+      "filePath": "src/middleware/asyncHandler.ts",
+      "summary": "Source file containing functions: asyncHandler.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/middleware/asyncHandler.ts:asyncHandler",
+      "type": "function",
+      "name": "asyncHandler",
+      "filePath": "src/middleware/asyncHandler.ts",
+      "lineRange": [
+        3,
+        9
+      ],
+      "summary": "Function asyncHandler.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/middleware/auth.ts",
+      "type": "file",
+      "name": "auth.ts",
+      "filePath": "src/middleware/auth.ts",
+      "summary": "Source file containing functions: readAdminFromRequest, requireAdmin, requireSuperAdmin.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/middleware/auth.ts:readAdminFromRequest",
+      "type": "function",
+      "name": "readAdminFromRequest",
+      "filePath": "src/middleware/auth.ts",
+      "lineRange": [
+        11,
+        23
+      ],
+      "summary": "Function readAdminFromRequest.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/middleware/auth.ts:requireAdmin",
+      "type": "function",
+      "name": "requireAdmin",
+      "filePath": "src/middleware/auth.ts",
+      "lineRange": [
+        25,
+        32
+      ],
+      "summary": "Function requireAdmin.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/middleware/auth.ts:requireSuperAdmin",
+      "type": "function",
+      "name": "requireSuperAdmin",
+      "filePath": "src/middleware/auth.ts",
+      "lineRange": [
+        34,
+        44
+      ],
+      "summary": "Function requireSuperAdmin.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/middleware/errorHandler.ts",
+      "type": "file",
+      "name": "errorHandler.ts",
+      "filePath": "src/middleware/errorHandler.ts",
+      "summary": "Source file containing functions: errorHandler.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/middleware/errorHandler.ts:errorHandler",
+      "type": "function",
+      "name": "errorHandler",
+      "filePath": "src/middleware/errorHandler.ts",
+      "lineRange": [
+        4,
+        16
+      ],
+      "summary": "Function errorHandler.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/middleware/requestLogger.ts",
+      "type": "file",
+      "name": "requestLogger.ts",
+      "filePath": "src/middleware/requestLogger.ts",
+      "summary": "Source file containing functions: requestLogger.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/middleware/requestLogger.ts:requestLogger",
+      "type": "function",
+      "name": "requestLogger",
+      "filePath": "src/middleware/requestLogger.ts",
+      "lineRange": [
+        3,
+        10
+      ],
+      "summary": "Function requestLogger.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/middleware/validate.ts",
+      "type": "file",
+      "name": "validate.ts",
+      "filePath": "src/middleware/validate.ts",
+      "summary": "Source file containing functions: validate.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/middleware/validate.ts:validate",
+      "type": "function",
+      "name": "validate",
+      "filePath": "src/middleware/validate.ts",
+      "lineRange": [
+        4,
+        15
+      ],
+      "summary": "Function validate.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/mqtt/handlers.ts",
+      "type": "file",
+      "name": "handlers.ts",
+      "filePath": "src/mqtt/handlers.ts",
+      "summary": "Source file containing functions: setupMqttHandlers, isLockStatus, isDoorStatus.",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/mqtt/handlers.ts:setupMqttHandlers",
+      "type": "function",
+      "name": "setupMqttHandlers",
+      "filePath": "src/mqtt/handlers.ts",
+      "lineRange": [
+        17,
+        54
+      ],
+      "summary": "Function setupMqttHandlers.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/mqtt/handlers.ts:isLockStatus",
+      "type": "function",
+      "name": "isLockStatus",
+      "filePath": "src/mqtt/handlers.ts",
+      "lineRange": [
+        56,
+        58
+      ],
+      "summary": "Function isLockStatus.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/mqtt/handlers.ts:isDoorStatus",
+      "type": "function",
+      "name": "isDoorStatus",
+      "filePath": "src/mqtt/handlers.ts",
+      "lineRange": [
+        60,
+        62
+      ],
+      "summary": "Function isDoorStatus.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/admin.locations.routes.ts",
+      "type": "file",
+      "name": "admin.locations.routes.ts",
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "summary": "Source file containing functions: ensureLocation, auditLocation.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/routes/admin.locations.routes.ts:ensureLocation",
+      "type": "function",
+      "name": "ensureLocation",
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "lineRange": [
+        76,
+        80
+      ],
+      "summary": "Function ensureLocation.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/routes/admin.locations.routes.ts:auditLocation",
+      "type": "function",
+      "name": "auditLocation",
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "lineRange": [
+        82,
+        97
+      ],
+      "summary": "Function auditLocation.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/admin.locations.routes.ts:get:/",
+      "type": "endpoint",
+      "name": "GET /",
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "lineRange": [
+        25,
+        25
+      ],
+      "summary": "Express route handler for GET /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/admin.locations.routes.ts:post:/",
+      "type": "endpoint",
+      "name": "POST /",
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "lineRange": [
+        39,
+        39
+      ],
+      "summary": "Express route handler for POST /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/admin.locations.routes.ts:put:/:id",
+      "type": "endpoint",
+      "name": "PUT /:id",
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "lineRange": [
+        50,
+        50
+      ],
+      "summary": "Express route handler for PUT /:id.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/admin.locations.routes.ts:delete:/:id",
+      "type": "endpoint",
+      "name": "DELETE /:id",
+      "filePath": "src/routes/admin.locations.routes.ts",
+      "lineRange": [
+        62,
+        62
+      ],
+      "summary": "Express route handler for DELETE /:id.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/audit.routes.ts",
+      "type": "file",
+      "name": "audit.routes.ts",
+      "filePath": "src/routes/audit.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/audit.routes.ts:get:/",
+      "type": "endpoint",
+      "name": "GET /",
+      "filePath": "src/routes/audit.routes.ts",
+      "lineRange": [
+        11,
+        11
+      ],
+      "summary": "Express route handler for GET /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/auth.routes.ts",
+      "type": "file",
+      "name": "auth.routes.ts",
+      "filePath": "src/routes/auth.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/auth.routes.ts:post:/admin/login",
+      "type": "endpoint",
+      "name": "POST /admin/login",
+      "filePath": "src/routes/auth.routes.ts",
+      "lineRange": [
+        25,
+        25
+      ],
+      "summary": "Express route handler for POST /admin/login.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/auth.routes.ts:post:/refresh",
+      "type": "endpoint",
+      "name": "POST /refresh",
+      "filePath": "src/routes/auth.routes.ts",
+      "lineRange": [
+        42,
+        42
+      ],
+      "summary": "Express route handler for POST /refresh.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/auth.routes.ts:post:/verify-pin",
+      "type": "endpoint",
+      "name": "POST /verify-pin",
+      "filePath": "src/routes/auth.routes.ts",
+      "lineRange": [
+        51,
+        51
+      ],
+      "summary": "Express route handler for POST /verify-pin.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/cabinets.routes.ts",
+      "type": "file",
+      "name": "cabinets.routes.ts",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "summary": "Source file containing functions: auditCabinet.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/routes/cabinets.routes.ts:auditCabinet",
+      "type": "function",
+      "name": "auditCabinet",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "lineRange": [
+        83,
+        98
+      ],
+      "summary": "Function auditCabinet.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/cabinets.routes.ts:get:/",
+      "type": "endpoint",
+      "name": "GET /",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "lineRange": [
+        31,
+        31
+      ],
+      "summary": "Express route handler for GET /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/cabinets.routes.ts:get:/:id",
+      "type": "endpoint",
+      "name": "GET /:id",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "lineRange": [
+        38,
+        38
+      ],
+      "summary": "Express route handler for GET /:id.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/cabinets.routes.ts:post:/",
+      "type": "endpoint",
+      "name": "POST /",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "lineRange": [
+        45,
+        45
+      ],
+      "summary": "Express route handler for POST /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/cabinets.routes.ts:put:/:id",
+      "type": "endpoint",
+      "name": "PUT /:id",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "lineRange": [
+        55,
+        55
+      ],
+      "summary": "Express route handler for PUT /:id.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/cabinets.routes.ts:delete:/:id",
+      "type": "endpoint",
+      "name": "DELETE /:id",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "lineRange": [
+        65,
+        65
+      ],
+      "summary": "Express route handler for DELETE /:id.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/cabinets.routes.ts:post:/:id/unlock/:compId",
+      "type": "endpoint",
+      "name": "POST /:id/unlock/:compId",
+      "filePath": "src/routes/cabinets.routes.ts",
+      "lineRange": [
+        74,
+        74
+      ],
+      "summary": "Express route handler for POST /:id/unlock/:compId.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/dashboard.routes.ts",
+      "type": "file",
+      "name": "dashboard.routes.ts",
+      "filePath": "src/routes/dashboard.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/dashboard.routes.ts:get:/stats",
+      "type": "endpoint",
+      "name": "GET /stats",
+      "filePath": "src/routes/dashboard.routes.ts",
+      "lineRange": [
+        8,
+        8
+      ],
+      "summary": "Express route handler for GET /stats.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/locations.routes.ts",
+      "type": "file",
+      "name": "locations.routes.ts",
+      "filePath": "src/routes/locations.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/locations.routes.ts:get:/",
+      "type": "endpoint",
+      "name": "GET /",
+      "filePath": "src/routes/locations.routes.ts",
+      "lineRange": [
+        9,
+        9
+      ],
+      "summary": "Express route handler for GET /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/locations.routes.ts:get:/:id",
+      "type": "endpoint",
+      "name": "GET /:id",
+      "filePath": "src/routes/locations.routes.ts",
+      "lineRange": [
+        20,
+        20
+      ],
+      "summary": "Express route handler for GET /:id.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/locations.routes.ts:get:/:id/cabinets",
+      "type": "endpoint",
+      "name": "GET /:id/cabinets",
+      "filePath": "src/routes/locations.routes.ts",
+      "lineRange": [
+        29,
+        29
+      ],
+      "summary": "Express route handler for GET /:id/cabinets.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/lockers.routes.ts",
+      "type": "file",
+      "name": "lockers.routes.ts",
+      "filePath": "src/routes/lockers.routes.ts",
+      "summary": "Source file containing functions: parseCompartmentSize.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/routes/lockers.routes.ts:parseCompartmentSize",
+      "type": "function",
+      "name": "parseCompartmentSize",
+      "filePath": "src/routes/lockers.routes.ts",
+      "lineRange": [
+        33,
+        38
+      ],
+      "summary": "Function parseCompartmentSize.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/lockers.routes.ts:get:/available",
+      "type": "endpoint",
+      "name": "GET /available",
+      "filePath": "src/routes/lockers.routes.ts",
+      "lineRange": [
+        10,
+        10
+      ],
+      "summary": "Express route handler for GET /available.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/lockers.routes.ts:get:/plans",
+      "type": "endpoint",
+      "name": "GET /plans",
+      "filePath": "src/routes/lockers.routes.ts",
+      "lineRange": [
+        20,
+        20
+      ],
+      "summary": "Express route handler for GET /plans.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/notifications.routes.ts",
+      "type": "file",
+      "name": "notifications.routes.ts",
+      "filePath": "src/routes/notifications.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/notifications.routes.ts:get:/",
+      "type": "endpoint",
+      "name": "GET /",
+      "filePath": "src/routes/notifications.routes.ts",
+      "lineRange": [
+        9,
+        9
+      ],
+      "summary": "Express route handler for GET /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/notifications.routes.ts:put:/read-all",
+      "type": "endpoint",
+      "name": "PUT /read-all",
+      "filePath": "src/routes/notifications.routes.ts",
+      "lineRange": [
+        22,
+        22
+      ],
+      "summary": "Express route handler for PUT /read-all.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/notifications.routes.ts:put:/:id/read",
+      "type": "endpoint",
+      "name": "PUT /:id/read",
+      "filePath": "src/routes/notifications.routes.ts",
+      "lineRange": [
+        29,
+        29
+      ],
+      "summary": "Express route handler for PUT /:id/read.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/provisioning.routes.ts",
+      "type": "file",
+      "name": "provisioning.routes.ts",
+      "filePath": "src/routes/provisioning.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/provisioning.routes.ts:get:/cabinets",
+      "type": "endpoint",
+      "name": "GET /cabinets",
+      "filePath": "src/routes/provisioning.routes.ts",
+      "lineRange": [
+        7,
+        7
+      ],
+      "summary": "Express route handler for GET /cabinets.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/rentals.admin.routes.ts",
+      "type": "file",
+      "name": "rentals.admin.routes.ts",
+      "filePath": "src/routes/rentals.admin.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.admin.routes.ts:get:/",
+      "type": "endpoint",
+      "name": "GET /",
+      "filePath": "src/routes/rentals.admin.routes.ts",
+      "lineRange": [
+        14,
+        14
+      ],
+      "summary": "Express route handler for GET /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.admin.routes.ts:get:/:id",
+      "type": "endpoint",
+      "name": "GET /:id",
+      "filePath": "src/routes/rentals.admin.routes.ts",
+      "lineRange": [
+        27,
+        27
+      ],
+      "summary": "Express route handler for GET /:id.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.admin.routes.ts:put:/:id/cancel",
+      "type": "endpoint",
+      "name": "PUT /:id/cancel",
+      "filePath": "src/routes/rentals.admin.routes.ts",
+      "lineRange": [
+        39,
+        39
+      ],
+      "summary": "Express route handler for PUT /:id/cancel.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/rentals.routes.ts",
+      "type": "file",
+      "name": "rentals.routes.ts",
+      "filePath": "src/routes/rentals.routes.ts",
+      "summary": "File starting with: import { Router } from 'express';",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.routes.ts:post:/verify-pin",
+      "type": "endpoint",
+      "name": "POST /verify-pin",
+      "filePath": "src/routes/rentals.routes.ts",
+      "lineRange": [
+        24,
+        24
+      ],
+      "summary": "Express route handler for POST /verify-pin.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.routes.ts:post:/",
+      "type": "endpoint",
+      "name": "POST /",
+      "filePath": "src/routes/rentals.routes.ts",
+      "lineRange": [
+        45,
+        45
+      ],
+      "summary": "Express route handler for POST /.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.routes.ts:get:/:code",
+      "type": "endpoint",
+      "name": "GET /:code",
+      "filePath": "src/routes/rentals.routes.ts",
+      "lineRange": [
+        54,
+        54
+      ],
+      "summary": "Express route handler for GET /:code.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.routes.ts:post:/:id/unlock",
+      "type": "endpoint",
+      "name": "POST /:id/unlock",
+      "filePath": "src/routes/rentals.routes.ts",
+      "lineRange": [
+        62,
+        62
+      ],
+      "summary": "Express route handler for POST /:id/unlock.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/rentals.routes.ts:post:/:id/complete",
+      "type": "endpoint",
+      "name": "POST /:id/complete",
+      "filePath": "src/routes/rentals.routes.ts",
+      "lineRange": [
+        70,
+        70
+      ],
+      "summary": "Express route handler for POST /:id/complete.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/routes/system.routes.ts",
+      "type": "file",
+      "name": "system.routes.ts",
+      "filePath": "src/routes/system.routes.ts",
+      "summary": "Source file containing functions: resolveCompartmentId.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "routes"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/routes/system.routes.ts:resolveCompartmentId",
+      "type": "function",
+      "name": "resolveCompartmentId",
+      "filePath": "src/routes/system.routes.ts",
+      "lineRange": [
+        72,
+        81
+      ],
+      "summary": "Function resolveCompartmentId.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/system.routes.ts:post:/heartbeat",
+      "type": "endpoint",
+      "name": "POST /heartbeat",
+      "filePath": "src/routes/system.routes.ts",
+      "lineRange": [
+        27,
+        27
+      ],
+      "summary": "Express route handler for POST /heartbeat.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/system.routes.ts:post:/locker-event",
+      "type": "endpoint",
+      "name": "POST /locker-event",
+      "filePath": "src/routes/system.routes.ts",
+      "lineRange": [
+        36,
+        36
+      ],
+      "summary": "Express route handler for POST /locker-event.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/routes/system.routes.ts:get:/status",
+      "type": "endpoint",
+      "name": "GET /status",
+      "filePath": "src/routes/system.routes.ts",
+      "lineRange": [
+        51,
+        51
+      ],
+      "summary": "Express route handler for GET /status.",
+      "tags": [
+        "endpoint",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/audit.service.ts",
+      "type": "file",
+      "name": "audit.service.ts",
+      "filePath": "src/services/audit.service.ts",
+      "summary": "Source file containing functions: createAuditLog, listAuditLogs, buildCreatedAtFilter.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "services"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/audit.service.ts:createAuditLog",
+      "type": "function",
+      "name": "createAuditLog",
+      "filePath": "src/services/audit.service.ts",
+      "lineRange": [
+        23,
+        34
+      ],
+      "summary": "Function createAuditLog.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/audit.service.ts:listAuditLogs",
+      "type": "function",
+      "name": "listAuditLogs",
+      "filePath": "src/services/audit.service.ts",
+      "lineRange": [
+        36,
+        58
+      ],
+      "summary": "Function listAuditLogs.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/audit.service.ts:buildCreatedAtFilter",
+      "type": "function",
+      "name": "buildCreatedAtFilter",
+      "filePath": "src/services/audit.service.ts",
+      "lineRange": [
+        60,
+        69
+      ],
+      "summary": "Function buildCreatedAtFilter.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/auth.service.ts",
+      "type": "file",
+      "name": "auth.service.ts",
+      "filePath": "src/services/auth.service.ts",
+      "summary": "Source file containing functions: adminLogin, refreshToken, verifyPin, requireEnv.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "services"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/auth.service.ts:adminLogin",
+      "type": "function",
+      "name": "adminLogin",
+      "filePath": "src/services/auth.service.ts",
+      "lineRange": [
+        7,
+        20
+      ],
+      "summary": "Function adminLogin.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/auth.service.ts:refreshToken",
+      "type": "function",
+      "name": "refreshToken",
+      "filePath": "src/services/auth.service.ts",
+      "lineRange": [
+        22,
+        35
+      ],
+      "summary": "Function refreshToken.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/auth.service.ts:verifyPin",
+      "type": "function",
+      "name": "verifyPin",
+      "filePath": "src/services/auth.service.ts",
+      "lineRange": [
+        37,
+        59
+      ],
+      "summary": "Function verifyPin.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/auth.service.ts:requireEnv",
+      "type": "function",
+      "name": "requireEnv",
+      "filePath": "src/services/auth.service.ts",
+      "lineRange": [
+        61,
+        65
+      ],
+      "summary": "Function requireEnv.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/cabinet.service.ts",
+      "type": "file",
+      "name": "cabinet.service.ts",
+      "filePath": "src/services/cabinet.service.ts",
+      "summary": "Source file containing functions: listCabinets, getCabinet, createCabinet, updateCabinet, deleteCabinet, updateCompartmentStatus, updateHeartbeat, getAvailableCompartments.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "services"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:listCabinets",
+      "type": "function",
+      "name": "listCabinets",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        13,
+        18
+      ],
+      "summary": "Function listCabinets.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:getCabinet",
+      "type": "function",
+      "name": "getCabinet",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        20,
+        27
+      ],
+      "summary": "Function getCabinet.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:createCabinet",
+      "type": "function",
+      "name": "createCabinet",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        29,
+        35
+      ],
+      "summary": "Function createCabinet.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:updateCabinet",
+      "type": "function",
+      "name": "updateCabinet",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        37,
+        43
+      ],
+      "summary": "Function updateCabinet.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:deleteCabinet",
+      "type": "function",
+      "name": "deleteCabinet",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        45,
+        48
+      ],
+      "summary": "Function deleteCabinet.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:updateCompartmentStatus",
+      "type": "function",
+      "name": "updateCompartmentStatus",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        50,
+        69
+      ],
+      "summary": "Function updateCompartmentStatus.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:updateHeartbeat",
+      "type": "function",
+      "name": "updateHeartbeat",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        71,
+        83
+      ],
+      "summary": "Function updateHeartbeat.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/cabinet.service.ts:getAvailableCompartments",
+      "type": "function",
+      "name": "getAvailableCompartments",
+      "filePath": "src/services/cabinet.service.ts",
+      "lineRange": [
+        85,
+        95
+      ],
+      "summary": "Function getAvailableCompartments.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/dashboard.service.ts",
+      "type": "file",
+      "name": "dashboard.service.ts",
+      "filePath": "src/services/dashboard.service.ts",
+      "summary": "Source file containing functions: getDashboardStats, buildRevenueByDay, startOfDay, formatDateKey.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "services"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/dashboard.service.ts:getDashboardStats",
+      "type": "function",
+      "name": "getDashboardStats",
+      "filePath": "src/services/dashboard.service.ts",
+      "lineRange": [
+        6,
+        60
+      ],
+      "summary": "Function getDashboardStats.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/dashboard.service.ts:buildRevenueByDay",
+      "type": "function",
+      "name": "buildRevenueByDay",
+      "filePath": "src/services/dashboard.service.ts",
+      "lineRange": [
+        62,
+        83
+      ],
+      "summary": "Function buildRevenueByDay.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/dashboard.service.ts:startOfDay",
+      "type": "function",
+      "name": "startOfDay",
+      "filePath": "src/services/dashboard.service.ts",
+      "lineRange": [
+        85,
+        89
+      ],
+      "summary": "Function startOfDay.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/dashboard.service.ts:formatDateKey",
+      "type": "function",
+      "name": "formatDateKey",
+      "filePath": "src/services/dashboard.service.ts",
+      "lineRange": [
+        91,
+        96
+      ],
+      "summary": "Function formatDateKey.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/locker.service.ts",
+      "type": "file",
+      "name": "locker.service.ts",
+      "filePath": "src/services/locker.service.ts",
+      "summary": "Source file containing functions: unlockCompartment, lockCompartment, findCompartment.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "services"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/locker.service.ts:unlockCompartment",
+      "type": "function",
+      "name": "unlockCompartment",
+      "filePath": "src/services/locker.service.ts",
+      "lineRange": [
+        5,
+        28
+      ],
+      "summary": "Function unlockCompartment.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/locker.service.ts:lockCompartment",
+      "type": "function",
+      "name": "lockCompartment",
+      "filePath": "src/services/locker.service.ts",
+      "lineRange": [
+        30,
+        41
+      ],
+      "summary": "Function lockCompartment.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/locker.service.ts:findCompartment",
+      "type": "function",
+      "name": "findCompartment",
+      "filePath": "src/services/locker.service.ts",
+      "lineRange": [
+        43,
+        50
+      ],
+      "summary": "Function findCompartment.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/notification.service.ts",
+      "type": "file",
+      "name": "notification.service.ts",
+      "filePath": "src/services/notification.service.ts",
+      "summary": "Source file containing functions: createNotification, listNotifications, markAllNotificationsRead, sendRentalExpired, sendCabinetOffline.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "services"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/notification.service.ts:createNotification",
+      "type": "function",
+      "name": "createNotification",
+      "filePath": "src/services/notification.service.ts",
+      "lineRange": [
+        4,
+        20
+      ],
+      "summary": "Function createNotification.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/notification.service.ts:listNotifications",
+      "type": "function",
+      "name": "listNotifications",
+      "filePath": "src/services/notification.service.ts",
+      "lineRange": [
+        22,
+        30
+      ],
+      "summary": "Function listNotifications.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/notification.service.ts:markAllNotificationsRead",
+      "type": "function",
+      "name": "markAllNotificationsRead",
+      "filePath": "src/services/notification.service.ts",
+      "lineRange": [
+        32,
+        38
+      ],
+      "summary": "Function markAllNotificationsRead.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/notification.service.ts:sendRentalExpired",
+      "type": "function",
+      "name": "sendRentalExpired",
+      "filePath": "src/services/notification.service.ts",
+      "lineRange": [
+        40,
+        54
+      ],
+      "summary": "Function sendRentalExpired.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/notification.service.ts:sendCabinetOffline",
+      "type": "function",
+      "name": "sendCabinetOffline",
+      "filePath": "src/services/notification.service.ts",
+      "lineRange": [
+        56,
+        66
+      ],
+      "summary": "Function sendCabinetOffline.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/rental.service.ts",
+      "type": "file",
+      "name": "rental.service.ts",
+      "filePath": "src/services/rental.service.ts",
+      "summary": "Source file containing functions: createRental, getByCode, completeRental, cancelRental, handleUnlock, generateUniqueCode.",
+      "tags": [
+        "code",
+        "typescript",
+        "express",
+        "services"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/rental.service.ts:createRental",
+      "type": "function",
+      "name": "createRental",
+      "filePath": "src/services/rental.service.ts",
+      "lineRange": [
+        18,
+        129
+      ],
+      "summary": "Function createRental.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/rental.service.ts:getByCode",
+      "type": "function",
+      "name": "getByCode",
+      "filePath": "src/services/rental.service.ts",
+      "lineRange": [
+        131,
+        138
+      ],
+      "summary": "Function getByCode.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/rental.service.ts:completeRental",
+      "type": "function",
+      "name": "completeRental",
+      "filePath": "src/services/rental.service.ts",
+      "lineRange": [
+        140,
+        151
+      ],
+      "summary": "Function completeRental.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/rental.service.ts:cancelRental",
+      "type": "function",
+      "name": "cancelRental",
+      "filePath": "src/services/rental.service.ts",
+      "lineRange": [
+        153,
+        173
+      ],
+      "summary": "Function cancelRental.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/rental.service.ts:handleUnlock",
+      "type": "function",
+      "name": "handleUnlock",
+      "filePath": "src/services/rental.service.ts",
+      "lineRange": [
+        175,
+        203
+      ],
+      "summary": "Function handleUnlock.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/rental.service.ts:generateUniqueCode",
+      "type": "function",
+      "name": "generateUniqueCode",
+      "filePath": "src/services/rental.service.ts",
+      "lineRange": [
+        205,
+        212
+      ],
+      "summary": "Function generateUniqueCode.",
+      "tags": [
+        "function",
+        "typescript"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:test/audit.service.test.ts",
+      "type": "file",
+      "name": "audit.service.test.ts",
+      "filePath": "test/audit.service.test.ts",
+      "summary": "File starting with: import assert from 'node:assert/strict';",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:test/dashboard.service.test.ts",
+      "type": "file",
+      "name": "dashboard.service.test.ts",
+      "filePath": "test/dashboard.service.test.ts",
+      "summary": "File starting with: import assert from 'node:assert/strict';",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:test/mqtt.test.ts",
+      "type": "file",
+      "name": "mqtt.test.ts",
+      "filePath": "test/mqtt.test.ts",
+      "summary": "Source file containing classes/types: FakeMqttClient.",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:test/mqtt.test.ts:FakeMqttClient",
+      "type": "class",
+      "name": "FakeMqttClient",
+      "filePath": "test/mqtt.test.ts",
+      "lineRange": [
+        7,
+        15
+      ],
+      "summary": "Class or type FakeMqttClient.",
+      "tags": [
+        "class",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:test/notification.service.test.ts",
+      "type": "file",
+      "name": "notification.service.test.ts",
+      "filePath": "test/notification.service.test.ts",
+      "summary": "File starting with: import assert from 'node:assert/strict';",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:test/qr.test.ts",
+      "type": "file",
+      "name": "qr.test.ts",
+      "filePath": "test/qr.test.ts",
+      "summary": "File starting with: import assert from 'node:assert/strict';",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:test/rental.service.test.ts",
+      "type": "file",
+      "name": "rental.service.test.ts",
+      "filePath": "test/rental.service.test.ts",
+      "summary": "File starting with: import assert from 'node:assert/strict';",
+      "tags": [
+        "code",
+        "typescript",
+        "express"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "TypeScript compiler configuration for the backend project.",
+      "tags": [
+        "config",
+        "json",
+        "express"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Admin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Admin",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:User",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:User",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Location",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Location",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Cabinet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Cabinet",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:McpDevice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:McpDevice",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Compartment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Compartment",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:CompartmentStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:CompartmentStatus",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:PricePlan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:PricePlan",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Rental",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Rental",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:LockerLog",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:LockerLog",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:AuditLog",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:AuditLog",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Notification",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:Notification",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:UserSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:prisma/schema.prisma",
+      "target": "schema:prisma/schema.prisma:UserSession",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:prisma/seed.ts",
+      "target": "function:prisma/seed.ts:seedPlans",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:prisma/seed.ts",
+      "target": "function:prisma/seed.ts:resetDemoCabinetData",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:prisma/seed.ts",
+      "target": "function:prisma/seed.ts:seedLocationsAndCabinets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:prisma/seed.ts",
+      "target": "function:prisma/seed.ts:seedCompartments",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:prisma/seed.ts",
+      "target": "function:prisma/seed.ts:seedAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:prisma/seed.ts",
+      "target": "function:prisma/seed.ts:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "function:src/index.ts:bootstrap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "endpoint:src/index.ts:get:/api/plans",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "endpoint:src/index.ts:get:/api/plans",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "endpoint:src/index.ts:get:/api/health",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "endpoint:src/index.ts:get:/api/health",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/jobs/expiryChecker.ts",
+      "target": "function:src/jobs/expiryChecker.ts:startExpiryChecker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/jobs/heartbeatMonitor.ts",
+      "target": "function:src/jobs/heartbeatMonitor.ts:startHeartbeatMonitor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/errors.ts",
+      "target": "function:src/lib/errors.ts:NotFoundError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/errors.ts",
+      "target": "function:src/lib/errors.ts:UnauthorizedError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/errors.ts",
+      "target": "function:src/lib/errors.ts:BadRequestError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/errors.ts",
+      "target": "function:src/lib/errors.ts:ForbiddenError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/errors.ts",
+      "target": "class:src/lib/errors.ts:AppError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/jwt.ts",
+      "target": "function:src/lib/jwt.ts:signToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/jwt.ts",
+      "target": "function:src/lib/jwt.ts:verifyToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/mqtt.ts",
+      "target": "function:src/lib/mqtt.ts:topicMatches",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/mqtt.ts",
+      "target": "function:src/lib/mqtt.ts:connectMqtt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/mqtt.ts",
+      "target": "function:src/lib/mqtt.ts:getMqttClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/mqtt.ts",
+      "target": "function:src/lib/mqtt.ts:publishMqtt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/mqtt.ts",
+      "target": "function:src/lib/mqtt.ts:subscribeMqtt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/qr.ts",
+      "target": "function:src/lib/qr.ts:getQrSecret",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/qr.ts",
+      "target": "function:src/lib/qr.ts:signPayload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/qr.ts",
+      "target": "function:src/lib/qr.ts:signQrToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/qr.ts",
+      "target": "function:src/lib/qr.ts:verifyQrToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/socket.ts",
+      "target": "function:src/lib/socket.ts:initSocket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/socket.ts",
+      "target": "function:src/lib/socket.ts:getSocket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/socket.ts",
+      "target": "function:src/lib/socket.ts:emitCabinetStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/lib/socket.ts",
+      "target": "function:src/lib/socket.ts:emitCompartmentStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware/asyncHandler.ts",
+      "target": "function:src/middleware/asyncHandler.ts:asyncHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware/auth.ts",
+      "target": "function:src/middleware/auth.ts:readAdminFromRequest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware/auth.ts",
+      "target": "function:src/middleware/auth.ts:requireAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware/auth.ts",
+      "target": "function:src/middleware/auth.ts:requireSuperAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware/errorHandler.ts",
+      "target": "function:src/middleware/errorHandler.ts:errorHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware/requestLogger.ts",
+      "target": "function:src/middleware/requestLogger.ts:requestLogger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware/validate.ts",
+      "target": "function:src/middleware/validate.ts:validate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/mqtt/handlers.ts",
+      "target": "function:src/mqtt/handlers.ts:setupMqttHandlers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/mqtt/handlers.ts",
+      "target": "function:src/mqtt/handlers.ts:isLockStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/mqtt/handlers.ts",
+      "target": "function:src/mqtt/handlers.ts:isDoorStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "function:src/routes/admin.locations.routes.ts:ensureLocation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "function:src/routes/admin.locations.routes.ts:auditLocation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:get:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:get:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:post:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:post:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:put:/:id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:put:/:id",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:delete:/:id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "endpoint:src/routes/admin.locations.routes.ts:delete:/:id",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/audit.routes.ts",
+      "target": "endpoint:src/routes/audit.routes.ts:get:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/audit.routes.ts",
+      "target": "endpoint:src/routes/audit.routes.ts:get:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "endpoint:src/routes/auth.routes.ts:post:/admin/login",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "endpoint:src/routes/auth.routes.ts:post:/admin/login",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "endpoint:src/routes/auth.routes.ts:post:/refresh",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "endpoint:src/routes/auth.routes.ts:post:/refresh",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "endpoint:src/routes/auth.routes.ts:post:/verify-pin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "endpoint:src/routes/auth.routes.ts:post:/verify-pin",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "function:src/routes/cabinets.routes.ts:auditCabinet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:get:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:get:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:get:/:id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:get:/:id",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:post:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:post:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:put:/:id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:put:/:id",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:delete:/:id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:delete:/:id",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:post:/:id/unlock/:compId",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "endpoint:src/routes/cabinets.routes.ts:post:/:id/unlock/:compId",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/dashboard.routes.ts",
+      "target": "endpoint:src/routes/dashboard.routes.ts:get:/stats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/dashboard.routes.ts",
+      "target": "endpoint:src/routes/dashboard.routes.ts:get:/stats",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "endpoint:src/routes/locations.routes.ts:get:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "endpoint:src/routes/locations.routes.ts:get:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "endpoint:src/routes/locations.routes.ts:get:/:id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "endpoint:src/routes/locations.routes.ts:get:/:id",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "endpoint:src/routes/locations.routes.ts:get:/:id/cabinets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "endpoint:src/routes/locations.routes.ts:get:/:id/cabinets",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "function:src/routes/lockers.routes.ts:parseCompartmentSize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "endpoint:src/routes/lockers.routes.ts:get:/available",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "endpoint:src/routes/lockers.routes.ts:get:/available",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "endpoint:src/routes/lockers.routes.ts:get:/plans",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "endpoint:src/routes/lockers.routes.ts:get:/plans",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "endpoint:src/routes/notifications.routes.ts:get:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "endpoint:src/routes/notifications.routes.ts:get:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "endpoint:src/routes/notifications.routes.ts:put:/read-all",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "endpoint:src/routes/notifications.routes.ts:put:/read-all",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "endpoint:src/routes/notifications.routes.ts:put:/:id/read",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "endpoint:src/routes/notifications.routes.ts:put:/:id/read",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/provisioning.routes.ts",
+      "target": "endpoint:src/routes/provisioning.routes.ts:get:/cabinets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/provisioning.routes.ts",
+      "target": "endpoint:src/routes/provisioning.routes.ts:get:/cabinets",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "endpoint:src/routes/rentals.admin.routes.ts:get:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "endpoint:src/routes/rentals.admin.routes.ts:get:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "endpoint:src/routes/rentals.admin.routes.ts:get:/:id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "endpoint:src/routes/rentals.admin.routes.ts:get:/:id",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "endpoint:src/routes/rentals.admin.routes.ts:put:/:id/cancel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "endpoint:src/routes/rentals.admin.routes.ts:put:/:id/cancel",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/verify-pin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/verify-pin",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:get:/:code",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:get:/:code",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/:id/unlock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/:id/unlock",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/:id/complete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "endpoint:src/routes/rentals.routes.ts:post:/:id/complete",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "function:src/routes/system.routes.ts:resolveCompartmentId",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "endpoint:src/routes/system.routes.ts:post:/heartbeat",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "endpoint:src/routes/system.routes.ts:post:/heartbeat",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "endpoint:src/routes/system.routes.ts:post:/locker-event",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "endpoint:src/routes/system.routes.ts:post:/locker-event",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "endpoint:src/routes/system.routes.ts:get:/status",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "endpoint:src/routes/system.routes.ts:get:/status",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/services/audit.service.ts",
+      "target": "function:src/services/audit.service.ts:createAuditLog",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/audit.service.ts",
+      "target": "function:src/services/audit.service.ts:listAuditLogs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/audit.service.ts",
+      "target": "function:src/services/audit.service.ts:buildCreatedAtFilter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/auth.service.ts",
+      "target": "function:src/services/auth.service.ts:adminLogin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/auth.service.ts",
+      "target": "function:src/services/auth.service.ts:refreshToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/auth.service.ts",
+      "target": "function:src/services/auth.service.ts:verifyPin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/auth.service.ts",
+      "target": "function:src/services/auth.service.ts:requireEnv",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:listCabinets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:getCabinet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:createCabinet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:updateCabinet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:deleteCabinet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:updateCompartmentStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:updateHeartbeat",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "function:src/services/cabinet.service.ts:getAvailableCompartments",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/dashboard.service.ts",
+      "target": "function:src/services/dashboard.service.ts:getDashboardStats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/dashboard.service.ts",
+      "target": "function:src/services/dashboard.service.ts:buildRevenueByDay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/dashboard.service.ts",
+      "target": "function:src/services/dashboard.service.ts:startOfDay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/dashboard.service.ts",
+      "target": "function:src/services/dashboard.service.ts:formatDateKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/locker.service.ts",
+      "target": "function:src/services/locker.service.ts:unlockCompartment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/locker.service.ts",
+      "target": "function:src/services/locker.service.ts:lockCompartment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/locker.service.ts",
+      "target": "function:src/services/locker.service.ts:findCompartment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/notification.service.ts",
+      "target": "function:src/services/notification.service.ts:createNotification",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/notification.service.ts",
+      "target": "function:src/services/notification.service.ts:listNotifications",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/notification.service.ts",
+      "target": "function:src/services/notification.service.ts:markAllNotificationsRead",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/notification.service.ts",
+      "target": "function:src/services/notification.service.ts:sendRentalExpired",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/notification.service.ts",
+      "target": "function:src/services/notification.service.ts:sendCabinetOffline",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "function:src/services/rental.service.ts:createRental",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "function:src/services/rental.service.ts:getByCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "function:src/services/rental.service.ts:completeRental",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "function:src/services/rental.service.ts:cancelRental",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "function:src/services/rental.service.ts:handleUnlock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "function:src/services/rental.service.ts:generateUniqueCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test/mqtt.test.ts",
+      "target": "class:test/mqtt.test.ts:FakeMqttClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/jobs/expiryChecker.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/jobs/heartbeatMonitor.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/lib/mqtt.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/lib/socket.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/middleware/errorHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/middleware/requestLogger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/mqtt/handlers.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/admin.locations.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/audit.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/auth.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/cabinets.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/dashboard.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/locations.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/lockers.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/notifications.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/provisioning.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/rentals.admin.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/rentals.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/index.ts",
+      "target": "file:src/routes/system.routes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/jobs/expiryChecker.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/jobs/expiryChecker.ts",
+      "target": "file:src/services/notification.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/jobs/heartbeatMonitor.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/jobs/heartbeatMonitor.ts",
+      "target": "file:src/lib/socket.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/jobs/heartbeatMonitor.ts",
+      "target": "file:src/services/notification.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/middleware/auth.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/middleware/auth.ts",
+      "target": "file:src/lib/jwt.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/middleware/errorHandler.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/mqtt/handlers.ts",
+      "target": "file:src/lib/mqtt.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/mqtt/handlers.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/mqtt/handlers.ts",
+      "target": "file:src/services/cabinet.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/mqtt/handlers.ts",
+      "target": "file:src/services/rental.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "file:src/middleware/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "file:src/middleware/validate.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/admin.locations.routes.ts",
+      "target": "file:src/services/audit.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/audit.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/audit.routes.ts",
+      "target": "file:src/middleware/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/audit.routes.ts",
+      "target": "file:src/services/audit.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "file:src/middleware/validate.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "file:src/services/audit.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/auth.routes.ts",
+      "target": "file:src/services/auth.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "file:src/middleware/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "file:src/middleware/validate.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "file:src/services/audit.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "file:src/services/cabinet.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/cabinets.routes.ts",
+      "target": "file:src/services/locker.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/dashboard.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/dashboard.routes.ts",
+      "target": "file:src/middleware/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/dashboard.routes.ts",
+      "target": "file:src/services/dashboard.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/locations.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/lockers.routes.ts",
+      "target": "file:src/services/cabinet.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/notifications.routes.ts",
+      "target": "file:src/services/notification.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/provisioning.routes.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/provisioning.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "file:src/middleware/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "file:src/services/audit.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.admin.routes.ts",
+      "target": "file:src/services/rental.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "file:src/middleware/validate.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "file:src/services/auth.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/rentals.routes.ts",
+      "target": "file:src/services/rental.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "file:src/middleware/asyncHandler.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "file:src/middleware/validate.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "file:src/services/cabinet.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/routes/system.routes.ts",
+      "target": "file:src/services/rental.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/audit.service.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/auth.service.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/auth.service.ts",
+      "target": "file:src/lib/jwt.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/auth.service.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/cabinet.service.ts",
+      "target": "file:src/lib/socket.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/dashboard.service.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/locker.service.ts",
+      "target": "file:src/lib/mqtt.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/locker.service.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/notification.service.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "file:src/lib/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "file:src/lib/qr.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "file:src/services/notification.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/audit.service.test.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/audit.service.test.ts",
+      "target": "file:src/services/audit.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/dashboard.service.test.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/dashboard.service.test.ts",
+      "target": "file:src/services/dashboard.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/mqtt.test.ts",
+      "target": "file:src/lib/mqtt.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/notification.service.test.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/notification.service.test.ts",
+      "target": "file:src/services/notification.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/qr.test.ts",
+      "target": "file:src/lib/qr.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/rental.service.test.ts",
+      "target": "file:src/lib/prisma.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:test/rental.service.test.ts",
+      "target": "file:src/services/rental.service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:prisma/seed.ts:seedLocationsAndCabinets",
+      "target": "function:prisma/seed.ts:seedCompartments",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:prisma/seed.ts:main",
+      "target": "function:prisma/seed.ts:seedPlans",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:prisma/seed.ts:main",
+      "target": "function:prisma/seed.ts:resetDemoCabinetData",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:prisma/seed.ts:main",
+      "target": "function:prisma/seed.ts:seedLocationsAndCabinets",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:prisma/seed.ts:main",
+      "target": "function:prisma/seed.ts:seedAdmin",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/lib/mqtt.ts:subscribeMqtt",
+      "target": "function:src/lib/mqtt.ts:topicMatches",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/lib/qr.ts:signPayload",
+      "target": "function:src/lib/qr.ts:getQrSecret",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/lib/qr.ts:signQrToken",
+      "target": "function:src/lib/qr.ts:signPayload",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/lib/qr.ts:verifyQrToken",
+      "target": "function:src/lib/qr.ts:signPayload",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/middleware/auth.ts:requireAdmin",
+      "target": "function:src/middleware/auth.ts:readAdminFromRequest",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/middleware/auth.ts:requireSuperAdmin",
+      "target": "function:src/middleware/auth.ts:readAdminFromRequest",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/mqtt/handlers.ts:setupMqttHandlers",
+      "target": "function:src/mqtt/handlers.ts:isLockStatus",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/mqtt/handlers.ts:setupMqttHandlers",
+      "target": "function:src/mqtt/handlers.ts:isDoorStatus",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/audit.service.ts:listAuditLogs",
+      "target": "function:src/services/audit.service.ts:buildCreatedAtFilter",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/auth.service.ts:adminLogin",
+      "target": "function:src/services/auth.service.ts:requireEnv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/auth.service.ts:refreshToken",
+      "target": "function:src/services/auth.service.ts:requireEnv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/cabinet.service.ts:updateCabinet",
+      "target": "function:src/services/cabinet.service.ts:getCabinet",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/cabinet.service.ts:deleteCabinet",
+      "target": "function:src/services/cabinet.service.ts:getCabinet",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/dashboard.service.ts:getDashboardStats",
+      "target": "function:src/services/dashboard.service.ts:startOfDay",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/dashboard.service.ts:getDashboardStats",
+      "target": "function:src/services/dashboard.service.ts:buildRevenueByDay",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/dashboard.service.ts:getDashboardStats",
+      "target": "function:src/services/dashboard.service.ts:formatDateKey",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/dashboard.service.ts:buildRevenueByDay",
+      "target": "function:src/services/dashboard.service.ts:formatDateKey",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/locker.service.ts:unlockCompartment",
+      "target": "function:src/services/locker.service.ts:findCompartment",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/locker.service.ts:lockCompartment",
+      "target": "function:src/services/locker.service.ts:findCompartment",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/notification.service.ts:sendRentalExpired",
+      "target": "function:src/services/notification.service.ts:createNotification",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/notification.service.ts:sendCabinetOffline",
+      "target": "function:src/services/notification.service.ts:createNotification",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/services/rental.service.ts:createRental",
+      "target": "function:src/services/rental.service.ts:generateUniqueCode",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/lib/prisma.ts",
+      "target": "file:test/audit.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/services/audit.service.ts",
+      "target": "file:test/audit.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/lib/prisma.ts",
+      "target": "file:test/dashboard.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/services/dashboard.service.ts",
+      "target": "file:test/dashboard.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/lib/mqtt.ts",
+      "target": "file:test/mqtt.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/lib/prisma.ts",
+      "target": "file:test/notification.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/services/notification.service.ts",
+      "target": "file:test/notification.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/lib/qr.ts",
+      "target": "file:test/qr.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/lib/prisma.ts",
+      "target": "file:test/rental.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/services/rental.service.ts",
+      "target": "file:test/rental.service.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:core",
+      "name": "Core",
+      "description": "Core application files",
+      "nodeIds": [
+        "file:prisma/init.sql",
+        "file:prisma/seed.ts",
+        "file:src/index.ts",
+        "file:src/mqtt/handlers.ts"
+      ]
+    },
+    {
+      "id": "layer:background-tasks",
+      "name": "Background Tasks",
+      "description": "Background workers, job processors, and scheduled tasks",
+      "nodeIds": [
+        "file:src/jobs/expiryChecker.ts",
+        "file:src/jobs/heartbeatMonitor.ts"
+      ]
+    },
+    {
+      "id": "layer:utility-layer",
+      "name": "Utility Layer",
+      "description": "Shared utilities, helpers, and common libraries",
+      "nodeIds": [
+        "file:src/lib/errors.ts",
+        "file:src/lib/jwt.ts",
+        "file:src/lib/mqtt.ts",
+        "file:src/lib/prisma.ts",
+        "file:src/lib/qr.ts",
+        "file:src/lib/socket.ts"
+      ]
+    },
+    {
+      "id": "layer:middleware-layer",
+      "name": "Middleware Layer",
+      "description": "Request/response middleware and interceptors",
+      "nodeIds": [
+        "file:src/middleware/asyncHandler.ts",
+        "file:src/middleware/auth.ts",
+        "file:src/middleware/errorHandler.ts",
+        "file:src/middleware/requestLogger.ts",
+        "file:src/middleware/validate.ts"
+      ]
+    },
+    {
+      "id": "layer:api-layer",
+      "name": "API Layer",
+      "description": "HTTP endpoints, route handlers, and API controllers",
+      "nodeIds": [
+        "file:src/routes/admin.locations.routes.ts",
+        "file:src/routes/audit.routes.ts",
+        "file:src/routes/auth.routes.ts",
+        "file:src/routes/cabinets.routes.ts",
+        "file:src/routes/dashboard.routes.ts",
+        "file:src/routes/locations.routes.ts",
+        "file:src/routes/lockers.routes.ts",
+        "file:src/routes/notifications.routes.ts",
+        "file:src/routes/provisioning.routes.ts",
+        "file:src/routes/rentals.admin.routes.ts",
+        "file:src/routes/rentals.routes.ts",
+        "file:src/routes/system.routes.ts",
+        "endpoint:src/index.ts:get:/api/plans",
+        "endpoint:src/index.ts:get:/api/health",
+        "endpoint:src/routes/admin.locations.routes.ts:get:/",
+        "endpoint:src/routes/admin.locations.routes.ts:post:/",
+        "endpoint:src/routes/admin.locations.routes.ts:put:/:id",
+        "endpoint:src/routes/admin.locations.routes.ts:delete:/:id",
+        "endpoint:src/routes/audit.routes.ts:get:/",
+        "endpoint:src/routes/auth.routes.ts:post:/admin/login",
+        "endpoint:src/routes/auth.routes.ts:post:/refresh",
+        "endpoint:src/routes/auth.routes.ts:post:/verify-pin",
+        "endpoint:src/routes/cabinets.routes.ts:get:/",
+        "endpoint:src/routes/cabinets.routes.ts:get:/:id",
+        "endpoint:src/routes/cabinets.routes.ts:post:/",
+        "endpoint:src/routes/cabinets.routes.ts:put:/:id",
+        "endpoint:src/routes/cabinets.routes.ts:delete:/:id",
+        "endpoint:src/routes/cabinets.routes.ts:post:/:id/unlock/:compId",
+        "endpoint:src/routes/dashboard.routes.ts:get:/stats",
+        "endpoint:src/routes/locations.routes.ts:get:/",
+        "endpoint:src/routes/locations.routes.ts:get:/:id",
+        "endpoint:src/routes/locations.routes.ts:get:/:id/cabinets",
+        "endpoint:src/routes/lockers.routes.ts:get:/available",
+        "endpoint:src/routes/lockers.routes.ts:get:/plans",
+        "endpoint:src/routes/notifications.routes.ts:get:/",
+        "endpoint:src/routes/notifications.routes.ts:put:/read-all",
+        "endpoint:src/routes/notifications.routes.ts:put:/:id/read",
+        "endpoint:src/routes/provisioning.routes.ts:get:/cabinets",
+        "endpoint:src/routes/rentals.admin.routes.ts:get:/",
+        "endpoint:src/routes/rentals.admin.routes.ts:get:/:id",
+        "endpoint:src/routes/rentals.admin.routes.ts:put:/:id/cancel",
+        "endpoint:src/routes/rentals.routes.ts:post:/verify-pin",
+        "endpoint:src/routes/rentals.routes.ts:post:/",
+        "endpoint:src/routes/rentals.routes.ts:get:/:code",
+        "endpoint:src/routes/rentals.routes.ts:post:/:id/unlock",
+        "endpoint:src/routes/rentals.routes.ts:post:/:id/complete",
+        "endpoint:src/routes/system.routes.ts:post:/heartbeat",
+        "endpoint:src/routes/system.routes.ts:post:/locker-event",
+        "endpoint:src/routes/system.routes.ts:get:/status"
+      ]
+    },
+    {
+      "id": "layer:service-layer",
+      "name": "Service Layer",
+      "description": "Business logic and application services",
+      "nodeIds": [
+        "file:src/services/audit.service.ts",
+        "file:src/services/auth.service.ts",
+        "file:src/services/cabinet.service.ts",
+        "file:src/services/dashboard.service.ts",
+        "file:src/services/locker.service.ts",
+        "file:src/services/notification.service.ts",
+        "file:src/services/rental.service.ts"
+      ]
+    },
+    {
+      "id": "layer:test-layer",
+      "name": "Test Layer",
+      "description": "Test files and test utilities",
+      "nodeIds": [
+        "file:test/audit.service.test.ts",
+        "file:test/dashboard.service.test.ts",
+        "file:test/mqtt.test.ts",
+        "file:test/notification.service.test.ts",
+        "file:test/qr.test.ts",
+        "file:test/rental.service.test.ts"
+      ]
+    },
+    {
+      "id": "layer:configuration-layer",
+      "name": "Configuration Layer",
+      "description": "Application configuration and environment settings",
+      "nodeIds": [
+        "config:package.json",
+        "config:tsconfig.json"
+      ]
+    },
+    {
+      "id": "layer:data-layer",
+      "name": "Data Layer",
+      "description": "Data models, database access, and persistence",
+      "nodeIds": [
+        "schema:prisma/schema.prisma",
+        "schema:prisma/schema.prisma:Admin",
+        "schema:prisma/schema.prisma:User",
+        "schema:prisma/schema.prisma:Location",
+        "schema:prisma/schema.prisma:Cabinet",
+        "schema:prisma/schema.prisma:McpDevice",
+        "schema:prisma/schema.prisma:Compartment",
+        "schema:prisma/schema.prisma:CompartmentStatus",
+        "schema:prisma/schema.prisma:PricePlan",
+        "schema:prisma/schema.prisma:Rental",
+        "schema:prisma/schema.prisma:LockerLog",
+        "schema:prisma/schema.prisma:AuditLog",
+        "schema:prisma/schema.prisma:Notification",
+        "schema:prisma/schema.prisma:UserSession"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Configuration Layer",
+      "description": "Application configuration and environment settings. Key files: package.json, tsconfig.json.",
+      "nodeIds": [
+        "config:package.json",
+        "config:tsconfig.json"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Core",
+      "description": "Core application files. Key files: init.sql, seed.ts, index.ts, handlers.ts.",
+      "nodeIds": [
+        "file:prisma/init.sql",
+        "file:prisma/seed.ts",
+        "file:src/index.ts",
+        "file:src/mqtt/handlers.ts"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Data Layer",
+      "description": "Data models, database access, and persistence. Key files: schema.prisma, Admin, User, Location, Cabinet, McpDevice, Compartment, CompartmentStatus, PricePlan, Rental, LockerLog, AuditLog, Notification, UserSession.",
+      "nodeIds": [
+        "schema:prisma/schema.prisma",
+        "schema:prisma/schema.prisma:Admin",
+        "schema:prisma/schema.prisma:User",
+        "schema:prisma/schema.prisma:Location",
+        "schema:prisma/schema.prisma:Cabinet",
+        "schema:prisma/schema.prisma:McpDevice",
+        "schema:prisma/schema.prisma:Compartment",
+        "schema:prisma/schema.prisma:CompartmentStatus",
+        "schema:prisma/schema.prisma:PricePlan",
+        "schema:prisma/schema.prisma:Rental",
+        "schema:prisma/schema.prisma:LockerLog",
+        "schema:prisma/schema.prisma:AuditLog",
+        "schema:prisma/schema.prisma:Notification",
+        "schema:prisma/schema.prisma:UserSession"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "API Layer",
+      "description": "HTTP endpoints, route handlers, and API controllers. Key files: GET /api/plans, GET /api/health, admin.locations.routes.ts, audit.routes.ts, auth.routes.ts, cabinets.routes.ts, dashboard.routes.ts, locations.routes.ts, lockers.routes.ts, notifications.routes.ts, provisioning.routes.ts, rentals.admin.routes.ts, rentals.routes.ts, system.routes.ts, GET /, POST /, PUT /:id, DELETE /:id, GET /, POST /admin/login, POST /refresh, POST /verify-pin, GET /, GET /:id, POST /, PUT /:id, DELETE /:id, POST /:id/unlock/:compId, GET /stats, GET /, GET /:id, GET /:id/cabinets, GET /available, GET /plans, GET /, PUT /read-all, PUT /:id/read, GET /cabinets, GET /, GET /:id, PUT /:id/cancel, POST /verify-pin, POST /, GET /:code, POST /:id/unlock, POST /:id/complete, POST /heartbeat, POST /locker-event, GET /status.",
+      "nodeIds": [
+        "endpoint:src/index.ts:get:/api/plans",
+        "endpoint:src/index.ts:get:/api/health",
+        "file:src/routes/admin.locations.routes.ts",
+        "file:src/routes/audit.routes.ts",
+        "file:src/routes/auth.routes.ts",
+        "file:src/routes/cabinets.routes.ts",
+        "file:src/routes/dashboard.routes.ts",
+        "file:src/routes/locations.routes.ts",
+        "file:src/routes/lockers.routes.ts",
+        "file:src/routes/notifications.routes.ts",
+        "file:src/routes/provisioning.routes.ts",
+        "file:src/routes/rentals.admin.routes.ts",
+        "file:src/routes/rentals.routes.ts",
+        "file:src/routes/system.routes.ts",
+        "endpoint:src/routes/admin.locations.routes.ts:get:/",
+        "endpoint:src/routes/admin.locations.routes.ts:post:/",
+        "endpoint:src/routes/admin.locations.routes.ts:put:/:id",
+        "endpoint:src/routes/admin.locations.routes.ts:delete:/:id",
+        "endpoint:src/routes/audit.routes.ts:get:/",
+        "endpoint:src/routes/auth.routes.ts:post:/admin/login",
+        "endpoint:src/routes/auth.routes.ts:post:/refresh",
+        "endpoint:src/routes/auth.routes.ts:post:/verify-pin",
+        "endpoint:src/routes/cabinets.routes.ts:get:/",
+        "endpoint:src/routes/cabinets.routes.ts:get:/:id",
+        "endpoint:src/routes/cabinets.routes.ts:post:/",
+        "endpoint:src/routes/cabinets.routes.ts:put:/:id",
+        "endpoint:src/routes/cabinets.routes.ts:delete:/:id",
+        "endpoint:src/routes/cabinets.routes.ts:post:/:id/unlock/:compId",
+        "endpoint:src/routes/dashboard.routes.ts:get:/stats",
+        "endpoint:src/routes/locations.routes.ts:get:/",
+        "endpoint:src/routes/locations.routes.ts:get:/:id",
+        "endpoint:src/routes/locations.routes.ts:get:/:id/cabinets",
+        "endpoint:src/routes/lockers.routes.ts:get:/available",
+        "endpoint:src/routes/lockers.routes.ts:get:/plans",
+        "endpoint:src/routes/notifications.routes.ts:get:/",
+        "endpoint:src/routes/notifications.routes.ts:put:/read-all",
+        "endpoint:src/routes/notifications.routes.ts:put:/:id/read",
+        "endpoint:src/routes/provisioning.routes.ts:get:/cabinets",
+        "endpoint:src/routes/rentals.admin.routes.ts:get:/",
+        "endpoint:src/routes/rentals.admin.routes.ts:get:/:id",
+        "endpoint:src/routes/rentals.admin.routes.ts:put:/:id/cancel",
+        "endpoint:src/routes/rentals.routes.ts:post:/verify-pin",
+        "endpoint:src/routes/rentals.routes.ts:post:/",
+        "endpoint:src/routes/rentals.routes.ts:get:/:code",
+        "endpoint:src/routes/rentals.routes.ts:post:/:id/unlock",
+        "endpoint:src/routes/rentals.routes.ts:post:/:id/complete",
+        "endpoint:src/routes/system.routes.ts:post:/heartbeat",
+        "endpoint:src/routes/system.routes.ts:post:/locker-event",
+        "endpoint:src/routes/system.routes.ts:get:/status"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Background Tasks",
+      "description": "Background workers, job processors, and scheduled tasks. Key files: expiryChecker.ts, heartbeatMonitor.ts.",
+      "nodeIds": [
+        "file:src/jobs/expiryChecker.ts",
+        "file:src/jobs/heartbeatMonitor.ts"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Middleware Layer",
+      "description": "Request/response middleware and interceptors. Key files: errorHandler.ts, requestLogger.ts, auth.ts, asyncHandler.ts, validate.ts.",
+      "nodeIds": [
+        "file:src/middleware/errorHandler.ts",
+        "file:src/middleware/requestLogger.ts",
+        "file:src/middleware/auth.ts",
+        "file:src/middleware/asyncHandler.ts",
+        "file:src/middleware/validate.ts"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "Service Layer",
+      "description": "Business logic and application services. Key files: locker.service.ts, auth.service.ts, cabinet.service.ts, audit.service.ts, dashboard.service.ts, notification.service.ts, rental.service.ts.",
+      "nodeIds": [
+        "file:src/services/locker.service.ts",
+        "file:src/services/auth.service.ts",
+        "file:src/services/cabinet.service.ts",
+        "file:src/services/audit.service.ts",
+        "file:src/services/dashboard.service.ts",
+        "file:src/services/notification.service.ts",
+        "file:src/services/rental.service.ts"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Utility Layer",
+      "description": "Shared utilities, helpers, and common libraries. Key files: jwt.ts, socket.ts, errors.ts, mqtt.ts, prisma.ts, qr.ts.",
+      "nodeIds": [
+        "file:src/lib/jwt.ts",
+        "file:src/lib/socket.ts",
+        "file:src/lib/errors.ts",
+        "file:src/lib/mqtt.ts",
+        "file:src/lib/prisma.ts",
+        "file:src/lib/qr.ts"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "Test Layer",
+      "description": "Test files and test utilities. Key files: audit.service.test.ts, dashboard.service.test.ts, mqtt.test.ts, notification.service.test.ts, qr.test.ts, rental.service.test.ts.",
+      "nodeIds": [
+        "file:test/audit.service.test.ts",
+        "file:test/dashboard.service.test.ts",
+        "file:test/mqtt.test.ts",
+        "file:test/notification.service.test.ts",
+        "file:test/qr.test.ts",
+        "file:test/rental.service.test.ts"
+      ]
+    },
+    {
+      "order": 10,
+      "title": "Supporting Components",
+      "description": "Additional supporting files: main, bootstrap, seedPlans, resetDemoCabinetData, seedLocationsAndCabinets, seedAdmin, startExpiryChecker, startHeartbeatMonitor, errorHandler, requestLogger, setupMqttHandlers, ensureLocation, auditLocation, auditCabinet, parseCompartmentSize, resolveCompartmentId, seedCompartments, isLockStatus, isDoorStatus, unlockCompartment, lockCompartment, requireAdmin, requireSuperAdmin, adminLogin, refreshToken, verifyPin, asyncHandler, validate, listCabinets, createCabinet, updateCabinet, deleteCabinet, updateCompartmentStatus, updateHeartbeat, getAvailableCompartments, findCompartment, readAdminFromRequest, requireEnv, signToken, verifyToken, getCabinet, initSocket, getSocket, emitCabinetStatus, emitCompartmentStatus, NotFoundError, UnauthorizedError, BadRequestError, ForbiddenError, AppError, topicMatches, connectMqtt, getMqttClient, publishMqtt, subscribeMqtt, getQrSecret, signPayload, signQrToken, verifyQrToken, createAuditLog, listAuditLogs, buildCreatedAtFilter, getDashboardStats, buildRevenueByDay, startOfDay, formatDateKey, createNotification, listNotifications, markAllNotificationsRead, sendRentalExpired, sendCabinetOffline, createRental, getByCode, completeRental, cancelRental, handleUnlock, generateUniqueCode, FakeMqttClient.",
+      "nodeIds": [
+        "function:prisma/seed.ts:main",
+        "function:src/index.ts:bootstrap",
+        "function:prisma/seed.ts:seedPlans",
+        "function:prisma/seed.ts:resetDemoCabinetData",
+        "function:prisma/seed.ts:seedLocationsAndCabinets",
+        "function:prisma/seed.ts:seedAdmin",
+        "function:src/jobs/expiryChecker.ts:startExpiryChecker",
+        "function:src/jobs/heartbeatMonitor.ts:startHeartbeatMonitor",
+        "function:src/middleware/errorHandler.ts:errorHandler",
+        "function:src/middleware/requestLogger.ts:requestLogger",
+        "function:src/mqtt/handlers.ts:setupMqttHandlers",
+        "function:src/routes/admin.locations.routes.ts:ensureLocation",
+        "function:src/routes/admin.locations.routes.ts:auditLocation",
+        "function:src/routes/cabinets.routes.ts:auditCabinet",
+        "function:src/routes/lockers.routes.ts:parseCompartmentSize",
+        "function:src/routes/system.routes.ts:resolveCompartmentId",
+        "function:prisma/seed.ts:seedCompartments",
+        "function:src/mqtt/handlers.ts:isLockStatus",
+        "function:src/mqtt/handlers.ts:isDoorStatus",
+        "function:src/services/locker.service.ts:unlockCompartment",
+        "function:src/services/locker.service.ts:lockCompartment",
+        "function:src/middleware/auth.ts:requireAdmin",
+        "function:src/middleware/auth.ts:requireSuperAdmin",
+        "function:src/services/auth.service.ts:adminLogin",
+        "function:src/services/auth.service.ts:refreshToken",
+        "function:src/services/auth.service.ts:verifyPin",
+        "function:src/middleware/asyncHandler.ts:asyncHandler",
+        "function:src/middleware/validate.ts:validate",
+        "function:src/services/cabinet.service.ts:listCabinets",
+        "function:src/services/cabinet.service.ts:createCabinet",
+        "function:src/services/cabinet.service.ts:updateCabinet",
+        "function:src/services/cabinet.service.ts:deleteCabinet",
+        "function:src/services/cabinet.service.ts:updateCompartmentStatus",
+        "function:src/services/cabinet.service.ts:updateHeartbeat",
+        "function:src/services/cabinet.service.ts:getAvailableCompartments",
+        "function:src/services/locker.service.ts:findCompartment",
+        "function:src/middleware/auth.ts:readAdminFromRequest",
+        "function:src/services/auth.service.ts:requireEnv",
+        "function:src/lib/jwt.ts:signToken",
+        "function:src/lib/jwt.ts:verifyToken",
+        "function:src/services/cabinet.service.ts:getCabinet",
+        "function:src/lib/socket.ts:initSocket",
+        "function:src/lib/socket.ts:getSocket",
+        "function:src/lib/socket.ts:emitCabinetStatus",
+        "function:src/lib/socket.ts:emitCompartmentStatus",
+        "function:src/lib/errors.ts:NotFoundError",
+        "function:src/lib/errors.ts:UnauthorizedError",
+        "function:src/lib/errors.ts:BadRequestError",
+        "function:src/lib/errors.ts:ForbiddenError",
+        "class:src/lib/errors.ts:AppError",
+        "function:src/lib/mqtt.ts:topicMatches",
+        "function:src/lib/mqtt.ts:connectMqtt",
+        "function:src/lib/mqtt.ts:getMqttClient",
+        "function:src/lib/mqtt.ts:publishMqtt",
+        "function:src/lib/mqtt.ts:subscribeMqtt",
+        "function:src/lib/qr.ts:getQrSecret",
+        "function:src/lib/qr.ts:signPayload",
+        "function:src/lib/qr.ts:signQrToken",
+        "function:src/lib/qr.ts:verifyQrToken",
+        "function:src/services/audit.service.ts:createAuditLog",
+        "function:src/services/audit.service.ts:listAuditLogs",
+        "function:src/services/audit.service.ts:buildCreatedAtFilter",
+        "function:src/services/dashboard.service.ts:getDashboardStats",
+        "function:src/services/dashboard.service.ts:buildRevenueByDay",
+        "function:src/services/dashboard.service.ts:startOfDay",
+        "function:src/services/dashboard.service.ts:formatDateKey",
+        "function:src/services/notification.service.ts:createNotification",
+        "function:src/services/notification.service.ts:listNotifications",
+        "function:src/services/notification.service.ts:markAllNotificationsRead",
+        "function:src/services/notification.service.ts:sendRentalExpired",
+        "function:src/services/notification.service.ts:sendCabinetOffline",
+        "function:src/services/rental.service.ts:createRental",
+        "function:src/services/rental.service.ts:getByCode",
+        "function:src/services/rental.service.ts:completeRental",
+        "function:src/services/rental.service.ts:cancelRental",
+        "function:src/services/rental.service.ts:handleUnlock",
+        "function:src/services/rental.service.ts:generateUniqueCode",
+        "class:test/mqtt.test.ts:FakeMqttClient"
+      ]
+    }
+  ]
+}

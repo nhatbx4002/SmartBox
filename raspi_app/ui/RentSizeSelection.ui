@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainContent</class>
+ <widget class="QWidget" name="mainContent">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>1152</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#mainContent {
+    background-color: #050505;
+    border: none;
+}
+QLabel#lblTitle {
+    color: #FFFFFF;
+    font-size: 26px;
+    font-weight: 800;
+}
+QFrame#cardSize1,
+QFrame#cardSize2 {
+    background-color: #101010;
+    border: 2px solid #2C2C2C;
+    border-radius: 18px;
+}
+QFrame#iconBoxSize1,
+QFrame#iconBoxSize2 {
+    background-color: #1B1B1B;
+    border: 2px solid #333333;
+    border-radius: 24px;
+}
+QFrame#cardSize1[selected=&quot;true&quot;],
+QFrame#cardSize2[selected=&quot;true&quot;] {
+    border: 4px solid #FF6A00;
+}
+QFrame#iconBoxSize1[selected=&quot;true&quot;],
+QFrame#iconBoxSize2[selected=&quot;true&quot;] {
+    border: 2px solid #FF6A00;
+}
+QLabel#lblSize1Check,
+QLabel#lblSize2Check {
+    color: #FF6A00;
+    border: 3px solid #FF6A00;
+    border-radius: 17px;
+    font-size: 20px;
+    font-weight: 900;
+}</string>
+  </property>
+  <widget class="QPushButton" name="btnBack">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>24</y>
+     <width>180</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton#btnBack {
+    background-color: transparent;
+    border: none;
+    color: #D8D8D8;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: left;
+    padding: 0px;
+}
+
+QPushButton#btnBack:pressed {
+    color: #FF6A00;
+}
+</string>
+   </property>
+   <property name="text">
+    <string>←  Quay lại</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblTitle">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>118</y>
+     <width>600</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Chọn kích thước tủ bạn muốn thuê</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QFrame" name="cardSize1">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>215</y>
+     <width>320</width>
+     <height>460</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel#lblSize1Title {
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 900;
+}
+
+QLabel#lblSize1Desc {
+    color: #8E8E8E;
+    font-size: 22px;
+    font-weight: 800;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QFrame" name="iconBoxSize1">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>95</y>
+      <width>120</width>
+      <height>120</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lblIconSize1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../resources.qrc">:/assets/iconSize1.png</pixmap>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="lblSize1Title">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>245</y>
+      <width>240</width>
+      <height>48</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SIZE 1</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblSize1Desc">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>292</y>
+      <width>240</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>(NHỎ)</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="cardSize2">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>215</y>
+     <width>320</width>
+     <height>460</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+QLabel#lblSize2Title {
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 900;
+}
+
+QLabel#lblSize2Desc {
+    color: #8E8E8E;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+QPushButton#btnSelectSize2 {
+    background-color: #FF6A00;
+    border: none;
+    border-radius: 8px;
+    color: #050505;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QFrame" name="iconBoxSize2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>78</y>
+      <width>120</width>
+      <height>120</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../resources.qrc">:/assets/iconSize2.png</pixmap>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="lblSize2Title">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>245</y>
+      <width>240</width>
+      <height>48</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SIZE 2</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblSize2Desc">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>292</y>
+      <width>240</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>(LỚN)</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="btnContinue">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>1030</y>
+     <width>600</width>
+     <height>64</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton#btnContinue:disabled {
+    background-color: #6A2A00;
+    color: #111111;
+    border: none;
+    border-radius: 12px;
+    font-size: 24px;
+    font-weight: 900;
+}
+QPushButton#btnContinue:enabled {
+    background-color: #FF6A00;
+    color: #050505;
+    border: none;
+    border-radius: 12px;
+    font-size: 24px;
+    font-weight: 900;
+}</string>
+   </property>
+   <property name="text">
+    <string>TIẾP TỤC  →</string>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

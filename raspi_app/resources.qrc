@@ -1,0 +1,22 @@
+<RCC>
+  <qresource prefix="/">
+    <file>assets/qrcode.png</file>
+    <file>assets/[MOMO]_Logo_Primary_Colored.png</file>
+    <file>assets/Logo FA-11.png</file>
+    <file>assets/Vietqr logo.png</file>
+    <file>assets/LoadingIconBox.png</file>
+    <file>assets/SupportIconPage.png</file>
+    <file>assets/SecurityIcon.png</file>
+    <file>assets/OpenLockerIcon.png</file>
+    <file>assets/checkBoxIcon.png</file>
+    <file>assets/iconSize1.png</file>
+    <file>assets/iconSize2.png</file>
+    <file>assets/SupportQrCode.png</file>
+    <file>assets/Icon.png</file>
+    <file>assets/promoImage.png</file>
+    <file>assets/receiveIcon.png</file>
+    <file>assets/rentIcon.png</file>
+    <file>assets/supportIcon.png</file>
+    <file>assets/sendIcon.png</file>
+  </qresource>
+</RCC>
