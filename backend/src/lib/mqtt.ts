@@ -3,6 +3,10 @@ import mqtt, { MqttClient } from 'mqtt';
 let client: MqttClient | null = null;
 let connectPromise: Promise<MqttClient> | null = null;
 
+type ConnectMqttOptions = {
+  waitForConnect?: boolean;
+};
+
 function topicMatches(pattern: string, topic: string): boolean {
   const patternParts = pattern.split('/');
   const topicParts = topic.split('/');
@@ -17,8 +21,9 @@ function topicMatches(pattern: string, topic: string): boolean {
   return patternParts.length === topicParts.length;
 }
 
-export function connectMqtt(): Promise<MqttClient> {
+export function connectMqtt(options: ConnectMqttOptions = {}): Promise<MqttClient> {
   if (client?.connected) return Promise.resolve(client);
+  if (client && options.waitForConnect === false) return Promise.resolve(client);
   if (connectPromise) return connectPromise;
 
   connectPromise = new Promise((resolve) => {
@@ -41,6 +46,8 @@ export function connectMqtt(): Promise<MqttClient> {
       console.warn('MQTT offline, reconnecting...');
     });
   });
+
+  if (options.waitForConnect === false && client) return Promise.resolve(client);
 
   return connectPromise;
 }

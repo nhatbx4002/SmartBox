@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNotification = createNotification;
+exports.listNotifications = listNotifications;
+exports.markAllNotificationsRead = markAllNotificationsRead;
 exports.sendRentalExpired = sendRentalExpired;
 exports.sendCabinetOffline = sendCabinetOffline;
 const prisma_1 = require("../generated/prisma");
@@ -15,6 +17,22 @@ async function createNotification(input) {
             data: input.data ?? prisma_1.Prisma.JsonNull,
         },
     });
+}
+async function listNotifications(filters) {
+    return prisma_2.prisma.notification.findMany({
+        where: {
+            ...(filters.userId ? { userId: filters.userId } : {}),
+            ...(filters.isRead === undefined ? {} : { isRead: filters.isRead }),
+        },
+        orderBy: { createdAt: 'desc' },
+    });
+}
+async function markAllNotificationsRead() {
+    const result = await prisma_2.prisma.notification.updateMany({
+        where: { isRead: false },
+        data: { isRead: true },
+    });
+    return { ok: true, count: result.count };
 }
 async function sendRentalExpired(rentalId) {
     const rental = await prisma_2.prisma.rental.findUnique({

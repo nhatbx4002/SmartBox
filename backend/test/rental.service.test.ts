@@ -32,7 +32,9 @@ test('createRental filters available compartments by cabinetId when provided', a
 
   const originals = {
     pricePlanFindFirst: prisma.pricePlan.findFirst,
+    cabinetFindFirst: prisma.cabinet.findFirst,
     compartmentFindFirst: prisma.compartment.findFirst,
+    compartmentFindMany: prisma.compartment.findMany,
     rentalFindUnique: prisma.rental.findUnique,
     rentalUpdate: prisma.rental.update,
     notificationCreate: prisma.notification.create,
@@ -41,7 +43,9 @@ test('createRental filters available compartments by cabinetId when provided', a
   };
   t.after(() => {
     (prisma.pricePlan.findFirst as unknown) = originals.pricePlanFindFirst;
+    (prisma.cabinet.findFirst as unknown) = originals.cabinetFindFirst;
     (prisma.compartment.findFirst as unknown) = originals.compartmentFindFirst;
+    (prisma.compartment.findMany as unknown) = originals.compartmentFindMany;
     (prisma.rental.findUnique as unknown) = originals.rentalFindUnique;
     (prisma.rental.update as unknown) = originals.rentalUpdate;
     (prisma.notification.create as unknown) = originals.notificationCreate;
@@ -56,10 +60,20 @@ test('createRental filters available compartments by cabinetId when provided', a
     durationDays: 1,
     maxOpens: 2,
   }) as never;
+  (prisma.cabinet.findFirst as unknown) = async () =>
+    ({ id: 'cabinet-a', name: 'Tu A', status: CabinetStatus.ACTIVE }) as never;
   (prisma.compartment.findFirst as unknown) = async (args: unknown) => {
     compartmentFindCalls.push(args);
     return rental.compartment as never;
   };
+  (prisma.compartment.findMany as unknown) = async () => [
+    {
+      id: 'compartment-a1',
+      name: 'A1',
+      size: CompartmentSize.SMALL,
+      status: CompartmentAvailability.AVAILABLE,
+    },
+  ];
   (prisma.rental.findUnique as unknown) = async () => null;
   (prisma.rental.update as unknown) = async () => rental as never;
   (prisma.notification.create as unknown) = async () => ({ id: 'notification-1' }) as never;

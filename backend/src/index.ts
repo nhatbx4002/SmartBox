@@ -3,7 +3,10 @@ import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
 import authRoutes from './routes/auth.routes';
+import adminLocationsRoutes from './routes/admin.locations.routes';
+import auditRoutes from './routes/audit.routes';
 import cabinetsRoutes from './routes/cabinets.routes';
+import dashboardRoutes from './routes/dashboard.routes';
 import locationsRoutes from './routes/locations.routes';
 import lockersRoutes from './routes/lockers.routes';
 import notificationsRoutes from './routes/notifications.routes';
@@ -30,7 +33,7 @@ async function bootstrap() {
 
   initSocket(httpServer);
   await prisma.$connect();
-  await connectMqtt();
+  await connectMqtt({ waitForConnect: process.env.MQTT_REQUIRED === 'true' });
 
   app.use('/api/auth', authRoutes);
   app.use('/api/rentals', rentalsRoutes);
@@ -52,8 +55,11 @@ async function bootstrap() {
     }
   });
   app.use('/api/admin/cabinets', cabinetsRoutes);
+  app.use('/api/admin/locations', adminLocationsRoutes);
   app.use('/api/public/locations', locationsRoutes);
   app.use('/api/admin/rentals', rentalsAdminRoutes);
+  app.use('/api/audit-logs', auditRoutes);
+  app.use('/api/dashboard', dashboardRoutes);
   app.use('/api/notifications', notificationsRoutes);
   app.use('/api/system', systemRoutes);
 

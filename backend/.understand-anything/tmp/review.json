@@ -1,0 +1,30 @@
+{
+  "issues": [],
+  "warnings": [
+    "Node config:package.json has no edges",
+    "Node file:prisma/init.sql has no edges",
+    "Node config:tsconfig.json has no edges"
+  ],
+  "stats": {
+    "totalNodes": 173,
+    "totalEdges": 323,
+    "totalLayers": 9,
+    "tourSteps": 10,
+    "nodeTypes": {
+      "config": 2,
+      "file": 42,
+      "schema": 14,
+      "function": 76,
+      "endpoint": 37,
+      "class": 2
+    },
+    "edgeTypes": {
+      "contains": 128,
+      "defines_schema": 13,
+      "routes": 37,
+      "imports": 108,
+      "calls": 27,
+      "tested_by": 10
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+export declare const ADMIN_ROLES: readonly ["SUPER_ADMIN", "CABINET_ADMIN"];
 declare module 'express' {
     interface Request {
         admin?: {

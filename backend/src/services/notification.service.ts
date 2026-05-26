@@ -19,6 +19,24 @@ export async function createNotification(input: {
   });
 }
 
+export async function listNotifications(filters: { userId?: string; isRead?: boolean }) {
+  return prisma.notification.findMany({
+    where: {
+      ...(filters.userId ? { userId: filters.userId } : {}),
+      ...(filters.isRead === undefined ? {} : { isRead: filters.isRead }),
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export async function markAllNotificationsRead() {
+  const result = await prisma.notification.updateMany({
+    where: { isRead: false },
+    data: { isRead: true },
+  });
+  return { ok: true, count: result.count };
+}
+
 export async function sendRentalExpired(rentalId: string) {
   const rental = await prisma.rental.findUnique({
     where: { id: rentalId },

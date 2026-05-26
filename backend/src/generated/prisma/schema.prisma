@@ -92,6 +92,19 @@ enum LockerAction {
   FAULTY
 }
 
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  CREATE_LOCATION
+  UPDATE_LOCATION
+  DELETE_LOCATION
+  CREATE_CABINET
+  UPDATE_CABINET
+  DELETE_CABINET
+  UNLOCK_COMPARTMENT
+  CANCEL_RENTAL
+}
+
 enum NotificationType {
   RENTAL_EXPIRED
   CABINET_OFFLINE
@@ -108,13 +121,14 @@ enum DeviceType {
 }
 
 model Admin {
-  id           String    @id @default(cuid())
-  email        String    @unique
+  id           String     @id @default(cuid())
+  email        String     @unique
   passwordHash String
   name         String
-  role         AdminRole @default(CABINET_ADMIN)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  role         AdminRole  @default(CABINET_ADMIN)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
 }
 
 model User {
@@ -289,6 +303,23 @@ model LockerLog {
   @@index([cabinetId])
   @@index([rentalId])
   @@index([action])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  adminId    String
+  action     AuditAction
+  resource   String
+  resourceId String?
+  details    Json?
+  ipAddress  String?
+  createdAt  DateTime    @default(now())
+  admin      Admin       @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@index([action])
+  @@index([resource])
   @@index([createdAt])
 }
 

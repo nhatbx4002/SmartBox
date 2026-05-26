@@ -8,7 +8,10 @@ const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+const admin_locations_routes_1 = __importDefault(require("./routes/admin.locations.routes"));
+const audit_routes_1 = __importDefault(require("./routes/audit.routes"));
 const cabinets_routes_1 = __importDefault(require("./routes/cabinets.routes"));
+const dashboard_routes_1 = __importDefault(require("./routes/dashboard.routes"));
 const locations_routes_1 = __importDefault(require("./routes/locations.routes"));
 const lockers_routes_1 = __importDefault(require("./routes/lockers.routes"));
 const notifications_routes_1 = __importDefault(require("./routes/notifications.routes"));
@@ -32,7 +35,7 @@ async function bootstrap() {
     app.use(requestLogger_1.requestLogger);
     (0, socket_1.initSocket)(httpServer);
     await prisma_1.prisma.$connect();
-    await (0, mqtt_1.connectMqtt)();
+    await (0, mqtt_1.connectMqtt)({ waitForConnect: process.env.MQTT_REQUIRED === 'true' });
     app.use('/api/auth', auth_routes_1.default);
     app.use('/api/rentals', rentals_routes_1.default);
     app.use('/api/lockers', lockers_routes_1.default);
@@ -54,8 +57,11 @@ async function bootstrap() {
         }
     });
     app.use('/api/admin/cabinets', cabinets_routes_1.default);
+    app.use('/api/admin/locations', admin_locations_routes_1.default);
     app.use('/api/public/locations', locations_routes_1.default);
     app.use('/api/admin/rentals', rentals_admin_routes_1.default);
+    app.use('/api/audit-logs', audit_routes_1.default);
+    app.use('/api/dashboard', dashboard_routes_1.default);
     app.use('/api/notifications', notifications_routes_1.default);
     app.use('/api/system', system_routes_1.default);
     app.get('/api/health', (_req, res) => {

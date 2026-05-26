@@ -245,6 +245,17 @@ exports.Prisma.LockerLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  adminId: 'adminId',
+  action: 'action',
+  resource: 'resource',
+  resourceId: 'resourceId',
+  details: 'details',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -377,6 +388,19 @@ exports.LockerAction = exports.$Enums.LockerAction = {
   FAULTY: 'FAULTY'
 };
 
+exports.AuditAction = exports.$Enums.AuditAction = {
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT',
+  CREATE_LOCATION: 'CREATE_LOCATION',
+  UPDATE_LOCATION: 'UPDATE_LOCATION',
+  DELETE_LOCATION: 'DELETE_LOCATION',
+  CREATE_CABINET: 'CREATE_CABINET',
+  UPDATE_CABINET: 'UPDATE_CABINET',
+  DELETE_CABINET: 'DELETE_CABINET',
+  UNLOCK_COMPARTMENT: 'UNLOCK_COMPARTMENT',
+  CANCEL_RENTAL: 'CANCEL_RENTAL'
+};
+
 exports.NotificationType = exports.$Enums.NotificationType = {
   RENTAL_EXPIRED: 'RENTAL_EXPIRED',
   CABINET_OFFLINE: 'CABINET_OFFLINE',
@@ -403,6 +427,7 @@ exports.Prisma.ModelName = {
   PricePlan: 'PricePlan',
   Rental: 'Rental',
   LockerLog: 'LockerLog',
+  AuditLog: 'AuditLog',
   Notification: 'Notification',
   UserSession: 'UserSession'
 };

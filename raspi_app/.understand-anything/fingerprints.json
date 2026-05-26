@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "241c16413349b34b8ffdf37ed8faa966decd9224",
-  "generatedAt": "2026-05-09T04:41:50.194Z",
+  "gitCommitHash": "f61223830afa04fcd31477081f091b389c1c6148",
+  "generatedAt": "2026-05-14T00:41:28.935Z",
   "files": {
     ".claude/settings.local.json": {
       "filePath": ".claude/settings.local.json",
@@ -21,107 +21,60 @@
       "imports": [],
       "exports": [],
       "totalLines": 1,
-      "hasStructuralAnalysis": false
+      "hasStructuralAnalysis": true
     },
     "CLAUDE.md": {
       "filePath": "CLAUDE.md",
-      "contentHash": "97fd3f2baa2c25c48cbc6792b9ecfd355cc1f29ec567773039cf442db833332c",
+      "contentHash": "03cdba1014477ba32a38a3d50aa71f8317baf93c4693426deaf14a283fc616e7",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 107,
+      "totalLines": 111,
       "hasStructuralAnalysis": true
     },
     "config.yaml": {
       "filePath": "config.yaml",
-      "contentHash": "2ba51a232cb40fbb8eff96ed8868c8986119810582e9b3cb919212b150f4e15a",
+      "contentHash": "4c9fc958f8d143f8131b8314f79b3ef3a9b7e2116057fb4828f1cba3f1f3d615",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 27,
-      "hasStructuralAnalysis": true
-    },
-    "docs/DESIGN_PROMPTS.md": {
-      "filePath": "docs/DESIGN_PROMPTS.md",
-      "contentHash": "1d715dd3819faa9db7d0b3d7f015fb8d9ce2be2ad4fcccdd926ad131ae33fb3a",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 536,
-      "hasStructuralAnalysis": true
-    },
-    "docs/superpowers/UI_DOCUMENTATION.md": {
-      "filePath": "docs/superpowers/UI_DOCUMENTATION.md",
-      "contentHash": "874fef3b44f2bc936927bc6232d3bc91903a97cfed8fa70a25203612d3fe92d9",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 396,
+      "totalLines": 29,
       "hasStructuralAnalysis": true
     },
     "main.py": {
       "filePath": "main.py",
-      "contentHash": "2a325edfe2b2c3c82d8ac3b448a0fbe34d9451b769b96c89aafd2f476fd2e4cb",
+      "contentHash": "c4528689ac4ba7df5525b5b4f2005633c2b5011bca77c9eef2d90e85f80a8e6c",
       "functions": [
-        {
-          "name": "load_ui",
-          "params": [
-            "ui_path"
-          ],
-          "returnType": "QWidget",
-          "exported": true,
-          "lineCount": 4
-        },
-        {
-          "name": "update_clock",
-          "params": [
-            "label"
-          ],
-          "exported": true,
-          "lineCount": 3
-        },
         {
           "name": "main",
           "params": [],
           "exported": true,
-          "lineCount": 35
+          "lineCount": 16
         }
       ],
-      "classes": [],
+      "classes": [
+        {
+          "name": "KioskApp",
+          "methods": [
+            "__init__",
+            "_register_controllers",
+            "navigate",
+            "go_back",
+            "_publish_heartbeat",
+            "closeEvent"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 89
+        }
+      ],
       "imports": [
         {
           "source": "sys",
           "specifiers": [
             "sys"
-          ]
-        },
-        {
-          "source": "os",
-          "specifiers": [
-            "os"
-          ]
-        },
-        {
-          "source": "pathlib",
-          "specifiers": [
-            "Path"
-          ]
-        },
-        {
-          "source": "PySide6.QtWidgets",
-          "specifiers": [
-            "QApplication",
-            "QWidget"
-          ]
-        },
-        {
-          "source": "PySide6.QtUiTools",
-          "specifiers": [
-            "QUiLoader"
           ]
         },
         {
@@ -131,9 +84,12 @@
           ]
         },
         {
-          "source": "datetime",
+          "source": "PySide6.QtWidgets",
           "specifiers": [
-            "datetime"
+            "QApplication",
+            "QStackedWidget",
+            "QVBoxLayout",
+            "QWidget"
           ]
         },
         {
@@ -141,25 +97,121 @@
           "specifiers": [
             "resources_rc"
           ]
+        },
+        {
+          "source": "screens.home",
+          "specifiers": [
+            "HomeController"
+          ]
+        },
+        {
+          "source": "screens.locker_open",
+          "specifiers": [
+            "LockerOpenController"
+          ]
+        },
+        {
+          "source": "screens.loading",
+          "specifiers": [
+            "LoadingController"
+          ]
+        },
+        {
+          "source": "screens.otp",
+          "specifiers": [
+            "OtpController"
+          ]
+        },
+        {
+          "source": "screens.payment",
+          "specifiers": [
+            "PaymentController"
+          ]
+        },
+        {
+          "source": "screens.qr_payment",
+          "specifiers": [
+            "QRPaymentController"
+          ]
+        },
+        {
+          "source": "screens.rent_phone",
+          "specifiers": [
+            "RentPhoneController"
+          ]
+        },
+        {
+          "source": "screens.rent_plan",
+          "specifiers": [
+            "RentPlanController"
+          ]
+        },
+        {
+          "source": "screens.rent_size",
+          "specifiers": [
+            "RentSizeController"
+          ]
+        },
+        {
+          "source": "screens.rent_success",
+          "specifiers": [
+            "RentSuccessController"
+          ]
+        },
+        {
+          "source": "screens.support",
+          "specifiers": [
+            "SupportController"
+          ]
+        },
+        {
+          "source": "services.api_client",
+          "specifiers": [
+            "ApiClient"
+          ]
+        },
+        {
+          "source": "services.app_state",
+          "specifiers": [
+            "AppState"
+          ]
+        },
+        {
+          "source": "services.config_loader",
+          "specifiers": [
+            "get_config_value",
+            "load_config"
+          ]
+        },
+        {
+          "source": "services.gpio_controller",
+          "specifiers": [
+            "GpioController"
+          ]
+        },
+        {
+          "source": "services.mqtt_client",
+          "specifiers": [
+            "MqttClient"
+          ]
         }
       ],
       "exports": [
-        "load_ui",
-        "update_clock",
+        "KioskApp",
         "main"
       ],
-      "totalLines": 61,
+      "totalLines": 136,
       "hasStructuralAnalysis": true
     },
     "requirements.txt": {
       "filePath": "requirements.txt",
-      "contentHash": "8edabcb57159f8929579b521a7558e40a80e7114e9e693550967a0b3c0353f4e",
+      "contentHash": "c08e335f01807f6bac46a74f898730d18682741357e2c888047fc24b74fa9278",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 4,
-      "hasStructuralAnalysis": false
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
     },
     "resources_rc.py": {
       "filePath": "resources_rc.py",
@@ -196,13 +248,13 @@
     },
     "resources.qrc": {
       "filePath": "resources.qrc",
-      "contentHash": "2f7a920cb7208d888236c44aecae6c45a6997ba6e6c2b721ee71a0875f0fea24",
+      "contentHash": "333605e3e8995a501f77d7703ad4ef702a175f3cf5f72af68c0271f7f5b7a3ab",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 12,
-      "hasStructuralAnalysis": false
+      "totalLines": 23,
+      "hasStructuralAnalysis": true
     },
     "SCREEN_FLOW_MAP.md": {
       "filePath": "SCREEN_FLOW_MAP.md",
@@ -216,12 +268,656 @@
     },
     "screens/__init__.py": {
       "filePath": "screens/__init__.py",
-      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "contentHash": "9dc6e91aea46cd203f22019d5d0b1bf18ed14d9615f001a1f5ba1d1e5194d258",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 1,
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "screens/base.py": {
+      "filePath": "screens/base.py",
+      "contentHash": "ef9b926d25361402f414ccc116bc6cb6568b6c3593e18afd5cd083b5a85b7149",
+      "functions": [
+        {
+          "name": "process_events",
+          "params": [],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "BaseController",
+          "methods": [
+            "__init__",
+            "state",
+            "config",
+            "api_client",
+            "mqtt_client",
+            "gpio_controller",
+            "on_enter",
+            "on_exit",
+            "navigate",
+            "go_home",
+            "go_back",
+            "child",
+            "optional_child",
+            "set_clickable",
+            "refresh_style",
+            "set_selected_style",
+            "_load_ui",
+            "_restore_file_pixmaps"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 105
+        },
+        {
+          "name": "_ClickFilter",
+          "methods": [
+            "__init__",
+            "eventFilter"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "imports": [
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Callable",
+            "TypeVar"
+          ]
+        },
+        {
+          "source": "xml.etree",
+          "specifiers": [
+            "ElementTree"
+          ]
+        },
+        {
+          "source": "PySide6.QtCore",
+          "specifiers": [
+            "QEvent",
+            "QObject",
+            "Qt"
+          ]
+        },
+        {
+          "source": "PySide6.QtGui",
+          "specifiers": [
+            "QPixmap"
+          ]
+        },
+        {
+          "source": "PySide6.QtUiTools",
+          "specifiers": [
+            "QUiLoader"
+          ]
+        },
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QApplication",
+            "QLabel",
+            "QWidget"
+          ]
+        }
+      ],
+      "exports": [
+        "BaseController",
+        "process_events",
+        "_ClickFilter"
+      ],
+      "totalLines": 138,
+      "hasStructuralAnalysis": true
+    },
+    "screens/home.py": {
+      "filePath": "screens/home.py",
+      "contentHash": "926c9c916303b5199929fce17f3e5f90fd99e0a768db4deb9a571885b971ec2f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "HomeController",
+          "methods": [
+            "__init__",
+            "_deposit",
+            "_pickup",
+            "_rent"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "imports": [
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        }
+      ],
+      "exports": [
+        "HomeController"
+      ],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "screens/loading.py": {
+      "filePath": "screens/loading.py",
+      "contentHash": "3015f99a70722506d1386031cf1808cb1f3019e834af376d353de08369128b78",
+      "functions": [],
+      "classes": [
+        {
+          "name": "LoadingController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "on_exit",
+            "_tick"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtCore",
+          "specifiers": [
+            "QTimer"
+          ]
+        },
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel",
+            "QProgressBar"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        }
+      ],
+      "exports": [
+        "LoadingController"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "screens/locker_open.py": {
+      "filePath": "screens/locker_open.py",
+      "contentHash": "d952b2ac6571a58106ae0ae15b85d8159176d8a19d0af39658c010274dd133c0",
+      "functions": [],
+      "classes": [
+        {
+          "name": "LockerOpenController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "on_exit",
+            "_tick",
+            "_render_timer",
+            "_finish",
+            "_locker_text",
+            "_compartment_key"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 103
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtCore",
+          "specifiers": [
+            "QTimer"
+          ]
+        },
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel",
+            "QPushButton"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        },
+        {
+          "source": "services.api_client",
+          "specifiers": [
+            "ApiError"
+          ]
+        },
+        {
+          "source": "services.config_loader",
+          "specifiers": [
+            "get_config_value"
+          ]
+        }
+      ],
+      "exports": [
+        "LockerOpenController"
+      ],
+      "totalLines": 114,
+      "hasStructuralAnalysis": true
+    },
+    "screens/otp.py": {
+      "filePath": "screens/otp.py",
+      "contentHash": "474a028c0e5f1a53cb688d2ab7896931247fed12681b44c5916d1b559d93a6de",
+      "functions": [],
+      "classes": [
+        {
+          "name": "OtpController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "_append_digit",
+            "_backspace",
+            "_clear",
+            "_otp",
+            "_sync_confirm_state",
+            "_submit"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 72
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel",
+            "QLineEdit",
+            "QPushButton"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        },
+        {
+          "source": "services.api_client",
+          "specifiers": [
+            "ApiError"
+          ]
+        }
+      ],
+      "exports": [
+        "OtpController"
+      ],
+      "totalLines": 81,
+      "hasStructuralAnalysis": true
+    },
+    "screens/payment.py": {
+      "filePath": "screens/payment.py",
+      "contentHash": "e1e835cffce20b9b3b027ba1c8d38daca94539ea10c0c5df01eac0a9f34258de",
+      "functions": [],
+      "classes": [
+        {
+          "name": "PaymentController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "_select_method",
+            "_apply_selection",
+            "_pay_now",
+            "_show_payment_error"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 75
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel",
+            "QPushButton"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController",
+            "process_events"
+          ]
+        },
+        {
+          "source": "services.api_client",
+          "specifiers": [
+            "ApiError"
+          ]
+        },
+        {
+          "source": "services.formatters",
+          "specifiers": [
+            "format_currency"
+          ]
+        }
+      ],
+      "exports": [
+        "PaymentController"
+      ],
+      "totalLines": 85,
+      "hasStructuralAnalysis": true
+    },
+    "screens/qr_payment.py": {
+      "filePath": "screens/qr_payment.py",
+      "contentHash": "bd38243d1962386dabf3f165945dd9aea2d6a38b08f6381aae906fae2193194a",
+      "functions": [],
+      "classes": [
+        {
+          "name": "QRPaymentController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "on_exit",
+            "_tick",
+            "_render"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "imports": [
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "PySide6.QtCore",
+          "specifiers": [
+            "QTimer"
+          ]
+        },
+        {
+          "source": "PySide6.QtGui",
+          "specifiers": [
+            "QPixmap"
+          ]
+        },
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel",
+            "QPushButton"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        },
+        {
+          "source": "services.formatters",
+          "specifiers": [
+            "format_currency"
+          ]
+        }
+      ],
+      "exports": [
+        "QRPaymentController"
+      ],
+      "totalLines": 49,
+      "hasStructuralAnalysis": true
+    },
+    "screens/rent_phone.py": {
+      "filePath": "screens/rent_phone.py",
+      "contentHash": "e3f433ed54c729de24ba65237cabb294512cf2984bf254308f58c92e070100cc",
+      "functions": [],
+      "classes": [
+        {
+          "name": "RentPhoneController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "_append_digit",
+            "_backspace",
+            "_clear",
+            "_sync_confirm_state",
+            "_confirm"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 47
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLineEdit",
+            "QPushButton"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        },
+        {
+          "source": "services.formatters",
+          "specifiers": [
+            "is_valid_local_phone",
+            "normalize_vn_phone"
+          ]
+        }
+      ],
+      "exports": [
+        "RentPhoneController"
+      ],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "screens/rent_plan.py": {
+      "filePath": "screens/rent_plan.py",
+      "contentHash": "00e93f0b873c79bfe09d1c652d428896c2caa45a9111641b23aa432b536865d1",
+      "functions": [],
+      "classes": [
+        {
+          "name": "RentPlanController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "_load_plans",
+            "_select_plan",
+            "_apply_selection",
+            "_apply_group_layout"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 92
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel",
+            "QPushButton",
+            "QWidget"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        },
+        {
+          "source": "services.app_state",
+          "specifiers": [
+            "Plan"
+          ]
+        },
+        {
+          "source": "services.formatters",
+          "specifiers": [
+            "format_currency"
+          ]
+        }
+      ],
+      "exports": [
+        "RentPlanController"
+      ],
+      "totalLines": 102,
+      "hasStructuralAnalysis": true
+    },
+    "screens/rent_size.py": {
+      "filePath": "screens/rent_size.py",
+      "contentHash": "ad500e508ee263d878d4c6d66993d3dcc394c463305eecb698251db051157e7e",
+      "functions": [],
+      "classes": [
+        {
+          "name": "RentSizeController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "_select_size",
+            "_apply_selection",
+            "_style_card"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 40
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QPushButton",
+            "QWidget"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        }
+      ],
+      "exports": [
+        "RentSizeController"
+      ],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "screens/rent_success.py": {
+      "filePath": "screens/rent_success.py",
+      "contentHash": "52b176d9daab9f0f9b01422ba1dfd9a9c45be3ab59147a46667378ff43231a5e",
+      "functions": [],
+      "classes": [
+        {
+          "name": "RentSuccessController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "_locker_text"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        },
+        {
+          "source": "services.formatters",
+          "specifiers": [
+            "format_pin"
+          ]
+        }
+      ],
+      "exports": [
+        "RentSuccessController"
+      ],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "screens/support.py": {
+      "filePath": "screens/support.py",
+      "contentHash": "9275d468844d48339ce1f48ff93738991042fa427d74f2c005a7b23415e90264",
+      "functions": [],
+      "classes": [
+        {
+          "name": "SupportController",
+          "methods": [
+            "__init__",
+            "on_enter",
+            "_expand"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "imports": [
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QLabel",
+            "QPushButton"
+          ]
+        },
+        {
+          "source": "screens.base",
+          "specifiers": [
+            "BaseController"
+          ]
+        },
+        {
+          "source": "services.config_loader",
+          "specifiers": [
+            "get_config_value"
+          ]
+        }
+      ],
+      "exports": [
+        "SupportController"
+      ],
+      "totalLines": 32,
       "hasStructuralAnalysis": true
     },
     "services/__init__.py": {
@@ -236,32 +932,338 @@
     },
     "services/api_client.py": {
       "filePath": "services/api_client.py",
-      "contentHash": "c952fde4981fdca232b56362500c998c90689bb4be2aab2e02497f4311cddab3",
+      "contentHash": "699b41c8ae2dc79b99b2b454c5f1de2f53adf9968d4ede3a2f8863e97804b740",
       "functions": [],
+      "classes": [
+        {
+          "name": "ApiError",
+          "methods": [
+            "__init__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "ApiClient",
+          "methods": [
+            "__init__",
+            "verify_pin",
+            "get_plans",
+            "check_availability",
+            "get_cabinets_provisioning",
+            "create_rental",
+            "complete_rental",
+            "_parse_response",
+            "_mock_verify_pin",
+            "_mock_plans",
+            "_mock_create_rental",
+            "_rental_from_response",
+            "_compartment_from_response",
+            "_mock_expiry",
+            "_ui_plan_id",
+            "_backend_plan_id"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 229
+        }
+      ],
+      "imports": [
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timedelta",
+            "timezone"
+          ]
+        },
+        {
+          "source": "requests",
+          "specifiers": [
+            "requests"
+          ]
+        },
+        {
+          "source": "services.app_state",
+          "specifiers": [
+            "CompartmentData",
+            "Plan",
+            "RentalData"
+          ]
+        }
+      ],
+      "exports": [
+        "ApiError",
+        "ApiClient"
+      ],
+      "totalLines": 246,
+      "hasStructuralAnalysis": true
+    },
+    "services/app_state.py": {
+      "filePath": "services/app_state.py",
+      "contentHash": "e7a37dc85eb3f3964dcf37a3f6ada53b268b5cf429e64acf30760ada9d9fbb2c",
+      "functions": [],
+      "classes": [
+        {
+          "name": "Plan",
+          "methods": [],
+          "properties": [
+            "id",
+            "name",
+            "rental_type",
+            "price",
+            "duration_days",
+            "max_opens"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "RentalData",
+          "methods": [],
+          "properties": [
+            "id",
+            "pin",
+            "compartment_id",
+            "compartment_name",
+            "expires_at",
+            "qr_data"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "CompartmentData",
+          "methods": [],
+          "properties": [
+            "id",
+            "name",
+            "size",
+            "locker_name"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "AppState",
+          "methods": [
+            "reset_rent_flow",
+            "reset_all"
+          ],
+          "properties": [
+            "mode",
+            "selected_size",
+            "selected_plan",
+            "phone",
+            "payment_method",
+            "rental_data",
+            "compartment_data"
+          ],
+          "exported": true,
+          "lineCount": 20
+        }
+      ],
+      "imports": [
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "Plan",
+        "RentalData",
+        "CompartmentData",
+        "AppState"
+      ],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "services/config_loader.py": {
+      "filePath": "services/config_loader.py",
+      "contentHash": "9a36b6625f6ec694b2db530364c66a58c1a56980cbedadad170305dba9ac9a9d",
+      "functions": [
+        {
+          "name": "load_config",
+          "params": [
+            "path"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_config_value",
+          "params": [
+            "config",
+            "key_path",
+            "default"
+          ],
+          "returnType": "Any",
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "yaml",
+          "specifiers": [
+            "yaml"
+          ]
+        }
+      ],
+      "exports": [
+        "load_config",
+        "get_config_value"
+      ],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "services/formatters.py": {
+      "filePath": "services/formatters.py",
+      "contentHash": "149bf7b7f8482a8dc24646f6eb9a12af0513eecf77b6fd7b7901b1df2f7daa07",
+      "functions": [
+        {
+          "name": "format_currency",
+          "params": [
+            "value"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "format_pin",
+          "params": [
+            "pin"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "is_valid_local_phone",
+          "params": [
+            "text"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "normalize_vn_phone",
+          "params": [
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
       "classes": [],
       "imports": [],
-      "exports": [],
-      "totalLines": 2,
+      "exports": [
+        "format_currency",
+        "format_pin",
+        "is_valid_local_phone",
+        "normalize_vn_phone"
+      ],
+      "totalLines": 17,
       "hasStructuralAnalysis": true
     },
     "services/gpio_controller.py": {
       "filePath": "services/gpio_controller.py",
-      "contentHash": "01b7096a79274b69726127ef261300ddf181b121532d239f7c80944e31908b1a",
+      "contentHash": "bdceabe18550fdf1ee0b50a269bdf1f06b96d7b9eef500927b34ca11b702116d",
       "functions": [],
-      "classes": [],
+      "classes": [
+        {
+          "name": "GpioController",
+          "methods": [
+            "__init__",
+            "load_from_backend",
+            "unlock",
+            "lock",
+            "get_door_status",
+            "_registers_for_pin",
+            "_lock_device_target",
+            "_target_for_compartment",
+            "_configure_output",
+            "_write_pin"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 130
+        }
+      ],
       "imports": [],
-      "exports": [],
-      "totalLines": 2,
+      "exports": [
+        "GpioController"
+      ],
+      "totalLines": 139,
       "hasStructuralAnalysis": true
     },
     "services/mqtt_client.py": {
       "filePath": "services/mqtt_client.py",
-      "contentHash": "359fc2a3d84b5e6ae3a3266b6a31c3889df299c9047e380d5147f28afc1b3839",
+      "contentHash": "1d257bc92da206e6269a78a185e15294a788a1f4ed7f4c48a4591b4996b95de5",
       "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 2,
+      "classes": [
+        {
+          "name": "MqttClient",
+          "methods": [
+            "__init__",
+            "connect",
+            "disconnect",
+            "subscribe_unlock",
+            "subscribe_lock",
+            "publish_unlock",
+            "publish_lock",
+            "publish_door_opened",
+            "publish_heartbeat"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 113
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "paho.mqtt.client",
+          "specifiers": [
+            "mqtt"
+          ]
+        }
+      ],
+      "exports": [
+        "MqttClient"
+      ],
+      "totalLines": 121,
       "hasStructuralAnalysis": true
     },
     "test_ui.py": {
@@ -385,6 +1387,327 @@
       "totalLines": 121,
       "hasStructuralAnalysis": true
     },
+    "tests/test_api_client.py": {
+      "filePath": "tests/test_api_client.py",
+      "contentHash": "15384689f59dfa601724a2e36fecbdd65ebbedf680fa4d592a8c0f2e5a05a641",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ApiClientProvisioningTests",
+          "methods": [
+            "test_get_cabinets_provisioning_filters_by_cabinet_id",
+            "test_create_rental_sends_cabinet_id"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "Mock",
+            "patch"
+          ]
+        },
+        {
+          "source": "services.api_client",
+          "specifiers": [
+            "ApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "ApiClientProvisioningTests"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_app_state.py": {
+      "filePath": "tests/test_app_state.py",
+      "contentHash": "441eace54d69d69c5430fa1e13ab5c403917722faf1781ce0d76747e2254bebb",
+      "functions": [],
+      "classes": [
+        {
+          "name": "AppStateTests",
+          "methods": [
+            "test_reset_rent_flow_clears_rental_fields_but_keeps_mode",
+            "test_reset_all_clears_everything"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "services.app_state",
+          "specifiers": [
+            "AppState",
+            "CompartmentData",
+            "Plan",
+            "RentalData"
+          ]
+        }
+      ],
+      "exports": [
+        "AppStateTests"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_config_loader.py": {
+      "filePath": "tests/test_config_loader.py",
+      "contentHash": "690f92f1d46555d332c1904fa423ff36fd0e368e813c041d54b2b998598b9ad8",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ConfigLoaderTests",
+          "methods": [
+            "test_load_config_reads_yaml_file",
+            "test_get_config_value_reads_dot_path",
+            "test_get_config_value_returns_default_when_missing"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "imports": [
+        {
+          "source": "tempfile",
+          "specifiers": [
+            "tempfile"
+          ]
+        },
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "services.config_loader",
+          "specifiers": [
+            "get_config_value",
+            "load_config"
+          ]
+        }
+      ],
+      "exports": [
+        "ConfigLoaderTests"
+      ],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_formatters.py": {
+      "filePath": "tests/test_formatters.py",
+      "contentHash": "bd94b44635835ff141b1c49b13576de62b10bd0075b3b4a3962eb82e08ca9899",
+      "functions": [],
+      "classes": [
+        {
+          "name": "FormatterTests",
+          "methods": [
+            "test_format_currency_uses_vietnamese_dot_grouping",
+            "test_format_pin_groups_six_digits",
+            "test_format_pin_returns_original_for_non_six_digit_input",
+            "test_valid_local_phone_requires_exactly_nine_digits",
+            "test_normalize_vn_phone_prefixes_plus_84"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "services.formatters",
+          "specifiers": [
+            "format_currency",
+            "format_pin",
+            "is_valid_local_phone",
+            "normalize_vn_phone"
+          ]
+        }
+      ],
+      "exports": [
+        "FormatterTests"
+      ],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_gpio_controller.py": {
+      "filePath": "tests/test_gpio_controller.py",
+      "contentHash": "77def00ad0fd4a62e28dd349182176895cd826fb33f37594c95e1f3ab911fdff",
+      "functions": [],
+      "classes": [
+        {
+          "name": "GpioControllerProvisioningTests",
+          "methods": [
+            "test_load_from_backend_builds_compartment_pin_map",
+            "test_load_from_backend_also_maps_backend_compartment_ids",
+            "test_load_from_backend_uses_mcp_device_i2c_settings"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 83
+        },
+        {
+          "name": "FakeSMBus",
+          "methods": [
+            "__init__",
+            "__enter__",
+            "__exit__",
+            "read_byte_data",
+            "write_byte_data"
+          ],
+          "properties": [
+            "writes"
+          ],
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "GpioControllerMcp23017Tests",
+          "methods": [
+            "setUp",
+            "test_unlock_sets_pin_output_then_pulses_olat_high_and_low",
+            "test_unlock_uses_port_b_registers_for_pins_8_to_15"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "patch"
+          ]
+        },
+        {
+          "source": "services.gpio_controller",
+          "specifiers": [
+            "GpioController"
+          ]
+        }
+      ],
+      "exports": [
+        "GpioControllerProvisioningTests",
+        "FakeSMBus",
+        "GpioControllerMcp23017Tests"
+      ],
+      "totalLines": 154,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_rent_plan_controller.py": {
+      "filePath": "tests/test_rent_plan_controller.py",
+      "contentHash": "b5a1a0411e8f27505e7c3e3c49155cf75ed5f64d851d1a6abb41b60a070f5fbc",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ApiClientStub",
+          "methods": [
+            "get_plans"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "AppStub",
+          "methods": [
+            "__init__",
+            "navigate"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "RentPlanControllerTests",
+          "methods": [
+            "setUpClass",
+            "test_on_enter_shows_suboptions_for_all_plan_groups"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "imports": [
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "unittest",
+          "specifiers": [
+            "unittest"
+          ]
+        },
+        {
+          "source": "PySide6.QtWidgets",
+          "specifiers": [
+            "QApplication"
+          ]
+        },
+        {
+          "source": "screens.rent_plan",
+          "specifiers": [
+            "RentPlanController"
+          ]
+        },
+        {
+          "source": "services.app_state",
+          "specifiers": [
+            "AppState",
+            "Plan"
+          ]
+        }
+      ],
+      "exports": [
+        "ApiClientStub",
+        "AppStub",
+        "RentPlanControllerTests"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
     "ui_handle.md": {
       "filePath": "ui_handle.md",
       "contentHash": "d427a6acae4fc7d7361a1263ac8e24b20ffd4052e328a300f224776e058acccd",
@@ -423,7 +1746,7 @@
       "imports": [],
       "exports": [],
       "totalLines": 116,
-      "hasStructuralAnalysis": false
+      "hasStructuralAnalysis": true
     },
     "ui/components/Headers.ui": {
       "filePath": "ui/components/Headers.ui",
@@ -433,7 +1756,7 @@
       "imports": [],
       "exports": [],
       "totalLines": 109,
-      "hasStructuralAnalysis": false
+      "hasStructuralAnalysis": true
     },
     "ui/Dashboard.ui": {
       "filePath": "ui/Dashboard.ui",
@@ -443,7 +1766,27 @@
       "imports": [],
       "exports": [],
       "totalLines": 534,
-      "hasStructuralAnalysis": false
+      "hasStructuralAnalysis": true
+    },
+    "ui/Loading.ui": {
+      "filePath": "ui/Loading.ui",
+      "contentHash": "cb54f6648043e1f170b7dc58f4297475ac8fed9f060472a9388c491bc701f1f0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    "ui/OpenSuccess.ui": {
+      "filePath": "ui/OpenSuccess.ui",
+      "contentHash": "7ca487034e4e05f1d4a3c8573770668cf2d95c81421b15ae454f70d9afc1473a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 402,
+      "hasStructuralAnalysis": true
     },
     "ui/OTPInput.ui": {
       "filePath": "ui/OTPInput.ui",
@@ -453,17 +1796,37 @@
       "imports": [],
       "exports": [],
       "totalLines": 511,
-      "hasStructuralAnalysis": false
+      "hasStructuralAnalysis": true
     },
-    "ui/PhoneNumberInput.ui": {
-      "filePath": "ui/PhoneNumberInput.ui",
-      "contentHash": "c2b14685577d10c878c5a42e291c96c2528700ab7c6549e254798f7bc49a4acf",
+    "ui/Payment.ui": {
+      "filePath": "ui/Payment.ui",
+      "contentHash": "cde0fd529cc9f134d5bfaaed69c068efaf5dc4905b86ef78f34aa4f876c3e65e",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 325,
-      "hasStructuralAnalysis": false
+      "totalLines": 390,
+      "hasStructuralAnalysis": true
+    },
+    "ui/PhoneNumberInput.ui": {
+      "filePath": "ui/PhoneNumberInput.ui",
+      "contentHash": "e14b4a69bd3fb7ab59c17afc95085abc40664f764cb1158635e89e3ecad5863f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 356,
+      "hasStructuralAnalysis": true
+    },
+    "ui/QRPayment.ui": {
+      "filePath": "ui/QRPayment.ui",
+      "contentHash": "c8226eb5f83b570f3da031b2d20f9723024d90e1e8ca1b919c675268d0a42a20",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 254,
+      "hasStructuralAnalysis": true
     },
     "ui/RentPlan.ui": {
       "filePath": "ui/RentPlan.ui",
@@ -473,7 +1836,37 @@
       "imports": [],
       "exports": [],
       "totalLines": 509,
-      "hasStructuralAnalysis": false
+      "hasStructuralAnalysis": true
+    },
+    "ui/RentSizeSelection.ui": {
+      "filePath": "ui/RentSizeSelection.ui",
+      "contentHash": "b64eb74f4a3b49f5dc3fb067f31593aa9d42be4e91f3f6c7a8dd0ee53bd34685",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 345,
+      "hasStructuralAnalysis": true
+    },
+    "ui/RentSuccess.ui": {
+      "filePath": "ui/RentSuccess.ui",
+      "contentHash": "81f9d6fa0f8df33965b28aea4614412d9398bd1431e5557890d78b929619be30",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 358,
+      "hasStructuralAnalysis": true
+    },
+    "ui/Support.ui": {
+      "filePath": "ui/Support.ui",
+      "contentHash": "4dc3076c7230acb118ed3d705910bd47308a783889f627167fe0595cb8c249f7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 474,
+      "hasStructuralAnalysis": true
     }
   }
 }

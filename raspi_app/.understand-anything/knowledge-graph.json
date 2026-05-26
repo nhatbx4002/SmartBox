@@ -5,22 +5,17 @@
     "languages": [
       "json",
       "markdown",
+      "plaintext",
       "python",
       "qrc",
-      "txt",
       "ui",
       "unknown",
       "yaml"
     ],
-    "frameworks": [
-      "Paho MQTT",
-      "PySide6",
-      "PyYAML",
-      "Requests"
-    ],
-    "description": "No description available",
-    "analyzedAt": "2026-05-09T04:40:20.758Z",
-    "gitCommitHash": "241c16413349b34b8ffdf37ed8faa966decd9224"
+    "frameworks": [],
+    "description": "Raspberry Pi PySide6 kiosk application for the SmartBox locker rental flow.",
+    "analyzedAt": "2026-05-14T00:41:28.651Z",
+    "gitCommitHash": "f61223830afa04fcd31477081f091b389c1c6148"
   },
   "nodes": [
     {
@@ -28,102 +23,11 @@
       "type": "config",
       "name": "settings.local.json",
       "filePath": ".claude/settings.local.json",
-      "summary": "Local agent/tooling permissions for this repository, controlling which shell commands are allowed without additional prompts.",
+      "summary": "settings.local.json configures runtime, tooling, or repository behavior.",
       "tags": [
         "project-file",
-        "support",
-        "repository"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:config.yaml",
-      "type": "config",
-      "name": "config.yaml",
-      "filePath": "config.yaml",
-      "summary": "Runtime configuration for API connection settings, hardware GPIO pins, support information, countdowns, and kiosk screen dimensions.",
-      "tags": [
-        "configuration",
-        "hardware",
-        "runtime-settings"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:requirements.txt",
-      "type": "config",
-      "name": "requirements.txt",
-      "filePath": "requirements.txt",
-      "summary": "Python dependency manifest for the PySide6 SmartBox kiosk app, including MQTT, HTTP, and YAML packages.",
-      "tags": [
-        "configuration",
-        "dependencies",
-        "python"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "document:CLAUDE.md",
-      "type": "document",
-      "name": "CLAUDE.md",
-      "filePath": "CLAUDE.md",
-      "summary": "Project guidance for agents working in this repository, including architecture, build commands, and UI design rules.",
-      "tags": [
-        "documentation",
-        "architecture",
-        "ui-design"
-      ],
-      "complexity": "moderate"
-    },
-    {
-      "id": "document:docs/DESIGN_PROMPTS.md",
-      "type": "document",
-      "name": "DESIGN_PROMPTS.md",
-      "filePath": "docs/DESIGN_PROMPTS.md",
-      "summary": "Design prompt reference documenting target layouts, typography, colors, and visual requirements for the SmartBox UI.",
-      "tags": [
-        "documentation",
-        "architecture",
-        "ui-design"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "document:docs/superpowers/UI_DOCUMENTATION.md",
-      "type": "document",
-      "name": "UI_DOCUMENTATION.md",
-      "filePath": "docs/superpowers/UI_DOCUMENTATION.md",
-      "summary": "UI documentation describing the PySide6 screen structure, layout assets, and component responsibilities.",
-      "tags": [
-        "documentation",
-        "architecture",
-        "ui-design"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "document:SCREEN_FLOW_MAP.md",
-      "type": "document",
-      "name": "SCREEN_FLOW_MAP.md",
-      "filePath": "SCREEN_FLOW_MAP.md",
-      "summary": "Screen-flow documentation mapping the SmartBox kiosk screens, navigation paths, and implementation status.",
-      "tags": [
-        "documentation",
-        "architecture",
-        "ui-design"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "document:ui_handle.md",
-      "type": "document",
-      "name": "ui_handle.md",
-      "filePath": "ui_handle.md",
-      "summary": "Short implementation note describing UI handling and screen wiring expectations.",
-      "tags": [
-        "documentation",
-        "architecture",
-        "ui-design"
+        "config",
+        "json"
       ],
       "complexity": "simple"
     },
@@ -132,11 +36,37 @@
       "type": "file",
       "name": ".gitkeep",
       "filePath": "assets/icons/.gitkeep",
-      "summary": "Placeholder file preserving the assets/icons directory in version control for future SmartBox icon assets.",
+      "summary": ".gitkeep is a unknown code file in the project.",
       "tags": [
         "project-file",
-        "support",
-        "repository"
+        "code"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "CLAUDE.md documents project behavior, flows, or implementation notes.",
+      "tags": [
+        "project-file",
+        "docs",
+        "markdown"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:config.yaml",
+      "type": "config",
+      "name": "config.yaml",
+      "filePath": "config.yaml",
+      "summary": "config.yaml configures runtime, tooling, or repository behavior.",
+      "tags": [
+        "project-file",
+        "config",
+        "yaml",
+        "configuration"
       ],
       "complexity": "simple"
     },
@@ -145,12 +75,50 @@
       "type": "file",
       "name": "main.py",
       "filePath": "main.py",
-      "summary": "Application entry point that creates the PySide6 QApplication, applies the dark kiosk stylesheet, loads Dashboard.ui, starts the clock timer, and runs the SmartBox dashboard window.",
+      "summary": "main.py defines 1 class(es) and 1 top-level function(s) for the code layer.",
       "tags": [
-        "entry-point",
-        "pyside6",
-        "kiosk-ui",
-        "clock"
+        "project-file",
+        "code",
+        "python"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:main.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "main.py",
+      "lineRange": [
+        116,
+        131
+      ],
+      "summary": "main is defined in main.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:main.py:KioskApp",
+      "type": "class",
+      "name": "KioskApp",
+      "filePath": "main.py",
+      "lineRange": [
+        25,
+        113
+      ],
+      "summary": "KioskApp is defined in main.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:requirements.txt",
+      "type": "document",
+      "name": "requirements.txt",
+      "filePath": "requirements.txt",
+      "summary": "requirements.txt documents project behavior, flows, or implementation notes.",
+      "tags": [
+        "project-file",
+        "docs",
+        "plaintext"
       ],
       "complexity": "simple"
     },
@@ -159,12 +127,38 @@
       "type": "file",
       "name": "resources_rc.py",
       "filePath": "resources_rc.py",
-      "summary": "Generated PySide6 resource module embedding images and icons from resources.qrc for runtime use by Qt Designer screens.",
+      "summary": "resources_rc.py defines 2 top-level function(s) for the code layer.",
       "tags": [
-        "generated-resource",
-        "qt-resource",
-        "assets"
+        "project-file",
+        "code",
+        "python"
       ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:resources_rc.py:qInitResources",
+      "type": "function",
+      "name": "qInitResources",
+      "filePath": "resources_rc.py",
+      "lineRange": [
+        5850,
+        5851
+      ],
+      "summary": "qInitResources is defined in resources_rc.py.",
+      "tags": [],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:resources_rc.py:qCleanupResources",
+      "type": "function",
+      "name": "qCleanupResources",
+      "filePath": "resources_rc.py",
+      "lineRange": [
+        5853,
+        5854
+      ],
+      "summary": "qCleanupResources is defined in resources_rc.py.",
+      "tags": [],
       "complexity": "complex"
     },
     {
@@ -172,25 +166,390 @@
       "type": "file",
       "name": "resources.qrc",
       "filePath": "resources.qrc",
-      "summary": "Qt resource collection listing the SmartBox image and icon assets compiled into resources_rc.py.",
+      "summary": "resources.qrc provides UI markup or resource declarations.",
       "tags": [
-        "qt-resource",
-        "assets",
-        "configuration"
+        "project-file",
+        "markup",
+        "qrc"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "document:SCREEN_FLOW_MAP.md",
+      "type": "document",
+      "name": "SCREEN_FLOW_MAP.md",
+      "filePath": "SCREEN_FLOW_MAP.md",
+      "summary": "SCREEN_FLOW_MAP.md documents project behavior, flows, or implementation notes.",
+      "tags": [
+        "project-file",
+        "docs",
+        "markdown",
+        "ui"
+      ],
+      "complexity": "complex"
     },
     {
       "id": "file:screens/__init__.py",
       "type": "file",
       "name": "__init__.py",
       "filePath": "screens/__init__.py",
-      "summary": "Python package marker for screens, allowing the directory to be imported as a module.",
+      "summary": "__init__.py is a python code file in the project.",
       "tags": [
-        "package",
-        "module",
-        "python"
+        "project-file",
+        "code",
+        "python",
+        "ui"
       ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/base.py",
+      "type": "file",
+      "name": "base.py",
+      "filePath": "screens/base.py",
+      "summary": "base.py defines 2 class(es) and 1 top-level function(s) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:screens/base.py:process_events",
+      "type": "function",
+      "name": "process_events",
+      "filePath": "screens/base.py",
+      "lineRange": [
+        122,
+        125
+      ],
+      "summary": "process_events is defined in base.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:screens/base.py:BaseController",
+      "type": "class",
+      "name": "BaseController",
+      "filePath": "screens/base.py",
+      "lineRange": [
+        15,
+        119
+      ],
+      "summary": "BaseController is defined in base.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:screens/base.py:_ClickFilter",
+      "type": "class",
+      "name": "_ClickFilter",
+      "filePath": "screens/base.py",
+      "lineRange": [
+        128,
+        137
+      ],
+      "summary": "_ClickFilter is defined in base.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:screens/home.py",
+      "type": "file",
+      "name": "home.py",
+      "filePath": "screens/home.py",
+      "summary": "home.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/home.py:HomeController",
+      "type": "class",
+      "name": "HomeController",
+      "filePath": "screens/home.py",
+      "lineRange": [
+        6,
+        27
+      ],
+      "summary": "HomeController is defined in home.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/loading.py",
+      "type": "file",
+      "name": "loading.py",
+      "filePath": "screens/loading.py",
+      "summary": "loading.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/loading.py:LoadingController",
+      "type": "class",
+      "name": "LoadingController",
+      "filePath": "screens/loading.py",
+      "lineRange": [
+        9,
+        31
+      ],
+      "summary": "LoadingController is defined in loading.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/locker_open.py",
+      "type": "file",
+      "name": "locker_open.py",
+      "filePath": "screens/locker_open.py",
+      "summary": "locker_open.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/locker_open.py:LockerOpenController",
+      "type": "class",
+      "name": "LockerOpenController",
+      "filePath": "screens/locker_open.py",
+      "lineRange": [
+        11,
+        113
+      ],
+      "summary": "LockerOpenController is defined in locker_open.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/otp.py",
+      "type": "file",
+      "name": "otp.py",
+      "filePath": "screens/otp.py",
+      "summary": "otp.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/otp.py:OtpController",
+      "type": "class",
+      "name": "OtpController",
+      "filePath": "screens/otp.py",
+      "lineRange": [
+        9,
+        80
+      ],
+      "summary": "OtpController is defined in otp.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/payment.py",
+      "type": "file",
+      "name": "payment.py",
+      "filePath": "screens/payment.py",
+      "summary": "payment.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/payment.py:PaymentController",
+      "type": "class",
+      "name": "PaymentController",
+      "filePath": "screens/payment.py",
+      "lineRange": [
+        10,
+        84
+      ],
+      "summary": "PaymentController is defined in payment.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/qr_payment.py",
+      "type": "file",
+      "name": "qr_payment.py",
+      "filePath": "screens/qr_payment.py",
+      "summary": "qr_payment.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/qr_payment.py:QRPaymentController",
+      "type": "class",
+      "name": "QRPaymentController",
+      "filePath": "screens/qr_payment.py",
+      "lineRange": [
+        13,
+        48
+      ],
+      "summary": "QRPaymentController is defined in qr_payment.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/rent_phone.py",
+      "type": "file",
+      "name": "rent_phone.py",
+      "filePath": "screens/rent_phone.py",
+      "summary": "rent_phone.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/rent_phone.py:RentPhoneController",
+      "type": "class",
+      "name": "RentPhoneController",
+      "filePath": "screens/rent_phone.py",
+      "lineRange": [
+        9,
+        55
+      ],
+      "summary": "RentPhoneController is defined in rent_phone.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/rent_plan.py",
+      "type": "file",
+      "name": "rent_plan.py",
+      "filePath": "screens/rent_plan.py",
+      "summary": "rent_plan.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/rent_plan.py:RentPlanController",
+      "type": "class",
+      "name": "RentPlanController",
+      "filePath": "screens/rent_plan.py",
+      "lineRange": [
+        10,
+        101
+      ],
+      "summary": "RentPlanController is defined in rent_plan.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/rent_size.py",
+      "type": "file",
+      "name": "rent_size.py",
+      "filePath": "screens/rent_size.py",
+      "summary": "rent_size.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/rent_size.py:RentSizeController",
+      "type": "class",
+      "name": "RentSizeController",
+      "filePath": "screens/rent_size.py",
+      "lineRange": [
+        8,
+        47
+      ],
+      "summary": "RentSizeController is defined in rent_size.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/rent_success.py",
+      "type": "file",
+      "name": "rent_success.py",
+      "filePath": "screens/rent_success.py",
+      "summary": "rent_success.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/rent_success.py:RentSuccessController",
+      "type": "class",
+      "name": "RentSuccessController",
+      "filePath": "screens/rent_success.py",
+      "lineRange": [
+        9,
+        41
+      ],
+      "summary": "RentSuccessController is defined in rent_success.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:screens/support.py",
+      "type": "file",
+      "name": "support.py",
+      "filePath": "screens/support.py",
+      "summary": "support.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:screens/support.py:SupportController",
+      "type": "class",
+      "name": "SupportController",
+      "filePath": "screens/support.py",
+      "lineRange": [
+        9,
+        31
+      ],
+      "summary": "SupportController is defined in support.py.",
+      "tags": [],
       "complexity": "simple"
     },
     {
@@ -198,11 +557,12 @@
       "type": "file",
       "name": "__init__.py",
       "filePath": "services/__init__.py",
-      "summary": "Python package marker for services, allowing the directory to be imported as a module.",
+      "summary": "__init__.py is a python code file in the project.",
       "tags": [
-        "service",
-        "integration",
-        "placeholder"
+        "project-file",
+        "code",
+        "python",
+        "service"
       ],
       "complexity": "simple"
     },
@@ -211,12 +571,212 @@
       "type": "file",
       "name": "api_client.py",
       "filePath": "services/api_client.py",
-      "summary": "Placeholder service module reserved for SmartBox api client integration.",
+      "summary": "api_client.py defines 2 class(es) for the code layer.",
       "tags": [
-        "service",
-        "integration",
-        "placeholder"
+        "project-file",
+        "code",
+        "python",
+        "service"
       ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:services/api_client.py:ApiError",
+      "type": "class",
+      "name": "ApiError",
+      "filePath": "services/api_client.py",
+      "lineRange": [
+        10,
+        14
+      ],
+      "summary": "ApiError is defined in api_client.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:services/api_client.py:ApiClient",
+      "type": "class",
+      "name": "ApiClient",
+      "filePath": "services/api_client.py",
+      "lineRange": [
+        17,
+        245
+      ],
+      "summary": "ApiClient is defined in api_client.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:services/app_state.py",
+      "type": "file",
+      "name": "app_state.py",
+      "filePath": "services/app_state.py",
+      "summary": "app_state.py defines 4 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:services/app_state.py:Plan",
+      "type": "class",
+      "name": "Plan",
+      "filePath": "services/app_state.py",
+      "lineRange": [
+        6,
+        12
+      ],
+      "summary": "Plan is defined in app_state.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:services/app_state.py:RentalData",
+      "type": "class",
+      "name": "RentalData",
+      "filePath": "services/app_state.py",
+      "lineRange": [
+        16,
+        22
+      ],
+      "summary": "RentalData is defined in app_state.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:services/app_state.py:CompartmentData",
+      "type": "class",
+      "name": "CompartmentData",
+      "filePath": "services/app_state.py",
+      "lineRange": [
+        26,
+        30
+      ],
+      "summary": "CompartmentData is defined in app_state.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:services/app_state.py:AppState",
+      "type": "class",
+      "name": "AppState",
+      "filePath": "services/app_state.py",
+      "lineRange": [
+        34,
+        53
+      ],
+      "summary": "AppState is defined in app_state.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/config_loader.py",
+      "type": "file",
+      "name": "config_loader.py",
+      "filePath": "services/config_loader.py",
+      "summary": "config_loader.py defines 2 top-level function(s) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "service",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/config_loader.py:load_config",
+      "type": "function",
+      "name": "load_config",
+      "filePath": "services/config_loader.py",
+      "lineRange": [
+        7,
+        13
+      ],
+      "summary": "load_config is defined in config_loader.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/config_loader.py:get_config_value",
+      "type": "function",
+      "name": "get_config_value",
+      "filePath": "services/config_loader.py",
+      "lineRange": [
+        16,
+        24
+      ],
+      "summary": "get_config_value is defined in config_loader.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/formatters.py",
+      "type": "file",
+      "name": "formatters.py",
+      "filePath": "services/formatters.py",
+      "summary": "formatters.py defines 4 top-level function(s) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/formatters.py:format_currency",
+      "type": "function",
+      "name": "format_currency",
+      "filePath": "services/formatters.py",
+      "lineRange": [
+        1,
+        2
+      ],
+      "summary": "format_currency is defined in formatters.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/formatters.py:format_pin",
+      "type": "function",
+      "name": "format_pin",
+      "filePath": "services/formatters.py",
+      "lineRange": [
+        5,
+        8
+      ],
+      "summary": "format_pin is defined in formatters.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/formatters.py:is_valid_local_phone",
+      "type": "function",
+      "name": "is_valid_local_phone",
+      "filePath": "services/formatters.py",
+      "lineRange": [
+        11,
+        12
+      ],
+      "summary": "is_valid_local_phone is defined in formatters.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/formatters.py:normalize_vn_phone",
+      "type": "function",
+      "name": "normalize_vn_phone",
+      "filePath": "services/formatters.py",
+      "lineRange": [
+        15,
+        16
+      ],
+      "summary": "normalize_vn_phone is defined in formatters.py.",
+      "tags": [],
       "complexity": "simple"
     },
     {
@@ -224,178 +784,107 @@
       "type": "file",
       "name": "gpio_controller.py",
       "filePath": "services/gpio_controller.py",
-      "summary": "Placeholder service module reserved for SmartBox gpio controller integration.",
+      "summary": "gpio_controller.py defines 1 class(es) for the code layer.",
       "tags": [
-        "service",
-        "integration",
-        "placeholder"
+        "project-file",
+        "code",
+        "python",
+        "service"
       ],
-      "complexity": "simple"
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:services/gpio_controller.py:GpioController",
+      "type": "class",
+      "name": "GpioController",
+      "filePath": "services/gpio_controller.py",
+      "lineRange": [
+        9,
+        138
+      ],
+      "summary": "GpioController is defined in gpio_controller.py.",
+      "tags": [],
+      "complexity": "moderate"
     },
     {
       "id": "file:services/mqtt_client.py",
       "type": "file",
       "name": "mqtt_client.py",
       "filePath": "services/mqtt_client.py",
-      "summary": "Placeholder service module reserved for SmartBox mqtt client integration.",
+      "summary": "mqtt_client.py defines 1 class(es) for the code layer.",
       "tags": [
-        "service",
-        "integration",
-        "placeholder"
+        "project-file",
+        "code",
+        "python",
+        "service"
       ],
-      "complexity": "simple"
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:services/mqtt_client.py:MqttClient",
+      "type": "class",
+      "name": "MqttClient",
+      "filePath": "services/mqtt_client.py",
+      "lineRange": [
+        8,
+        120
+      ],
+      "summary": "MqttClient is defined in mqtt_client.py.",
+      "tags": [],
+      "complexity": "moderate"
     },
     {
       "id": "file:test_ui.py",
       "type": "file",
       "name": "test_ui.py",
       "filePath": "test_ui.py",
-      "summary": "Manual PySide6 smoke-test runner for loading dashboard, header, and footer UI files and verifying they render with the shared kiosk stylesheet.",
+      "summary": "test_ui.py defines 8 top-level function(s) for the code layer.",
       "tags": [
-        "test",
-        "ui-smoke-test",
-        "pyside6",
-        "manual-runner"
+        "project-file",
+        "code",
+        "python",
+        "test"
       ],
       "complexity": "moderate"
     },
     {
-      "id": "file:ui/__init__.py",
-      "type": "file",
-      "name": "__init__.py",
-      "filePath": "ui/__init__.py",
-      "summary": "Python package marker for ui, allowing the directory to be imported as a module.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "file:ui/components/__init__.py",
-      "type": "file",
-      "name": "__init__.py",
-      "filePath": "ui/components/__init__.py",
-      "summary": "Python package marker for ui/components, allowing the directory to be imported as a module.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "file:ui/components/Footers.ui",
-      "type": "file",
-      "name": "Footers.ui",
-      "filePath": "ui/components/Footers.ui",
-      "summary": "Reusable Qt Designer footer component with version and status labels for SmartBox kiosk screens.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "moderate"
-    },
-    {
-      "id": "file:ui/components/Headers.ui",
-      "type": "file",
-      "name": "Headers.ui",
-      "filePath": "ui/components/Headers.ui",
-      "summary": "Reusable Qt Designer header component with logo, app name, and time label for SmartBox kiosk screens.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "moderate"
-    },
-    {
-      "id": "file:ui/Dashboard.ui",
-      "type": "file",
-      "name": "Dashboard.ui",
-      "filePath": "ui/Dashboard.ui",
-      "summary": "Qt Designer definition for the SmartBox dashboard screen, including the action cards for send, receive, rent, support, and the promotional content area.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "file:ui/OTPInput.ui",
-      "type": "file",
-      "name": "OTPInput.ui",
-      "filePath": "ui/OTPInput.ui",
-      "summary": "Qt Designer definition for the OTP verification screen with six OTP input boxes, keypad controls, confirmation actions, and support QR section.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "file:ui/PhoneNumberInput.ui",
-      "type": "file",
-      "name": "PhoneNumberInput.ui",
-      "filePath": "ui/PhoneNumberInput.ui",
-      "summary": "Qt Designer definition for the phone-number entry screen used in the rental flow, including numeric keypad controls and confirmation buttons.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "file:ui/RentPlan.ui",
-      "type": "file",
-      "name": "RentPlan.ui",
-      "filePath": "ui/RentPlan.ui",
-      "summary": "Qt Designer definition for the rent-plan selection screen with single-use, multi-use, and monthly plan cards plus a continue action.",
-      "tags": [
-        "ui",
-        "qt-designer",
-        "kiosk-screen"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "function:main.py:main",
+      "id": "function:test_ui.py:load_ui",
       "type": "function",
-      "name": "main",
-      "filePath": "main.py",
-      "lineRange": [
-        22,
-        56
-      ],
-      "summary": "Bootstraps the SmartBox kiosk window by creating the Qt application, loading the dashboard UI, configuring the clock timer, and entering the event loop.",
-      "tags": [
-        "entry-point",
-        "pyside6",
-        "event-loop"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:test_ui.py:main",
-      "type": "function",
-      "name": "main",
+      "name": "load_ui",
       "filePath": "test_ui.py",
       "lineRange": [
-        80,
-        116
+        18,
+        20
       ],
-      "summary": "Dispatches manual UI smoke tests based on the requested screen name and launches the selected widget in a PySide6 event loop.",
-      "tags": [
-        "test",
-        "pyside6",
-        "ui-loader"
+      "summary": "load_ui is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:test_ui.py:update_clock",
+      "type": "function",
+      "name": "update_clock",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        23,
+        25
       ],
-      "complexity": "simple"
+      "summary": "update_clock is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:test_ui.py:clock_timer",
+      "type": "function",
+      "name": "clock_timer",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        28,
+        33
+      ],
+      "summary": "clock_timer is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
     },
     {
       "id": "function:test_ui.py:test_dashboard",
@@ -406,13 +895,9 @@
         36,
         45
       ],
-      "summary": "Loads and displays the dashboard Qt Designer screen for manual verification.",
-      "tags": [
-        "test",
-        "pyside6",
-        "ui-loader"
-      ],
-      "complexity": "simple"
+      "summary": "test_dashboard is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
     },
     {
       "id": "function:test_ui.py:test_header",
@@ -423,211 +908,825 @@
         48,
         57
       ],
-      "summary": "Loads and displays the header Qt Designer screen for manual verification.",
+      "summary": "test_header is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:test_ui.py:test_footer",
+      "type": "function",
+      "name": "test_footer",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        60,
+        68
+      ],
+      "summary": "test_footer is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:test_ui.py:list_available_screens",
+      "type": "function",
+      "name": "list_available_screens",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        71,
+        77
+      ],
+      "summary": "list_available_screens is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:test_ui.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "test_ui.py",
+      "lineRange": [
+        80,
+        116
+      ],
+      "summary": "main is defined in test_ui.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_api_client.py",
+      "type": "file",
+      "name": "test_api_client.py",
+      "filePath": "tests/test_api_client.py",
+      "summary": "test_api_client.py defines 1 class(es) for the code layer.",
       "tags": [
-        "test",
-        "pyside6",
-        "ui-loader"
+        "project-file",
+        "code",
+        "python",
+        "test"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_api_client.py:ApiClientProvisioningTests",
+      "type": "class",
+      "name": "ApiClientProvisioningTests",
+      "filePath": "tests/test_api_client.py",
+      "lineRange": [
+        7,
+        50
+      ],
+      "summary": "ApiClientProvisioningTests is defined in test_api_client.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_app_state.py",
+      "type": "file",
+      "name": "test_app_state.py",
+      "filePath": "tests/test_app_state.py",
+      "summary": "test_app_state.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_app_state.py:AppStateTests",
+      "type": "class",
+      "name": "AppStateTests",
+      "filePath": "tests/test_app_state.py",
+      "lineRange": [
+        6,
+        35
+      ],
+      "summary": "AppStateTests is defined in test_app_state.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_config_loader.py",
+      "type": "file",
+      "name": "test_config_loader.py",
+      "filePath": "tests/test_config_loader.py",
+      "summary": "test_config_loader.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "test",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_config_loader.py:ConfigLoaderTests",
+      "type": "class",
+      "name": "ConfigLoaderTests",
+      "filePath": "tests/test_config_loader.py",
+      "lineRange": [
+        8,
+        30
+      ],
+      "summary": "ConfigLoaderTests is defined in test_config_loader.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_formatters.py",
+      "type": "file",
+      "name": "test_formatters.py",
+      "filePath": "tests/test_formatters.py",
+      "summary": "test_formatters.py defines 1 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_formatters.py:FormatterTests",
+      "type": "class",
+      "name": "FormatterTests",
+      "filePath": "tests/test_formatters.py",
+      "lineRange": [
+        10,
+        30
+      ],
+      "summary": "FormatterTests is defined in test_formatters.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_gpio_controller.py",
+      "type": "file",
+      "name": "test_gpio_controller.py",
+      "filePath": "tests/test_gpio_controller.py",
+      "summary": "test_gpio_controller.py defines 3 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_gpio_controller.py:GpioControllerProvisioningTests",
+      "type": "class",
+      "name": "GpioControllerProvisioningTests",
+      "filePath": "tests/test_gpio_controller.py",
+      "lineRange": [
+        7,
+        89
+      ],
+      "summary": "GpioControllerProvisioningTests is defined in test_gpio_controller.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_gpio_controller.py:FakeSMBus",
+      "type": "class",
+      "name": "FakeSMBus",
+      "filePath": "tests/test_gpio_controller.py",
+      "lineRange": [
+        92,
+        110
+      ],
+      "summary": "FakeSMBus is defined in test_gpio_controller.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_gpio_controller.py:GpioControllerMcp23017Tests",
+      "type": "class",
+      "name": "GpioControllerMcp23017Tests",
+      "filePath": "tests/test_gpio_controller.py",
+      "lineRange": [
+        113,
+        149
+      ],
+      "summary": "GpioControllerMcp23017Tests is defined in test_gpio_controller.py.",
+      "tags": [],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_rent_plan_controller.py",
+      "type": "file",
+      "name": "test_rent_plan_controller.py",
+      "filePath": "tests/test_rent_plan_controller.py",
+      "summary": "test_rent_plan_controller.py defines 3 class(es) for the code layer.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_rent_plan_controller.py:ApiClientStub",
+      "type": "class",
+      "name": "ApiClientStub",
+      "filePath": "tests/test_rent_plan_controller.py",
+      "lineRange": [
+        12,
+        22
+      ],
+      "summary": "ApiClientStub is defined in test_rent_plan_controller.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_rent_plan_controller.py:AppStub",
+      "type": "class",
+      "name": "AppStub",
+      "filePath": "tests/test_rent_plan_controller.py",
+      "lineRange": [
+        25,
+        32
+      ],
+      "summary": "AppStub is defined in test_rent_plan_controller.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_rent_plan_controller.py:RentPlanControllerTests",
+      "type": "class",
+      "name": "RentPlanControllerTests",
+      "filePath": "tests/test_rent_plan_controller.py",
+      "lineRange": [
+        35,
+        48
+      ],
+      "summary": "RentPlanControllerTests is defined in test_rent_plan_controller.py.",
+      "tags": [],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:ui_handle.md",
+      "type": "document",
+      "name": "ui_handle.md",
+      "filePath": "ui_handle.md",
+      "summary": "ui_handle.md documents project behavior, flows, or implementation notes.",
+      "tags": [
+        "project-file",
+        "docs",
+        "markdown"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ui/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "ui/__init__.py",
+      "summary": "__init__.py is a python code file in the project.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ui/components/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "ui/components/__init__.py",
+      "summary": "__init__.py is a python code file in the project.",
+      "tags": [
+        "project-file",
+        "code",
+        "python",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ui/components/Footers.ui",
+      "type": "file",
+      "name": "Footers.ui",
+      "filePath": "ui/components/Footers.ui",
+      "summary": "Footers.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ui/components/Headers.ui",
+      "type": "file",
+      "name": "Headers.ui",
+      "filePath": "ui/components/Headers.ui",
+      "summary": "Headers.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ui/Dashboard.ui",
+      "type": "file",
+      "name": "Dashboard.ui",
+      "filePath": "ui/Dashboard.ui",
+      "summary": "Dashboard.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/Loading.ui",
+      "type": "file",
+      "name": "Loading.ui",
+      "filePath": "ui/Loading.ui",
+      "summary": "Loading.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ui/OpenSuccess.ui",
+      "type": "file",
+      "name": "OpenSuccess.ui",
+      "filePath": "ui/OpenSuccess.ui",
+      "summary": "OpenSuccess.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/OTPInput.ui",
+      "type": "file",
+      "name": "OTPInput.ui",
+      "filePath": "ui/OTPInput.ui",
+      "summary": "OTPInput.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/Payment.ui",
+      "type": "file",
+      "name": "Payment.ui",
+      "filePath": "ui/Payment.ui",
+      "summary": "Payment.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/PhoneNumberInput.ui",
+      "type": "file",
+      "name": "PhoneNumberInput.ui",
+      "filePath": "ui/PhoneNumberInput.ui",
+      "summary": "PhoneNumberInput.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/QRPayment.ui",
+      "type": "file",
+      "name": "QRPayment.ui",
+      "filePath": "ui/QRPayment.ui",
+      "summary": "QRPayment.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ui/RentPlan.ui",
+      "type": "file",
+      "name": "RentPlan.ui",
+      "filePath": "ui/RentPlan.ui",
+      "summary": "RentPlan.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/RentSizeSelection.ui",
+      "type": "file",
+      "name": "RentSizeSelection.ui",
+      "filePath": "ui/RentSizeSelection.ui",
+      "summary": "RentSizeSelection.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/RentSuccess.ui",
+      "type": "file",
+      "name": "RentSuccess.ui",
+      "filePath": "ui/RentSuccess.ui",
+      "summary": "RentSuccess.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:ui/Support.ui",
+      "type": "file",
+      "name": "Support.ui",
+      "filePath": "ui/Support.ui",
+      "summary": "Support.ui provides UI markup or resource declarations.",
+      "tags": [
+        "project-file",
+        "markup",
+        "ui"
+      ],
+      "complexity": "complex"
     }
   ],
   "edges": [
     {
-      "source": "config:config.yaml",
-      "target": "file:main.py",
-      "type": "configures",
+      "source": "file:main.py",
+      "target": "function:main.py:main",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 1
     },
     {
-      "source": "config:config.yaml",
-      "target": "file:services/api_client.py",
-      "type": "configures",
+      "source": "file:main.py",
+      "target": "class:main.py:KioskApp",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 1
     },
     {
-      "source": "config:config.yaml",
-      "target": "file:services/gpio_controller.py",
-      "type": "configures",
+      "source": "file:resources_rc.py",
+      "target": "function:resources_rc.py:qInitResources",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 1
     },
     {
-      "source": "config:config.yaml",
-      "target": "file:services/mqtt_client.py",
-      "type": "configures",
+      "source": "file:resources_rc.py",
+      "target": "function:resources_rc.py:qCleanupResources",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 1
     },
     {
-      "source": "config:requirements.txt",
-      "target": "file:main.py",
-      "type": "configures",
+      "source": "file:screens/base.py",
+      "target": "function:screens/base.py:process_events",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 1
     },
     {
-      "source": "document:CLAUDE.md",
-      "target": "config:.claude/settings.local.json",
-      "type": "documents",
+      "source": "file:screens/base.py",
+      "target": "class:screens/base.py:BaseController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:CLAUDE.md",
-      "target": "file:main.py",
-      "type": "documents",
+      "source": "file:screens/base.py",
+      "target": "class:screens/base.py:_ClickFilter",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/DESIGN_PROMPTS.md",
-      "target": "file:main.py",
-      "type": "documents",
+      "source": "file:screens/home.py",
+      "target": "class:screens/home.py:HomeController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/DESIGN_PROMPTS.md",
-      "target": "file:ui/Dashboard.ui",
-      "type": "documents",
+      "source": "file:screens/loading.py",
+      "target": "class:screens/loading.py:LoadingController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/DESIGN_PROMPTS.md",
-      "target": "file:ui/OTPInput.ui",
-      "type": "documents",
+      "source": "file:screens/locker_open.py",
+      "target": "class:screens/locker_open.py:LockerOpenController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/DESIGN_PROMPTS.md",
-      "target": "file:ui/PhoneNumberInput.ui",
-      "type": "documents",
+      "source": "file:screens/otp.py",
+      "target": "class:screens/otp.py:OtpController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/DESIGN_PROMPTS.md",
-      "target": "file:ui/RentPlan.ui",
-      "type": "documents",
+      "source": "file:screens/payment.py",
+      "target": "class:screens/payment.py:PaymentController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
-      "target": "file:main.py",
-      "type": "documents",
+      "source": "file:screens/qr_payment.py",
+      "target": "class:screens/qr_payment.py:QRPaymentController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
-      "target": "file:ui/Dashboard.ui",
-      "type": "documents",
+      "source": "file:screens/rent_phone.py",
+      "target": "class:screens/rent_phone.py:RentPhoneController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
-      "target": "file:ui/OTPInput.ui",
-      "type": "documents",
+      "source": "file:screens/rent_plan.py",
+      "target": "class:screens/rent_plan.py:RentPlanController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
-      "target": "file:ui/PhoneNumberInput.ui",
-      "type": "documents",
+      "source": "file:screens/rent_size.py",
+      "target": "class:screens/rent_size.py:RentSizeController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:docs/superpowers/UI_DOCUMENTATION.md",
-      "target": "file:ui/RentPlan.ui",
-      "type": "documents",
+      "source": "file:screens/rent_success.py",
+      "target": "class:screens/rent_success.py:RentSuccessController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:SCREEN_FLOW_MAP.md",
-      "target": "file:main.py",
-      "type": "documents",
+      "source": "file:screens/support.py",
+      "target": "class:screens/support.py:SupportController",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:SCREEN_FLOW_MAP.md",
-      "target": "file:ui/Dashboard.ui",
-      "type": "documents",
+      "source": "file:services/api_client.py",
+      "target": "class:services/api_client.py:ApiError",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:SCREEN_FLOW_MAP.md",
-      "target": "file:ui/OTPInput.ui",
-      "type": "documents",
+      "source": "file:services/api_client.py",
+      "target": "class:services/api_client.py:ApiClient",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:SCREEN_FLOW_MAP.md",
-      "target": "file:ui/PhoneNumberInput.ui",
-      "type": "documents",
+      "source": "file:services/app_state.py",
+      "target": "class:services/app_state.py:Plan",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:SCREEN_FLOW_MAP.md",
-      "target": "file:ui/RentPlan.ui",
-      "type": "documents",
+      "source": "file:services/app_state.py",
+      "target": "class:services/app_state.py:RentalData",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:ui_handle.md",
-      "target": "file:main.py",
-      "type": "documents",
+      "source": "file:services/app_state.py",
+      "target": "class:services/app_state.py:CompartmentData",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:ui_handle.md",
-      "target": "file:ui/Dashboard.ui",
-      "type": "documents",
+      "source": "file:services/app_state.py",
+      "target": "class:services/app_state.py:AppState",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:ui_handle.md",
-      "target": "file:ui/OTPInput.ui",
-      "type": "documents",
+      "source": "file:services/config_loader.py",
+      "target": "function:services/config_loader.py:load_config",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:ui_handle.md",
-      "target": "file:ui/PhoneNumberInput.ui",
-      "type": "documents",
+      "source": "file:services/config_loader.py",
+      "target": "function:services/config_loader.py:get_config_value",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "document:ui_handle.md",
-      "target": "file:ui/RentPlan.ui",
-      "type": "documents",
+      "source": "file:services/formatters.py",
+      "target": "function:services/formatters.py:format_currency",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
     },
     {
-      "source": "file:assets/icons/.gitkeep",
-      "target": "file:resources.qrc",
-      "type": "related",
+      "source": "file:services/formatters.py",
+      "target": "function:services/formatters.py:format_pin",
+      "type": "contains",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 1
+    },
+    {
+      "source": "file:services/formatters.py",
+      "target": "function:services/formatters.py:is_valid_local_phone",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:services/formatters.py",
+      "target": "function:services/formatters.py:normalize_vn_phone",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:services/gpio_controller.py",
+      "target": "class:services/gpio_controller.py:GpioController",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:services/mqtt_client.py",
+      "target": "class:services/mqtt_client.py:MqttClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:load_ui",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:update_clock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:clock_timer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:test_dashboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:test_header",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:test_footer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:list_available_screens",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:test_ui.py",
+      "target": "function:test_ui.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_api_client.py",
+      "target": "class:tests/test_api_client.py:ApiClientProvisioningTests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_app_state.py",
+      "target": "class:tests/test_app_state.py:AppStateTests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_config_loader.py",
+      "target": "class:tests/test_config_loader.py:ConfigLoaderTests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_formatters.py",
+      "target": "class:tests/test_formatters.py:FormatterTests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_gpio_controller.py",
+      "target": "class:tests/test_gpio_controller.py:GpioControllerProvisioningTests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_gpio_controller.py",
+      "target": "class:tests/test_gpio_controller.py:FakeSMBus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_gpio_controller.py",
+      "target": "class:tests/test_gpio_controller.py:GpioControllerMcp23017Tests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_rent_plan_controller.py",
+      "target": "class:tests/test_rent_plan_controller.py:ApiClientStub",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_rent_plan_controller.py",
+      "target": "class:tests/test_rent_plan_controller.py:AppStub",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:tests/test_rent_plan_controller.py",
+      "target": "class:tests/test_rent_plan_controller.py:RentPlanControllerTests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
     },
     {
       "source": "file:main.py",
@@ -638,350 +1737,511 @@
     },
     {
       "source": "file:main.py",
-      "target": "file:test_ui.py",
-      "type": "tested_by",
+      "target": "file:screens/home.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.7
     },
     {
       "source": "file:main.py",
-      "target": "file:ui/Dashboard.ui",
-      "type": "depends_on",
+      "target": "file:screens/locker_open.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.7
     },
     {
       "source": "file:main.py",
-      "target": "function:main.py:main",
-      "type": "contains",
+      "target": "file:screens/loading.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 1
+      "weight": 0.7
     },
     {
       "source": "file:main.py",
-      "target": "function:main.py:main",
-      "type": "exports",
+      "target": "file:screens/otp.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.8
+      "weight": 0.7
     },
     {
-      "source": "file:resources_rc.py",
-      "target": "file:ui/Dashboard.ui",
-      "type": "depends_on",
+      "source": "file:main.py",
+      "target": "file:screens/payment.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.7
     },
     {
-      "source": "file:resources.qrc",
-      "target": "file:resources_rc.py",
-      "type": "configures",
+      "source": "file:main.py",
+      "target": "file:screens/qr_payment.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.7
     },
     {
-      "source": "file:screens/__init__.py",
-      "target": "file:main.py",
-      "type": "related",
+      "source": "file:main.py",
+      "target": "file:screens/rent_phone.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.7
     },
     {
-      "source": "file:services/__init__.py",
+      "source": "file:main.py",
+      "target": "file:screens/rent_plan.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:main.py",
+      "target": "file:screens/rent_size.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:main.py",
+      "target": "file:screens/rent_success.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:main.py",
+      "target": "file:screens/support.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:main.py",
       "target": "file:services/api_client.py",
-      "type": "related",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.7
     },
     {
-      "source": "file:services/__init__.py",
+      "source": "file:main.py",
+      "target": "file:services/app_state.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:main.py",
+      "target": "file:services/config_loader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:main.py",
       "target": "file:services/gpio_controller.py",
-      "type": "related",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.7
     },
     {
-      "source": "file:services/__init__.py",
+      "source": "file:main.py",
       "target": "file:services/mqtt_client.py",
-      "type": "related",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "file:ui/components/Footers.ui",
-      "type": "depends_on",
+      "source": "file:screens/home.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "file:ui/components/Headers.ui",
-      "type": "depends_on",
+      "source": "file:screens/loading.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "file:ui/Dashboard.ui",
-      "type": "depends_on",
+      "source": "file:screens/locker_open.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "function:test_ui.py:main",
-      "type": "contains",
+      "source": "file:screens/locker_open.py",
+      "target": "file:services/api_client.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 1
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "function:test_ui.py:main",
-      "type": "exports",
+      "source": "file:screens/locker_open.py",
+      "target": "file:services/config_loader.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.8
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "function:test_ui.py:test_dashboard",
-      "type": "contains",
+      "source": "file:screens/otp.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 1
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "function:test_ui.py:test_dashboard",
-      "type": "exports",
+      "source": "file:screens/otp.py",
+      "target": "file:services/api_client.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.8
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "function:test_ui.py:test_header",
-      "type": "contains",
+      "source": "file:screens/payment.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 1
+      "weight": 0.7
     },
     {
-      "source": "file:test_ui.py",
-      "target": "function:test_ui.py:test_header",
-      "type": "exports",
+      "source": "file:screens/payment.py",
+      "target": "file:services/api_client.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.8
+      "weight": 0.7
     },
     {
-      "source": "file:ui/__init__.py",
-      "target": "file:ui/Dashboard.ui",
-      "type": "related",
+      "source": "file:screens/payment.py",
+      "target": "file:services/formatters.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.7
     },
     {
-      "source": "file:ui/components/__init__.py",
-      "target": "file:ui/components/Headers.ui",
-      "type": "related",
+      "source": "file:screens/qr_payment.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.7
     },
     {
-      "source": "file:ui/components/Footers.ui",
-      "target": "file:test_ui.py",
+      "source": "file:screens/qr_payment.py",
+      "target": "file:services/formatters.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_phone.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_phone.py",
+      "target": "file:services/formatters.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_plan.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_plan.py",
+      "target": "file:services/app_state.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_plan.py",
+      "target": "file:services/formatters.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_size.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_success.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/rent_success.py",
+      "target": "file:services/formatters.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/support.py",
+      "target": "file:screens/base.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:screens/support.py",
+      "target": "file:services/config_loader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/api_client.py",
+      "target": "file:services/app_state.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_api_client.py",
+      "target": "file:services/api_client.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_app_state.py",
+      "target": "file:services/app_state.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_config_loader.py",
+      "target": "file:services/config_loader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_formatters.py",
+      "target": "file:services/formatters.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_gpio_controller.py",
+      "target": "file:services/gpio_controller.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_rent_plan_controller.py",
+      "target": "file:screens/rent_plan.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_rent_plan_controller.py",
+      "target": "file:services/app_state.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/api_client.py",
+      "target": "file:tests/test_api_client.py",
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "file:ui/components/Headers.ui",
-      "target": "file:test_ui.py",
+      "source": "file:services/app_state.py",
+      "target": "file:tests/test_app_state.py",
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "file:ui/Dashboard.ui",
-      "target": "file:test_ui.py",
+      "source": "file:services/config_loader.py",
+      "target": "file:tests/test_config_loader.py",
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "file:ui/Dashboard.ui",
-      "target": "file:ui/components/Footers.ui",
-      "type": "depends_on",
+      "source": "file:services/formatters.py",
+      "target": "file:tests/test_formatters.py",
+      "type": "tested_by",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.5
     },
     {
-      "source": "file:ui/Dashboard.ui",
-      "target": "file:ui/components/Headers.ui",
-      "type": "depends_on",
+      "source": "file:services/gpio_controller.py",
+      "target": "file:tests/test_gpio_controller.py",
+      "type": "tested_by",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.5
     }
   ],
   "layers": [
     {
-      "id": "layer:application-runtime",
-      "name": "Application Runtime",
-      "description": "PySide6 startup code, runtime settings, dependency manifest, and package entry files used to launch the SmartBox kiosk.",
+      "id": "layer:application-core",
+      "name": "Application Core",
+      "description": "Application entry points and shared Python modules.",
       "nodeIds": [
+        "file:assets/icons/.gitkeep",
         "file:main.py",
-        "config:config.yaml",
-        "config:requirements.txt",
-        "file:screens/__init__.py",
-        "file:ui/__init__.py"
-      ]
-    },
-    {
-      "id": "layer:ui-screens",
-      "name": "UI Screens",
-      "description": "Qt Designer screen definitions that make up the main SmartBox kiosk user journeys.",
-      "nodeIds": [
-        "file:ui/Dashboard.ui",
-        "file:ui/OTPInput.ui",
-        "file:ui/PhoneNumberInput.ui",
-        "file:ui/RentPlan.ui"
-      ]
-    },
-    {
-      "id": "layer:ui-components",
-      "name": "UI Components",
-      "description": "Reusable Qt Designer header and footer components shared by kiosk screens.",
-      "nodeIds": [
-        "file:ui/components/__init__.py",
-        "file:ui/components/Headers.ui",
-        "file:ui/components/Footers.ui"
-      ]
-    },
-    {
-      "id": "layer:resources-assets",
-      "name": "Resources & Assets",
-      "description": "Qt resource collection and generated resource module that provide images and icons to the UI.",
-      "nodeIds": [
-        "file:resources.qrc",
-        "file:resources_rc.py",
-        "file:assets/icons/.gitkeep"
+        "file:resources_rc.py"
       ]
     },
     {
       "id": "layer:services",
       "name": "Services",
-      "description": "Reserved integration modules for API, GPIO, and MQTT communication around the kiosk UI.",
+      "description": "API, MQTT, GPIO, configuration, formatting, and app state services.",
       "nodeIds": [
         "file:services/__init__.py",
         "file:services/api_client.py",
+        "file:services/app_state.py",
+        "file:services/config_loader.py",
+        "file:services/formatters.py",
         "file:services/gpio_controller.py",
         "file:services/mqtt_client.py"
       ]
     },
     {
-      "id": "layer:documentation-tooling",
-      "name": "Documentation & Tooling",
-      "description": "Repository instructions, UI documentation, design references, local tool settings, and manual UI smoke-test support.",
+      "id": "layer:user-interface",
+      "name": "User Interface",
+      "description": "PySide screens, Qt Designer files, and UI resources.",
+      "nodeIds": [
+        "file:resources.qrc",
+        "file:screens/__init__.py",
+        "file:screens/base.py",
+        "file:screens/home.py",
+        "file:screens/loading.py",
+        "file:screens/locker_open.py",
+        "file:screens/otp.py",
+        "file:screens/payment.py",
+        "file:screens/qr_payment.py",
+        "file:screens/rent_phone.py",
+        "file:screens/rent_plan.py",
+        "file:screens/rent_size.py",
+        "file:screens/rent_success.py",
+        "file:screens/support.py",
+        "file:ui/__init__.py",
+        "file:ui/components/__init__.py",
+        "file:ui/components/Footers.ui",
+        "file:ui/components/Headers.ui",
+        "file:ui/Dashboard.ui",
+        "file:ui/Loading.ui",
+        "file:ui/OpenSuccess.ui",
+        "file:ui/OTPInput.ui",
+        "file:ui/Payment.ui",
+        "file:ui/PhoneNumberInput.ui",
+        "file:ui/QRPayment.ui",
+        "file:ui/RentPlan.ui",
+        "file:ui/RentSizeSelection.ui",
+        "file:ui/RentSuccess.ui",
+        "file:ui/Support.ui"
+      ]
+    },
+    {
+      "id": "layer:configuration",
+      "name": "Configuration",
+      "description": "Runtime and tool configuration files.",
+      "nodeIds": [
+        "config:.claude/settings.local.json",
+        "config:config.yaml"
+      ]
+    },
+    {
+      "id": "layer:tests",
+      "name": "Tests",
+      "description": "Automated and manual test entry points.",
+      "nodeIds": [
+        "file:test_ui.py",
+        "file:tests/test_api_client.py",
+        "file:tests/test_app_state.py",
+        "file:tests/test_config_loader.py",
+        "file:tests/test_formatters.py",
+        "file:tests/test_gpio_controller.py",
+        "file:tests/test_rent_plan_controller.py"
+      ]
+    },
+    {
+      "id": "layer:documentation",
+      "name": "Documentation",
+      "description": "Project documentation, flow maps, and implementation notes.",
       "nodeIds": [
         "document:CLAUDE.md",
+        "document:requirements.txt",
         "document:SCREEN_FLOW_MAP.md",
-        "document:docs/DESIGN_PROMPTS.md",
-        "document:docs/superpowers/UI_DOCUMENTATION.md",
-        "document:ui_handle.md",
-        "config:.claude/settings.local.json",
-        "file:test_ui.py"
+        "document:ui_handle.md"
       ]
     }
   ],
   "tour": [
     {
       "order": 1,
-      "title": "Project Map",
-      "description": "Start with the screen-flow map to understand the SmartBox kiosk journeys before opening code. It explains how the dashboard, phone entry, OTP, rent plan, and support screens fit together.",
+      "title": "Application Entry Point",
+      "description": "Start with the application bootstrap and screen registration flow.",
       "nodeIds": [
-        "document:SCREEN_FLOW_MAP.md"
+        "file:main.py"
       ]
     },
     {
       "order": 2,
-      "title": "Runtime Entry",
-      "description": "The main entry point creates the PySide6 application, applies the shared dark kiosk stylesheet, loads Dashboard.ui, and starts the live clock. This is the best code file for seeing how Designer-authored UI files become a running window.",
+      "title": "State And Backend Services",
+      "description": "Inspect the shared app state and service clients that connect the kiosk to APIs, MQTT, and hardware.",
       "nodeIds": [
-        "file:main.py",
-        "function:main.py:main"
+        "file:services/app_state.py",
+        "file:services/api_client.py",
+        "file:services/mqtt_client.py",
+        "file:services/gpio_controller.py"
       ]
     },
     {
       "order": 3,
-      "title": "Dashboard Screen",
-      "description": "The dashboard UI file defines the first operational screen users see, including send, receive, rent, support, and promotional areas. It depends on the shared visual resource pipeline and provides the navigation surface for the rest of the kiosk flow.",
+      "title": "Rental Screen Flow",
+      "description": "Follow the user-facing rental screens from plan and size selection through phone, payment, and success states.",
       "nodeIds": [
-        "file:ui/Dashboard.ui",
-        "file:ui/components/Headers.ui",
-        "file:ui/components/Footers.ui"
-      ],
-      "languageLesson": "Qt Designer .ui files are XML layouts loaded at runtime by QUiLoader, so object names such as btnSend or lblClock become the handles Python code uses."
+        "file:screens/home.py",
+        "file:screens/rent_plan.py",
+        "file:screens/rent_size.py",
+        "file:screens/rent_phone.py",
+        "file:screens/payment.py",
+        "file:screens/rent_success.py"
+      ]
     },
     {
       "order": 4,
-      "title": "Rental Inputs",
-      "description": "The phone-number and OTP screens model the input-heavy part of the rental flow. Together they show the keypad pattern, validation affordances, backspace/clear actions, and support fallback expected from a kiosk interface.",
+      "title": "Configuration And Resources",
+      "description": "Review runtime configuration and Qt resources that shape the kiosk deployment.",
       "nodeIds": [
-        "file:ui/PhoneNumberInput.ui",
-        "file:ui/OTPInput.ui"
+        "config:config.yaml",
+        "file:resources.qrc"
       ]
     },
     {
       "order": 5,
-      "title": "Plan Selection",
-      "description": "The rent-plan UI presents the available rental packages after identity or phone entry. Its cards and continue button establish the final selection step before the app would hand off to service and hardware integrations.",
+      "title": "Tests",
+      "description": "Use the tests to see expected behavior for state, configuration, formatting, GPIO, API calls, and rental flow decisions.",
       "nodeIds": [
-        "file:ui/RentPlan.ui"
-      ]
-    },
-    {
-      "order": 6,
-      "title": "Resources",
-      "description": "The Qt resource collection lists image and icon assets, while the generated Python resource module embeds them for runtime use. This is why the app imports resources_rc before loading Designer screens that reference compiled assets.",
-      "nodeIds": [
-        "file:resources.qrc",
-        "file:resources_rc.py"
-      ],
-      "languageLesson": "Qt resource files are compiled into Python modules so UI layouts can reference assets through Qt's resource system instead of direct filesystem paths."
-    },
-    {
-      "order": 7,
-      "title": "Configuration",
-      "description": "The YAML config and dependency manifest define the app's runtime environment: API endpoint, GPIO pins, support details, screen dimensions, PySide6, MQTT, HTTP, and YAML packages. Read these before implementing the service placeholders because they describe the external systems the UI is expected to coordinate.",
-      "nodeIds": [
-        "config:config.yaml",
-        "config:requirements.txt"
-      ]
-    },
-    {
-      "order": 8,
-      "title": "Integration Services",
-      "description": "The services package reserves module boundaries for API, GPIO, and MQTT integration. The files are placeholders now, but their names show where hardware control, network calls, and message-broker behavior should land as the kiosk grows past static UI loading.",
-      "nodeIds": [
-        "file:services/api_client.py",
-        "file:services/gpio_controller.py",
-        "file:services/mqtt_client.py"
-      ]
-    },
-    {
-      "order": 9,
-      "title": "UI Verification",
-      "description": "The manual smoke-test runner loads individual screens with the same PySide6 UI loader and stylesheet used by the app. It is useful for checking screen files independently while iterating on Designer layouts.",
-      "nodeIds": [
-        "file:test_ui.py",
-        "function:test_ui.py:main",
-        "function:test_ui.py:test_dashboard"
-      ]
-    },
-    {
-      "order": 10,
-      "title": "Design Guidance",
-      "description": "The design prompt and UI documentation files capture the intended visual system, component responsibilities, and implementation notes. Use them as the reference layer when reconciling code behavior with expected kiosk screen design.",
-      "nodeIds": [
-        "document:docs/DESIGN_PROMPTS.md",
-        "document:docs/superpowers/UI_DOCUMENTATION.md",
-        "document:ui_handle.md"
+        "file:tests/test_api_client.py",
+        "file:tests/test_app_state.py",
+        "file:tests/test_config_loader.py",
+        "file:tests/test_formatters.py",
+        "file:tests/test_gpio_controller.py",
+        "file:tests/test_rent_plan_controller.py"
       ]
     }
   ]

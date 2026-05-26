@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate } from '../middleware/validate';
 import { adminLogin, refreshToken, verifyPin } from '../services/auth.service';
+import { createAuditLog } from '../services/audit.service';
+import { AuditAction } from '../generated/prisma';
 
 const router = Router();
 
@@ -25,6 +27,14 @@ router.post(
   validate(adminLoginSchema),
   asyncHandler(async (req, res) => {
     const result = await adminLogin(req.body.email, req.body.password);
+    await createAuditLog({
+      adminId: result.admin.id,
+      action: AuditAction.LOGIN,
+      resource: 'Admin',
+      resourceId: result.admin.id,
+      details: { email: result.admin.email },
+      ipAddress: req.ip,
+    });
     res.json({ data: result });
   }),
 );

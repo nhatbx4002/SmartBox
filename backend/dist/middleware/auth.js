@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ADMIN_ROLES = void 0;
 exports.requireAdmin = requireAdmin;
 exports.requireSuperAdmin = requireSuperAdmin;
 const errors_1 = require("../lib/errors");
 const jwt_1 = require("../lib/jwt");
+exports.ADMIN_ROLES = ['SUPER_ADMIN', 'CABINET_ADMIN'];
 function readAdminFromRequest(req) {
     const auth = req.headers.authorization;
     if (!auth?.startsWith('Bearer ')) {
@@ -13,7 +15,11 @@ function readAdminFromRequest(req) {
     if (!payload.sub || !payload.email || !payload.role) {
         throw (0, errors_1.UnauthorizedError)('Invalid token');
     }
-    return { id: payload.sub, email: String(payload.email), role: String(payload.role) };
+    const role = String(payload.role);
+    if (!exports.ADMIN_ROLES.includes(role)) {
+        throw (0, errors_1.ForbiddenError)('Admin role required');
+    }
+    return { id: payload.sub, email: String(payload.email), role };
 }
 function requireAdmin(req, _res, next) {
     try {

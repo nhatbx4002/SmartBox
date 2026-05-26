@@ -24,8 +24,10 @@ function topicMatches(pattern, topic) {
     }
     return patternParts.length === topicParts.length;
 }
-function connectMqtt() {
+function connectMqtt(options = {}) {
     if (client?.connected)
+        return Promise.resolve(client);
+    if (client && options.waitForConnect === false)
         return Promise.resolve(client);
     if (connectPromise)
         return connectPromise;
@@ -46,6 +48,8 @@ function connectMqtt() {
             console.warn('MQTT offline, reconnecting...');
         });
     });
+    if (options.waitForConnect === false && client)
+        return Promise.resolve(client);
     return connectPromise;
 }
 function getMqttClient() {

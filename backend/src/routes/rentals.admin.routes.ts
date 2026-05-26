@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import { AuditAction } from '../generated/prisma';
 import { requireAdmin } from '../middleware/auth';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { NotFoundError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
+import { createAuditLog } from '../services/audit.service';
 import { cancelRental } from '../services/rental.service';
 
 const router = Router();
@@ -38,6 +40,16 @@ router.put(
   '/:id/cancel',
   asyncHandler(async (req, res) => {
     await cancelRental(req.params.id, req.admin?.id);
+    if (req.admin) {
+      await createAuditLog({
+        adminId: req.admin.id,
+        action: AuditAction.CANCEL_RENTAL,
+        resource: 'Rental',
+        resourceId: req.params.id,
+        details: {},
+        ipAddress: req.ip,
+      });
+    }
     res.json({ data: { ok: true } });
   }),
 );
