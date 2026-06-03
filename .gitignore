@@ -3,6 +3,7 @@
 node_modules
 /docs/plans
 /raspi_app/tests
+.worktrees/
 
 backend/.env
 **/node_modules
