@@ -31,7 +31,10 @@ async function createCabinet(input) {
     return prisma_2.prisma.cabinet.create({ data: input });
 }
 async function updateCabinet(id, input) {
-    await getCabinet(id);
+    const current = await getCabinet(id);
+    if (input.status && input.status !== current.status) {
+        validateCabinetStatusTransition(current.status, input.status);
+    }
     return prisma_2.prisma.cabinet.update({ where: { id }, data: input });
 }
 async function deleteCabinet(id) {
@@ -54,15 +57,51 @@ async function updateCompartmentStatus(compartmentId, lockStatus, doorStatus) {
     return status;
 }
 async function updateHeartbeat(cabinetId) {
+    const current = await prisma_2.prisma.cabinet.findUnique({ where: { id: cabinetId } });
+    if (!current)
+        throw (0, errors_1.NotFoundError)('Cabinet not found');
+    const heartbeatActiveTransitions = [
+        prisma_1.CabinetStatus.PENDING_PROVISION,
+        prisma_1.CabinetStatus.PENDING_REGISTRATION,
+        prisma_1.CabinetStatus.OFFLINE,
+        prisma_1.CabinetStatus.INACTIVE,
+    ];
+    const shouldPromoteToActive = heartbeatActiveTransitions.includes(current.status);
     const cabinet = await prisma_2.prisma.cabinet.update({
         where: { id: cabinetId },
-        data: { lastHeartbeatAt: new Date(), status: prisma_1.CabinetStatus.ACTIVE },
+        data: {
+            lastHeartbeatAt: new Date(),
+            ...(shouldPromoteToActive ? { status: prisma_1.CabinetStatus.ACTIVE } : {}),
+        },
     });
     await prisma_2.prisma.lockerLog.create({
         data: { cabinetId, action: prisma_1.LockerAction.HEARTBEAT, success: true },
     });
     (0, socket_1.emitCabinetStatus)(cabinetId, { status: cabinet.status, lastHeartbeatAt: cabinet.lastHeartbeatAt });
     return cabinet;
+}
+const validCabinetStatusTransitions = {
+    [prisma_1.CabinetStatus.DRAFT]: [prisma_1.CabinetStatus.PENDING_PROVISION],
+    [prisma_1.CabinetStatus.PENDING_PROVISION]: [
+        prisma_1.CabinetStatus.ACTIVE,
+        prisma_1.CabinetStatus.PENDING_REGISTRATION,
+        prisma_1.CabinetStatus.PROVISION_FAILED,
+        prisma_1.CabinetStatus.INACTIVE,
+    ],
+    [prisma_1.CabinetStatus.PENDING_REGISTRATION]: [
+        prisma_1.CabinetStatus.ACTIVE,
+        prisma_1.CabinetStatus.PROVISION_FAILED,
+        prisma_1.CabinetStatus.INACTIVE,
+    ],
+    [prisma_1.CabinetStatus.PROVISION_FAILED]: [prisma_1.CabinetStatus.PENDING_PROVISION, prisma_1.CabinetStatus.PENDING_REGISTRATION],
+    [prisma_1.CabinetStatus.ACTIVE]: [prisma_1.CabinetStatus.INACTIVE, prisma_1.CabinetStatus.OFFLINE],
+    [prisma_1.CabinetStatus.INACTIVE]: [prisma_1.CabinetStatus.ACTIVE, prisma_1.CabinetStatus.DRAFT, prisma_1.CabinetStatus.PENDING_PROVISION],
+    [prisma_1.CabinetStatus.OFFLINE]: [prisma_1.CabinetStatus.ACTIVE],
+};
+function validateCabinetStatusTransition(from, to) {
+    if (!validCabinetStatusTransitions[from]?.includes(to)) {
+        throw (0, errors_1.BadRequestError)(`Invalid cabinet status transition: ${from} -> ${to}`);
+    }
 }
 async function getAvailableCompartments(size) {
     return prisma_2.prisma.compartment.findMany({

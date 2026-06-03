@@ -19,7 +19,7 @@ class HomeController(BaseController):
 
     def _pickup(self) -> None:
         self.state.mode = "pickup"
-        self.navigate("/otp")
+        self.navigate("/pickup-method")
 
     def _rent(self) -> None:
         self.state.mode = "rent"

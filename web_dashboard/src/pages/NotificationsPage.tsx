@@ -97,7 +97,9 @@ export default function NotificationsPage() {
           ))
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <Info className="h-12 w-12 text-text-muted mb-3" />
+            <div className="w-12 h-12 rounded-full bg-surface-elevated flex items-center justify-center mb-3">
+              <Info className="h-6 w-6 text-text-muted" />
+            </div>
             <p className="text-text-secondary font-medium">Không có thông báo</p>
           </div>
         ) : (
@@ -108,23 +110,28 @@ export default function NotificationsPage() {
                 key={notif.id}
                 onClick={() => handleClick(notif)}
                 className={cn(
-                  'bg-surface rounded-xl border border-border p-4 cursor-pointer transition-all duration-150',
-                  'hover:bg-surface-elevated',
-                  !notif.isRead && 'bg-surface-elevated/50',
-                  `border-l-4 ${typeBorderColors[notif.type]}`,
+                  'group relative bg-surface rounded-xl border border-border p-4 cursor-pointer transition-all duration-150 overflow-hidden',
+                  'hover:bg-surface-elevated hover:border-border',
+                  !notif.isRead && 'bg-surface-elevated/40',
                 )}
               >
-                <div className="flex items-start gap-3">
-                  <Icon className={cn('h-5 w-5 shrink-0 mt-0.5', typeColors[notif.type])} />
+                {/* Left accent border */}
+                <div className={cn('absolute left-0 top-0 bottom-0 w-1 rounded-l-xl', typeBorderColors[notif.type].replace('border-l-', 'bg-'))} />
+                <div className="pl-4 flex items-start gap-3">
+                  <div className={cn('shrink-0 mt-0.5', typeColors[notif.type])}>
+                    <Icon className="h-5 w-5" />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-start justify-between gap-3">
                       <h4 className={cn('text-sm font-semibold', !notif.isRead ? 'text-text-primary' : 'text-text-secondary')}>
                         {notif.title}
                       </h4>
-                      <span className="text-xs text-text-muted shrink-0">{formatRelativeTime(notif.createdAt)}</span>
+                      <span className="text-xs text-text-muted shrink-0 mt-0.5">{formatRelativeTime(notif.createdAt)}</span>
                     </div>
                     <p className="text-sm text-text-secondary mt-1 line-clamp-2">{notif.body}</p>
-                    <Badge variant={getNotificationTypeVariant(notif.type)} className="mt-2">{notif.type}</Badge>
+                    <div className="mt-2">
+                      <Badge variant={getNotificationTypeVariant(notif.type)} className="text-[10px]">{notif.type}</Badge>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -10,7 +10,7 @@ import {
   RentalStatus,
 } from '../generated/prisma';
 import { BadRequestError, NotFoundError } from '../lib/errors';
-import { signQrToken } from '../lib/qr';
+import { signQrToken, verifyQrToken } from '../lib/qr';
 import { prisma } from '../lib/prisma';
 import { createNotification } from './notification.service';
 import { NotificationType } from '../generated/prisma';
@@ -135,6 +135,32 @@ export async function getByCode(code: string) {
   });
   if (!rental) throw NotFoundError('Rental not found');
   return rental;
+}
+
+export async function verifyQrRental(token: string) {
+  const verified = verifyQrToken(token);
+  if (!verified) {
+    throw BadRequestError('Invalid QR code');
+  }
+
+  const rental = await prisma.rental.findUnique({
+    where: { id: verified.rentalId },
+    include: { compartment: { include: { cabinet: true, realtimeStatus: true } }, pricePlan: true, user: true },
+  });
+
+  if (!rental || rental.status !== RentalStatus.ACTIVE) {
+    throw NotFoundError('Rental not found');
+  }
+
+  if (rental.expiresAt < new Date()) {
+    throw BadRequestError('Rental expired');
+  }
+
+  if (rental.openCount >= rental.maxOpens) {
+    throw BadRequestError('Open limit reached');
+  }
+
+  return { authorized: true, rental, compartment: rental.compartment };
 }
 
 export async function completeRental(rentalId: string) {

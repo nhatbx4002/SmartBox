@@ -2,6 +2,20 @@ api:
   base_url: "http://192.168.1.29:3001"
   timeout: 10
 
+camera:
+  # ESP32-CAM stream URL, for example: "http://192.168.1.50:81/stream"
+  stream_url: ""
+  preview_width: 640
+  preview_height: 480
+  scan_interval_ms: 120
+  reconnect_delay_ms: 1000
+
+provision: {}
+
+cabinet_id: ""
+jwt_token: ""
+config_version: 1
+
 mqtt:
   broker: "192.168.1.29"
   port: 1883
@@ -10,7 +24,7 @@ mqtt:
 
 hardware:
   driver: "mcu2317"
-  cabinet_id: "cabinet-a"
+  cabinet_id: ""
 
 gpio:
   sensor_1: 22

@@ -4,7 +4,10 @@ import express from 'express';
 import { createServer } from 'http';
 import authRoutes from './routes/auth.routes';
 import adminLocationsRoutes from './routes/admin.locations.routes';
+import adminProfilesRoutes from './routes/admin.profiles.routes';
 import auditRoutes from './routes/audit.routes';
+import adminCabinetsRoutes from './routes/admin.cabinets.routes';
+import adminCompartmentsRoutes from './routes/admin.compartments.routes';
 import cabinetsRoutes from './routes/cabinets.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import locationsRoutes from './routes/locations.routes';
@@ -54,8 +57,11 @@ async function bootstrap() {
       next(error);
     }
   });
+  app.use('/api/admin/cabinets', adminCabinetsRoutes);
   app.use('/api/admin/cabinets', cabinetsRoutes);
+  app.use('/api/admin/compartments', adminCompartmentsRoutes);
   app.use('/api/admin/locations', adminLocationsRoutes);
+  app.use('/api/admin/profiles', adminProfilesRoutes);
   app.use('/api/public/locations', locationsRoutes);
   app.use('/api/admin/rentals', rentalsAdminRoutes);
   app.use('/api/audit-logs', auditRoutes);

@@ -18,5 +18,10 @@
     <file>assets/rentIcon.png</file>
     <file>assets/supportIcon.png</file>
     <file>assets/sendIcon.png</file>
+    <file>assets/warning.svg</file>
+    <file>assets/error.svg</file>
+    <file>assets/phone.svg</file>
   </qresource>
 </RCC>
+
+

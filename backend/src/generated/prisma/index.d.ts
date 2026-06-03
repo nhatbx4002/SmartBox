@@ -44,6 +44,26 @@ export type McpDevice = $Result.DefaultSelection<Prisma.$McpDevicePayload>
  */
 export type Compartment = $Result.DefaultSelection<Prisma.$CompartmentPayload>
 /**
+ * Model ProvisioningConfig
+ * 
+ */
+export type ProvisioningConfig = $Result.DefaultSelection<Prisma.$ProvisioningConfigPayload>
+/**
+ * Model ProvisionProfile
+ * 
+ */
+export type ProvisionProfile = $Result.DefaultSelection<Prisma.$ProvisionProfilePayload>
+/**
+ * Model ProvisionMcpDevice
+ * 
+ */
+export type ProvisionMcpDevice = $Result.DefaultSelection<Prisma.$ProvisionMcpDevicePayload>
+/**
+ * Model CabinetCredential
+ * 
+ */
+export type CabinetCredential = $Result.DefaultSelection<Prisma.$CabinetCredentialPayload>
+/**
  * Model CompartmentStatus
  * 
  */
@@ -110,7 +130,11 @@ export type LocationStatus = (typeof LocationStatus)[keyof typeof LocationStatus
 export const CabinetStatus: {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-  OFFLINE: 'OFFLINE'
+  OFFLINE: 'OFFLINE',
+  DRAFT: 'DRAFT',
+  PENDING_PROVISION: 'PENDING_PROVISION',
+  PROVISION_FAILED: 'PROVISION_FAILED',
+  PENDING_REGISTRATION: 'PENDING_REGISTRATION'
 };
 
 export type CabinetStatus = (typeof CabinetStatus)[keyof typeof CabinetStatus]
@@ -216,7 +240,14 @@ export const AuditAction: {
   UPDATE_CABINET: 'UPDATE_CABINET',
   DELETE_CABINET: 'DELETE_CABINET',
   UNLOCK_COMPARTMENT: 'UNLOCK_COMPARTMENT',
-  CANCEL_RENTAL: 'CANCEL_RENTAL'
+  CANCEL_RENTAL: 'CANCEL_RENTAL',
+  PROVISION_CABINET_SUCCESS: 'PROVISION_CABINET_SUCCESS',
+  PROVISION_CABINET_FAILURE: 'PROVISION_CABINET_FAILURE',
+  UPDATE_PROVISIONING_CONFIG: 'UPDATE_PROVISIONING_CONFIG',
+  CREATE_PROVISION_PROFILE: 'CREATE_PROVISION_PROFILE',
+  UPDATE_PROVISION_PROFILE: 'UPDATE_PROVISION_PROFILE',
+  DELETE_PROVISION_PROFILE: 'DELETE_PROVISION_PROFILE',
+  CABINET_AUTO_PROVISIONED: 'CABINET_AUTO_PROVISIONED'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -490,6 +521,46 @@ export class PrismaClient<
     * ```
     */
   get compartment(): Prisma.CompartmentDelegate<ExtArgs>;
+
+  /**
+   * `prisma.provisioningConfig`: Exposes CRUD operations for the **ProvisioningConfig** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProvisioningConfigs
+    * const provisioningConfigs = await prisma.provisioningConfig.findMany()
+    * ```
+    */
+  get provisioningConfig(): Prisma.ProvisioningConfigDelegate<ExtArgs>;
+
+  /**
+   * `prisma.provisionProfile`: Exposes CRUD operations for the **ProvisionProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProvisionProfiles
+    * const provisionProfiles = await prisma.provisionProfile.findMany()
+    * ```
+    */
+  get provisionProfile(): Prisma.ProvisionProfileDelegate<ExtArgs>;
+
+  /**
+   * `prisma.provisionMcpDevice`: Exposes CRUD operations for the **ProvisionMcpDevice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProvisionMcpDevices
+    * const provisionMcpDevices = await prisma.provisionMcpDevice.findMany()
+    * ```
+    */
+  get provisionMcpDevice(): Prisma.ProvisionMcpDeviceDelegate<ExtArgs>;
+
+  /**
+   * `prisma.cabinetCredential`: Exposes CRUD operations for the **CabinetCredential** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CabinetCredentials
+    * const cabinetCredentials = await prisma.cabinetCredential.findMany()
+    * ```
+    */
+  get cabinetCredential(): Prisma.CabinetCredentialDelegate<ExtArgs>;
 
   /**
    * `prisma.compartmentStatus`: Exposes CRUD operations for the **CompartmentStatus** model.
@@ -1007,6 +1078,10 @@ export namespace Prisma {
     Cabinet: 'Cabinet',
     McpDevice: 'McpDevice',
     Compartment: 'Compartment',
+    ProvisioningConfig: 'ProvisioningConfig',
+    ProvisionProfile: 'ProvisionProfile',
+    ProvisionMcpDevice: 'ProvisionMcpDevice',
+    CabinetCredential: 'CabinetCredential',
     CompartmentStatus: 'CompartmentStatus',
     PricePlan: 'PricePlan',
     Rental: 'Rental',
@@ -1029,7 +1104,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "admin" | "user" | "location" | "cabinet" | "mcpDevice" | "compartment" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "auditLog" | "notification" | "userSession"
+      modelProps: "admin" | "user" | "location" | "cabinet" | "mcpDevice" | "compartment" | "provisioningConfig" | "provisionProfile" | "provisionMcpDevice" | "cabinetCredential" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "auditLog" | "notification" | "userSession"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1450,6 +1525,286 @@ export namespace Prisma {
           count: {
             args: Prisma.CompartmentCountArgs<ExtArgs>
             result: $Utils.Optional<CompartmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProvisioningConfig: {
+        payload: Prisma.$ProvisioningConfigPayload<ExtArgs>
+        fields: Prisma.ProvisioningConfigFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProvisioningConfigFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProvisioningConfigFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>
+          }
+          findFirst: {
+            args: Prisma.ProvisioningConfigFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProvisioningConfigFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>
+          }
+          findMany: {
+            args: Prisma.ProvisioningConfigFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>[]
+          }
+          create: {
+            args: Prisma.ProvisioningConfigCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>
+          }
+          createMany: {
+            args: Prisma.ProvisioningConfigCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProvisioningConfigCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>[]
+          }
+          delete: {
+            args: Prisma.ProvisioningConfigDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>
+          }
+          update: {
+            args: Prisma.ProvisioningConfigUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProvisioningConfigDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProvisioningConfigUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ProvisioningConfigUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisioningConfigPayload>
+          }
+          aggregate: {
+            args: Prisma.ProvisioningConfigAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProvisioningConfig>
+          }
+          groupBy: {
+            args: Prisma.ProvisioningConfigGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProvisioningConfigGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProvisioningConfigCountArgs<ExtArgs>
+            result: $Utils.Optional<ProvisioningConfigCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProvisionProfile: {
+        payload: Prisma.$ProvisionProfilePayload<ExtArgs>
+        fields: Prisma.ProvisionProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProvisionProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProvisionProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.ProvisionProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProvisionProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>
+          }
+          findMany: {
+            args: Prisma.ProvisionProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>[]
+          }
+          create: {
+            args: Prisma.ProvisionProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>
+          }
+          createMany: {
+            args: Prisma.ProvisionProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProvisionProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.ProvisionProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>
+          }
+          update: {
+            args: Prisma.ProvisionProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.ProvisionProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProvisionProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ProvisionProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.ProvisionProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProvisionProfile>
+          }
+          groupBy: {
+            args: Prisma.ProvisionProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProvisionProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProvisionProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<ProvisionProfileCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProvisionMcpDevice: {
+        payload: Prisma.$ProvisionMcpDevicePayload<ExtArgs>
+        fields: Prisma.ProvisionMcpDeviceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProvisionMcpDeviceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProvisionMcpDeviceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>
+          }
+          findFirst: {
+            args: Prisma.ProvisionMcpDeviceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProvisionMcpDeviceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>
+          }
+          findMany: {
+            args: Prisma.ProvisionMcpDeviceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>[]
+          }
+          create: {
+            args: Prisma.ProvisionMcpDeviceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>
+          }
+          createMany: {
+            args: Prisma.ProvisionMcpDeviceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProvisionMcpDeviceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>[]
+          }
+          delete: {
+            args: Prisma.ProvisionMcpDeviceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>
+          }
+          update: {
+            args: Prisma.ProvisionMcpDeviceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>
+          }
+          deleteMany: {
+            args: Prisma.ProvisionMcpDeviceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProvisionMcpDeviceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ProvisionMcpDeviceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProvisionMcpDevicePayload>
+          }
+          aggregate: {
+            args: Prisma.ProvisionMcpDeviceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProvisionMcpDevice>
+          }
+          groupBy: {
+            args: Prisma.ProvisionMcpDeviceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProvisionMcpDeviceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProvisionMcpDeviceCountArgs<ExtArgs>
+            result: $Utils.Optional<ProvisionMcpDeviceCountAggregateOutputType> | number
+          }
+        }
+      }
+      CabinetCredential: {
+        payload: Prisma.$CabinetCredentialPayload<ExtArgs>
+        fields: Prisma.CabinetCredentialFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CabinetCredentialFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CabinetCredentialFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>
+          }
+          findFirst: {
+            args: Prisma.CabinetCredentialFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CabinetCredentialFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>
+          }
+          findMany: {
+            args: Prisma.CabinetCredentialFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>[]
+          }
+          create: {
+            args: Prisma.CabinetCredentialCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>
+          }
+          createMany: {
+            args: Prisma.CabinetCredentialCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CabinetCredentialCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>[]
+          }
+          delete: {
+            args: Prisma.CabinetCredentialDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>
+          }
+          update: {
+            args: Prisma.CabinetCredentialUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>
+          }
+          deleteMany: {
+            args: Prisma.CabinetCredentialDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CabinetCredentialUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CabinetCredentialUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CabinetCredentialPayload>
+          }
+          aggregate: {
+            args: Prisma.CabinetCredentialAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCabinetCredential>
+          }
+          groupBy: {
+            args: Prisma.CabinetCredentialGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CabinetCredentialGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CabinetCredentialCountArgs<ExtArgs>
+            result: $Utils.Optional<CabinetCredentialCountAggregateOutputType> | number
           }
         }
       }
@@ -2336,6 +2691,46 @@ export namespace Prisma {
    */
   export type CompartmentCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LockerLogWhereInput
+  }
+
+
+  /**
+   * Count Type ProvisionProfileCountOutputType
+   */
+
+  export type ProvisionProfileCountOutputType = {
+    mcpDevices: number
+    cabinets: number
+  }
+
+  export type ProvisionProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mcpDevices?: boolean | ProvisionProfileCountOutputTypeCountMcpDevicesArgs
+    cabinets?: boolean | ProvisionProfileCountOutputTypeCountCabinetsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProvisionProfileCountOutputType without action
+   */
+  export type ProvisionProfileCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfileCountOutputType
+     */
+    select?: ProvisionProfileCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProvisionProfileCountOutputType without action
+   */
+  export type ProvisionProfileCountOutputTypeCountMcpDevicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProvisionMcpDeviceWhereInput
+  }
+
+  /**
+   * ProvisionProfileCountOutputType without action
+   */
+  export type ProvisionProfileCountOutputTypeCountCabinetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CabinetWhereInput
   }
 
 
@@ -5461,16 +5856,32 @@ export namespace Prisma {
 
   export type AggregateCabinet = {
     _count: CabinetCountAggregateOutputType | null
+    _avg: CabinetAvgAggregateOutputType | null
+    _sum: CabinetSumAggregateOutputType | null
     _min: CabinetMinAggregateOutputType | null
     _max: CabinetMaxAggregateOutputType | null
+  }
+
+  export type CabinetAvgAggregateOutputType = {
+    configVersion: number | null
+  }
+
+  export type CabinetSumAggregateOutputType = {
+    configVersion: number | null
   }
 
   export type CabinetMinAggregateOutputType = {
     id: string | null
     locationId: string | null
+    profileId: string | null
     name: string | null
     status: $Enums.CabinetStatus | null
     lastHeartbeatAt: Date | null
+    provisionCode: string | null
+    provisionCodeExpires: Date | null
+    configVersion: number | null
+    hardwareSerial: string | null
+    notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5478,9 +5889,15 @@ export namespace Prisma {
   export type CabinetMaxAggregateOutputType = {
     id: string | null
     locationId: string | null
+    profileId: string | null
     name: string | null
     status: $Enums.CabinetStatus | null
     lastHeartbeatAt: Date | null
+    provisionCode: string | null
+    provisionCodeExpires: Date | null
+    configVersion: number | null
+    hardwareSerial: string | null
+    notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5488,21 +5905,41 @@ export namespace Prisma {
   export type CabinetCountAggregateOutputType = {
     id: number
     locationId: number
+    profileId: number
     name: number
     status: number
     lastHeartbeatAt: number
+    provisionCode: number
+    provisionCodeExpires: number
+    configVersion: number
+    hardwareSerial: number
+    notes: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
+  export type CabinetAvgAggregateInputType = {
+    configVersion?: true
+  }
+
+  export type CabinetSumAggregateInputType = {
+    configVersion?: true
+  }
+
   export type CabinetMinAggregateInputType = {
     id?: true
     locationId?: true
+    profileId?: true
     name?: true
     status?: true
     lastHeartbeatAt?: true
+    provisionCode?: true
+    provisionCodeExpires?: true
+    configVersion?: true
+    hardwareSerial?: true
+    notes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5510,9 +5947,15 @@ export namespace Prisma {
   export type CabinetMaxAggregateInputType = {
     id?: true
     locationId?: true
+    profileId?: true
     name?: true
     status?: true
     lastHeartbeatAt?: true
+    provisionCode?: true
+    provisionCodeExpires?: true
+    configVersion?: true
+    hardwareSerial?: true
+    notes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5520,9 +5963,15 @@ export namespace Prisma {
   export type CabinetCountAggregateInputType = {
     id?: true
     locationId?: true
+    profileId?: true
     name?: true
     status?: true
     lastHeartbeatAt?: true
+    provisionCode?: true
+    provisionCodeExpires?: true
+    configVersion?: true
+    hardwareSerial?: true
+    notes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -5566,6 +6015,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CabinetAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CabinetSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CabinetMinAggregateInputType
@@ -5596,6 +6057,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CabinetCountAggregateInputType | true
+    _avg?: CabinetAvgAggregateInputType
+    _sum?: CabinetSumAggregateInputType
     _min?: CabinetMinAggregateInputType
     _max?: CabinetMaxAggregateInputType
   }
@@ -5603,12 +6066,20 @@ export namespace Prisma {
   export type CabinetGroupByOutputType = {
     id: string
     locationId: string
+    profileId: string | null
     name: string
     status: $Enums.CabinetStatus
     lastHeartbeatAt: Date | null
+    provisionCode: string | null
+    provisionCodeExpires: Date | null
+    configVersion: number
+    hardwareSerial: string | null
+    notes: string | null
     createdAt: Date
     updatedAt: Date
     _count: CabinetCountAggregateOutputType | null
+    _avg: CabinetAvgAggregateOutputType | null
+    _sum: CabinetSumAggregateOutputType | null
     _min: CabinetMinAggregateOutputType | null
     _max: CabinetMaxAggregateOutputType | null
   }
@@ -5630,12 +6101,20 @@ export namespace Prisma {
   export type CabinetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     locationId?: boolean
+    profileId?: boolean
     name?: boolean
     status?: boolean
     lastHeartbeatAt?: boolean
+    provisionCode?: boolean
+    provisionCodeExpires?: boolean
+    configVersion?: boolean
+    hardwareSerial?: boolean
+    notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     location?: boolean | LocationDefaultArgs<ExtArgs>
+    profile?: boolean | Cabinet$profileArgs<ExtArgs>
+    credential?: boolean | Cabinet$credentialArgs<ExtArgs>
     compartments?: boolean | Cabinet$compartmentsArgs<ExtArgs>
     mcpDevices?: boolean | Cabinet$mcpDevicesArgs<ExtArgs>
     logs?: boolean | Cabinet$logsArgs<ExtArgs>
@@ -5645,26 +6124,41 @@ export namespace Prisma {
   export type CabinetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     locationId?: boolean
+    profileId?: boolean
     name?: boolean
     status?: boolean
     lastHeartbeatAt?: boolean
+    provisionCode?: boolean
+    provisionCodeExpires?: boolean
+    configVersion?: boolean
+    hardwareSerial?: boolean
+    notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     location?: boolean | LocationDefaultArgs<ExtArgs>
+    profile?: boolean | Cabinet$profileArgs<ExtArgs>
   }, ExtArgs["result"]["cabinet"]>
 
   export type CabinetSelectScalar = {
     id?: boolean
     locationId?: boolean
+    profileId?: boolean
     name?: boolean
     status?: boolean
     lastHeartbeatAt?: boolean
+    provisionCode?: boolean
+    provisionCodeExpires?: boolean
+    configVersion?: boolean
+    hardwareSerial?: boolean
+    notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
   export type CabinetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | LocationDefaultArgs<ExtArgs>
+    profile?: boolean | Cabinet$profileArgs<ExtArgs>
+    credential?: boolean | Cabinet$credentialArgs<ExtArgs>
     compartments?: boolean | Cabinet$compartmentsArgs<ExtArgs>
     mcpDevices?: boolean | Cabinet$mcpDevicesArgs<ExtArgs>
     logs?: boolean | Cabinet$logsArgs<ExtArgs>
@@ -5672,12 +6166,15 @@ export namespace Prisma {
   }
   export type CabinetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | LocationDefaultArgs<ExtArgs>
+    profile?: boolean | Cabinet$profileArgs<ExtArgs>
   }
 
   export type $CabinetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Cabinet"
     objects: {
       location: Prisma.$LocationPayload<ExtArgs>
+      profile: Prisma.$ProvisionProfilePayload<ExtArgs> | null
+      credential: Prisma.$CabinetCredentialPayload<ExtArgs> | null
       compartments: Prisma.$CompartmentPayload<ExtArgs>[]
       mcpDevices: Prisma.$McpDevicePayload<ExtArgs>[]
       logs: Prisma.$LockerLogPayload<ExtArgs>[]
@@ -5685,9 +6182,15 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       locationId: string
+      profileId: string | null
       name: string
       status: $Enums.CabinetStatus
       lastHeartbeatAt: Date | null
+      provisionCode: string | null
+      provisionCodeExpires: Date | null
+      configVersion: number
+      hardwareSerial: string | null
+      notes: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["cabinet"]>
@@ -6055,6 +6558,8 @@ export namespace Prisma {
   export interface Prisma__CabinetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     location<T extends LocationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LocationDefaultArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    profile<T extends Cabinet$profileArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$profileArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    credential<T extends Cabinet$credentialArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$credentialArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     compartments<T extends Cabinet$compartmentsArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$compartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompartmentPayload<ExtArgs>, T, "findMany"> | Null>
     mcpDevices<T extends Cabinet$mcpDevicesArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$mcpDevicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findMany"> | Null>
     logs<T extends Cabinet$logsArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LockerLogPayload<ExtArgs>, T, "findMany"> | Null>
@@ -6089,9 +6594,15 @@ export namespace Prisma {
   interface CabinetFieldRefs {
     readonly id: FieldRef<"Cabinet", 'String'>
     readonly locationId: FieldRef<"Cabinet", 'String'>
+    readonly profileId: FieldRef<"Cabinet", 'String'>
     readonly name: FieldRef<"Cabinet", 'String'>
     readonly status: FieldRef<"Cabinet", 'CabinetStatus'>
     readonly lastHeartbeatAt: FieldRef<"Cabinet", 'DateTime'>
+    readonly provisionCode: FieldRef<"Cabinet", 'String'>
+    readonly provisionCodeExpires: FieldRef<"Cabinet", 'DateTime'>
+    readonly configVersion: FieldRef<"Cabinet", 'Int'>
+    readonly hardwareSerial: FieldRef<"Cabinet", 'String'>
+    readonly notes: FieldRef<"Cabinet", 'String'>
     readonly createdAt: FieldRef<"Cabinet", 'DateTime'>
     readonly updatedAt: FieldRef<"Cabinet", 'DateTime'>
   }
@@ -6409,6 +6920,36 @@ export namespace Prisma {
      * Filter which Cabinets to delete
      */
     where?: CabinetWhereInput
+  }
+
+  /**
+   * Cabinet.profile
+   */
+  export type Cabinet$profileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    where?: ProvisionProfileWhereInput
+  }
+
+  /**
+   * Cabinet.credential
+   */
+  export type Cabinet$credentialArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    where?: CabinetCredentialWhereInput
   }
 
   /**
@@ -7544,11 +8085,15 @@ export namespace Prisma {
   }
 
   export type CompartmentAvgAggregateOutputType = {
+    rowIndex: number | null
+    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
   }
 
   export type CompartmentSumAggregateOutputType = {
+    rowIndex: number | null
+    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
   }
@@ -7558,6 +8103,8 @@ export namespace Prisma {
     cabinetId: string | null
     name: string | null
     size: $Enums.CompartmentSize | null
+    rowIndex: number | null
+    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
     lockMcpDeviceId: string | null
@@ -7572,6 +8119,8 @@ export namespace Prisma {
     cabinetId: string | null
     name: string | null
     size: $Enums.CompartmentSize | null
+    rowIndex: number | null
+    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
     lockMcpDeviceId: string | null
@@ -7586,6 +8135,8 @@ export namespace Prisma {
     cabinetId: number
     name: number
     size: number
+    rowIndex: number
+    colIndex: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId: number
@@ -7598,11 +8149,15 @@ export namespace Prisma {
 
 
   export type CompartmentAvgAggregateInputType = {
+    rowIndex?: true
+    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
   }
 
   export type CompartmentSumAggregateInputType = {
+    rowIndex?: true
+    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
   }
@@ -7612,6 +8167,8 @@ export namespace Prisma {
     cabinetId?: true
     name?: true
     size?: true
+    rowIndex?: true
+    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
     lockMcpDeviceId?: true
@@ -7626,6 +8183,8 @@ export namespace Prisma {
     cabinetId?: true
     name?: true
     size?: true
+    rowIndex?: true
+    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
     lockMcpDeviceId?: true
@@ -7640,6 +8199,8 @@ export namespace Prisma {
     cabinetId?: true
     name?: true
     size?: true
+    rowIndex?: true
+    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
     lockMcpDeviceId?: true
@@ -7741,6 +8302,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex: number
+    colIndex: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId: string | null
@@ -7774,6 +8337,8 @@ export namespace Prisma {
     cabinetId?: boolean
     name?: boolean
     size?: boolean
+    rowIndex?: boolean
+    colIndex?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
     lockMcpDeviceId?: boolean
@@ -7795,6 +8360,8 @@ export namespace Prisma {
     cabinetId?: boolean
     name?: boolean
     size?: boolean
+    rowIndex?: boolean
+    colIndex?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
     lockMcpDeviceId?: boolean
@@ -7812,6 +8379,8 @@ export namespace Prisma {
     cabinetId?: boolean
     name?: boolean
     size?: boolean
+    rowIndex?: boolean
+    colIndex?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
     lockMcpDeviceId?: boolean
@@ -7851,6 +8420,8 @@ export namespace Prisma {
       cabinetId: string
       name: string
       size: $Enums.CompartmentSize
+      rowIndex: number
+      colIndex: number
       mcp23017PinLock: number
       mcp23017PinSensor: number
       lockMcpDeviceId: string | null
@@ -8261,6 +8832,8 @@ export namespace Prisma {
     readonly cabinetId: FieldRef<"Compartment", 'String'>
     readonly name: FieldRef<"Compartment", 'String'>
     readonly size: FieldRef<"Compartment", 'CompartmentSize'>
+    readonly rowIndex: FieldRef<"Compartment", 'Int'>
+    readonly colIndex: FieldRef<"Compartment", 'Int'>
     readonly mcp23017PinLock: FieldRef<"Compartment", 'Int'>
     readonly mcp23017PinSensor: FieldRef<"Compartment", 'Int'>
     readonly lockMcpDeviceId: FieldRef<"Compartment", 'String'>
@@ -8682,6 +9255,3918 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CompartmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProvisioningConfig
+   */
+
+  export type AggregateProvisioningConfig = {
+    _count: ProvisioningConfigCountAggregateOutputType | null
+    _min: ProvisioningConfigMinAggregateOutputType | null
+    _max: ProvisioningConfigMaxAggregateOutputType | null
+  }
+
+  export type ProvisioningConfigMinAggregateOutputType = {
+    id: string | null
+    strategy: string | null
+    provisionKey: string | null
+    provisionSecret: string | null
+    webhookUrl: string | null
+    isActive: boolean | null
+    updatedAt: Date | null
+  }
+
+  export type ProvisioningConfigMaxAggregateOutputType = {
+    id: string | null
+    strategy: string | null
+    provisionKey: string | null
+    provisionSecret: string | null
+    webhookUrl: string | null
+    isActive: boolean | null
+    updatedAt: Date | null
+  }
+
+  export type ProvisioningConfigCountAggregateOutputType = {
+    id: number
+    strategy: number
+    provisionKey: number
+    provisionSecret: number
+    webhookUrl: number
+    isActive: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProvisioningConfigMinAggregateInputType = {
+    id?: true
+    strategy?: true
+    provisionKey?: true
+    provisionSecret?: true
+    webhookUrl?: true
+    isActive?: true
+    updatedAt?: true
+  }
+
+  export type ProvisioningConfigMaxAggregateInputType = {
+    id?: true
+    strategy?: true
+    provisionKey?: true
+    provisionSecret?: true
+    webhookUrl?: true
+    isActive?: true
+    updatedAt?: true
+  }
+
+  export type ProvisioningConfigCountAggregateInputType = {
+    id?: true
+    strategy?: true
+    provisionKey?: true
+    provisionSecret?: true
+    webhookUrl?: true
+    isActive?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProvisioningConfigAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProvisioningConfig to aggregate.
+     */
+    where?: ProvisioningConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisioningConfigs to fetch.
+     */
+    orderBy?: ProvisioningConfigOrderByWithRelationInput | ProvisioningConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProvisioningConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisioningConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisioningConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProvisioningConfigs
+    **/
+    _count?: true | ProvisioningConfigCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProvisioningConfigMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProvisioningConfigMaxAggregateInputType
+  }
+
+  export type GetProvisioningConfigAggregateType<T extends ProvisioningConfigAggregateArgs> = {
+        [P in keyof T & keyof AggregateProvisioningConfig]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProvisioningConfig[P]>
+      : GetScalarType<T[P], AggregateProvisioningConfig[P]>
+  }
+
+
+
+
+  export type ProvisioningConfigGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProvisioningConfigWhereInput
+    orderBy?: ProvisioningConfigOrderByWithAggregationInput | ProvisioningConfigOrderByWithAggregationInput[]
+    by: ProvisioningConfigScalarFieldEnum[] | ProvisioningConfigScalarFieldEnum
+    having?: ProvisioningConfigScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProvisioningConfigCountAggregateInputType | true
+    _min?: ProvisioningConfigMinAggregateInputType
+    _max?: ProvisioningConfigMaxAggregateInputType
+  }
+
+  export type ProvisioningConfigGroupByOutputType = {
+    id: string
+    strategy: string
+    provisionKey: string
+    provisionSecret: string | null
+    webhookUrl: string | null
+    isActive: boolean
+    updatedAt: Date
+    _count: ProvisioningConfigCountAggregateOutputType | null
+    _min: ProvisioningConfigMinAggregateOutputType | null
+    _max: ProvisioningConfigMaxAggregateOutputType | null
+  }
+
+  type GetProvisioningConfigGroupByPayload<T extends ProvisioningConfigGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProvisioningConfigGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProvisioningConfigGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProvisioningConfigGroupByOutputType[P]>
+            : GetScalarType<T[P], ProvisioningConfigGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProvisioningConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategy?: boolean
+    provisionKey?: boolean
+    provisionSecret?: boolean
+    webhookUrl?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["provisioningConfig"]>
+
+  export type ProvisioningConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategy?: boolean
+    provisionKey?: boolean
+    provisionSecret?: boolean
+    webhookUrl?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["provisioningConfig"]>
+
+  export type ProvisioningConfigSelectScalar = {
+    id?: boolean
+    strategy?: boolean
+    provisionKey?: boolean
+    provisionSecret?: boolean
+    webhookUrl?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $ProvisioningConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProvisioningConfig"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      strategy: string
+      provisionKey: string
+      provisionSecret: string | null
+      webhookUrl: string | null
+      isActive: boolean
+      updatedAt: Date
+    }, ExtArgs["result"]["provisioningConfig"]>
+    composites: {}
+  }
+
+  type ProvisioningConfigGetPayload<S extends boolean | null | undefined | ProvisioningConfigDefaultArgs> = $Result.GetResult<Prisma.$ProvisioningConfigPayload, S>
+
+  type ProvisioningConfigCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ProvisioningConfigFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ProvisioningConfigCountAggregateInputType | true
+    }
+
+  export interface ProvisioningConfigDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProvisioningConfig'], meta: { name: 'ProvisioningConfig' } }
+    /**
+     * Find zero or one ProvisioningConfig that matches the filter.
+     * @param {ProvisioningConfigFindUniqueArgs} args - Arguments to find a ProvisioningConfig
+     * @example
+     * // Get one ProvisioningConfig
+     * const provisioningConfig = await prisma.provisioningConfig.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProvisioningConfigFindUniqueArgs>(args: SelectSubset<T, ProvisioningConfigFindUniqueArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ProvisioningConfig that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ProvisioningConfigFindUniqueOrThrowArgs} args - Arguments to find a ProvisioningConfig
+     * @example
+     * // Get one ProvisioningConfig
+     * const provisioningConfig = await prisma.provisioningConfig.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProvisioningConfigFindUniqueOrThrowArgs>(args: SelectSubset<T, ProvisioningConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ProvisioningConfig that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisioningConfigFindFirstArgs} args - Arguments to find a ProvisioningConfig
+     * @example
+     * // Get one ProvisioningConfig
+     * const provisioningConfig = await prisma.provisioningConfig.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProvisioningConfigFindFirstArgs>(args?: SelectSubset<T, ProvisioningConfigFindFirstArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ProvisioningConfig that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisioningConfigFindFirstOrThrowArgs} args - Arguments to find a ProvisioningConfig
+     * @example
+     * // Get one ProvisioningConfig
+     * const provisioningConfig = await prisma.provisioningConfig.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProvisioningConfigFindFirstOrThrowArgs>(args?: SelectSubset<T, ProvisioningConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ProvisioningConfigs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisioningConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProvisioningConfigs
+     * const provisioningConfigs = await prisma.provisioningConfig.findMany()
+     * 
+     * // Get first 10 ProvisioningConfigs
+     * const provisioningConfigs = await prisma.provisioningConfig.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const provisioningConfigWithIdOnly = await prisma.provisioningConfig.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProvisioningConfigFindManyArgs>(args?: SelectSubset<T, ProvisioningConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ProvisioningConfig.
+     * @param {ProvisioningConfigCreateArgs} args - Arguments to create a ProvisioningConfig.
+     * @example
+     * // Create one ProvisioningConfig
+     * const ProvisioningConfig = await prisma.provisioningConfig.create({
+     *   data: {
+     *     // ... data to create a ProvisioningConfig
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProvisioningConfigCreateArgs>(args: SelectSubset<T, ProvisioningConfigCreateArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ProvisioningConfigs.
+     * @param {ProvisioningConfigCreateManyArgs} args - Arguments to create many ProvisioningConfigs.
+     * @example
+     * // Create many ProvisioningConfigs
+     * const provisioningConfig = await prisma.provisioningConfig.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProvisioningConfigCreateManyArgs>(args?: SelectSubset<T, ProvisioningConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProvisioningConfigs and returns the data saved in the database.
+     * @param {ProvisioningConfigCreateManyAndReturnArgs} args - Arguments to create many ProvisioningConfigs.
+     * @example
+     * // Create many ProvisioningConfigs
+     * const provisioningConfig = await prisma.provisioningConfig.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProvisioningConfigs and only return the `id`
+     * const provisioningConfigWithIdOnly = await prisma.provisioningConfig.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProvisioningConfigCreateManyAndReturnArgs>(args?: SelectSubset<T, ProvisioningConfigCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ProvisioningConfig.
+     * @param {ProvisioningConfigDeleteArgs} args - Arguments to delete one ProvisioningConfig.
+     * @example
+     * // Delete one ProvisioningConfig
+     * const ProvisioningConfig = await prisma.provisioningConfig.delete({
+     *   where: {
+     *     // ... filter to delete one ProvisioningConfig
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProvisioningConfigDeleteArgs>(args: SelectSubset<T, ProvisioningConfigDeleteArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ProvisioningConfig.
+     * @param {ProvisioningConfigUpdateArgs} args - Arguments to update one ProvisioningConfig.
+     * @example
+     * // Update one ProvisioningConfig
+     * const provisioningConfig = await prisma.provisioningConfig.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProvisioningConfigUpdateArgs>(args: SelectSubset<T, ProvisioningConfigUpdateArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ProvisioningConfigs.
+     * @param {ProvisioningConfigDeleteManyArgs} args - Arguments to filter ProvisioningConfigs to delete.
+     * @example
+     * // Delete a few ProvisioningConfigs
+     * const { count } = await prisma.provisioningConfig.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProvisioningConfigDeleteManyArgs>(args?: SelectSubset<T, ProvisioningConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProvisioningConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisioningConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProvisioningConfigs
+     * const provisioningConfig = await prisma.provisioningConfig.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProvisioningConfigUpdateManyArgs>(args: SelectSubset<T, ProvisioningConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ProvisioningConfig.
+     * @param {ProvisioningConfigUpsertArgs} args - Arguments to update or create a ProvisioningConfig.
+     * @example
+     * // Update or create a ProvisioningConfig
+     * const provisioningConfig = await prisma.provisioningConfig.upsert({
+     *   create: {
+     *     // ... data to create a ProvisioningConfig
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProvisioningConfig we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProvisioningConfigUpsertArgs>(args: SelectSubset<T, ProvisioningConfigUpsertArgs<ExtArgs>>): Prisma__ProvisioningConfigClient<$Result.GetResult<Prisma.$ProvisioningConfigPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ProvisioningConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisioningConfigCountArgs} args - Arguments to filter ProvisioningConfigs to count.
+     * @example
+     * // Count the number of ProvisioningConfigs
+     * const count = await prisma.provisioningConfig.count({
+     *   where: {
+     *     // ... the filter for the ProvisioningConfigs we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProvisioningConfigCountArgs>(
+      args?: Subset<T, ProvisioningConfigCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProvisioningConfigCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProvisioningConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisioningConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProvisioningConfigAggregateArgs>(args: Subset<T, ProvisioningConfigAggregateArgs>): Prisma.PrismaPromise<GetProvisioningConfigAggregateType<T>>
+
+    /**
+     * Group by ProvisioningConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisioningConfigGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProvisioningConfigGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProvisioningConfigGroupByArgs['orderBy'] }
+        : { orderBy?: ProvisioningConfigGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProvisioningConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProvisioningConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProvisioningConfig model
+   */
+  readonly fields: ProvisioningConfigFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProvisioningConfig.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProvisioningConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProvisioningConfig model
+   */ 
+  interface ProvisioningConfigFieldRefs {
+    readonly id: FieldRef<"ProvisioningConfig", 'String'>
+    readonly strategy: FieldRef<"ProvisioningConfig", 'String'>
+    readonly provisionKey: FieldRef<"ProvisioningConfig", 'String'>
+    readonly provisionSecret: FieldRef<"ProvisioningConfig", 'String'>
+    readonly webhookUrl: FieldRef<"ProvisioningConfig", 'String'>
+    readonly isActive: FieldRef<"ProvisioningConfig", 'Boolean'>
+    readonly updatedAt: FieldRef<"ProvisioningConfig", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProvisioningConfig findUnique
+   */
+  export type ProvisioningConfigFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * Filter, which ProvisioningConfig to fetch.
+     */
+    where: ProvisioningConfigWhereUniqueInput
+  }
+
+  /**
+   * ProvisioningConfig findUniqueOrThrow
+   */
+  export type ProvisioningConfigFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * Filter, which ProvisioningConfig to fetch.
+     */
+    where: ProvisioningConfigWhereUniqueInput
+  }
+
+  /**
+   * ProvisioningConfig findFirst
+   */
+  export type ProvisioningConfigFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * Filter, which ProvisioningConfig to fetch.
+     */
+    where?: ProvisioningConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisioningConfigs to fetch.
+     */
+    orderBy?: ProvisioningConfigOrderByWithRelationInput | ProvisioningConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProvisioningConfigs.
+     */
+    cursor?: ProvisioningConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisioningConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisioningConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProvisioningConfigs.
+     */
+    distinct?: ProvisioningConfigScalarFieldEnum | ProvisioningConfigScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisioningConfig findFirstOrThrow
+   */
+  export type ProvisioningConfigFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * Filter, which ProvisioningConfig to fetch.
+     */
+    where?: ProvisioningConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisioningConfigs to fetch.
+     */
+    orderBy?: ProvisioningConfigOrderByWithRelationInput | ProvisioningConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProvisioningConfigs.
+     */
+    cursor?: ProvisioningConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisioningConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisioningConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProvisioningConfigs.
+     */
+    distinct?: ProvisioningConfigScalarFieldEnum | ProvisioningConfigScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisioningConfig findMany
+   */
+  export type ProvisioningConfigFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * Filter, which ProvisioningConfigs to fetch.
+     */
+    where?: ProvisioningConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisioningConfigs to fetch.
+     */
+    orderBy?: ProvisioningConfigOrderByWithRelationInput | ProvisioningConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProvisioningConfigs.
+     */
+    cursor?: ProvisioningConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisioningConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisioningConfigs.
+     */
+    skip?: number
+    distinct?: ProvisioningConfigScalarFieldEnum | ProvisioningConfigScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisioningConfig create
+   */
+  export type ProvisioningConfigCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * The data needed to create a ProvisioningConfig.
+     */
+    data: XOR<ProvisioningConfigCreateInput, ProvisioningConfigUncheckedCreateInput>
+  }
+
+  /**
+   * ProvisioningConfig createMany
+   */
+  export type ProvisioningConfigCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProvisioningConfigs.
+     */
+    data: ProvisioningConfigCreateManyInput | ProvisioningConfigCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProvisioningConfig createManyAndReturn
+   */
+  export type ProvisioningConfigCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ProvisioningConfigs.
+     */
+    data: ProvisioningConfigCreateManyInput | ProvisioningConfigCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProvisioningConfig update
+   */
+  export type ProvisioningConfigUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * The data needed to update a ProvisioningConfig.
+     */
+    data: XOR<ProvisioningConfigUpdateInput, ProvisioningConfigUncheckedUpdateInput>
+    /**
+     * Choose, which ProvisioningConfig to update.
+     */
+    where: ProvisioningConfigWhereUniqueInput
+  }
+
+  /**
+   * ProvisioningConfig updateMany
+   */
+  export type ProvisioningConfigUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProvisioningConfigs.
+     */
+    data: XOR<ProvisioningConfigUpdateManyMutationInput, ProvisioningConfigUncheckedUpdateManyInput>
+    /**
+     * Filter which ProvisioningConfigs to update
+     */
+    where?: ProvisioningConfigWhereInput
+  }
+
+  /**
+   * ProvisioningConfig upsert
+   */
+  export type ProvisioningConfigUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * The filter to search for the ProvisioningConfig to update in case it exists.
+     */
+    where: ProvisioningConfigWhereUniqueInput
+    /**
+     * In case the ProvisioningConfig found by the `where` argument doesn't exist, create a new ProvisioningConfig with this data.
+     */
+    create: XOR<ProvisioningConfigCreateInput, ProvisioningConfigUncheckedCreateInput>
+    /**
+     * In case the ProvisioningConfig was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProvisioningConfigUpdateInput, ProvisioningConfigUncheckedUpdateInput>
+  }
+
+  /**
+   * ProvisioningConfig delete
+   */
+  export type ProvisioningConfigDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+    /**
+     * Filter which ProvisioningConfig to delete.
+     */
+    where: ProvisioningConfigWhereUniqueInput
+  }
+
+  /**
+   * ProvisioningConfig deleteMany
+   */
+  export type ProvisioningConfigDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProvisioningConfigs to delete
+     */
+    where?: ProvisioningConfigWhereInput
+  }
+
+  /**
+   * ProvisioningConfig without action
+   */
+  export type ProvisioningConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisioningConfig
+     */
+    select?: ProvisioningConfigSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProvisionProfile
+   */
+
+  export type AggregateProvisionProfile = {
+    _count: ProvisionProfileCountAggregateOutputType | null
+    _avg: ProvisionProfileAvgAggregateOutputType | null
+    _sum: ProvisionProfileSumAggregateOutputType | null
+    _min: ProvisionProfileMinAggregateOutputType | null
+    _max: ProvisionProfileMaxAggregateOutputType | null
+  }
+
+  export type ProvisionProfileAvgAggregateOutputType = {
+    templateRows: number | null
+    templateCols: number | null
+  }
+
+  export type ProvisionProfileSumAggregateOutputType = {
+    templateRows: number | null
+    templateCols: number | null
+  }
+
+  export type ProvisionProfileMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    provisionKey: string | null
+    provisionSecret: string | null
+    mode: string | null
+    isActive: boolean | null
+    templateRows: number | null
+    templateCols: number | null
+    templateSizes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProvisionProfileMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    provisionKey: string | null
+    provisionSecret: string | null
+    mode: string | null
+    isActive: boolean | null
+    templateRows: number | null
+    templateCols: number | null
+    templateSizes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProvisionProfileCountAggregateOutputType = {
+    id: number
+    name: number
+    provisionKey: number
+    provisionSecret: number
+    mode: number
+    isActive: number
+    templateRows: number
+    templateCols: number
+    templateSizes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProvisionProfileAvgAggregateInputType = {
+    templateRows?: true
+    templateCols?: true
+  }
+
+  export type ProvisionProfileSumAggregateInputType = {
+    templateRows?: true
+    templateCols?: true
+  }
+
+  export type ProvisionProfileMinAggregateInputType = {
+    id?: true
+    name?: true
+    provisionKey?: true
+    provisionSecret?: true
+    mode?: true
+    isActive?: true
+    templateRows?: true
+    templateCols?: true
+    templateSizes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProvisionProfileMaxAggregateInputType = {
+    id?: true
+    name?: true
+    provisionKey?: true
+    provisionSecret?: true
+    mode?: true
+    isActive?: true
+    templateRows?: true
+    templateCols?: true
+    templateSizes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProvisionProfileCountAggregateInputType = {
+    id?: true
+    name?: true
+    provisionKey?: true
+    provisionSecret?: true
+    mode?: true
+    isActive?: true
+    templateRows?: true
+    templateCols?: true
+    templateSizes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProvisionProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProvisionProfile to aggregate.
+     */
+    where?: ProvisionProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionProfiles to fetch.
+     */
+    orderBy?: ProvisionProfileOrderByWithRelationInput | ProvisionProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProvisionProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProvisionProfiles
+    **/
+    _count?: true | ProvisionProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProvisionProfileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProvisionProfileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProvisionProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProvisionProfileMaxAggregateInputType
+  }
+
+  export type GetProvisionProfileAggregateType<T extends ProvisionProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateProvisionProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProvisionProfile[P]>
+      : GetScalarType<T[P], AggregateProvisionProfile[P]>
+  }
+
+
+
+
+  export type ProvisionProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProvisionProfileWhereInput
+    orderBy?: ProvisionProfileOrderByWithAggregationInput | ProvisionProfileOrderByWithAggregationInput[]
+    by: ProvisionProfileScalarFieldEnum[] | ProvisionProfileScalarFieldEnum
+    having?: ProvisionProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProvisionProfileCountAggregateInputType | true
+    _avg?: ProvisionProfileAvgAggregateInputType
+    _sum?: ProvisionProfileSumAggregateInputType
+    _min?: ProvisionProfileMinAggregateInputType
+    _max?: ProvisionProfileMaxAggregateInputType
+  }
+
+  export type ProvisionProfileGroupByOutputType = {
+    id: string
+    name: string
+    provisionKey: string
+    provisionSecret: string | null
+    mode: string
+    isActive: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ProvisionProfileCountAggregateOutputType | null
+    _avg: ProvisionProfileAvgAggregateOutputType | null
+    _sum: ProvisionProfileSumAggregateOutputType | null
+    _min: ProvisionProfileMinAggregateOutputType | null
+    _max: ProvisionProfileMaxAggregateOutputType | null
+  }
+
+  type GetProvisionProfileGroupByPayload<T extends ProvisionProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProvisionProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProvisionProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProvisionProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], ProvisionProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProvisionProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    provisionKey?: boolean
+    provisionSecret?: boolean
+    mode?: boolean
+    isActive?: boolean
+    templateRows?: boolean
+    templateCols?: boolean
+    templateSizes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    mcpDevices?: boolean | ProvisionProfile$mcpDevicesArgs<ExtArgs>
+    cabinets?: boolean | ProvisionProfile$cabinetsArgs<ExtArgs>
+    _count?: boolean | ProvisionProfileCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["provisionProfile"]>
+
+  export type ProvisionProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    provisionKey?: boolean
+    provisionSecret?: boolean
+    mode?: boolean
+    isActive?: boolean
+    templateRows?: boolean
+    templateCols?: boolean
+    templateSizes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["provisionProfile"]>
+
+  export type ProvisionProfileSelectScalar = {
+    id?: boolean
+    name?: boolean
+    provisionKey?: boolean
+    provisionSecret?: boolean
+    mode?: boolean
+    isActive?: boolean
+    templateRows?: boolean
+    templateCols?: boolean
+    templateSizes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ProvisionProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mcpDevices?: boolean | ProvisionProfile$mcpDevicesArgs<ExtArgs>
+    cabinets?: boolean | ProvisionProfile$cabinetsArgs<ExtArgs>
+    _count?: boolean | ProvisionProfileCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ProvisionProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ProvisionProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProvisionProfile"
+    objects: {
+      mcpDevices: Prisma.$ProvisionMcpDevicePayload<ExtArgs>[]
+      cabinets: Prisma.$CabinetPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      provisionKey: string
+      provisionSecret: string | null
+      mode: string
+      isActive: boolean
+      templateRows: number
+      templateCols: number
+      templateSizes: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["provisionProfile"]>
+    composites: {}
+  }
+
+  type ProvisionProfileGetPayload<S extends boolean | null | undefined | ProvisionProfileDefaultArgs> = $Result.GetResult<Prisma.$ProvisionProfilePayload, S>
+
+  type ProvisionProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ProvisionProfileFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ProvisionProfileCountAggregateInputType | true
+    }
+
+  export interface ProvisionProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProvisionProfile'], meta: { name: 'ProvisionProfile' } }
+    /**
+     * Find zero or one ProvisionProfile that matches the filter.
+     * @param {ProvisionProfileFindUniqueArgs} args - Arguments to find a ProvisionProfile
+     * @example
+     * // Get one ProvisionProfile
+     * const provisionProfile = await prisma.provisionProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProvisionProfileFindUniqueArgs>(args: SelectSubset<T, ProvisionProfileFindUniqueArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ProvisionProfile that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ProvisionProfileFindUniqueOrThrowArgs} args - Arguments to find a ProvisionProfile
+     * @example
+     * // Get one ProvisionProfile
+     * const provisionProfile = await prisma.provisionProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProvisionProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, ProvisionProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ProvisionProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionProfileFindFirstArgs} args - Arguments to find a ProvisionProfile
+     * @example
+     * // Get one ProvisionProfile
+     * const provisionProfile = await prisma.provisionProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProvisionProfileFindFirstArgs>(args?: SelectSubset<T, ProvisionProfileFindFirstArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ProvisionProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionProfileFindFirstOrThrowArgs} args - Arguments to find a ProvisionProfile
+     * @example
+     * // Get one ProvisionProfile
+     * const provisionProfile = await prisma.provisionProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProvisionProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, ProvisionProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ProvisionProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProvisionProfiles
+     * const provisionProfiles = await prisma.provisionProfile.findMany()
+     * 
+     * // Get first 10 ProvisionProfiles
+     * const provisionProfiles = await prisma.provisionProfile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const provisionProfileWithIdOnly = await prisma.provisionProfile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProvisionProfileFindManyArgs>(args?: SelectSubset<T, ProvisionProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ProvisionProfile.
+     * @param {ProvisionProfileCreateArgs} args - Arguments to create a ProvisionProfile.
+     * @example
+     * // Create one ProvisionProfile
+     * const ProvisionProfile = await prisma.provisionProfile.create({
+     *   data: {
+     *     // ... data to create a ProvisionProfile
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProvisionProfileCreateArgs>(args: SelectSubset<T, ProvisionProfileCreateArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ProvisionProfiles.
+     * @param {ProvisionProfileCreateManyArgs} args - Arguments to create many ProvisionProfiles.
+     * @example
+     * // Create many ProvisionProfiles
+     * const provisionProfile = await prisma.provisionProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProvisionProfileCreateManyArgs>(args?: SelectSubset<T, ProvisionProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProvisionProfiles and returns the data saved in the database.
+     * @param {ProvisionProfileCreateManyAndReturnArgs} args - Arguments to create many ProvisionProfiles.
+     * @example
+     * // Create many ProvisionProfiles
+     * const provisionProfile = await prisma.provisionProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProvisionProfiles and only return the `id`
+     * const provisionProfileWithIdOnly = await prisma.provisionProfile.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProvisionProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, ProvisionProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ProvisionProfile.
+     * @param {ProvisionProfileDeleteArgs} args - Arguments to delete one ProvisionProfile.
+     * @example
+     * // Delete one ProvisionProfile
+     * const ProvisionProfile = await prisma.provisionProfile.delete({
+     *   where: {
+     *     // ... filter to delete one ProvisionProfile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProvisionProfileDeleteArgs>(args: SelectSubset<T, ProvisionProfileDeleteArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ProvisionProfile.
+     * @param {ProvisionProfileUpdateArgs} args - Arguments to update one ProvisionProfile.
+     * @example
+     * // Update one ProvisionProfile
+     * const provisionProfile = await prisma.provisionProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProvisionProfileUpdateArgs>(args: SelectSubset<T, ProvisionProfileUpdateArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ProvisionProfiles.
+     * @param {ProvisionProfileDeleteManyArgs} args - Arguments to filter ProvisionProfiles to delete.
+     * @example
+     * // Delete a few ProvisionProfiles
+     * const { count } = await prisma.provisionProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProvisionProfileDeleteManyArgs>(args?: SelectSubset<T, ProvisionProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProvisionProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProvisionProfiles
+     * const provisionProfile = await prisma.provisionProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProvisionProfileUpdateManyArgs>(args: SelectSubset<T, ProvisionProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ProvisionProfile.
+     * @param {ProvisionProfileUpsertArgs} args - Arguments to update or create a ProvisionProfile.
+     * @example
+     * // Update or create a ProvisionProfile
+     * const provisionProfile = await prisma.provisionProfile.upsert({
+     *   create: {
+     *     // ... data to create a ProvisionProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProvisionProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProvisionProfileUpsertArgs>(args: SelectSubset<T, ProvisionProfileUpsertArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ProvisionProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionProfileCountArgs} args - Arguments to filter ProvisionProfiles to count.
+     * @example
+     * // Count the number of ProvisionProfiles
+     * const count = await prisma.provisionProfile.count({
+     *   where: {
+     *     // ... the filter for the ProvisionProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProvisionProfileCountArgs>(
+      args?: Subset<T, ProvisionProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProvisionProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProvisionProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProvisionProfileAggregateArgs>(args: Subset<T, ProvisionProfileAggregateArgs>): Prisma.PrismaPromise<GetProvisionProfileAggregateType<T>>
+
+    /**
+     * Group by ProvisionProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProvisionProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProvisionProfileGroupByArgs['orderBy'] }
+        : { orderBy?: ProvisionProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProvisionProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProvisionProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProvisionProfile model
+   */
+  readonly fields: ProvisionProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProvisionProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProvisionProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    mcpDevices<T extends ProvisionProfile$mcpDevicesArgs<ExtArgs> = {}>(args?: Subset<T, ProvisionProfile$mcpDevicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "findMany"> | Null>
+    cabinets<T extends ProvisionProfile$cabinetsArgs<ExtArgs> = {}>(args?: Subset<T, ProvisionProfile$cabinetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CabinetPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProvisionProfile model
+   */ 
+  interface ProvisionProfileFieldRefs {
+    readonly id: FieldRef<"ProvisionProfile", 'String'>
+    readonly name: FieldRef<"ProvisionProfile", 'String'>
+    readonly provisionKey: FieldRef<"ProvisionProfile", 'String'>
+    readonly provisionSecret: FieldRef<"ProvisionProfile", 'String'>
+    readonly mode: FieldRef<"ProvisionProfile", 'String'>
+    readonly isActive: FieldRef<"ProvisionProfile", 'Boolean'>
+    readonly templateRows: FieldRef<"ProvisionProfile", 'Int'>
+    readonly templateCols: FieldRef<"ProvisionProfile", 'Int'>
+    readonly templateSizes: FieldRef<"ProvisionProfile", 'String'>
+    readonly createdAt: FieldRef<"ProvisionProfile", 'DateTime'>
+    readonly updatedAt: FieldRef<"ProvisionProfile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProvisionProfile findUnique
+   */
+  export type ProvisionProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionProfile to fetch.
+     */
+    where: ProvisionProfileWhereUniqueInput
+  }
+
+  /**
+   * ProvisionProfile findUniqueOrThrow
+   */
+  export type ProvisionProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionProfile to fetch.
+     */
+    where: ProvisionProfileWhereUniqueInput
+  }
+
+  /**
+   * ProvisionProfile findFirst
+   */
+  export type ProvisionProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionProfile to fetch.
+     */
+    where?: ProvisionProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionProfiles to fetch.
+     */
+    orderBy?: ProvisionProfileOrderByWithRelationInput | ProvisionProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProvisionProfiles.
+     */
+    cursor?: ProvisionProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProvisionProfiles.
+     */
+    distinct?: ProvisionProfileScalarFieldEnum | ProvisionProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionProfile findFirstOrThrow
+   */
+  export type ProvisionProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionProfile to fetch.
+     */
+    where?: ProvisionProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionProfiles to fetch.
+     */
+    orderBy?: ProvisionProfileOrderByWithRelationInput | ProvisionProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProvisionProfiles.
+     */
+    cursor?: ProvisionProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProvisionProfiles.
+     */
+    distinct?: ProvisionProfileScalarFieldEnum | ProvisionProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionProfile findMany
+   */
+  export type ProvisionProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionProfiles to fetch.
+     */
+    where?: ProvisionProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionProfiles to fetch.
+     */
+    orderBy?: ProvisionProfileOrderByWithRelationInput | ProvisionProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProvisionProfiles.
+     */
+    cursor?: ProvisionProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionProfiles.
+     */
+    skip?: number
+    distinct?: ProvisionProfileScalarFieldEnum | ProvisionProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionProfile create
+   */
+  export type ProvisionProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProvisionProfile.
+     */
+    data: XOR<ProvisionProfileCreateInput, ProvisionProfileUncheckedCreateInput>
+  }
+
+  /**
+   * ProvisionProfile createMany
+   */
+  export type ProvisionProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProvisionProfiles.
+     */
+    data: ProvisionProfileCreateManyInput | ProvisionProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProvisionProfile createManyAndReturn
+   */
+  export type ProvisionProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ProvisionProfiles.
+     */
+    data: ProvisionProfileCreateManyInput | ProvisionProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProvisionProfile update
+   */
+  export type ProvisionProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProvisionProfile.
+     */
+    data: XOR<ProvisionProfileUpdateInput, ProvisionProfileUncheckedUpdateInput>
+    /**
+     * Choose, which ProvisionProfile to update.
+     */
+    where: ProvisionProfileWhereUniqueInput
+  }
+
+  /**
+   * ProvisionProfile updateMany
+   */
+  export type ProvisionProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProvisionProfiles.
+     */
+    data: XOR<ProvisionProfileUpdateManyMutationInput, ProvisionProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which ProvisionProfiles to update
+     */
+    where?: ProvisionProfileWhereInput
+  }
+
+  /**
+   * ProvisionProfile upsert
+   */
+  export type ProvisionProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProvisionProfile to update in case it exists.
+     */
+    where: ProvisionProfileWhereUniqueInput
+    /**
+     * In case the ProvisionProfile found by the `where` argument doesn't exist, create a new ProvisionProfile with this data.
+     */
+    create: XOR<ProvisionProfileCreateInput, ProvisionProfileUncheckedCreateInput>
+    /**
+     * In case the ProvisionProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProvisionProfileUpdateInput, ProvisionProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * ProvisionProfile delete
+   */
+  export type ProvisionProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+    /**
+     * Filter which ProvisionProfile to delete.
+     */
+    where: ProvisionProfileWhereUniqueInput
+  }
+
+  /**
+   * ProvisionProfile deleteMany
+   */
+  export type ProvisionProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProvisionProfiles to delete
+     */
+    where?: ProvisionProfileWhereInput
+  }
+
+  /**
+   * ProvisionProfile.mcpDevices
+   */
+  export type ProvisionProfile$mcpDevicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    where?: ProvisionMcpDeviceWhereInput
+    orderBy?: ProvisionMcpDeviceOrderByWithRelationInput | ProvisionMcpDeviceOrderByWithRelationInput[]
+    cursor?: ProvisionMcpDeviceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProvisionMcpDeviceScalarFieldEnum | ProvisionMcpDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionProfile.cabinets
+   */
+  export type ProvisionProfile$cabinetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Cabinet
+     */
+    select?: CabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetInclude<ExtArgs> | null
+    where?: CabinetWhereInput
+    orderBy?: CabinetOrderByWithRelationInput | CabinetOrderByWithRelationInput[]
+    cursor?: CabinetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CabinetScalarFieldEnum | CabinetScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionProfile without action
+   */
+  export type ProvisionProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionProfile
+     */
+    select?: ProvisionProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProvisionMcpDevice
+   */
+
+  export type AggregateProvisionMcpDevice = {
+    _count: ProvisionMcpDeviceCountAggregateOutputType | null
+    _avg: ProvisionMcpDeviceAvgAggregateOutputType | null
+    _sum: ProvisionMcpDeviceSumAggregateOutputType | null
+    _min: ProvisionMcpDeviceMinAggregateOutputType | null
+    _max: ProvisionMcpDeviceMaxAggregateOutputType | null
+  }
+
+  export type ProvisionMcpDeviceAvgAggregateOutputType = {
+    bus: number | null
+    address: number | null
+  }
+
+  export type ProvisionMcpDeviceSumAggregateOutputType = {
+    bus: number | null
+    address: number | null
+  }
+
+  export type ProvisionMcpDeviceMinAggregateOutputType = {
+    id: string | null
+    profileId: string | null
+    bus: number | null
+    address: number | null
+    role: string | null
+    name: string | null
+  }
+
+  export type ProvisionMcpDeviceMaxAggregateOutputType = {
+    id: string | null
+    profileId: string | null
+    bus: number | null
+    address: number | null
+    role: string | null
+    name: string | null
+  }
+
+  export type ProvisionMcpDeviceCountAggregateOutputType = {
+    id: number
+    profileId: number
+    bus: number
+    address: number
+    role: number
+    name: number
+    _all: number
+  }
+
+
+  export type ProvisionMcpDeviceAvgAggregateInputType = {
+    bus?: true
+    address?: true
+  }
+
+  export type ProvisionMcpDeviceSumAggregateInputType = {
+    bus?: true
+    address?: true
+  }
+
+  export type ProvisionMcpDeviceMinAggregateInputType = {
+    id?: true
+    profileId?: true
+    bus?: true
+    address?: true
+    role?: true
+    name?: true
+  }
+
+  export type ProvisionMcpDeviceMaxAggregateInputType = {
+    id?: true
+    profileId?: true
+    bus?: true
+    address?: true
+    role?: true
+    name?: true
+  }
+
+  export type ProvisionMcpDeviceCountAggregateInputType = {
+    id?: true
+    profileId?: true
+    bus?: true
+    address?: true
+    role?: true
+    name?: true
+    _all?: true
+  }
+
+  export type ProvisionMcpDeviceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProvisionMcpDevice to aggregate.
+     */
+    where?: ProvisionMcpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionMcpDevices to fetch.
+     */
+    orderBy?: ProvisionMcpDeviceOrderByWithRelationInput | ProvisionMcpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProvisionMcpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionMcpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionMcpDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProvisionMcpDevices
+    **/
+    _count?: true | ProvisionMcpDeviceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProvisionMcpDeviceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProvisionMcpDeviceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProvisionMcpDeviceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProvisionMcpDeviceMaxAggregateInputType
+  }
+
+  export type GetProvisionMcpDeviceAggregateType<T extends ProvisionMcpDeviceAggregateArgs> = {
+        [P in keyof T & keyof AggregateProvisionMcpDevice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProvisionMcpDevice[P]>
+      : GetScalarType<T[P], AggregateProvisionMcpDevice[P]>
+  }
+
+
+
+
+  export type ProvisionMcpDeviceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProvisionMcpDeviceWhereInput
+    orderBy?: ProvisionMcpDeviceOrderByWithAggregationInput | ProvisionMcpDeviceOrderByWithAggregationInput[]
+    by: ProvisionMcpDeviceScalarFieldEnum[] | ProvisionMcpDeviceScalarFieldEnum
+    having?: ProvisionMcpDeviceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProvisionMcpDeviceCountAggregateInputType | true
+    _avg?: ProvisionMcpDeviceAvgAggregateInputType
+    _sum?: ProvisionMcpDeviceSumAggregateInputType
+    _min?: ProvisionMcpDeviceMinAggregateInputType
+    _max?: ProvisionMcpDeviceMaxAggregateInputType
+  }
+
+  export type ProvisionMcpDeviceGroupByOutputType = {
+    id: string
+    profileId: string
+    bus: number
+    address: number
+    role: string
+    name: string | null
+    _count: ProvisionMcpDeviceCountAggregateOutputType | null
+    _avg: ProvisionMcpDeviceAvgAggregateOutputType | null
+    _sum: ProvisionMcpDeviceSumAggregateOutputType | null
+    _min: ProvisionMcpDeviceMinAggregateOutputType | null
+    _max: ProvisionMcpDeviceMaxAggregateOutputType | null
+  }
+
+  type GetProvisionMcpDeviceGroupByPayload<T extends ProvisionMcpDeviceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProvisionMcpDeviceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProvisionMcpDeviceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProvisionMcpDeviceGroupByOutputType[P]>
+            : GetScalarType<T[P], ProvisionMcpDeviceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProvisionMcpDeviceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    profileId?: boolean
+    bus?: boolean
+    address?: boolean
+    role?: boolean
+    name?: boolean
+    profile?: boolean | ProvisionProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["provisionMcpDevice"]>
+
+  export type ProvisionMcpDeviceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    profileId?: boolean
+    bus?: boolean
+    address?: boolean
+    role?: boolean
+    name?: boolean
+    profile?: boolean | ProvisionProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["provisionMcpDevice"]>
+
+  export type ProvisionMcpDeviceSelectScalar = {
+    id?: boolean
+    profileId?: boolean
+    bus?: boolean
+    address?: boolean
+    role?: boolean
+    name?: boolean
+  }
+
+  export type ProvisionMcpDeviceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profile?: boolean | ProvisionProfileDefaultArgs<ExtArgs>
+  }
+  export type ProvisionMcpDeviceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profile?: boolean | ProvisionProfileDefaultArgs<ExtArgs>
+  }
+
+  export type $ProvisionMcpDevicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProvisionMcpDevice"
+    objects: {
+      profile: Prisma.$ProvisionProfilePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      profileId: string
+      bus: number
+      address: number
+      role: string
+      name: string | null
+    }, ExtArgs["result"]["provisionMcpDevice"]>
+    composites: {}
+  }
+
+  type ProvisionMcpDeviceGetPayload<S extends boolean | null | undefined | ProvisionMcpDeviceDefaultArgs> = $Result.GetResult<Prisma.$ProvisionMcpDevicePayload, S>
+
+  type ProvisionMcpDeviceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ProvisionMcpDeviceFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ProvisionMcpDeviceCountAggregateInputType | true
+    }
+
+  export interface ProvisionMcpDeviceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProvisionMcpDevice'], meta: { name: 'ProvisionMcpDevice' } }
+    /**
+     * Find zero or one ProvisionMcpDevice that matches the filter.
+     * @param {ProvisionMcpDeviceFindUniqueArgs} args - Arguments to find a ProvisionMcpDevice
+     * @example
+     * // Get one ProvisionMcpDevice
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProvisionMcpDeviceFindUniqueArgs>(args: SelectSubset<T, ProvisionMcpDeviceFindUniqueArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ProvisionMcpDevice that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ProvisionMcpDeviceFindUniqueOrThrowArgs} args - Arguments to find a ProvisionMcpDevice
+     * @example
+     * // Get one ProvisionMcpDevice
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProvisionMcpDeviceFindUniqueOrThrowArgs>(args: SelectSubset<T, ProvisionMcpDeviceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ProvisionMcpDevice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionMcpDeviceFindFirstArgs} args - Arguments to find a ProvisionMcpDevice
+     * @example
+     * // Get one ProvisionMcpDevice
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProvisionMcpDeviceFindFirstArgs>(args?: SelectSubset<T, ProvisionMcpDeviceFindFirstArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ProvisionMcpDevice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionMcpDeviceFindFirstOrThrowArgs} args - Arguments to find a ProvisionMcpDevice
+     * @example
+     * // Get one ProvisionMcpDevice
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProvisionMcpDeviceFindFirstOrThrowArgs>(args?: SelectSubset<T, ProvisionMcpDeviceFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ProvisionMcpDevices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionMcpDeviceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProvisionMcpDevices
+     * const provisionMcpDevices = await prisma.provisionMcpDevice.findMany()
+     * 
+     * // Get first 10 ProvisionMcpDevices
+     * const provisionMcpDevices = await prisma.provisionMcpDevice.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const provisionMcpDeviceWithIdOnly = await prisma.provisionMcpDevice.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProvisionMcpDeviceFindManyArgs>(args?: SelectSubset<T, ProvisionMcpDeviceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ProvisionMcpDevice.
+     * @param {ProvisionMcpDeviceCreateArgs} args - Arguments to create a ProvisionMcpDevice.
+     * @example
+     * // Create one ProvisionMcpDevice
+     * const ProvisionMcpDevice = await prisma.provisionMcpDevice.create({
+     *   data: {
+     *     // ... data to create a ProvisionMcpDevice
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProvisionMcpDeviceCreateArgs>(args: SelectSubset<T, ProvisionMcpDeviceCreateArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ProvisionMcpDevices.
+     * @param {ProvisionMcpDeviceCreateManyArgs} args - Arguments to create many ProvisionMcpDevices.
+     * @example
+     * // Create many ProvisionMcpDevices
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProvisionMcpDeviceCreateManyArgs>(args?: SelectSubset<T, ProvisionMcpDeviceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProvisionMcpDevices and returns the data saved in the database.
+     * @param {ProvisionMcpDeviceCreateManyAndReturnArgs} args - Arguments to create many ProvisionMcpDevices.
+     * @example
+     * // Create many ProvisionMcpDevices
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProvisionMcpDevices and only return the `id`
+     * const provisionMcpDeviceWithIdOnly = await prisma.provisionMcpDevice.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProvisionMcpDeviceCreateManyAndReturnArgs>(args?: SelectSubset<T, ProvisionMcpDeviceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ProvisionMcpDevice.
+     * @param {ProvisionMcpDeviceDeleteArgs} args - Arguments to delete one ProvisionMcpDevice.
+     * @example
+     * // Delete one ProvisionMcpDevice
+     * const ProvisionMcpDevice = await prisma.provisionMcpDevice.delete({
+     *   where: {
+     *     // ... filter to delete one ProvisionMcpDevice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProvisionMcpDeviceDeleteArgs>(args: SelectSubset<T, ProvisionMcpDeviceDeleteArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ProvisionMcpDevice.
+     * @param {ProvisionMcpDeviceUpdateArgs} args - Arguments to update one ProvisionMcpDevice.
+     * @example
+     * // Update one ProvisionMcpDevice
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProvisionMcpDeviceUpdateArgs>(args: SelectSubset<T, ProvisionMcpDeviceUpdateArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ProvisionMcpDevices.
+     * @param {ProvisionMcpDeviceDeleteManyArgs} args - Arguments to filter ProvisionMcpDevices to delete.
+     * @example
+     * // Delete a few ProvisionMcpDevices
+     * const { count } = await prisma.provisionMcpDevice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProvisionMcpDeviceDeleteManyArgs>(args?: SelectSubset<T, ProvisionMcpDeviceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProvisionMcpDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionMcpDeviceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProvisionMcpDevices
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProvisionMcpDeviceUpdateManyArgs>(args: SelectSubset<T, ProvisionMcpDeviceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ProvisionMcpDevice.
+     * @param {ProvisionMcpDeviceUpsertArgs} args - Arguments to update or create a ProvisionMcpDevice.
+     * @example
+     * // Update or create a ProvisionMcpDevice
+     * const provisionMcpDevice = await prisma.provisionMcpDevice.upsert({
+     *   create: {
+     *     // ... data to create a ProvisionMcpDevice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProvisionMcpDevice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProvisionMcpDeviceUpsertArgs>(args: SelectSubset<T, ProvisionMcpDeviceUpsertArgs<ExtArgs>>): Prisma__ProvisionMcpDeviceClient<$Result.GetResult<Prisma.$ProvisionMcpDevicePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ProvisionMcpDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionMcpDeviceCountArgs} args - Arguments to filter ProvisionMcpDevices to count.
+     * @example
+     * // Count the number of ProvisionMcpDevices
+     * const count = await prisma.provisionMcpDevice.count({
+     *   where: {
+     *     // ... the filter for the ProvisionMcpDevices we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProvisionMcpDeviceCountArgs>(
+      args?: Subset<T, ProvisionMcpDeviceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProvisionMcpDeviceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProvisionMcpDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionMcpDeviceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProvisionMcpDeviceAggregateArgs>(args: Subset<T, ProvisionMcpDeviceAggregateArgs>): Prisma.PrismaPromise<GetProvisionMcpDeviceAggregateType<T>>
+
+    /**
+     * Group by ProvisionMcpDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvisionMcpDeviceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProvisionMcpDeviceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProvisionMcpDeviceGroupByArgs['orderBy'] }
+        : { orderBy?: ProvisionMcpDeviceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProvisionMcpDeviceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProvisionMcpDeviceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProvisionMcpDevice model
+   */
+  readonly fields: ProvisionMcpDeviceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProvisionMcpDevice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProvisionMcpDeviceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    profile<T extends ProvisionProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProvisionProfileDefaultArgs<ExtArgs>>): Prisma__ProvisionProfileClient<$Result.GetResult<Prisma.$ProvisionProfilePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProvisionMcpDevice model
+   */ 
+  interface ProvisionMcpDeviceFieldRefs {
+    readonly id: FieldRef<"ProvisionMcpDevice", 'String'>
+    readonly profileId: FieldRef<"ProvisionMcpDevice", 'String'>
+    readonly bus: FieldRef<"ProvisionMcpDevice", 'Int'>
+    readonly address: FieldRef<"ProvisionMcpDevice", 'Int'>
+    readonly role: FieldRef<"ProvisionMcpDevice", 'String'>
+    readonly name: FieldRef<"ProvisionMcpDevice", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProvisionMcpDevice findUnique
+   */
+  export type ProvisionMcpDeviceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionMcpDevice to fetch.
+     */
+    where: ProvisionMcpDeviceWhereUniqueInput
+  }
+
+  /**
+   * ProvisionMcpDevice findUniqueOrThrow
+   */
+  export type ProvisionMcpDeviceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionMcpDevice to fetch.
+     */
+    where: ProvisionMcpDeviceWhereUniqueInput
+  }
+
+  /**
+   * ProvisionMcpDevice findFirst
+   */
+  export type ProvisionMcpDeviceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionMcpDevice to fetch.
+     */
+    where?: ProvisionMcpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionMcpDevices to fetch.
+     */
+    orderBy?: ProvisionMcpDeviceOrderByWithRelationInput | ProvisionMcpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProvisionMcpDevices.
+     */
+    cursor?: ProvisionMcpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionMcpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionMcpDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProvisionMcpDevices.
+     */
+    distinct?: ProvisionMcpDeviceScalarFieldEnum | ProvisionMcpDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionMcpDevice findFirstOrThrow
+   */
+  export type ProvisionMcpDeviceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionMcpDevice to fetch.
+     */
+    where?: ProvisionMcpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionMcpDevices to fetch.
+     */
+    orderBy?: ProvisionMcpDeviceOrderByWithRelationInput | ProvisionMcpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProvisionMcpDevices.
+     */
+    cursor?: ProvisionMcpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionMcpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionMcpDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProvisionMcpDevices.
+     */
+    distinct?: ProvisionMcpDeviceScalarFieldEnum | ProvisionMcpDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionMcpDevice findMany
+   */
+  export type ProvisionMcpDeviceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProvisionMcpDevices to fetch.
+     */
+    where?: ProvisionMcpDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProvisionMcpDevices to fetch.
+     */
+    orderBy?: ProvisionMcpDeviceOrderByWithRelationInput | ProvisionMcpDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProvisionMcpDevices.
+     */
+    cursor?: ProvisionMcpDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProvisionMcpDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProvisionMcpDevices.
+     */
+    skip?: number
+    distinct?: ProvisionMcpDeviceScalarFieldEnum | ProvisionMcpDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * ProvisionMcpDevice create
+   */
+  export type ProvisionMcpDeviceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProvisionMcpDevice.
+     */
+    data: XOR<ProvisionMcpDeviceCreateInput, ProvisionMcpDeviceUncheckedCreateInput>
+  }
+
+  /**
+   * ProvisionMcpDevice createMany
+   */
+  export type ProvisionMcpDeviceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProvisionMcpDevices.
+     */
+    data: ProvisionMcpDeviceCreateManyInput | ProvisionMcpDeviceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProvisionMcpDevice createManyAndReturn
+   */
+  export type ProvisionMcpDeviceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ProvisionMcpDevices.
+     */
+    data: ProvisionMcpDeviceCreateManyInput | ProvisionMcpDeviceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProvisionMcpDevice update
+   */
+  export type ProvisionMcpDeviceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProvisionMcpDevice.
+     */
+    data: XOR<ProvisionMcpDeviceUpdateInput, ProvisionMcpDeviceUncheckedUpdateInput>
+    /**
+     * Choose, which ProvisionMcpDevice to update.
+     */
+    where: ProvisionMcpDeviceWhereUniqueInput
+  }
+
+  /**
+   * ProvisionMcpDevice updateMany
+   */
+  export type ProvisionMcpDeviceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProvisionMcpDevices.
+     */
+    data: XOR<ProvisionMcpDeviceUpdateManyMutationInput, ProvisionMcpDeviceUncheckedUpdateManyInput>
+    /**
+     * Filter which ProvisionMcpDevices to update
+     */
+    where?: ProvisionMcpDeviceWhereInput
+  }
+
+  /**
+   * ProvisionMcpDevice upsert
+   */
+  export type ProvisionMcpDeviceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProvisionMcpDevice to update in case it exists.
+     */
+    where: ProvisionMcpDeviceWhereUniqueInput
+    /**
+     * In case the ProvisionMcpDevice found by the `where` argument doesn't exist, create a new ProvisionMcpDevice with this data.
+     */
+    create: XOR<ProvisionMcpDeviceCreateInput, ProvisionMcpDeviceUncheckedCreateInput>
+    /**
+     * In case the ProvisionMcpDevice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProvisionMcpDeviceUpdateInput, ProvisionMcpDeviceUncheckedUpdateInput>
+  }
+
+  /**
+   * ProvisionMcpDevice delete
+   */
+  export type ProvisionMcpDeviceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+    /**
+     * Filter which ProvisionMcpDevice to delete.
+     */
+    where: ProvisionMcpDeviceWhereUniqueInput
+  }
+
+  /**
+   * ProvisionMcpDevice deleteMany
+   */
+  export type ProvisionMcpDeviceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProvisionMcpDevices to delete
+     */
+    where?: ProvisionMcpDeviceWhereInput
+  }
+
+  /**
+   * ProvisionMcpDevice without action
+   */
+  export type ProvisionMcpDeviceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvisionMcpDevice
+     */
+    select?: ProvisionMcpDeviceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProvisionMcpDeviceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CabinetCredential
+   */
+
+  export type AggregateCabinetCredential = {
+    _count: CabinetCredentialCountAggregateOutputType | null
+    _min: CabinetCredentialMinAggregateOutputType | null
+    _max: CabinetCredentialMaxAggregateOutputType | null
+  }
+
+  export type CabinetCredentialMinAggregateOutputType = {
+    id: string | null
+    cabinetId: string | null
+    mqttUsername: string | null
+    mqttPassword: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CabinetCredentialMaxAggregateOutputType = {
+    id: string | null
+    cabinetId: string | null
+    mqttUsername: string | null
+    mqttPassword: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CabinetCredentialCountAggregateOutputType = {
+    id: number
+    cabinetId: number
+    mqttUsername: number
+    mqttPassword: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CabinetCredentialMinAggregateInputType = {
+    id?: true
+    cabinetId?: true
+    mqttUsername?: true
+    mqttPassword?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CabinetCredentialMaxAggregateInputType = {
+    id?: true
+    cabinetId?: true
+    mqttUsername?: true
+    mqttPassword?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CabinetCredentialCountAggregateInputType = {
+    id?: true
+    cabinetId?: true
+    mqttUsername?: true
+    mqttPassword?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CabinetCredentialAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CabinetCredential to aggregate.
+     */
+    where?: CabinetCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinetCredentials to fetch.
+     */
+    orderBy?: CabinetCredentialOrderByWithRelationInput | CabinetCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CabinetCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinetCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinetCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CabinetCredentials
+    **/
+    _count?: true | CabinetCredentialCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CabinetCredentialMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CabinetCredentialMaxAggregateInputType
+  }
+
+  export type GetCabinetCredentialAggregateType<T extends CabinetCredentialAggregateArgs> = {
+        [P in keyof T & keyof AggregateCabinetCredential]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCabinetCredential[P]>
+      : GetScalarType<T[P], AggregateCabinetCredential[P]>
+  }
+
+
+
+
+  export type CabinetCredentialGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CabinetCredentialWhereInput
+    orderBy?: CabinetCredentialOrderByWithAggregationInput | CabinetCredentialOrderByWithAggregationInput[]
+    by: CabinetCredentialScalarFieldEnum[] | CabinetCredentialScalarFieldEnum
+    having?: CabinetCredentialScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CabinetCredentialCountAggregateInputType | true
+    _min?: CabinetCredentialMinAggregateInputType
+    _max?: CabinetCredentialMaxAggregateInputType
+  }
+
+  export type CabinetCredentialGroupByOutputType = {
+    id: string
+    cabinetId: string
+    mqttUsername: string
+    mqttPassword: string
+    createdAt: Date
+    updatedAt: Date
+    _count: CabinetCredentialCountAggregateOutputType | null
+    _min: CabinetCredentialMinAggregateOutputType | null
+    _max: CabinetCredentialMaxAggregateOutputType | null
+  }
+
+  type GetCabinetCredentialGroupByPayload<T extends CabinetCredentialGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CabinetCredentialGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CabinetCredentialGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CabinetCredentialGroupByOutputType[P]>
+            : GetScalarType<T[P], CabinetCredentialGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CabinetCredentialSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cabinetId?: boolean
+    mqttUsername?: boolean
+    mqttPassword?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cabinetCredential"]>
+
+  export type CabinetCredentialSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cabinetId?: boolean
+    mqttUsername?: boolean
+    mqttPassword?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cabinetCredential"]>
+
+  export type CabinetCredentialSelectScalar = {
+    id?: boolean
+    cabinetId?: boolean
+    mqttUsername?: boolean
+    mqttPassword?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CabinetCredentialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }
+  export type CabinetCredentialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }
+
+  export type $CabinetCredentialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CabinetCredential"
+    objects: {
+      cabinet: Prisma.$CabinetPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      cabinetId: string
+      mqttUsername: string
+      mqttPassword: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["cabinetCredential"]>
+    composites: {}
+  }
+
+  type CabinetCredentialGetPayload<S extends boolean | null | undefined | CabinetCredentialDefaultArgs> = $Result.GetResult<Prisma.$CabinetCredentialPayload, S>
+
+  type CabinetCredentialCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CabinetCredentialFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CabinetCredentialCountAggregateInputType | true
+    }
+
+  export interface CabinetCredentialDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CabinetCredential'], meta: { name: 'CabinetCredential' } }
+    /**
+     * Find zero or one CabinetCredential that matches the filter.
+     * @param {CabinetCredentialFindUniqueArgs} args - Arguments to find a CabinetCredential
+     * @example
+     * // Get one CabinetCredential
+     * const cabinetCredential = await prisma.cabinetCredential.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CabinetCredentialFindUniqueArgs>(args: SelectSubset<T, CabinetCredentialFindUniqueArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CabinetCredential that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CabinetCredentialFindUniqueOrThrowArgs} args - Arguments to find a CabinetCredential
+     * @example
+     * // Get one CabinetCredential
+     * const cabinetCredential = await prisma.cabinetCredential.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CabinetCredentialFindUniqueOrThrowArgs>(args: SelectSubset<T, CabinetCredentialFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CabinetCredential that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinetCredentialFindFirstArgs} args - Arguments to find a CabinetCredential
+     * @example
+     * // Get one CabinetCredential
+     * const cabinetCredential = await prisma.cabinetCredential.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CabinetCredentialFindFirstArgs>(args?: SelectSubset<T, CabinetCredentialFindFirstArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CabinetCredential that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinetCredentialFindFirstOrThrowArgs} args - Arguments to find a CabinetCredential
+     * @example
+     * // Get one CabinetCredential
+     * const cabinetCredential = await prisma.cabinetCredential.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CabinetCredentialFindFirstOrThrowArgs>(args?: SelectSubset<T, CabinetCredentialFindFirstOrThrowArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CabinetCredentials that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinetCredentialFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CabinetCredentials
+     * const cabinetCredentials = await prisma.cabinetCredential.findMany()
+     * 
+     * // Get first 10 CabinetCredentials
+     * const cabinetCredentials = await prisma.cabinetCredential.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cabinetCredentialWithIdOnly = await prisma.cabinetCredential.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CabinetCredentialFindManyArgs>(args?: SelectSubset<T, CabinetCredentialFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CabinetCredential.
+     * @param {CabinetCredentialCreateArgs} args - Arguments to create a CabinetCredential.
+     * @example
+     * // Create one CabinetCredential
+     * const CabinetCredential = await prisma.cabinetCredential.create({
+     *   data: {
+     *     // ... data to create a CabinetCredential
+     *   }
+     * })
+     * 
+     */
+    create<T extends CabinetCredentialCreateArgs>(args: SelectSubset<T, CabinetCredentialCreateArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CabinetCredentials.
+     * @param {CabinetCredentialCreateManyArgs} args - Arguments to create many CabinetCredentials.
+     * @example
+     * // Create many CabinetCredentials
+     * const cabinetCredential = await prisma.cabinetCredential.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CabinetCredentialCreateManyArgs>(args?: SelectSubset<T, CabinetCredentialCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CabinetCredentials and returns the data saved in the database.
+     * @param {CabinetCredentialCreateManyAndReturnArgs} args - Arguments to create many CabinetCredentials.
+     * @example
+     * // Create many CabinetCredentials
+     * const cabinetCredential = await prisma.cabinetCredential.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CabinetCredentials and only return the `id`
+     * const cabinetCredentialWithIdOnly = await prisma.cabinetCredential.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CabinetCredentialCreateManyAndReturnArgs>(args?: SelectSubset<T, CabinetCredentialCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CabinetCredential.
+     * @param {CabinetCredentialDeleteArgs} args - Arguments to delete one CabinetCredential.
+     * @example
+     * // Delete one CabinetCredential
+     * const CabinetCredential = await prisma.cabinetCredential.delete({
+     *   where: {
+     *     // ... filter to delete one CabinetCredential
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CabinetCredentialDeleteArgs>(args: SelectSubset<T, CabinetCredentialDeleteArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CabinetCredential.
+     * @param {CabinetCredentialUpdateArgs} args - Arguments to update one CabinetCredential.
+     * @example
+     * // Update one CabinetCredential
+     * const cabinetCredential = await prisma.cabinetCredential.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CabinetCredentialUpdateArgs>(args: SelectSubset<T, CabinetCredentialUpdateArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CabinetCredentials.
+     * @param {CabinetCredentialDeleteManyArgs} args - Arguments to filter CabinetCredentials to delete.
+     * @example
+     * // Delete a few CabinetCredentials
+     * const { count } = await prisma.cabinetCredential.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CabinetCredentialDeleteManyArgs>(args?: SelectSubset<T, CabinetCredentialDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CabinetCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinetCredentialUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CabinetCredentials
+     * const cabinetCredential = await prisma.cabinetCredential.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CabinetCredentialUpdateManyArgs>(args: SelectSubset<T, CabinetCredentialUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CabinetCredential.
+     * @param {CabinetCredentialUpsertArgs} args - Arguments to update or create a CabinetCredential.
+     * @example
+     * // Update or create a CabinetCredential
+     * const cabinetCredential = await prisma.cabinetCredential.upsert({
+     *   create: {
+     *     // ... data to create a CabinetCredential
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CabinetCredential we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CabinetCredentialUpsertArgs>(args: SelectSubset<T, CabinetCredentialUpsertArgs<ExtArgs>>): Prisma__CabinetCredentialClient<$Result.GetResult<Prisma.$CabinetCredentialPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CabinetCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinetCredentialCountArgs} args - Arguments to filter CabinetCredentials to count.
+     * @example
+     * // Count the number of CabinetCredentials
+     * const count = await prisma.cabinetCredential.count({
+     *   where: {
+     *     // ... the filter for the CabinetCredentials we want to count
+     *   }
+     * })
+    **/
+    count<T extends CabinetCredentialCountArgs>(
+      args?: Subset<T, CabinetCredentialCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CabinetCredentialCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CabinetCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinetCredentialAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CabinetCredentialAggregateArgs>(args: Subset<T, CabinetCredentialAggregateArgs>): Prisma.PrismaPromise<GetCabinetCredentialAggregateType<T>>
+
+    /**
+     * Group by CabinetCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CabinetCredentialGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CabinetCredentialGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CabinetCredentialGroupByArgs['orderBy'] }
+        : { orderBy?: CabinetCredentialGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CabinetCredentialGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCabinetCredentialGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CabinetCredential model
+   */
+  readonly fields: CabinetCredentialFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CabinetCredential.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CabinetCredentialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    cabinet<T extends CabinetDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CabinetDefaultArgs<ExtArgs>>): Prisma__CabinetClient<$Result.GetResult<Prisma.$CabinetPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CabinetCredential model
+   */ 
+  interface CabinetCredentialFieldRefs {
+    readonly id: FieldRef<"CabinetCredential", 'String'>
+    readonly cabinetId: FieldRef<"CabinetCredential", 'String'>
+    readonly mqttUsername: FieldRef<"CabinetCredential", 'String'>
+    readonly mqttPassword: FieldRef<"CabinetCredential", 'String'>
+    readonly createdAt: FieldRef<"CabinetCredential", 'DateTime'>
+    readonly updatedAt: FieldRef<"CabinetCredential", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CabinetCredential findUnique
+   */
+  export type CabinetCredentialFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinetCredential to fetch.
+     */
+    where: CabinetCredentialWhereUniqueInput
+  }
+
+  /**
+   * CabinetCredential findUniqueOrThrow
+   */
+  export type CabinetCredentialFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinetCredential to fetch.
+     */
+    where: CabinetCredentialWhereUniqueInput
+  }
+
+  /**
+   * CabinetCredential findFirst
+   */
+  export type CabinetCredentialFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinetCredential to fetch.
+     */
+    where?: CabinetCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinetCredentials to fetch.
+     */
+    orderBy?: CabinetCredentialOrderByWithRelationInput | CabinetCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CabinetCredentials.
+     */
+    cursor?: CabinetCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinetCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinetCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CabinetCredentials.
+     */
+    distinct?: CabinetCredentialScalarFieldEnum | CabinetCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * CabinetCredential findFirstOrThrow
+   */
+  export type CabinetCredentialFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinetCredential to fetch.
+     */
+    where?: CabinetCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinetCredentials to fetch.
+     */
+    orderBy?: CabinetCredentialOrderByWithRelationInput | CabinetCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CabinetCredentials.
+     */
+    cursor?: CabinetCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinetCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinetCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CabinetCredentials.
+     */
+    distinct?: CabinetCredentialScalarFieldEnum | CabinetCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * CabinetCredential findMany
+   */
+  export type CabinetCredentialFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which CabinetCredentials to fetch.
+     */
+    where?: CabinetCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CabinetCredentials to fetch.
+     */
+    orderBy?: CabinetCredentialOrderByWithRelationInput | CabinetCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CabinetCredentials.
+     */
+    cursor?: CabinetCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CabinetCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CabinetCredentials.
+     */
+    skip?: number
+    distinct?: CabinetCredentialScalarFieldEnum | CabinetCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * CabinetCredential create
+   */
+  export type CabinetCredentialCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CabinetCredential.
+     */
+    data: XOR<CabinetCredentialCreateInput, CabinetCredentialUncheckedCreateInput>
+  }
+
+  /**
+   * CabinetCredential createMany
+   */
+  export type CabinetCredentialCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CabinetCredentials.
+     */
+    data: CabinetCredentialCreateManyInput | CabinetCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CabinetCredential createManyAndReturn
+   */
+  export type CabinetCredentialCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CabinetCredentials.
+     */
+    data: CabinetCredentialCreateManyInput | CabinetCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CabinetCredential update
+   */
+  export type CabinetCredentialUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CabinetCredential.
+     */
+    data: XOR<CabinetCredentialUpdateInput, CabinetCredentialUncheckedUpdateInput>
+    /**
+     * Choose, which CabinetCredential to update.
+     */
+    where: CabinetCredentialWhereUniqueInput
+  }
+
+  /**
+   * CabinetCredential updateMany
+   */
+  export type CabinetCredentialUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CabinetCredentials.
+     */
+    data: XOR<CabinetCredentialUpdateManyMutationInput, CabinetCredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which CabinetCredentials to update
+     */
+    where?: CabinetCredentialWhereInput
+  }
+
+  /**
+   * CabinetCredential upsert
+   */
+  export type CabinetCredentialUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CabinetCredential to update in case it exists.
+     */
+    where: CabinetCredentialWhereUniqueInput
+    /**
+     * In case the CabinetCredential found by the `where` argument doesn't exist, create a new CabinetCredential with this data.
+     */
+    create: XOR<CabinetCredentialCreateInput, CabinetCredentialUncheckedCreateInput>
+    /**
+     * In case the CabinetCredential was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CabinetCredentialUpdateInput, CabinetCredentialUncheckedUpdateInput>
+  }
+
+  /**
+   * CabinetCredential delete
+   */
+  export type CabinetCredentialDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
+    /**
+     * Filter which CabinetCredential to delete.
+     */
+    where: CabinetCredentialWhereUniqueInput
+  }
+
+  /**
+   * CabinetCredential deleteMany
+   */
+  export type CabinetCredentialDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CabinetCredentials to delete
+     */
+    where?: CabinetCredentialWhereInput
+  }
+
+  /**
+   * CabinetCredential without action
+   */
+  export type CabinetCredentialDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CabinetCredential
+     */
+    select?: CabinetCredentialSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CabinetCredentialInclude<ExtArgs> | null
   }
 
 
@@ -15918,9 +20403,15 @@ export namespace Prisma {
   export const CabinetScalarFieldEnum: {
     id: 'id',
     locationId: 'locationId',
+    profileId: 'profileId',
     name: 'name',
     status: 'status',
     lastHeartbeatAt: 'lastHeartbeatAt',
+    provisionCode: 'provisionCode',
+    provisionCodeExpires: 'provisionCodeExpires',
+    configVersion: 'configVersion',
+    hardwareSerial: 'hardwareSerial',
+    notes: 'notes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -15946,6 +20437,8 @@ export namespace Prisma {
     cabinetId: 'cabinetId',
     name: 'name',
     size: 'size',
+    rowIndex: 'rowIndex',
+    colIndex: 'colIndex',
     mcp23017PinLock: 'mcp23017PinLock',
     mcp23017PinSensor: 'mcp23017PinSensor',
     lockMcpDeviceId: 'lockMcpDeviceId',
@@ -15956,6 +20449,60 @@ export namespace Prisma {
   };
 
   export type CompartmentScalarFieldEnum = (typeof CompartmentScalarFieldEnum)[keyof typeof CompartmentScalarFieldEnum]
+
+
+  export const ProvisioningConfigScalarFieldEnum: {
+    id: 'id',
+    strategy: 'strategy',
+    provisionKey: 'provisionKey',
+    provisionSecret: 'provisionSecret',
+    webhookUrl: 'webhookUrl',
+    isActive: 'isActive',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProvisioningConfigScalarFieldEnum = (typeof ProvisioningConfigScalarFieldEnum)[keyof typeof ProvisioningConfigScalarFieldEnum]
+
+
+  export const ProvisionProfileScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    provisionKey: 'provisionKey',
+    provisionSecret: 'provisionSecret',
+    mode: 'mode',
+    isActive: 'isActive',
+    templateRows: 'templateRows',
+    templateCols: 'templateCols',
+    templateSizes: 'templateSizes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProvisionProfileScalarFieldEnum = (typeof ProvisionProfileScalarFieldEnum)[keyof typeof ProvisionProfileScalarFieldEnum]
+
+
+  export const ProvisionMcpDeviceScalarFieldEnum: {
+    id: 'id',
+    profileId: 'profileId',
+    bus: 'bus',
+    address: 'address',
+    role: 'role',
+    name: 'name'
+  };
+
+  export type ProvisionMcpDeviceScalarFieldEnum = (typeof ProvisionMcpDeviceScalarFieldEnum)[keyof typeof ProvisionMcpDeviceScalarFieldEnum]
+
+
+  export const CabinetCredentialScalarFieldEnum: {
+    id: 'id',
+    cabinetId: 'cabinetId',
+    mqttUsername: 'mqttUsername',
+    mqttPassword: 'mqttPassword',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CabinetCredentialScalarFieldEnum = (typeof CabinetCredentialScalarFieldEnum)[keyof typeof CabinetCredentialScalarFieldEnum]
 
 
   export const CompartmentStatusScalarFieldEnum: {
@@ -16255,6 +20802,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'LockStatus'
    */
   export type EnumLockStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LockStatus'>
@@ -16293,13 +20847,6 @@ export namespace Prisma {
    * Reference to a field of type 'RentalType[]'
    */
   export type ListEnumRentalTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RentalType[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -16640,12 +21187,20 @@ export namespace Prisma {
     NOT?: CabinetWhereInput | CabinetWhereInput[]
     id?: StringFilter<"Cabinet"> | string
     locationId?: StringFilter<"Cabinet"> | string
+    profileId?: StringNullableFilter<"Cabinet"> | string | null
     name?: StringFilter<"Cabinet"> | string
     status?: EnumCabinetStatusFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
+    provisionCode?: StringNullableFilter<"Cabinet"> | string | null
+    provisionCodeExpires?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
+    configVersion?: IntFilter<"Cabinet"> | number
+    hardwareSerial?: StringNullableFilter<"Cabinet"> | string | null
+    notes?: StringNullableFilter<"Cabinet"> | string | null
     createdAt?: DateTimeFilter<"Cabinet"> | Date | string
     updatedAt?: DateTimeFilter<"Cabinet"> | Date | string
     location?: XOR<LocationRelationFilter, LocationWhereInput>
+    profile?: XOR<ProvisionProfileNullableRelationFilter, ProvisionProfileWhereInput> | null
+    credential?: XOR<CabinetCredentialNullableRelationFilter, CabinetCredentialWhereInput> | null
     compartments?: CompartmentListRelationFilter
     mcpDevices?: McpDeviceListRelationFilter
     logs?: LockerLogListRelationFilter
@@ -16654,12 +21209,20 @@ export namespace Prisma {
   export type CabinetOrderByWithRelationInput = {
     id?: SortOrder
     locationId?: SortOrder
+    profileId?: SortOrderInput | SortOrder
     name?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrderInput | SortOrder
+    provisionCode?: SortOrderInput | SortOrder
+    provisionCodeExpires?: SortOrderInput | SortOrder
+    configVersion?: SortOrder
+    hardwareSerial?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     location?: LocationOrderByWithRelationInput
+    profile?: ProvisionProfileOrderByWithRelationInput
+    credential?: CabinetCredentialOrderByWithRelationInput
     compartments?: CompartmentOrderByRelationAggregateInput
     mcpDevices?: McpDeviceOrderByRelationAggregateInput
     logs?: LockerLogOrderByRelationAggregateInput
@@ -16667,32 +21230,48 @@ export namespace Prisma {
 
   export type CabinetWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    provisionCode?: string
     AND?: CabinetWhereInput | CabinetWhereInput[]
     OR?: CabinetWhereInput[]
     NOT?: CabinetWhereInput | CabinetWhereInput[]
     locationId?: StringFilter<"Cabinet"> | string
+    profileId?: StringNullableFilter<"Cabinet"> | string | null
     name?: StringFilter<"Cabinet"> | string
     status?: EnumCabinetStatusFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
+    provisionCodeExpires?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
+    configVersion?: IntFilter<"Cabinet"> | number
+    hardwareSerial?: StringNullableFilter<"Cabinet"> | string | null
+    notes?: StringNullableFilter<"Cabinet"> | string | null
     createdAt?: DateTimeFilter<"Cabinet"> | Date | string
     updatedAt?: DateTimeFilter<"Cabinet"> | Date | string
     location?: XOR<LocationRelationFilter, LocationWhereInput>
+    profile?: XOR<ProvisionProfileNullableRelationFilter, ProvisionProfileWhereInput> | null
+    credential?: XOR<CabinetCredentialNullableRelationFilter, CabinetCredentialWhereInput> | null
     compartments?: CompartmentListRelationFilter
     mcpDevices?: McpDeviceListRelationFilter
     logs?: LockerLogListRelationFilter
-  }, "id">
+  }, "id" | "provisionCode">
 
   export type CabinetOrderByWithAggregationInput = {
     id?: SortOrder
     locationId?: SortOrder
+    profileId?: SortOrderInput | SortOrder
     name?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrderInput | SortOrder
+    provisionCode?: SortOrderInput | SortOrder
+    provisionCodeExpires?: SortOrderInput | SortOrder
+    configVersion?: SortOrder
+    hardwareSerial?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CabinetCountOrderByAggregateInput
+    _avg?: CabinetAvgOrderByAggregateInput
     _max?: CabinetMaxOrderByAggregateInput
     _min?: CabinetMinOrderByAggregateInput
+    _sum?: CabinetSumOrderByAggregateInput
   }
 
   export type CabinetScalarWhereWithAggregatesInput = {
@@ -16701,9 +21280,15 @@ export namespace Prisma {
     NOT?: CabinetScalarWhereWithAggregatesInput | CabinetScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Cabinet"> | string
     locationId?: StringWithAggregatesFilter<"Cabinet"> | string
+    profileId?: StringNullableWithAggregatesFilter<"Cabinet"> | string | null
     name?: StringWithAggregatesFilter<"Cabinet"> | string
     status?: EnumCabinetStatusWithAggregatesFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableWithAggregatesFilter<"Cabinet"> | Date | string | null
+    provisionCode?: StringNullableWithAggregatesFilter<"Cabinet"> | string | null
+    provisionCodeExpires?: DateTimeNullableWithAggregatesFilter<"Cabinet"> | Date | string | null
+    configVersion?: IntWithAggregatesFilter<"Cabinet"> | number
+    hardwareSerial?: StringNullableWithAggregatesFilter<"Cabinet"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"Cabinet"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Cabinet"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Cabinet"> | Date | string
   }
@@ -16790,6 +21375,8 @@ export namespace Prisma {
     cabinetId?: StringFilter<"Compartment"> | string
     name?: StringFilter<"Compartment"> | string
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
+    rowIndex?: IntFilter<"Compartment"> | number
+    colIndex?: IntFilter<"Compartment"> | number
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
@@ -16810,6 +21397,8 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    rowIndex?: SortOrder
+    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrderInput | SortOrder
@@ -16834,6 +21423,8 @@ export namespace Prisma {
     cabinetId?: StringFilter<"Compartment"> | string
     name?: StringFilter<"Compartment"> | string
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
+    rowIndex?: IntFilter<"Compartment"> | number
+    colIndex?: IntFilter<"Compartment"> | number
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
@@ -16854,6 +21445,8 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    rowIndex?: SortOrder
+    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrderInput | SortOrder
@@ -16876,6 +21469,8 @@ export namespace Prisma {
     cabinetId?: StringWithAggregatesFilter<"Compartment"> | string
     name?: StringWithAggregatesFilter<"Compartment"> | string
     size?: EnumCompartmentSizeWithAggregatesFilter<"Compartment"> | $Enums.CompartmentSize
+    rowIndex?: IntWithAggregatesFilter<"Compartment"> | number
+    colIndex?: IntWithAggregatesFilter<"Compartment"> | number
     mcp23017PinLock?: IntWithAggregatesFilter<"Compartment"> | number
     mcp23017PinSensor?: IntWithAggregatesFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableWithAggregatesFilter<"Compartment"> | string | null
@@ -16883,6 +21478,281 @@ export namespace Prisma {
     status?: EnumCompartmentAvailabilityWithAggregatesFilter<"Compartment"> | $Enums.CompartmentAvailability
     createdAt?: DateTimeWithAggregatesFilter<"Compartment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Compartment"> | Date | string
+  }
+
+  export type ProvisioningConfigWhereInput = {
+    AND?: ProvisioningConfigWhereInput | ProvisioningConfigWhereInput[]
+    OR?: ProvisioningConfigWhereInput[]
+    NOT?: ProvisioningConfigWhereInput | ProvisioningConfigWhereInput[]
+    id?: StringFilter<"ProvisioningConfig"> | string
+    strategy?: StringFilter<"ProvisioningConfig"> | string
+    provisionKey?: StringFilter<"ProvisioningConfig"> | string
+    provisionSecret?: StringNullableFilter<"ProvisioningConfig"> | string | null
+    webhookUrl?: StringNullableFilter<"ProvisioningConfig"> | string | null
+    isActive?: BoolFilter<"ProvisioningConfig"> | boolean
+    updatedAt?: DateTimeFilter<"ProvisioningConfig"> | Date | string
+  }
+
+  export type ProvisioningConfigOrderByWithRelationInput = {
+    id?: SortOrder
+    strategy?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrderInput | SortOrder
+    webhookUrl?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProvisioningConfigWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProvisioningConfigWhereInput | ProvisioningConfigWhereInput[]
+    OR?: ProvisioningConfigWhereInput[]
+    NOT?: ProvisioningConfigWhereInput | ProvisioningConfigWhereInput[]
+    strategy?: StringFilter<"ProvisioningConfig"> | string
+    provisionKey?: StringFilter<"ProvisioningConfig"> | string
+    provisionSecret?: StringNullableFilter<"ProvisioningConfig"> | string | null
+    webhookUrl?: StringNullableFilter<"ProvisioningConfig"> | string | null
+    isActive?: BoolFilter<"ProvisioningConfig"> | boolean
+    updatedAt?: DateTimeFilter<"ProvisioningConfig"> | Date | string
+  }, "id">
+
+  export type ProvisioningConfigOrderByWithAggregationInput = {
+    id?: SortOrder
+    strategy?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrderInput | SortOrder
+    webhookUrl?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProvisioningConfigCountOrderByAggregateInput
+    _max?: ProvisioningConfigMaxOrderByAggregateInput
+    _min?: ProvisioningConfigMinOrderByAggregateInput
+  }
+
+  export type ProvisioningConfigScalarWhereWithAggregatesInput = {
+    AND?: ProvisioningConfigScalarWhereWithAggregatesInput | ProvisioningConfigScalarWhereWithAggregatesInput[]
+    OR?: ProvisioningConfigScalarWhereWithAggregatesInput[]
+    NOT?: ProvisioningConfigScalarWhereWithAggregatesInput | ProvisioningConfigScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProvisioningConfig"> | string
+    strategy?: StringWithAggregatesFilter<"ProvisioningConfig"> | string
+    provisionKey?: StringWithAggregatesFilter<"ProvisioningConfig"> | string
+    provisionSecret?: StringNullableWithAggregatesFilter<"ProvisioningConfig"> | string | null
+    webhookUrl?: StringNullableWithAggregatesFilter<"ProvisioningConfig"> | string | null
+    isActive?: BoolWithAggregatesFilter<"ProvisioningConfig"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"ProvisioningConfig"> | Date | string
+  }
+
+  export type ProvisionProfileWhereInput = {
+    AND?: ProvisionProfileWhereInput | ProvisionProfileWhereInput[]
+    OR?: ProvisionProfileWhereInput[]
+    NOT?: ProvisionProfileWhereInput | ProvisionProfileWhereInput[]
+    id?: StringFilter<"ProvisionProfile"> | string
+    name?: StringFilter<"ProvisionProfile"> | string
+    provisionKey?: StringFilter<"ProvisionProfile"> | string
+    provisionSecret?: StringNullableFilter<"ProvisionProfile"> | string | null
+    mode?: StringFilter<"ProvisionProfile"> | string
+    isActive?: BoolFilter<"ProvisionProfile"> | boolean
+    templateRows?: IntFilter<"ProvisionProfile"> | number
+    templateCols?: IntFilter<"ProvisionProfile"> | number
+    templateSizes?: StringFilter<"ProvisionProfile"> | string
+    createdAt?: DateTimeFilter<"ProvisionProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"ProvisionProfile"> | Date | string
+    mcpDevices?: ProvisionMcpDeviceListRelationFilter
+    cabinets?: CabinetListRelationFilter
+  }
+
+  export type ProvisionProfileOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrderInput | SortOrder
+    mode?: SortOrder
+    isActive?: SortOrder
+    templateRows?: SortOrder
+    templateCols?: SortOrder
+    templateSizes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    mcpDevices?: ProvisionMcpDeviceOrderByRelationAggregateInput
+    cabinets?: CabinetOrderByRelationAggregateInput
+  }
+
+  export type ProvisionProfileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    provisionKey?: string
+    AND?: ProvisionProfileWhereInput | ProvisionProfileWhereInput[]
+    OR?: ProvisionProfileWhereInput[]
+    NOT?: ProvisionProfileWhereInput | ProvisionProfileWhereInput[]
+    provisionSecret?: StringNullableFilter<"ProvisionProfile"> | string | null
+    mode?: StringFilter<"ProvisionProfile"> | string
+    isActive?: BoolFilter<"ProvisionProfile"> | boolean
+    templateRows?: IntFilter<"ProvisionProfile"> | number
+    templateCols?: IntFilter<"ProvisionProfile"> | number
+    templateSizes?: StringFilter<"ProvisionProfile"> | string
+    createdAt?: DateTimeFilter<"ProvisionProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"ProvisionProfile"> | Date | string
+    mcpDevices?: ProvisionMcpDeviceListRelationFilter
+    cabinets?: CabinetListRelationFilter
+  }, "id" | "name" | "provisionKey">
+
+  export type ProvisionProfileOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrderInput | SortOrder
+    mode?: SortOrder
+    isActive?: SortOrder
+    templateRows?: SortOrder
+    templateCols?: SortOrder
+    templateSizes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProvisionProfileCountOrderByAggregateInput
+    _avg?: ProvisionProfileAvgOrderByAggregateInput
+    _max?: ProvisionProfileMaxOrderByAggregateInput
+    _min?: ProvisionProfileMinOrderByAggregateInput
+    _sum?: ProvisionProfileSumOrderByAggregateInput
+  }
+
+  export type ProvisionProfileScalarWhereWithAggregatesInput = {
+    AND?: ProvisionProfileScalarWhereWithAggregatesInput | ProvisionProfileScalarWhereWithAggregatesInput[]
+    OR?: ProvisionProfileScalarWhereWithAggregatesInput[]
+    NOT?: ProvisionProfileScalarWhereWithAggregatesInput | ProvisionProfileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProvisionProfile"> | string
+    name?: StringWithAggregatesFilter<"ProvisionProfile"> | string
+    provisionKey?: StringWithAggregatesFilter<"ProvisionProfile"> | string
+    provisionSecret?: StringNullableWithAggregatesFilter<"ProvisionProfile"> | string | null
+    mode?: StringWithAggregatesFilter<"ProvisionProfile"> | string
+    isActive?: BoolWithAggregatesFilter<"ProvisionProfile"> | boolean
+    templateRows?: IntWithAggregatesFilter<"ProvisionProfile"> | number
+    templateCols?: IntWithAggregatesFilter<"ProvisionProfile"> | number
+    templateSizes?: StringWithAggregatesFilter<"ProvisionProfile"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ProvisionProfile"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ProvisionProfile"> | Date | string
+  }
+
+  export type ProvisionMcpDeviceWhereInput = {
+    AND?: ProvisionMcpDeviceWhereInput | ProvisionMcpDeviceWhereInput[]
+    OR?: ProvisionMcpDeviceWhereInput[]
+    NOT?: ProvisionMcpDeviceWhereInput | ProvisionMcpDeviceWhereInput[]
+    id?: StringFilter<"ProvisionMcpDevice"> | string
+    profileId?: StringFilter<"ProvisionMcpDevice"> | string
+    bus?: IntFilter<"ProvisionMcpDevice"> | number
+    address?: IntFilter<"ProvisionMcpDevice"> | number
+    role?: StringFilter<"ProvisionMcpDevice"> | string
+    name?: StringNullableFilter<"ProvisionMcpDevice"> | string | null
+    profile?: XOR<ProvisionProfileRelationFilter, ProvisionProfileWhereInput>
+  }
+
+  export type ProvisionMcpDeviceOrderByWithRelationInput = {
+    id?: SortOrder
+    profileId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    role?: SortOrder
+    name?: SortOrderInput | SortOrder
+    profile?: ProvisionProfileOrderByWithRelationInput
+  }
+
+  export type ProvisionMcpDeviceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    profileId_bus_address?: ProvisionMcpDeviceProfileIdBusAddressCompoundUniqueInput
+    AND?: ProvisionMcpDeviceWhereInput | ProvisionMcpDeviceWhereInput[]
+    OR?: ProvisionMcpDeviceWhereInput[]
+    NOT?: ProvisionMcpDeviceWhereInput | ProvisionMcpDeviceWhereInput[]
+    profileId?: StringFilter<"ProvisionMcpDevice"> | string
+    bus?: IntFilter<"ProvisionMcpDevice"> | number
+    address?: IntFilter<"ProvisionMcpDevice"> | number
+    role?: StringFilter<"ProvisionMcpDevice"> | string
+    name?: StringNullableFilter<"ProvisionMcpDevice"> | string | null
+    profile?: XOR<ProvisionProfileRelationFilter, ProvisionProfileWhereInput>
+  }, "id" | "profileId_bus_address">
+
+  export type ProvisionMcpDeviceOrderByWithAggregationInput = {
+    id?: SortOrder
+    profileId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    role?: SortOrder
+    name?: SortOrderInput | SortOrder
+    _count?: ProvisionMcpDeviceCountOrderByAggregateInput
+    _avg?: ProvisionMcpDeviceAvgOrderByAggregateInput
+    _max?: ProvisionMcpDeviceMaxOrderByAggregateInput
+    _min?: ProvisionMcpDeviceMinOrderByAggregateInput
+    _sum?: ProvisionMcpDeviceSumOrderByAggregateInput
+  }
+
+  export type ProvisionMcpDeviceScalarWhereWithAggregatesInput = {
+    AND?: ProvisionMcpDeviceScalarWhereWithAggregatesInput | ProvisionMcpDeviceScalarWhereWithAggregatesInput[]
+    OR?: ProvisionMcpDeviceScalarWhereWithAggregatesInput[]
+    NOT?: ProvisionMcpDeviceScalarWhereWithAggregatesInput | ProvisionMcpDeviceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProvisionMcpDevice"> | string
+    profileId?: StringWithAggregatesFilter<"ProvisionMcpDevice"> | string
+    bus?: IntWithAggregatesFilter<"ProvisionMcpDevice"> | number
+    address?: IntWithAggregatesFilter<"ProvisionMcpDevice"> | number
+    role?: StringWithAggregatesFilter<"ProvisionMcpDevice"> | string
+    name?: StringNullableWithAggregatesFilter<"ProvisionMcpDevice"> | string | null
+  }
+
+  export type CabinetCredentialWhereInput = {
+    AND?: CabinetCredentialWhereInput | CabinetCredentialWhereInput[]
+    OR?: CabinetCredentialWhereInput[]
+    NOT?: CabinetCredentialWhereInput | CabinetCredentialWhereInput[]
+    id?: StringFilter<"CabinetCredential"> | string
+    cabinetId?: StringFilter<"CabinetCredential"> | string
+    mqttUsername?: StringFilter<"CabinetCredential"> | string
+    mqttPassword?: StringFilter<"CabinetCredential"> | string
+    createdAt?: DateTimeFilter<"CabinetCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"CabinetCredential"> | Date | string
+    cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+  }
+
+  export type CabinetCredentialOrderByWithRelationInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    mqttUsername?: SortOrder
+    mqttPassword?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    cabinet?: CabinetOrderByWithRelationInput
+  }
+
+  export type CabinetCredentialWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    cabinetId?: string
+    AND?: CabinetCredentialWhereInput | CabinetCredentialWhereInput[]
+    OR?: CabinetCredentialWhereInput[]
+    NOT?: CabinetCredentialWhereInput | CabinetCredentialWhereInput[]
+    mqttUsername?: StringFilter<"CabinetCredential"> | string
+    mqttPassword?: StringFilter<"CabinetCredential"> | string
+    createdAt?: DateTimeFilter<"CabinetCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"CabinetCredential"> | Date | string
+    cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+  }, "id" | "cabinetId">
+
+  export type CabinetCredentialOrderByWithAggregationInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    mqttUsername?: SortOrder
+    mqttPassword?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CabinetCredentialCountOrderByAggregateInput
+    _max?: CabinetCredentialMaxOrderByAggregateInput
+    _min?: CabinetCredentialMinOrderByAggregateInput
+  }
+
+  export type CabinetCredentialScalarWhereWithAggregatesInput = {
+    AND?: CabinetCredentialScalarWhereWithAggregatesInput | CabinetCredentialScalarWhereWithAggregatesInput[]
+    OR?: CabinetCredentialScalarWhereWithAggregatesInput[]
+    NOT?: CabinetCredentialScalarWhereWithAggregatesInput | CabinetCredentialScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CabinetCredential"> | string
+    cabinetId?: StringWithAggregatesFilter<"CabinetCredential"> | string
+    mqttUsername?: StringWithAggregatesFilter<"CabinetCredential"> | string
+    mqttPassword?: StringWithAggregatesFilter<"CabinetCredential"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CabinetCredential"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CabinetCredential"> | Date | string
   }
 
   export type CompartmentStatusWhereInput = {
@@ -17719,9 +22589,16 @@ export namespace Prisma {
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location: LocationCreateNestedOneWithoutCabinetsInput
+    profile?: ProvisionProfileCreateNestedOneWithoutCabinetsInput
+    credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
@@ -17730,11 +22607,18 @@ export namespace Prisma {
   export type CabinetUncheckedCreateInput = {
     id?: string
     locationId: string
+    profileId?: string | null
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
@@ -17745,9 +22629,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    profile?: ProvisionProfileUpdateOneWithoutCabinetsNestedInput
+    credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
@@ -17756,11 +22647,18 @@ export namespace Prisma {
   export type CabinetUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
@@ -17769,9 +22667,15 @@ export namespace Prisma {
   export type CabinetCreateManyInput = {
     id?: string
     locationId: string
+    profileId?: string | null
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17781,6 +22685,11 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17788,9 +22697,15 @@ export namespace Prisma {
   export type CabinetUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17876,6 +22791,8 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -17894,6 +22811,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -17910,6 +22829,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -17928,6 +22849,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17945,6 +22868,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -17958,6 +22883,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -17970,11 +22897,313 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisioningConfigCreateInput = {
+    id?: string
+    strategy?: string
+    provisionKey?: string
+    provisionSecret?: string | null
+    webhookUrl?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
+  export type ProvisioningConfigUncheckedCreateInput = {
+    id?: string
+    strategy?: string
+    provisionKey?: string
+    provisionSecret?: string | null
+    webhookUrl?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
+  export type ProvisioningConfigUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategy?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisioningConfigUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategy?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisioningConfigCreateManyInput = {
+    id?: string
+    strategy?: string
+    provisionKey?: string
+    provisionSecret?: string | null
+    webhookUrl?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
+  export type ProvisioningConfigUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategy?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisioningConfigUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategy?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisionProfileCreateInput = {
+    id?: string
+    name: string
+    provisionKey: string
+    provisionSecret?: string | null
+    mode?: string
+    isActive?: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mcpDevices?: ProvisionMcpDeviceCreateNestedManyWithoutProfileInput
+    cabinets?: CabinetCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProvisionProfileUncheckedCreateInput = {
+    id?: string
+    name: string
+    provisionKey: string
+    provisionSecret?: string | null
+    mode?: string
+    isActive?: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mcpDevices?: ProvisionMcpDeviceUncheckedCreateNestedManyWithoutProfileInput
+    cabinets?: CabinetUncheckedCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProvisionProfileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mcpDevices?: ProvisionMcpDeviceUpdateManyWithoutProfileNestedInput
+    cabinets?: CabinetUpdateManyWithoutProfileNestedInput
+  }
+
+  export type ProvisionProfileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mcpDevices?: ProvisionMcpDeviceUncheckedUpdateManyWithoutProfileNestedInput
+    cabinets?: CabinetUncheckedUpdateManyWithoutProfileNestedInput
+  }
+
+  export type ProvisionProfileCreateManyInput = {
+    id?: string
+    name: string
+    provisionKey: string
+    provisionSecret?: string | null
+    mode?: string
+    isActive?: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProvisionProfileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisionProfileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisionMcpDeviceCreateInput = {
+    id?: string
+    bus?: number
+    address: number
+    role: string
+    name?: string | null
+    profile: ProvisionProfileCreateNestedOneWithoutMcpDevicesInput
+  }
+
+  export type ProvisionMcpDeviceUncheckedCreateInput = {
+    id?: string
+    profileId: string
+    bus?: number
+    address: number
+    role: string
+    name?: string | null
+  }
+
+  export type ProvisionMcpDeviceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    role?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    profile?: ProvisionProfileUpdateOneRequiredWithoutMcpDevicesNestedInput
+  }
+
+  export type ProvisionMcpDeviceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    profileId?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    role?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ProvisionMcpDeviceCreateManyInput = {
+    id?: string
+    profileId: string
+    bus?: number
+    address: number
+    role: string
+    name?: string | null
+  }
+
+  export type ProvisionMcpDeviceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    role?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ProvisionMcpDeviceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    profileId?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    role?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CabinetCredentialCreateInput = {
+    id?: string
+    mqttUsername: string
+    mqttPassword: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinet: CabinetCreateNestedOneWithoutCredentialInput
+  }
+
+  export type CabinetCredentialUncheckedCreateInput = {
+    id?: string
+    cabinetId: string
+    mqttUsername: string
+    mqttPassword: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CabinetCredentialUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mqttUsername?: StringFieldUpdateOperationsInput | string
+    mqttPassword?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinet?: CabinetUpdateOneRequiredWithoutCredentialNestedInput
+  }
+
+  export type CabinetCredentialUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    mqttUsername?: StringFieldUpdateOperationsInput | string
+    mqttPassword?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CabinetCredentialCreateManyInput = {
+    id?: string
+    cabinetId: string
+    mqttUsername: string
+    mqttPassword: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CabinetCredentialUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mqttUsername?: StringFieldUpdateOperationsInput | string
+    mqttPassword?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CabinetCredentialUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    mqttUsername?: StringFieldUpdateOperationsInput | string
+    mqttPassword?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18954,9 +24183,30 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type LocationRelationFilter = {
     is?: LocationWhereInput
     isNot?: LocationWhereInput
+  }
+
+  export type ProvisionProfileNullableRelationFilter = {
+    is?: ProvisionProfileWhereInput | null
+    isNot?: ProvisionProfileWhereInput | null
+  }
+
+  export type CabinetCredentialNullableRelationFilter = {
+    is?: CabinetCredentialWhereInput | null
+    isNot?: CabinetCredentialWhereInput | null
   }
 
   export type CompartmentListRelationFilter = {
@@ -18992,19 +24242,35 @@ export namespace Prisma {
   export type CabinetCountOrderByAggregateInput = {
     id?: SortOrder
     locationId?: SortOrder
+    profileId?: SortOrder
     name?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrder
+    provisionCode?: SortOrder
+    provisionCodeExpires?: SortOrder
+    configVersion?: SortOrder
+    hardwareSerial?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type CabinetAvgOrderByAggregateInput = {
+    configVersion?: SortOrder
   }
 
   export type CabinetMaxOrderByAggregateInput = {
     id?: SortOrder
     locationId?: SortOrder
+    profileId?: SortOrder
     name?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrder
+    provisionCode?: SortOrder
+    provisionCodeExpires?: SortOrder
+    configVersion?: SortOrder
+    hardwareSerial?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19012,11 +24278,21 @@ export namespace Prisma {
   export type CabinetMinOrderByAggregateInput = {
     id?: SortOrder
     locationId?: SortOrder
+    profileId?: SortOrder
     name?: SortOrder
     status?: SortOrder
     lastHeartbeatAt?: SortOrder
+    provisionCode?: SortOrder
+    provisionCodeExpires?: SortOrder
+    configVersion?: SortOrder
+    hardwareSerial?: SortOrder
+    notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type CabinetSumOrderByAggregateInput = {
+    configVersion?: SortOrder
   }
 
   export type EnumCabinetStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -19043,7 +24319,7 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type IntFilter<$PrismaModel = never> = {
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
     notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -19051,7 +24327,12 @@ export namespace Prisma {
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type CabinetRelationFilter = {
@@ -19105,22 +24386,6 @@ export namespace Prisma {
     address?: SortOrder
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
   export type EnumCompartmentSizeFilter<$PrismaModel = never> = {
     equals?: $Enums.CompartmentSize | EnumCompartmentSizeFieldRefInput<$PrismaModel>
     in?: $Enums.CompartmentSize[] | ListEnumCompartmentSizeFieldRefInput<$PrismaModel>
@@ -19155,6 +24420,8 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    rowIndex?: SortOrder
+    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrder
@@ -19165,6 +24432,8 @@ export namespace Prisma {
   }
 
   export type CompartmentAvgOrderByAggregateInput = {
+    rowIndex?: SortOrder
+    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
   }
@@ -19174,6 +24443,8 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    rowIndex?: SortOrder
+    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrder
@@ -19188,6 +24459,8 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    rowIndex?: SortOrder
+    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrder
@@ -19198,6 +24471,8 @@ export namespace Prisma {
   }
 
   export type CompartmentSumOrderByAggregateInput = {
+    rowIndex?: SortOrder
+    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
   }
@@ -19220,6 +24495,186 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumCompartmentAvailabilityFilter<$PrismaModel>
     _max?: NestedEnumCompartmentAvailabilityFilter<$PrismaModel>
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type ProvisioningConfigCountOrderByAggregateInput = {
+    id?: SortOrder
+    strategy?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrder
+    webhookUrl?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProvisioningConfigMaxOrderByAggregateInput = {
+    id?: SortOrder
+    strategy?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrder
+    webhookUrl?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProvisioningConfigMinOrderByAggregateInput = {
+    id?: SortOrder
+    strategy?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrder
+    webhookUrl?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type ProvisionMcpDeviceListRelationFilter = {
+    every?: ProvisionMcpDeviceWhereInput
+    some?: ProvisionMcpDeviceWhereInput
+    none?: ProvisionMcpDeviceWhereInput
+  }
+
+  export type ProvisionMcpDeviceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProvisionProfileCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrder
+    mode?: SortOrder
+    isActive?: SortOrder
+    templateRows?: SortOrder
+    templateCols?: SortOrder
+    templateSizes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProvisionProfileAvgOrderByAggregateInput = {
+    templateRows?: SortOrder
+    templateCols?: SortOrder
+  }
+
+  export type ProvisionProfileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrder
+    mode?: SortOrder
+    isActive?: SortOrder
+    templateRows?: SortOrder
+    templateCols?: SortOrder
+    templateSizes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProvisionProfileMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    provisionKey?: SortOrder
+    provisionSecret?: SortOrder
+    mode?: SortOrder
+    isActive?: SortOrder
+    templateRows?: SortOrder
+    templateCols?: SortOrder
+    templateSizes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProvisionProfileSumOrderByAggregateInput = {
+    templateRows?: SortOrder
+    templateCols?: SortOrder
+  }
+
+  export type ProvisionProfileRelationFilter = {
+    is?: ProvisionProfileWhereInput
+    isNot?: ProvisionProfileWhereInput
+  }
+
+  export type ProvisionMcpDeviceProfileIdBusAddressCompoundUniqueInput = {
+    profileId: string
+    bus: number
+    address: number
+  }
+
+  export type ProvisionMcpDeviceCountOrderByAggregateInput = {
+    id?: SortOrder
+    profileId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    role?: SortOrder
+    name?: SortOrder
+  }
+
+  export type ProvisionMcpDeviceAvgOrderByAggregateInput = {
+    bus?: SortOrder
+    address?: SortOrder
+  }
+
+  export type ProvisionMcpDeviceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    profileId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    role?: SortOrder
+    name?: SortOrder
+  }
+
+  export type ProvisionMcpDeviceMinOrderByAggregateInput = {
+    id?: SortOrder
+    profileId?: SortOrder
+    bus?: SortOrder
+    address?: SortOrder
+    role?: SortOrder
+    name?: SortOrder
+  }
+
+  export type ProvisionMcpDeviceSumOrderByAggregateInput = {
+    bus?: SortOrder
+    address?: SortOrder
+  }
+
+  export type CabinetCredentialCountOrderByAggregateInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    mqttUsername?: SortOrder
+    mqttPassword?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CabinetCredentialMaxOrderByAggregateInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    mqttUsername?: SortOrder
+    mqttPassword?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CabinetCredentialMinOrderByAggregateInput = {
+    id?: SortOrder
+    cabinetId?: SortOrder
+    mqttUsername?: SortOrder
+    mqttPassword?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EnumLockStatusFilter<$PrismaModel = never> = {
@@ -19303,11 +24758,6 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type PricePlanCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -19386,14 +24836,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type EnumPaymentStatusFilter<$PrismaModel = never> = {
@@ -20060,6 +25502,18 @@ export namespace Prisma {
     connect?: LocationWhereUniqueInput
   }
 
+  export type ProvisionProfileCreateNestedOneWithoutCabinetsInput = {
+    create?: XOR<ProvisionProfileCreateWithoutCabinetsInput, ProvisionProfileUncheckedCreateWithoutCabinetsInput>
+    connectOrCreate?: ProvisionProfileCreateOrConnectWithoutCabinetsInput
+    connect?: ProvisionProfileWhereUniqueInput
+  }
+
+  export type CabinetCredentialCreateNestedOneWithoutCabinetInput = {
+    create?: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
+    connectOrCreate?: CabinetCredentialCreateOrConnectWithoutCabinetInput
+    connect?: CabinetCredentialWhereUniqueInput
+  }
+
   export type CompartmentCreateNestedManyWithoutCabinetInput = {
     create?: XOR<CompartmentCreateWithoutCabinetInput, CompartmentUncheckedCreateWithoutCabinetInput> | CompartmentCreateWithoutCabinetInput[] | CompartmentUncheckedCreateWithoutCabinetInput[]
     connectOrCreate?: CompartmentCreateOrConnectWithoutCabinetInput | CompartmentCreateOrConnectWithoutCabinetInput[]
@@ -20079,6 +25533,12 @@ export namespace Prisma {
     connectOrCreate?: LockerLogCreateOrConnectWithoutCabinetInput | LockerLogCreateOrConnectWithoutCabinetInput[]
     createMany?: LockerLogCreateManyCabinetInputEnvelope
     connect?: LockerLogWhereUniqueInput | LockerLogWhereUniqueInput[]
+  }
+
+  export type CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput = {
+    create?: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
+    connectOrCreate?: CabinetCredentialCreateOrConnectWithoutCabinetInput
+    connect?: CabinetCredentialWhereUniqueInput
   }
 
   export type CompartmentUncheckedCreateNestedManyWithoutCabinetInput = {
@@ -20110,12 +25570,40 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type LocationUpdateOneRequiredWithoutCabinetsNestedInput = {
     create?: XOR<LocationCreateWithoutCabinetsInput, LocationUncheckedCreateWithoutCabinetsInput>
     connectOrCreate?: LocationCreateOrConnectWithoutCabinetsInput
     upsert?: LocationUpsertWithoutCabinetsInput
     connect?: LocationWhereUniqueInput
     update?: XOR<XOR<LocationUpdateToOneWithWhereWithoutCabinetsInput, LocationUpdateWithoutCabinetsInput>, LocationUncheckedUpdateWithoutCabinetsInput>
+  }
+
+  export type ProvisionProfileUpdateOneWithoutCabinetsNestedInput = {
+    create?: XOR<ProvisionProfileCreateWithoutCabinetsInput, ProvisionProfileUncheckedCreateWithoutCabinetsInput>
+    connectOrCreate?: ProvisionProfileCreateOrConnectWithoutCabinetsInput
+    upsert?: ProvisionProfileUpsertWithoutCabinetsInput
+    disconnect?: ProvisionProfileWhereInput | boolean
+    delete?: ProvisionProfileWhereInput | boolean
+    connect?: ProvisionProfileWhereUniqueInput
+    update?: XOR<XOR<ProvisionProfileUpdateToOneWithWhereWithoutCabinetsInput, ProvisionProfileUpdateWithoutCabinetsInput>, ProvisionProfileUncheckedUpdateWithoutCabinetsInput>
+  }
+
+  export type CabinetCredentialUpdateOneWithoutCabinetNestedInput = {
+    create?: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
+    connectOrCreate?: CabinetCredentialCreateOrConnectWithoutCabinetInput
+    upsert?: CabinetCredentialUpsertWithoutCabinetInput
+    disconnect?: CabinetCredentialWhereInput | boolean
+    delete?: CabinetCredentialWhereInput | boolean
+    connect?: CabinetCredentialWhereUniqueInput
+    update?: XOR<XOR<CabinetCredentialUpdateToOneWithWhereWithoutCabinetInput, CabinetCredentialUpdateWithoutCabinetInput>, CabinetCredentialUncheckedUpdateWithoutCabinetInput>
   }
 
   export type CompartmentUpdateManyWithoutCabinetNestedInput = {
@@ -20158,6 +25646,16 @@ export namespace Prisma {
     update?: LockerLogUpdateWithWhereUniqueWithoutCabinetInput | LockerLogUpdateWithWhereUniqueWithoutCabinetInput[]
     updateMany?: LockerLogUpdateManyWithWhereWithoutCabinetInput | LockerLogUpdateManyWithWhereWithoutCabinetInput[]
     deleteMany?: LockerLogScalarWhereInput | LockerLogScalarWhereInput[]
+  }
+
+  export type CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput = {
+    create?: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
+    connectOrCreate?: CabinetCredentialCreateOrConnectWithoutCabinetInput
+    upsert?: CabinetCredentialUpsertWithoutCabinetInput
+    disconnect?: CabinetCredentialWhereInput | boolean
+    delete?: CabinetCredentialWhereInput | boolean
+    connect?: CabinetCredentialWhereUniqueInput
+    update?: XOR<XOR<CabinetCredentialUpdateToOneWithWhereWithoutCabinetInput, CabinetCredentialUpdateWithoutCabinetInput>, CabinetCredentialUncheckedUpdateWithoutCabinetInput>
   }
 
   export type CompartmentUncheckedUpdateManyWithoutCabinetNestedInput = {
@@ -20234,14 +25732,6 @@ export namespace Prisma {
     connectOrCreate?: CompartmentCreateOrConnectWithoutSensorMcpDeviceInput | CompartmentCreateOrConnectWithoutSensorMcpDeviceInput[]
     createMany?: CompartmentCreateManySensorMcpDeviceInputEnvelope
     connect?: CompartmentWhereUniqueInput | CompartmentWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type CabinetUpdateOneRequiredWithoutMcpDevicesNestedInput = {
@@ -20478,6 +25968,122 @@ export namespace Prisma {
     update?: XOR<XOR<CompartmentStatusUpdateToOneWithWhereWithoutCompartmentInput, CompartmentStatusUpdateWithoutCompartmentInput>, CompartmentStatusUncheckedUpdateWithoutCompartmentInput>
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type ProvisionMcpDeviceCreateNestedManyWithoutProfileInput = {
+    create?: XOR<ProvisionMcpDeviceCreateWithoutProfileInput, ProvisionMcpDeviceUncheckedCreateWithoutProfileInput> | ProvisionMcpDeviceCreateWithoutProfileInput[] | ProvisionMcpDeviceUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ProvisionMcpDeviceCreateOrConnectWithoutProfileInput | ProvisionMcpDeviceCreateOrConnectWithoutProfileInput[]
+    createMany?: ProvisionMcpDeviceCreateManyProfileInputEnvelope
+    connect?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+  }
+
+  export type CabinetCreateNestedManyWithoutProfileInput = {
+    create?: XOR<CabinetCreateWithoutProfileInput, CabinetUncheckedCreateWithoutProfileInput> | CabinetCreateWithoutProfileInput[] | CabinetUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: CabinetCreateOrConnectWithoutProfileInput | CabinetCreateOrConnectWithoutProfileInput[]
+    createMany?: CabinetCreateManyProfileInputEnvelope
+    connect?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+  }
+
+  export type ProvisionMcpDeviceUncheckedCreateNestedManyWithoutProfileInput = {
+    create?: XOR<ProvisionMcpDeviceCreateWithoutProfileInput, ProvisionMcpDeviceUncheckedCreateWithoutProfileInput> | ProvisionMcpDeviceCreateWithoutProfileInput[] | ProvisionMcpDeviceUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ProvisionMcpDeviceCreateOrConnectWithoutProfileInput | ProvisionMcpDeviceCreateOrConnectWithoutProfileInput[]
+    createMany?: ProvisionMcpDeviceCreateManyProfileInputEnvelope
+    connect?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+  }
+
+  export type CabinetUncheckedCreateNestedManyWithoutProfileInput = {
+    create?: XOR<CabinetCreateWithoutProfileInput, CabinetUncheckedCreateWithoutProfileInput> | CabinetCreateWithoutProfileInput[] | CabinetUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: CabinetCreateOrConnectWithoutProfileInput | CabinetCreateOrConnectWithoutProfileInput[]
+    createMany?: CabinetCreateManyProfileInputEnvelope
+    connect?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+  }
+
+  export type ProvisionMcpDeviceUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<ProvisionMcpDeviceCreateWithoutProfileInput, ProvisionMcpDeviceUncheckedCreateWithoutProfileInput> | ProvisionMcpDeviceCreateWithoutProfileInput[] | ProvisionMcpDeviceUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ProvisionMcpDeviceCreateOrConnectWithoutProfileInput | ProvisionMcpDeviceCreateOrConnectWithoutProfileInput[]
+    upsert?: ProvisionMcpDeviceUpsertWithWhereUniqueWithoutProfileInput | ProvisionMcpDeviceUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: ProvisionMcpDeviceCreateManyProfileInputEnvelope
+    set?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    disconnect?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    delete?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    connect?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    update?: ProvisionMcpDeviceUpdateWithWhereUniqueWithoutProfileInput | ProvisionMcpDeviceUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: ProvisionMcpDeviceUpdateManyWithWhereWithoutProfileInput | ProvisionMcpDeviceUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: ProvisionMcpDeviceScalarWhereInput | ProvisionMcpDeviceScalarWhereInput[]
+  }
+
+  export type CabinetUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<CabinetCreateWithoutProfileInput, CabinetUncheckedCreateWithoutProfileInput> | CabinetCreateWithoutProfileInput[] | CabinetUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: CabinetCreateOrConnectWithoutProfileInput | CabinetCreateOrConnectWithoutProfileInput[]
+    upsert?: CabinetUpsertWithWhereUniqueWithoutProfileInput | CabinetUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: CabinetCreateManyProfileInputEnvelope
+    set?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    disconnect?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    delete?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    connect?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    update?: CabinetUpdateWithWhereUniqueWithoutProfileInput | CabinetUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: CabinetUpdateManyWithWhereWithoutProfileInput | CabinetUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: CabinetScalarWhereInput | CabinetScalarWhereInput[]
+  }
+
+  export type ProvisionMcpDeviceUncheckedUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<ProvisionMcpDeviceCreateWithoutProfileInput, ProvisionMcpDeviceUncheckedCreateWithoutProfileInput> | ProvisionMcpDeviceCreateWithoutProfileInput[] | ProvisionMcpDeviceUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ProvisionMcpDeviceCreateOrConnectWithoutProfileInput | ProvisionMcpDeviceCreateOrConnectWithoutProfileInput[]
+    upsert?: ProvisionMcpDeviceUpsertWithWhereUniqueWithoutProfileInput | ProvisionMcpDeviceUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: ProvisionMcpDeviceCreateManyProfileInputEnvelope
+    set?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    disconnect?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    delete?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    connect?: ProvisionMcpDeviceWhereUniqueInput | ProvisionMcpDeviceWhereUniqueInput[]
+    update?: ProvisionMcpDeviceUpdateWithWhereUniqueWithoutProfileInput | ProvisionMcpDeviceUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: ProvisionMcpDeviceUpdateManyWithWhereWithoutProfileInput | ProvisionMcpDeviceUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: ProvisionMcpDeviceScalarWhereInput | ProvisionMcpDeviceScalarWhereInput[]
+  }
+
+  export type CabinetUncheckedUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<CabinetCreateWithoutProfileInput, CabinetUncheckedCreateWithoutProfileInput> | CabinetCreateWithoutProfileInput[] | CabinetUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: CabinetCreateOrConnectWithoutProfileInput | CabinetCreateOrConnectWithoutProfileInput[]
+    upsert?: CabinetUpsertWithWhereUniqueWithoutProfileInput | CabinetUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: CabinetCreateManyProfileInputEnvelope
+    set?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    disconnect?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    delete?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    connect?: CabinetWhereUniqueInput | CabinetWhereUniqueInput[]
+    update?: CabinetUpdateWithWhereUniqueWithoutProfileInput | CabinetUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: CabinetUpdateManyWithWhereWithoutProfileInput | CabinetUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: CabinetScalarWhereInput | CabinetScalarWhereInput[]
+  }
+
+  export type ProvisionProfileCreateNestedOneWithoutMcpDevicesInput = {
+    create?: XOR<ProvisionProfileCreateWithoutMcpDevicesInput, ProvisionProfileUncheckedCreateWithoutMcpDevicesInput>
+    connectOrCreate?: ProvisionProfileCreateOrConnectWithoutMcpDevicesInput
+    connect?: ProvisionProfileWhereUniqueInput
+  }
+
+  export type ProvisionProfileUpdateOneRequiredWithoutMcpDevicesNestedInput = {
+    create?: XOR<ProvisionProfileCreateWithoutMcpDevicesInput, ProvisionProfileUncheckedCreateWithoutMcpDevicesInput>
+    connectOrCreate?: ProvisionProfileCreateOrConnectWithoutMcpDevicesInput
+    upsert?: ProvisionProfileUpsertWithoutMcpDevicesInput
+    connect?: ProvisionProfileWhereUniqueInput
+    update?: XOR<XOR<ProvisionProfileUpdateToOneWithWhereWithoutMcpDevicesInput, ProvisionProfileUpdateWithoutMcpDevicesInput>, ProvisionProfileUncheckedUpdateWithoutMcpDevicesInput>
+  }
+
+  export type CabinetCreateNestedOneWithoutCredentialInput = {
+    create?: XOR<CabinetCreateWithoutCredentialInput, CabinetUncheckedCreateWithoutCredentialInput>
+    connectOrCreate?: CabinetCreateOrConnectWithoutCredentialInput
+    connect?: CabinetWhereUniqueInput
+  }
+
+  export type CabinetUpdateOneRequiredWithoutCredentialNestedInput = {
+    create?: XOR<CabinetCreateWithoutCredentialInput, CabinetUncheckedCreateWithoutCredentialInput>
+    connectOrCreate?: CabinetCreateOrConnectWithoutCredentialInput
+    upsert?: CabinetUpsertWithoutCredentialInput
+    connect?: CabinetWhereUniqueInput
+    update?: XOR<XOR<CabinetUpdateToOneWithWhereWithoutCredentialInput, CabinetUpdateWithoutCredentialInput>, CabinetUncheckedUpdateWithoutCredentialInput>
+  }
+
   export type CompartmentCreateNestedOneWithoutRealtimeStatusInput = {
     create?: XOR<CompartmentCreateWithoutRealtimeStatusInput, CompartmentUncheckedCreateWithoutRealtimeStatusInput>
     connectOrCreate?: CompartmentCreateOrConnectWithoutRealtimeStatusInput
@@ -20524,10 +26130,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type RentalUpdateManyWithoutPricePlanNestedInput = {
@@ -21054,6 +26656,19 @@ export namespace Prisma {
     _max?: NestedEnumCompartmentAvailabilityFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedEnumLockStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.LockStatus | EnumLockStatusFieldRefInput<$PrismaModel>
     in?: $Enums.LockStatus[] | ListEnumLockStatusFieldRefInput<$PrismaModel>
@@ -21095,11 +26710,6 @@ export namespace Prisma {
     not?: NestedEnumRentalTypeFilter<$PrismaModel> | $Enums.RentalType
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedEnumRentalTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.RentalType | EnumRentalTypeFieldRefInput<$PrismaModel>
     in?: $Enums.RentalType[] | ListEnumRentalTypeFieldRefInput<$PrismaModel>
@@ -21124,14 +26734,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
@@ -21549,8 +27151,15 @@ export namespace Prisma {
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    profile?: ProvisionProfileCreateNestedOneWithoutCabinetsInput
+    credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
@@ -21558,11 +27167,18 @@ export namespace Prisma {
 
   export type CabinetUncheckedCreateWithoutLocationInput = {
     id?: string
+    profileId?: string | null
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
@@ -21600,9 +27216,15 @@ export namespace Prisma {
     NOT?: CabinetScalarWhereInput | CabinetScalarWhereInput[]
     id?: StringFilter<"Cabinet"> | string
     locationId?: StringFilter<"Cabinet"> | string
+    profileId?: StringNullableFilter<"Cabinet"> | string | null
     name?: StringFilter<"Cabinet"> | string
     status?: EnumCabinetStatusFilter<"Cabinet"> | $Enums.CabinetStatus
     lastHeartbeatAt?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
+    provisionCode?: StringNullableFilter<"Cabinet"> | string | null
+    provisionCodeExpires?: DateTimeNullableFilter<"Cabinet"> | Date | string | null
+    configVersion?: IntFilter<"Cabinet"> | number
+    hardwareSerial?: StringNullableFilter<"Cabinet"> | string | null
+    notes?: StringNullableFilter<"Cabinet"> | string | null
     createdAt?: DateTimeFilter<"Cabinet"> | Date | string
     updatedAt?: DateTimeFilter<"Cabinet"> | Date | string
   }
@@ -21638,10 +27260,68 @@ export namespace Prisma {
     create: XOR<LocationCreateWithoutCabinetsInput, LocationUncheckedCreateWithoutCabinetsInput>
   }
 
+  export type ProvisionProfileCreateWithoutCabinetsInput = {
+    id?: string
+    name: string
+    provisionKey: string
+    provisionSecret?: string | null
+    mode?: string
+    isActive?: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mcpDevices?: ProvisionMcpDeviceCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProvisionProfileUncheckedCreateWithoutCabinetsInput = {
+    id?: string
+    name: string
+    provisionKey: string
+    provisionSecret?: string | null
+    mode?: string
+    isActive?: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mcpDevices?: ProvisionMcpDeviceUncheckedCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProvisionProfileCreateOrConnectWithoutCabinetsInput = {
+    where: ProvisionProfileWhereUniqueInput
+    create: XOR<ProvisionProfileCreateWithoutCabinetsInput, ProvisionProfileUncheckedCreateWithoutCabinetsInput>
+  }
+
+  export type CabinetCredentialCreateWithoutCabinetInput = {
+    id?: string
+    mqttUsername: string
+    mqttPassword: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CabinetCredentialUncheckedCreateWithoutCabinetInput = {
+    id?: string
+    mqttUsername: string
+    mqttPassword: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CabinetCredentialCreateOrConnectWithoutCabinetInput = {
+    where: CabinetCredentialWhereUniqueInput
+    create: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
+  }
+
   export type CompartmentCreateWithoutCabinetInput = {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -21658,6 +27338,8 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -21785,6 +27467,74 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ProvisionProfileUpsertWithoutCabinetsInput = {
+    update: XOR<ProvisionProfileUpdateWithoutCabinetsInput, ProvisionProfileUncheckedUpdateWithoutCabinetsInput>
+    create: XOR<ProvisionProfileCreateWithoutCabinetsInput, ProvisionProfileUncheckedCreateWithoutCabinetsInput>
+    where?: ProvisionProfileWhereInput
+  }
+
+  export type ProvisionProfileUpdateToOneWithWhereWithoutCabinetsInput = {
+    where?: ProvisionProfileWhereInput
+    data: XOR<ProvisionProfileUpdateWithoutCabinetsInput, ProvisionProfileUncheckedUpdateWithoutCabinetsInput>
+  }
+
+  export type ProvisionProfileUpdateWithoutCabinetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mcpDevices?: ProvisionMcpDeviceUpdateManyWithoutProfileNestedInput
+  }
+
+  export type ProvisionProfileUncheckedUpdateWithoutCabinetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mcpDevices?: ProvisionMcpDeviceUncheckedUpdateManyWithoutProfileNestedInput
+  }
+
+  export type CabinetCredentialUpsertWithoutCabinetInput = {
+    update: XOR<CabinetCredentialUpdateWithoutCabinetInput, CabinetCredentialUncheckedUpdateWithoutCabinetInput>
+    create: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
+    where?: CabinetCredentialWhereInput
+  }
+
+  export type CabinetCredentialUpdateToOneWithWhereWithoutCabinetInput = {
+    where?: CabinetCredentialWhereInput
+    data: XOR<CabinetCredentialUpdateWithoutCabinetInput, CabinetCredentialUncheckedUpdateWithoutCabinetInput>
+  }
+
+  export type CabinetCredentialUpdateWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mqttUsername?: StringFieldUpdateOperationsInput | string
+    mqttPassword?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CabinetCredentialUncheckedUpdateWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mqttUsername?: StringFieldUpdateOperationsInput | string
+    mqttPassword?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CompartmentUpsertWithWhereUniqueWithoutCabinetInput = {
     where: CompartmentWhereUniqueInput
     update: XOR<CompartmentUpdateWithoutCabinetInput, CompartmentUncheckedUpdateWithoutCabinetInput>
@@ -21809,6 +27559,8 @@ export namespace Prisma {
     cabinetId?: StringFilter<"Compartment"> | string
     name?: StringFilter<"Compartment"> | string
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
+    rowIndex?: IntFilter<"Compartment"> | number
+    colIndex?: IntFilter<"Compartment"> | number
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
@@ -21885,9 +27637,16 @@ export namespace Prisma {
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location: LocationCreateNestedOneWithoutCabinetsInput
+    profile?: ProvisionProfileCreateNestedOneWithoutCabinetsInput
+    credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
   }
@@ -21895,11 +27654,18 @@ export namespace Prisma {
   export type CabinetUncheckedCreateWithoutMcpDevicesInput = {
     id?: string
     locationId: string
+    profileId?: string | null
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
   }
@@ -21913,6 +27679,8 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -21930,6 +27698,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     sensorMcpDeviceId?: string | null
@@ -21955,6 +27725,8 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -21972,6 +27744,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -22009,9 +27783,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    profile?: ProvisionProfileUpdateOneWithoutCabinetsNestedInput
+    credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
   }
@@ -22019,11 +27800,18 @@ export namespace Prisma {
   export type CabinetUncheckedUpdateWithoutMcpDevicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
   }
@@ -22065,9 +27853,16 @@ export namespace Prisma {
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location: LocationCreateNestedOneWithoutCabinetsInput
+    profile?: ProvisionProfileCreateNestedOneWithoutCabinetsInput
+    credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
   }
@@ -22075,11 +27870,18 @@ export namespace Prisma {
   export type CabinetUncheckedCreateWithoutCompartmentsInput = {
     id?: string
     locationId: string
+    profileId?: string | null
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
   }
@@ -22262,9 +28064,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    profile?: ProvisionProfileUpdateOneWithoutCabinetsNestedInput
+    credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
   }
@@ -22272,11 +28081,18 @@ export namespace Prisma {
   export type CabinetUncheckedUpdateWithoutCompartmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
   }
@@ -22404,10 +28220,298 @@ export namespace Prisma {
     lastUpdatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ProvisionMcpDeviceCreateWithoutProfileInput = {
+    id?: string
+    bus?: number
+    address: number
+    role: string
+    name?: string | null
+  }
+
+  export type ProvisionMcpDeviceUncheckedCreateWithoutProfileInput = {
+    id?: string
+    bus?: number
+    address: number
+    role: string
+    name?: string | null
+  }
+
+  export type ProvisionMcpDeviceCreateOrConnectWithoutProfileInput = {
+    where: ProvisionMcpDeviceWhereUniqueInput
+    create: XOR<ProvisionMcpDeviceCreateWithoutProfileInput, ProvisionMcpDeviceUncheckedCreateWithoutProfileInput>
+  }
+
+  export type ProvisionMcpDeviceCreateManyProfileInputEnvelope = {
+    data: ProvisionMcpDeviceCreateManyProfileInput | ProvisionMcpDeviceCreateManyProfileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CabinetCreateWithoutProfileInput = {
+    id?: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    location: LocationCreateNestedOneWithoutCabinetsInput
+    credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
+    compartments?: CompartmentCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetUncheckedCreateWithoutProfileInput = {
+    id?: string
+    locationId: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
+    compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetCreateOrConnectWithoutProfileInput = {
+    where: CabinetWhereUniqueInput
+    create: XOR<CabinetCreateWithoutProfileInput, CabinetUncheckedCreateWithoutProfileInput>
+  }
+
+  export type CabinetCreateManyProfileInputEnvelope = {
+    data: CabinetCreateManyProfileInput | CabinetCreateManyProfileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProvisionMcpDeviceUpsertWithWhereUniqueWithoutProfileInput = {
+    where: ProvisionMcpDeviceWhereUniqueInput
+    update: XOR<ProvisionMcpDeviceUpdateWithoutProfileInput, ProvisionMcpDeviceUncheckedUpdateWithoutProfileInput>
+    create: XOR<ProvisionMcpDeviceCreateWithoutProfileInput, ProvisionMcpDeviceUncheckedCreateWithoutProfileInput>
+  }
+
+  export type ProvisionMcpDeviceUpdateWithWhereUniqueWithoutProfileInput = {
+    where: ProvisionMcpDeviceWhereUniqueInput
+    data: XOR<ProvisionMcpDeviceUpdateWithoutProfileInput, ProvisionMcpDeviceUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type ProvisionMcpDeviceUpdateManyWithWhereWithoutProfileInput = {
+    where: ProvisionMcpDeviceScalarWhereInput
+    data: XOR<ProvisionMcpDeviceUpdateManyMutationInput, ProvisionMcpDeviceUncheckedUpdateManyWithoutProfileInput>
+  }
+
+  export type ProvisionMcpDeviceScalarWhereInput = {
+    AND?: ProvisionMcpDeviceScalarWhereInput | ProvisionMcpDeviceScalarWhereInput[]
+    OR?: ProvisionMcpDeviceScalarWhereInput[]
+    NOT?: ProvisionMcpDeviceScalarWhereInput | ProvisionMcpDeviceScalarWhereInput[]
+    id?: StringFilter<"ProvisionMcpDevice"> | string
+    profileId?: StringFilter<"ProvisionMcpDevice"> | string
+    bus?: IntFilter<"ProvisionMcpDevice"> | number
+    address?: IntFilter<"ProvisionMcpDevice"> | number
+    role?: StringFilter<"ProvisionMcpDevice"> | string
+    name?: StringNullableFilter<"ProvisionMcpDevice"> | string | null
+  }
+
+  export type CabinetUpsertWithWhereUniqueWithoutProfileInput = {
+    where: CabinetWhereUniqueInput
+    update: XOR<CabinetUpdateWithoutProfileInput, CabinetUncheckedUpdateWithoutProfileInput>
+    create: XOR<CabinetCreateWithoutProfileInput, CabinetUncheckedCreateWithoutProfileInput>
+  }
+
+  export type CabinetUpdateWithWhereUniqueWithoutProfileInput = {
+    where: CabinetWhereUniqueInput
+    data: XOR<CabinetUpdateWithoutProfileInput, CabinetUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type CabinetUpdateManyWithWhereWithoutProfileInput = {
+    where: CabinetScalarWhereInput
+    data: XOR<CabinetUpdateManyMutationInput, CabinetUncheckedUpdateManyWithoutProfileInput>
+  }
+
+  export type ProvisionProfileCreateWithoutMcpDevicesInput = {
+    id?: string
+    name: string
+    provisionKey: string
+    provisionSecret?: string | null
+    mode?: string
+    isActive?: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinets?: CabinetCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProvisionProfileUncheckedCreateWithoutMcpDevicesInput = {
+    id?: string
+    name: string
+    provisionKey: string
+    provisionSecret?: string | null
+    mode?: string
+    isActive?: boolean
+    templateRows: number
+    templateCols: number
+    templateSizes: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cabinets?: CabinetUncheckedCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProvisionProfileCreateOrConnectWithoutMcpDevicesInput = {
+    where: ProvisionProfileWhereUniqueInput
+    create: XOR<ProvisionProfileCreateWithoutMcpDevicesInput, ProvisionProfileUncheckedCreateWithoutMcpDevicesInput>
+  }
+
+  export type ProvisionProfileUpsertWithoutMcpDevicesInput = {
+    update: XOR<ProvisionProfileUpdateWithoutMcpDevicesInput, ProvisionProfileUncheckedUpdateWithoutMcpDevicesInput>
+    create: XOR<ProvisionProfileCreateWithoutMcpDevicesInput, ProvisionProfileUncheckedCreateWithoutMcpDevicesInput>
+    where?: ProvisionProfileWhereInput
+  }
+
+  export type ProvisionProfileUpdateToOneWithWhereWithoutMcpDevicesInput = {
+    where?: ProvisionProfileWhereInput
+    data: XOR<ProvisionProfileUpdateWithoutMcpDevicesInput, ProvisionProfileUncheckedUpdateWithoutMcpDevicesInput>
+  }
+
+  export type ProvisionProfileUpdateWithoutMcpDevicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinets?: CabinetUpdateManyWithoutProfileNestedInput
+  }
+
+  export type ProvisionProfileUncheckedUpdateWithoutMcpDevicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    provisionKey?: StringFieldUpdateOperationsInput | string
+    provisionSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    mode?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    templateRows?: IntFieldUpdateOperationsInput | number
+    templateCols?: IntFieldUpdateOperationsInput | number
+    templateSizes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinets?: CabinetUncheckedUpdateManyWithoutProfileNestedInput
+  }
+
+  export type CabinetCreateWithoutCredentialInput = {
+    id?: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    location: LocationCreateNestedOneWithoutCabinetsInput
+    profile?: ProvisionProfileCreateNestedOneWithoutCabinetsInput
+    compartments?: CompartmentCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetUncheckedCreateWithoutCredentialInput = {
+    id?: string
+    locationId: string
+    profileId?: string | null
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetCreateOrConnectWithoutCredentialInput = {
+    where: CabinetWhereUniqueInput
+    create: XOR<CabinetCreateWithoutCredentialInput, CabinetUncheckedCreateWithoutCredentialInput>
+  }
+
+  export type CabinetUpsertWithoutCredentialInput = {
+    update: XOR<CabinetUpdateWithoutCredentialInput, CabinetUncheckedUpdateWithoutCredentialInput>
+    create: XOR<CabinetCreateWithoutCredentialInput, CabinetUncheckedCreateWithoutCredentialInput>
+    where?: CabinetWhereInput
+  }
+
+  export type CabinetUpdateToOneWithWhereWithoutCredentialInput = {
+    where?: CabinetWhereInput
+    data: XOR<CabinetUpdateWithoutCredentialInput, CabinetUncheckedUpdateWithoutCredentialInput>
+  }
+
+  export type CabinetUpdateWithoutCredentialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    profile?: ProvisionProfileUpdateOneWithoutCabinetsNestedInput
+    compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+  }
+
+  export type CabinetUncheckedUpdateWithoutCredentialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locationId?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+  }
+
   export type CompartmentCreateWithoutRealtimeStatusInput = {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -22425,6 +28529,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -22456,6 +28562,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -22473,6 +28581,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22583,6 +28693,8 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -22600,6 +28712,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -22737,6 +28851,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -22754,6 +28870,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22825,9 +28943,16 @@ export namespace Prisma {
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location: LocationCreateNestedOneWithoutCabinetsInput
+    profile?: ProvisionProfileCreateNestedOneWithoutCabinetsInput
+    credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
   }
@@ -22835,11 +28960,18 @@ export namespace Prisma {
   export type CabinetUncheckedCreateWithoutLogsInput = {
     id?: string
     locationId: string
+    profileId?: string | null
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
   }
@@ -22853,6 +28985,8 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -22870,6 +29004,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -22945,9 +29081,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    profile?: ProvisionProfileUpdateOneWithoutCabinetsNestedInput
+    credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
   }
@@ -22955,11 +29098,18 @@ export namespace Prisma {
   export type CabinetUncheckedUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     locationId?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
   }
@@ -22979,6 +29129,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -22996,6 +29148,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23448,9 +29602,15 @@ export namespace Prisma {
 
   export type CabinetCreateManyLocationInput = {
     id?: string
+    profileId?: string | null
     name: string
     status?: $Enums.CabinetStatus
     lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23460,8 +29620,15 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: ProvisionProfileUpdateOneWithoutCabinetsNestedInput
+    credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
@@ -23469,11 +29636,18 @@ export namespace Prisma {
 
   export type CabinetUncheckedUpdateWithoutLocationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
@@ -23481,9 +29655,15 @@ export namespace Prisma {
 
   export type CabinetUncheckedUpdateManyWithoutLocationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    profileId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
     lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23492,6 +29672,8 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -23527,6 +29709,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -23543,6 +29727,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23559,6 +29745,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23643,6 +29831,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     sensorMcpDeviceId?: string | null
@@ -23656,6 +29846,8 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
+    rowIndex?: number
+    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -23668,6 +29860,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -23685,6 +29879,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23701,6 +29897,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23713,6 +29911,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -23730,6 +29930,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23746,6 +29948,8 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
+    rowIndex?: IntFieldUpdateOperationsInput | number
+    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23878,6 +30082,106 @@ export namespace Prisma {
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProvisionMcpDeviceCreateManyProfileInput = {
+    id?: string
+    bus?: number
+    address: number
+    role: string
+    name?: string | null
+  }
+
+  export type CabinetCreateManyProfileInput = {
+    id?: string
+    locationId: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    provisionCode?: string | null
+    provisionCodeExpires?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProvisionMcpDeviceUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    role?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ProvisionMcpDeviceUncheckedUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    role?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ProvisionMcpDeviceUncheckedUpdateManyWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bus?: IntFieldUpdateOperationsInput | number
+    address?: IntFieldUpdateOperationsInput | number
+    role?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CabinetUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
+    compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+  }
+
+  export type CabinetUncheckedUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
+    compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+  }
+
+  export type CabinetUncheckedUpdateManyWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    provisionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    provisionCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RentalCreateManyPricePlanInput = {
@@ -24036,6 +30340,10 @@ export namespace Prisma {
      */
     export type CompartmentCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CompartmentCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use ProvisionProfileCountOutputTypeDefaultArgs instead
+     */
+    export type ProvisionProfileCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProvisionProfileCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use PricePlanCountOutputTypeDefaultArgs instead
      */
     export type PricePlanCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PricePlanCountOutputTypeDefaultArgs<ExtArgs>
@@ -24067,6 +30375,22 @@ export namespace Prisma {
      * @deprecated Use CompartmentDefaultArgs instead
      */
     export type CompartmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CompartmentDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ProvisioningConfigDefaultArgs instead
+     */
+    export type ProvisioningConfigArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProvisioningConfigDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ProvisionProfileDefaultArgs instead
+     */
+    export type ProvisionProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProvisionProfileDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ProvisionMcpDeviceDefaultArgs instead
+     */
+    export type ProvisionMcpDeviceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProvisionMcpDeviceDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CabinetCredentialDefaultArgs instead
+     */
+    export type CabinetCredentialArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CabinetCredentialDefaultArgs<ExtArgs>
     /**
      * @deprecated Use CompartmentStatusDefaultArgs instead
      */

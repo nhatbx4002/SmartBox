@@ -159,9 +159,15 @@ exports.Prisma.LocationScalarFieldEnum = {
 exports.Prisma.CabinetScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
+  profileId: 'profileId',
   name: 'name',
   status: 'status',
   lastHeartbeatAt: 'lastHeartbeatAt',
+  provisionCode: 'provisionCode',
+  provisionCodeExpires: 'provisionCodeExpires',
+  configVersion: 'configVersion',
+  hardwareSerial: 'hardwareSerial',
+  notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -181,11 +187,55 @@ exports.Prisma.CompartmentScalarFieldEnum = {
   cabinetId: 'cabinetId',
   name: 'name',
   size: 'size',
+  rowIndex: 'rowIndex',
+  colIndex: 'colIndex',
   mcp23017PinLock: 'mcp23017PinLock',
   mcp23017PinSensor: 'mcp23017PinSensor',
   lockMcpDeviceId: 'lockMcpDeviceId',
   sensorMcpDeviceId: 'sensorMcpDeviceId',
   status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProvisioningConfigScalarFieldEnum = {
+  id: 'id',
+  strategy: 'strategy',
+  provisionKey: 'provisionKey',
+  provisionSecret: 'provisionSecret',
+  webhookUrl: 'webhookUrl',
+  isActive: 'isActive',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProvisionProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  provisionKey: 'provisionKey',
+  provisionSecret: 'provisionSecret',
+  mode: 'mode',
+  isActive: 'isActive',
+  templateRows: 'templateRows',
+  templateCols: 'templateCols',
+  templateSizes: 'templateSizes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProvisionMcpDeviceScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  bus: 'bus',
+  address: 'address',
+  role: 'role',
+  name: 'name'
+};
+
+exports.Prisma.CabinetCredentialScalarFieldEnum = {
+  id: 'id',
+  cabinetId: 'cabinetId',
+  mqttUsername: 'mqttUsername',
+  mqttPassword: 'mqttPassword',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -322,7 +372,11 @@ exports.LocationStatus = exports.$Enums.LocationStatus = {
 exports.CabinetStatus = exports.$Enums.CabinetStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-  OFFLINE: 'OFFLINE'
+  OFFLINE: 'OFFLINE',
+  DRAFT: 'DRAFT',
+  PENDING_PROVISION: 'PENDING_PROVISION',
+  PROVISION_FAILED: 'PROVISION_FAILED',
+  PENDING_REGISTRATION: 'PENDING_REGISTRATION'
 };
 
 exports.CompartmentSize = exports.$Enums.CompartmentSize = {
@@ -398,7 +452,14 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   UPDATE_CABINET: 'UPDATE_CABINET',
   DELETE_CABINET: 'DELETE_CABINET',
   UNLOCK_COMPARTMENT: 'UNLOCK_COMPARTMENT',
-  CANCEL_RENTAL: 'CANCEL_RENTAL'
+  CANCEL_RENTAL: 'CANCEL_RENTAL',
+  PROVISION_CABINET_SUCCESS: 'PROVISION_CABINET_SUCCESS',
+  PROVISION_CABINET_FAILURE: 'PROVISION_CABINET_FAILURE',
+  UPDATE_PROVISIONING_CONFIG: 'UPDATE_PROVISIONING_CONFIG',
+  CREATE_PROVISION_PROFILE: 'CREATE_PROVISION_PROFILE',
+  UPDATE_PROVISION_PROFILE: 'UPDATE_PROVISION_PROFILE',
+  DELETE_PROVISION_PROFILE: 'DELETE_PROVISION_PROFILE',
+  CABINET_AUTO_PROVISIONED: 'CABINET_AUTO_PROVISIONED'
 };
 
 exports.NotificationType = exports.$Enums.NotificationType = {
@@ -423,6 +484,10 @@ exports.Prisma.ModelName = {
   Cabinet: 'Cabinet',
   McpDevice: 'McpDevice',
   Compartment: 'Compartment',
+  ProvisioningConfig: 'ProvisioningConfig',
+  ProvisionProfile: 'ProvisionProfile',
+  ProvisionMcpDevice: 'ProvisionMcpDevice',
+  CabinetCredential: 'CabinetCredential',
   CompartmentStatus: 'CompartmentStatus',
   PricePlan: 'PricePlan',
   Rental: 'Rental',

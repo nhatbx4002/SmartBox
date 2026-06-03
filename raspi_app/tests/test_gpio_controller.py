@@ -5,6 +5,29 @@ from services.gpio_controller import GpioController
 
 
 class GpioControllerProvisioningTests(unittest.TestCase):
+    def test_discover_hardware_returns_serial_and_scanned_mcp_devices_only(self):
+        gpio = GpioController(mock=True)
+
+        with patch.object(gpio, "_read_cpuinfo_serial", return_value="RPI-123"), patch.object(
+            gpio, "_read_firmware_version", return_value="1.2.3"
+        ), patch.object(gpio, "_read_pi_model", return_value="Pi 4"), patch.object(
+            gpio, "_scan_i2c_bus", return_value=[0x20, 0x21]
+        ):
+            discovered = gpio.discover_hardware({"provision": {"key": "smartbox-24-prod"}})
+
+        self.assertEqual(
+            discovered,
+            {
+                "hardwareSerial": "RPI-123",
+                "firmwareVersion": "1.2.3",
+                "piModel": "Pi 4",
+                "mcpDevices": [
+                    {"bus": 1, "address": 0x20, "name": "MCP"},
+                    {"bus": 1, "address": 0x21, "name": "MCP"},
+                ],
+            },
+        )
+
     def test_load_from_backend_builds_compartment_pin_map(self):
         api_client = type(
             "ApiClientStub",

@@ -4,8 +4,20 @@ import { ArrowLeft, DoorOpen, Lock, Trash2 } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button, Badge, Modal, Skeleton } from '@/components/ui'
-import { getCompartmentStatusVariant, getCompartmentStatusColor } from '@/components/ui/Badge'
+import { getCabinetStatusVariant, getCompartmentStatusVariant, getCompartmentStatusColor } from '@/components/ui/Badge'
 import { cn, formatRelativeTime } from '@/lib/utils'
+import type { CabinetStatus } from '@/types'
+
+const statusLabel: Record<CabinetStatus, string> = {
+  ONLINE: 'Online',
+  OFFLINE: 'Offline',
+  INACTIVE: 'Inactive',
+  PENDING_REGISTRATION: 'Pending Registration',
+  PENDING_PROVISION: 'Pending Provision',
+  PROVISION_FAILED: 'Provision Failed',
+  DRAFT: 'Draft',
+  ACTIVE: 'Active',
+}
 import { cabinetsApi } from '@/lib/api'
 import type { Compartment, CompartmentStatus } from '@/types'
 
@@ -103,28 +115,45 @@ export default function CabinetDetailPage() {
         {[
           { label: 'Name', value: cabinet.name },
           { label: 'Location', value: cabinet.locationName },
+          { label: 'Profile', value: cabinet.profile?.name ?? '-' },
           {
             label: 'Status',
-            value: (
-              <Badge variant={cabinet.status === 'ONLINE' ? 'online' : cabinet.status === 'OFFLINE' ? 'offline' : 'inactive'} dot>
-                {cabinet.status === 'ONLINE' ? 'Online' : cabinet.status === 'OFFLINE' ? 'Offline' : 'Inactive'}
-              </Badge>
-            ),
+            value: <Badge variant={getCabinetStatusVariant(cabinet.status)} dot>{statusLabel[cabinet.status] ?? cabinet.status}</Badge>,
           },
           { label: 'Last seen', value: cabinet.lastSeen ? formatRelativeTime(cabinet.lastSeen) : '-' },
           { label: 'MCP devices', value: cabinet.mcpDevices.toString() },
           { label: 'Compartments', value: cabinet.totalCompartments.toString() },
           { label: 'Available', value: `${cabinet.availableCompartments}/${cabinet.totalCompartments}` },
-        ].map((item) => (
-          <div key={item.label} className="bg-surface rounded-xl border border-border p-4">
-            <p className="text-label text-text-muted uppercase mb-1">{item.label}</p>
-            <p className="text-sm font-semibold text-text-primary">{item.value}</p>
-          </div>
-        ))}
+        ].map((item, i) => {
+          const tints = [
+            'hover:bg-brand/5',
+            'hover:bg-info/5',
+            'hover:bg-success/5',
+            'hover:bg-warning/5',
+            'hover:bg-error/5',
+            'hover:bg-brand/5',
+            'hover:bg-info/5',
+            'hover:bg-success/5',
+          ]
+          return (
+            <div key={item.label} className={`group bg-surface rounded-xl border border-border p-4 transition-colors ${tints[i]}`}>
+              <p className="text-label text-text-muted uppercase mb-1.5">{item.label}</p>
+              <p className="text-sm font-semibold text-text-primary">{item.value}</p>
+            </div>
+          )
+        })}
       </div>
 
       <div className="bg-surface rounded-xl border border-border p-6">
-        <h3 className="text-sm font-semibold text-text-primary mb-4">Compartment grid</h3>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-sm font-semibold text-text-primary">Compartment grid</h3>
+          <div className="flex flex-wrap gap-4 text-xs text-text-muted">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-success/25 border border-success/50" /> Available</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-info/25 border border-info/50" /> Occupied</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-error/25 border border-error/50" /> Maintenance</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-warning/25 border border-warning/50" /> Reserved</span>
+          </div>
+        </div>
         {cabinet.compartments?.length ? (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {cabinet.compartments.map((compartment) => {
@@ -134,8 +163,8 @@ export default function CabinetDetailPage() {
                   key={compartment.id}
                   onClick={() => openCompartmentDetail(compartment)}
                   className={cn(
-                    'w-full aspect-square rounded-lg border-2 flex flex-col items-center justify-center gap-1',
-                    'hover:scale-105 transition-transform duration-150 cursor-pointer',
+                    'group w-full aspect-square rounded-xl border flex flex-col items-center justify-center gap-1',
+                    'hover:scale-105 hover:shadow-lg transition-all duration-150 cursor-pointer',
                     colors.bg, colors.border,
                   )}
                 >
@@ -148,13 +177,6 @@ export default function CabinetDetailPage() {
         ) : (
           <p className="text-sm text-text-muted">No compartments found for this cabinet.</p>
         )}
-
-        <div className="flex flex-wrap gap-4 mt-4 text-xs text-text-muted">
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-success/15 border border-success" /> Available</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-info/15 border border-info" /> Occupied</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-error/15 border border-error" /> Maintenance</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-warning/15 border border-warning" /> Reserved</span>
-        </div>
       </div>
 
       {selectedCompartment && (
@@ -164,14 +186,14 @@ export default function CabinetDetailPage() {
           title={`Compartment ${selectedCompartment.name}`}
           size="sm"
         >
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-label text-text-muted uppercase mb-1">Size</p>
+              <div className="bg-surface-elevated rounded-lg p-3">
+                <p className="text-label text-text-muted uppercase mb-1.5">Size</p>
                 <p className="text-sm font-semibold">{selectedCompartment.size}</p>
               </div>
-              <div>
-                <p className="text-label text-text-muted uppercase mb-1">Status</p>
+              <div className="bg-surface-elevated rounded-lg p-3">
+                <p className="text-label text-text-muted uppercase mb-1.5">Status</p>
                 <Badge variant={getCompartmentStatusVariant(selectedCompartment.status)} dot>
                   {statusLabels[selectedCompartment.status]}
                 </Badge>
@@ -180,33 +202,33 @@ export default function CabinetDetailPage() {
 
             {selectedCompartment.currentRentalId && (
               <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <p className="text-label text-text-muted uppercase mb-1">Rental</p>
+                <div className="bg-surface-elevated rounded-lg p-3">
+                  <p className="text-label text-text-muted uppercase mb-1.5">Rental</p>
                   <p className="text-sm font-mono font-semibold">#{selectedCompartment.currentRentalId}</p>
                 </div>
-                <div>
-                  <p className="text-label text-text-muted uppercase mb-1">Customer</p>
+                <div className="bg-surface-elevated rounded-lg p-3">
+                  <p className="text-label text-text-muted uppercase mb-1.5">Customer</p>
                   <p className="text-sm font-semibold">{selectedCompartment.customerPhone || '-'}</p>
                 </div>
               </div>
             )}
 
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-label text-text-muted uppercase mb-1">Lock</p>
-                <p className="text-sm font-semibold flex items-center gap-1">
-                  <Lock className="h-3 w-3 text-warning" /> {selectedCompartment.lockStatus || 'Unknown'}
+              <div className="bg-surface-elevated rounded-lg p-3">
+                <p className="text-label text-text-muted uppercase mb-1.5">Lock</p>
+                <p className="text-sm font-semibold flex items-center gap-1.5">
+                  <Lock className="h-3.5 w-3.5 text-warning" /> {selectedCompartment.lockStatus || 'Unknown'}
                 </p>
               </div>
-              <div>
-                <p className="text-label text-text-muted uppercase mb-1">Door</p>
-                <p className="text-sm font-semibold flex items-center gap-1">
-                  <DoorOpen className="h-3 w-3 text-error" /> {selectedCompartment.doorStatus || 'Unknown'}
+              <div className="bg-surface-elevated rounded-lg p-3">
+                <p className="text-label text-text-muted uppercase mb-1.5">Door</p>
+                <p className="text-sm font-semibold flex items-center gap-1.5">
+                  <DoorOpen className="h-3.5 w-3.5 text-error" /> {selectedCompartment.doorStatus || 'Unknown'}
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-1">
               <Button
                 className="flex-1"
                 loading={unlockMutation.isPending}

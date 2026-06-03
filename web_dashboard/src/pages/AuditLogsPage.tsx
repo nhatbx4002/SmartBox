@@ -72,14 +72,14 @@ export default function AuditLogsPage() {
     {
       key: 'timestamp',
       header: 'Timestamp',
-      width: '180px',
-      render: (row) => <span className="font-mono text-xs text-text-secondary">{formatDateTime(row.timestamp)}</span>,
+      width: '170px',
+      render: (row) => <span className="font-mono text-xs text-text-muted">{formatDateTime(row.timestamp)}</span>,
     },
     {
       key: 'adminName',
       header: 'Admin',
-      width: '180px',
-      render: (row) => <span className="text-sm">{row.adminName}</span>,
+      width: '160px',
+      render: (row) => <span className="text-sm font-medium text-text-primary">{row.adminName}</span>,
     },
     {
       key: 'action',
@@ -97,14 +97,14 @@ export default function AuditLogsPage() {
     },
     {
       key: 'ipAddress',
-      header: 'IP address',
-      width: '120px',
+      header: 'IP',
+      width: '110px',
       render: (row) => <span className="font-mono text-xs text-text-muted">{row.ipAddress || '-'}</span>,
     },
     {
       key: 'success',
       header: 'Status',
-      width: '100px',
+      width: '90px',
       render: (row) => (
         <Badge variant={row.success ? 'success' : 'error'} dot>
           {row.success ? 'Success' : 'Failed'}
@@ -119,21 +119,31 @@ export default function AuditLogsPage() {
         <h2 className="text-lg font-semibold text-text-primary">Audit logs</h2>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <div className="flex-1 min-w-64">
-          <Input
-            placeholder="Search admin, action, target..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
+      <div className="bg-surface rounded-xl border border-border p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex-1 min-w-48">
+            <Input
+              placeholder="Search admin, action, target..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+          <Select
+            value={actionFilter}
+            onValueChange={setActionFilter}
+            placeholder="Action: All"
+            options={actionOptions}
+            className="w-52"
           />
+          {(search || actionFilter) && (
+            <button
+              onClick={() => { setSearch(''); setActionFilter('') }}
+              className="text-xs text-brand hover:text-brand-hover cursor-pointer transition-colors"
+            >
+              Xóa lọc
+            </button>
+          )}
         </div>
-        <Select
-          value={actionFilter}
-          onValueChange={setActionFilter}
-          placeholder="Action: All"
-          options={actionOptions}
-          className="w-56"
-        />
       </div>
 
       <div className="bg-surface rounded-xl border border-border overflow-hidden">

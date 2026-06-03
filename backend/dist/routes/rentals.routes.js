@@ -19,6 +19,9 @@ const verifyPinSchema = zod_1.z.object({
     code: zod_1.z.string().length(6).regex(/^\d+$/),
     mode: zod_1.z.enum(['deposit', 'pickup']).optional().nullable(),
 });
+const verifyQrSchema = zod_1.z.object({
+    token: zod_1.z.string().min(1),
+});
 router.post('/verify-pin', (0, validate_1.validate)(verifyPinSchema), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const result = await (0, auth_service_1.verifyPin)(req.body.code);
     res.json({
@@ -32,6 +35,25 @@ router.post('/verify-pin', (0, validate_1.validate)(verifyPinSchema), (0, asyncH
             size: result.compartment.size,
             expiresAt: result.rental.expiresAt,
             qrData: result.rental.qrToken,
+        },
+    });
+}));
+router.post('/verify-qr', (0, validate_1.validate)(verifyQrSchema), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const result = await (0, rental_service_1.verifyQrRental)(req.body.token);
+    res.json({
+        data: {
+            id: result.rental.id,
+            rentalId: result.rental.id,
+            pin: result.rental.code,
+            compartmentId: result.compartment.id,
+            compartmentName: result.compartment.name,
+            lockerName: result.compartment.cabinet.name,
+            size: result.compartment.size,
+            expiresAt: result.rental.expiresAt,
+            qrData: result.rental.qrToken,
+            authorized: true,
+            rental: result.rental,
+            compartment: result.compartment,
         },
     });
 }));

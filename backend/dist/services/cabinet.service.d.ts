@@ -12,6 +12,15 @@ export declare function listCabinets(): Promise<({
         googlePlaceId: string | null;
         mapImageUrl: string | null;
     };
+    mcpDevices: {
+        id: string;
+        name: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        cabinetId: string;
+        address: number;
+        bus: number;
+    }[];
     compartments: ({
         realtimeStatus: {
             id: string;
@@ -28,28 +37,27 @@ export declare function listCabinets(): Promise<({
         status: import("../generated/prisma").$Enums.CompartmentAvailability;
         cabinetId: string;
         size: import("../generated/prisma").$Enums.CompartmentSize;
+        rowIndex: number;
+        colIndex: number;
         mcp23017PinLock: number;
         mcp23017PinSensor: number;
         lockMcpDeviceId: string | null;
         sensorMcpDeviceId: string | null;
     })[];
-    mcpDevices: {
-        id: string;
-        name: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        cabinetId: string;
-        address: number;
-        bus: number;
-    }[];
 } & {
     id: string;
     name: string;
     createdAt: Date;
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
-    locationId: string;
+    profileId: string | null;
     lastHeartbeatAt: Date | null;
+    provisionCode: string | null;
+    provisionCodeExpires: Date | null;
+    configVersion: number;
+    hardwareSerial: string | null;
+    notes: string | null;
+    locationId: string;
 })[]>;
 export declare function getCabinet(id: string): Promise<{
     location: {
@@ -64,6 +72,15 @@ export declare function getCabinet(id: string): Promise<{
         googlePlaceId: string | null;
         mapImageUrl: string | null;
     };
+    mcpDevices: {
+        id: string;
+        name: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        cabinetId: string;
+        address: number;
+        bus: number;
+    }[];
     compartments: ({
         realtimeStatus: {
             id: string;
@@ -80,28 +97,27 @@ export declare function getCabinet(id: string): Promise<{
         status: import("../generated/prisma").$Enums.CompartmentAvailability;
         cabinetId: string;
         size: import("../generated/prisma").$Enums.CompartmentSize;
+        rowIndex: number;
+        colIndex: number;
         mcp23017PinLock: number;
         mcp23017PinSensor: number;
         lockMcpDeviceId: string | null;
         sensorMcpDeviceId: string | null;
     })[];
-    mcpDevices: {
-        id: string;
-        name: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        cabinetId: string;
-        address: number;
-        bus: number;
-    }[];
 } & {
     id: string;
     name: string;
     createdAt: Date;
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
-    locationId: string;
+    profileId: string | null;
     lastHeartbeatAt: Date | null;
+    provisionCode: string | null;
+    provisionCodeExpires: Date | null;
+    configVersion: number;
+    hardwareSerial: string | null;
+    notes: string | null;
+    locationId: string;
 }>;
 export declare function createCabinet(input: {
     id?: string;
@@ -113,21 +129,35 @@ export declare function createCabinet(input: {
     createdAt: Date;
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
-    locationId: string;
+    profileId: string | null;
     lastHeartbeatAt: Date | null;
+    provisionCode: string | null;
+    provisionCodeExpires: Date | null;
+    configVersion: number;
+    hardwareSerial: string | null;
+    notes: string | null;
+    locationId: string;
 }>;
 export declare function updateCabinet(id: string, input: Partial<{
     locationId: string;
     name: string;
     status: CabinetStatus;
+    hardwareSerial: string;
+    notes: string;
 }>): Promise<{
     id: string;
     name: string;
     createdAt: Date;
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
-    locationId: string;
+    profileId: string | null;
     lastHeartbeatAt: Date | null;
+    provisionCode: string | null;
+    provisionCodeExpires: Date | null;
+    configVersion: number;
+    hardwareSerial: string | null;
+    notes: string | null;
+    locationId: string;
 }>;
 export declare function deleteCabinet(id: string): Promise<{
     id: string;
@@ -135,8 +165,14 @@ export declare function deleteCabinet(id: string): Promise<{
     createdAt: Date;
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
-    locationId: string;
+    profileId: string | null;
     lastHeartbeatAt: Date | null;
+    provisionCode: string | null;
+    provisionCodeExpires: Date | null;
+    configVersion: number;
+    hardwareSerial: string | null;
+    notes: string | null;
+    locationId: string;
 }>;
 export declare function updateCompartmentStatus(compartmentId: string, lockStatus: LockStatus, doorStatus: DoorStatus): Promise<{
     id: string;
@@ -151,8 +187,14 @@ export declare function updateHeartbeat(cabinetId: string): Promise<{
     createdAt: Date;
     updatedAt: Date;
     status: import("../generated/prisma").$Enums.CabinetStatus;
-    locationId: string;
+    profileId: string | null;
     lastHeartbeatAt: Date | null;
+    provisionCode: string | null;
+    provisionCodeExpires: Date | null;
+    configVersion: number;
+    hardwareSerial: string | null;
+    notes: string | null;
+    locationId: string;
 }>;
 export declare function getAvailableCompartments(size?: CompartmentSize): Promise<({
     cabinet: {
@@ -174,8 +216,14 @@ export declare function getAvailableCompartments(size?: CompartmentSize): Promis
         createdAt: Date;
         updatedAt: Date;
         status: import("../generated/prisma").$Enums.CabinetStatus;
-        locationId: string;
+        profileId: string | null;
         lastHeartbeatAt: Date | null;
+        provisionCode: string | null;
+        provisionCodeExpires: Date | null;
+        configVersion: number;
+        hardwareSerial: string | null;
+        notes: string | null;
+        locationId: string;
     };
     realtimeStatus: {
         id: string;
@@ -192,6 +240,8 @@ export declare function getAvailableCompartments(size?: CompartmentSize): Promis
     status: import("../generated/prisma").$Enums.CompartmentAvailability;
     cabinetId: string;
     size: import("../generated/prisma").$Enums.CompartmentSize;
+    rowIndex: number;
+    colIndex: number;
     mcp23017PinLock: number;
     mcp23017PinSensor: number;
     lockMcpDeviceId: string | null;

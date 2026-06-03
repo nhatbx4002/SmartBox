@@ -5,15 +5,15 @@ import type { RentalStatus, CompartmentStatus, CabinetStatus, NotificationType }
 type BadgeVariant = 'success' | 'error' | 'warning' | 'muted' | 'info' | 'brand' | 'online' | 'offline' | 'inactive'
 
 const variantClasses: Record<BadgeVariant, string> = {
-  success: 'bg-success/20 text-success border-success/30',
-  error: 'bg-error/20 text-error border-error/30',
-  warning: 'bg-warning/20 text-warning border-warning/30',
-  muted: 'bg-text-muted/20 text-text-muted border-text-muted/30',
-  info: 'bg-info/20 text-info border-info/30',
-  brand: 'bg-brand/20 text-brand border-brand/30',
-  online: 'bg-online/20 text-online border-online/30',
-  offline: 'bg-error/20 text-error border-error/30',
-  inactive: 'bg-text-muted/20 text-text-muted border-text-muted/30',
+  success: 'bg-success/15 text-success',
+  error: 'bg-error/15 text-error',
+  warning: 'bg-warning/15 text-warning',
+  muted: 'bg-white/5 text-text-muted',
+  info: 'bg-info/15 text-info',
+  brand: 'bg-brand/15 text-brand',
+  online: 'bg-online/15 text-online',
+  offline: 'bg-error/15 text-error',
+  inactive: 'bg-white/5 text-text-muted',
 }
 
 interface BadgeProps {
@@ -27,12 +27,12 @@ export function Badge({ variant = 'muted', children, className, dot }: BadgeProp
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-xs font-medium',
+        'inline-flex items-center gap-1.5 px-2 py-px rounded-full text-label-xs font-medium tracking-wide',
         variantClasses[variant],
         className,
       )}
     >
-      {dot && <span className="h-1.5 w-1.5 rounded-full bg-current" />}
+      {dot && <span className="h-1.5 w-1.5 rounded-full bg-current shrink-0" />}
       {children}
     </span>
   )
@@ -63,8 +63,13 @@ export function getCabinetStatusVariant(status: CabinetStatus): BadgeVariant {
     ONLINE: 'online',
     OFFLINE: 'offline',
     INACTIVE: 'inactive',
+    PENDING_REGISTRATION: 'warning',
+    PENDING_PROVISION: 'warning',
+    PROVISION_FAILED: 'error',
+    DRAFT: 'muted',
+    ACTIVE: 'online',
   }
-  return map[status]
+  return map[status] ?? 'muted'
 }
 
 export function getNotificationTypeVariant(type: NotificationType): BadgeVariant {

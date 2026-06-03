@@ -6,7 +6,7 @@ import {
   LockStatus,
   LockerAction,
 } from '../generated/prisma';
-import { NotFoundError } from '../lib/errors';
+import { BadRequestError, NotFoundError } from '../lib/errors';
 import { emitCabinetStatus, emitCompartmentStatus } from '../lib/socket';
 import { prisma } from '../lib/prisma';
 
@@ -36,9 +36,12 @@ export async function createCabinet(input: {
 
 export async function updateCabinet(
   id: string,
-  input: Partial<{ locationId: string; name: string; status: CabinetStatus }>,
+  input: Partial<{ locationId: string; name: string; status: CabinetStatus; hardwareSerial: string; notes: string }>,
 ) {
-  await getCabinet(id);
+  const current = await getCabinet(id);
+  if (input.status && input.status !== current.status) {
+    validateCabinetStatusTransition(current.status, input.status);
+  }
   return prisma.cabinet.update({ where: { id }, data: input });
 }
 
@@ -69,9 +72,23 @@ export async function updateCompartmentStatus(
 }
 
 export async function updateHeartbeat(cabinetId: string) {
+  const current = await prisma.cabinet.findUnique({ where: { id: cabinetId } });
+  if (!current) throw NotFoundError('Cabinet not found');
+
+  const heartbeatActiveTransitions: CabinetStatus[] = [
+    CabinetStatus.PENDING_PROVISION,
+    CabinetStatus.PENDING_REGISTRATION,
+    CabinetStatus.OFFLINE,
+    CabinetStatus.INACTIVE,
+  ];
+  const shouldPromoteToActive = heartbeatActiveTransitions.includes(current.status);
+
   const cabinet = await prisma.cabinet.update({
     where: { id: cabinetId },
-    data: { lastHeartbeatAt: new Date(), status: CabinetStatus.ACTIVE },
+    data: {
+      lastHeartbeatAt: new Date(),
+      ...(shouldPromoteToActive ? { status: CabinetStatus.ACTIVE } : {}),
+    },
   });
 
   await prisma.lockerLog.create({
@@ -80,6 +97,31 @@ export async function updateHeartbeat(cabinetId: string) {
 
   emitCabinetStatus(cabinetId, { status: cabinet.status, lastHeartbeatAt: cabinet.lastHeartbeatAt });
   return cabinet;
+}
+
+const validCabinetStatusTransitions: Record<CabinetStatus, CabinetStatus[]> = {
+  [CabinetStatus.DRAFT]: [CabinetStatus.PENDING_PROVISION],
+  [CabinetStatus.PENDING_PROVISION]: [
+    CabinetStatus.ACTIVE,
+    CabinetStatus.PENDING_REGISTRATION,
+    CabinetStatus.PROVISION_FAILED,
+    CabinetStatus.INACTIVE,
+  ],
+  [CabinetStatus.PENDING_REGISTRATION]: [
+    CabinetStatus.ACTIVE,
+    CabinetStatus.PROVISION_FAILED,
+    CabinetStatus.INACTIVE,
+  ],
+  [CabinetStatus.PROVISION_FAILED]: [CabinetStatus.PENDING_PROVISION, CabinetStatus.PENDING_REGISTRATION],
+  [CabinetStatus.ACTIVE]: [CabinetStatus.INACTIVE, CabinetStatus.OFFLINE],
+  [CabinetStatus.INACTIVE]: [CabinetStatus.ACTIVE, CabinetStatus.DRAFT, CabinetStatus.PENDING_PROVISION],
+  [CabinetStatus.OFFLINE]: [CabinetStatus.ACTIVE],
+};
+
+function validateCabinetStatusTransition(from: CabinetStatus, to: CabinetStatus) {
+  if (!validCabinetStatusTransitions[from]?.includes(to)) {
+    throw BadRequestError(`Invalid cabinet status transition: ${from} -> ${to}`);
+  }
 }
 
 export async function getAvailableCompartments(size?: CompartmentSize) {

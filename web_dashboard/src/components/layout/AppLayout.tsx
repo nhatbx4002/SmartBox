@@ -53,16 +53,20 @@ export function AppLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <Sidebar />
-      <div className={cn(
-        'transition-all duration-300',
-        'lg:ml-16',
-        !sidebarCollapsed && 'lg:ml-60',
-      )}>
+      <div
+        className={cn(
+          'transition-all duration-200 ease-spring',
+          'lg:ml-16',
+          !sidebarCollapsed && 'lg:ml-56',
+        )}
+      >
         <Header />
-        <main className="p-4 lg:p-6 max-w-[1400px] mx-auto">
-          <Outlet />
+        <main className="px-4 pb-6 lg:px-6 lg:pb-6">
+          <div className="max-w-[1400px] mx-auto pt-4 lg:pt-5">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

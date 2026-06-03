@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createRental = createRental;
 exports.getByCode = getByCode;
+exports.verifyQrRental = verifyQrRental;
 exports.completeRental = completeRental;
 exports.cancelRental = cancelRental;
 exports.handleUnlock = handleUnlock;
@@ -119,6 +120,26 @@ async function getByCode(code) {
     if (!rental)
         throw (0, errors_1.NotFoundError)('Rental not found');
     return rental;
+}
+async function verifyQrRental(token) {
+    const verified = (0, qr_1.verifyQrToken)(token);
+    if (!verified) {
+        throw (0, errors_1.BadRequestError)('Invalid QR code');
+    }
+    const rental = await prisma_2.prisma.rental.findUnique({
+        where: { id: verified.rentalId },
+        include: { compartment: { include: { cabinet: true, realtimeStatus: true } }, pricePlan: true, user: true },
+    });
+    if (!rental || rental.status !== prisma_1.RentalStatus.ACTIVE) {
+        throw (0, errors_1.NotFoundError)('Rental not found');
+    }
+    if (rental.expiresAt < new Date()) {
+        throw (0, errors_1.BadRequestError)('Rental expired');
+    }
+    if (rental.openCount >= rental.maxOpens) {
+        throw (0, errors_1.BadRequestError)('Open limit reached');
+    }
+    return { authorized: true, rental, compartment: rental.compartment };
 }
 async function completeRental(rentalId) {
     const rental = await prisma_2.prisma.rental.findUnique({ where: { id: rentalId } });

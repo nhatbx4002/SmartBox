@@ -27,6 +27,10 @@ enum CabinetStatus {
   ACTIVE
   INACTIVE
   OFFLINE
+  DRAFT
+  PENDING_PROVISION
+  PROVISION_FAILED
+  PENDING_REGISTRATION
 }
 
 enum CompartmentSize {
@@ -103,6 +107,13 @@ enum AuditAction {
   DELETE_CABINET
   UNLOCK_COMPARTMENT
   CANCEL_RENTAL
+  PROVISION_CABINET_SUCCESS
+  PROVISION_CABINET_FAILURE
+  UPDATE_PROVISIONING_CONFIG
+  CREATE_PROVISION_PROFILE
+  UPDATE_PROVISION_PROFILE
+  DELETE_PROVISION_PROFILE
+  CABINET_AUTO_PROVISIONED
 }
 
 enum NotificationType {
@@ -165,20 +176,31 @@ model Location {
 }
 
 model Cabinet {
-  id              String        @id @default(cuid())
-  locationId      String
-  name            String
-  status          CabinetStatus @default(ACTIVE)
-  lastHeartbeatAt DateTime?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  location        Location      @relation(fields: [locationId], references: [id])
-  compartments    Compartment[]
-  mcpDevices      McpDevice[]
-  logs            LockerLog[]
+  id                   String             @id @default(cuid())
+  locationId           String
+  profileId            String?
+  name                 String
+  status               CabinetStatus      @default(ACTIVE)
+  lastHeartbeatAt      DateTime?
+  provisionCode        String?            @unique
+  provisionCodeExpires DateTime?
+  configVersion        Int                @default(1)
+  hardwareSerial       String?
+  notes                String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  location             Location           @relation(fields: [locationId], references: [id])
+  profile              ProvisionProfile?  @relation(fields: [profileId], references: [id])
+  credential           CabinetCredential?
+  compartments         Compartment[]
+  mcpDevices           McpDevice[]
+  logs                 LockerLog[]
 
   @@index([locationId])
   @@index([status])
+  @@index([provisionCode])
+  @@index([hardwareSerial])
+  @@index([profileId])
 }
 
 model McpDevice {
@@ -202,6 +224,8 @@ model Compartment {
   cabinetId         String
   name              String
   size              CompartmentSize
+  rowIndex          Int                     @default(0)
+  colIndex          Int                     @default(0)
   mcp23017PinLock   Int
   mcp23017PinSensor Int
   lockMcpDeviceId   String?
@@ -221,6 +245,57 @@ model Compartment {
   @@index([lockMcpDeviceId])
   @@index([sensorMcpDeviceId])
   @@index([status])
+}
+
+model ProvisioningConfig {
+  id              String   @id @default(cuid())
+  strategy        String   @default("ENV")
+  provisionKey    String   @default("smartbox-provision")
+  provisionSecret String?
+  webhookUrl      String?
+  isActive        Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
+
+model ProvisionProfile {
+  id              String               @id @default(cuid())
+  name            String               @unique
+  provisionKey    String               @unique
+  provisionSecret String?
+  mode            String               @default("ALLOW_NEW")
+  isActive        Boolean              @default(true)
+  templateRows    Int
+  templateCols    Int
+  templateSizes   String
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  mcpDevices      ProvisionMcpDevice[]
+  cabinets        Cabinet[]
+
+  @@index([provisionKey])
+}
+
+model ProvisionMcpDevice {
+  id        String           @id @default(cuid())
+  profileId String
+  bus       Int              @default(1)
+  address   Int
+  role      String
+  name      String?
+  profile   ProvisionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, bus, address])
+  @@index([profileId])
+}
+
+model CabinetCredential {
+  id           String   @id @default(cuid())
+  cabinetId    String   @unique
+  mqttUsername String
+  mqttPassword String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  cabinet      Cabinet  @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
 }
 
 model CompartmentStatus {

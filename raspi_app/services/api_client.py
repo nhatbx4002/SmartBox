@@ -21,6 +21,7 @@ class ApiClient:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.mock = mock
+        self.jwt_token: str | None = None
 
     def verify_pin(self, code: str, mode: str | None) -> tuple[RentalData, CompartmentData]:
         if self.mock:
@@ -29,6 +30,18 @@ class ApiClient:
         response = requests.post(
             f"{self.base_url}/api/rentals/verify-pin",
             json={"code": code, "mode": mode},
+            timeout=self.timeout,
+        )
+        data = self._parse_response(response)
+        return self._rental_from_response(data), self._compartment_from_response(data)
+
+    def verify_qr(self, token: str) -> tuple[RentalData, CompartmentData]:
+        if self.mock:
+            return self._mock_verify_qr(token)
+
+        response = requests.post(
+            f"{self.base_url}/api/rentals/verify-qr",
+            json={"token": token},
             timeout=self.timeout,
         )
         data = self._parse_response(response)
@@ -66,7 +79,36 @@ class ApiClient:
         params = {"cabinetId": cabinet_id} if cabinet_id else {}
         response = requests.get(
             f"{self.base_url}/api/provisioning/cabinets",
+            headers=self._headers(),
             params=params,
+            timeout=self.timeout,
+        )
+        return self._parse_response(response)
+
+    def provision_cabinet(self, payload: dict) -> dict:
+        response = requests.post(
+            f"{self.base_url}/api/provisioning/register",
+            json=payload,
+            headers=self._headers(),
+            timeout=30,
+        )
+        return self._parse_response(response)
+
+    def get_cabinet_config(self, cabinet_id: str, version: int | None = None) -> dict:
+        params = {"version": version} if version is not None else {}
+        response = requests.get(
+            f"{self.base_url}/api/provisioning/config/{cabinet_id}",
+            headers=self._headers(),
+            params=params,
+            timeout=self.timeout,
+        )
+        return self._parse_response(response)
+
+    def confirm_config_applied(self, cabinet_id: str, version: int) -> dict:
+        response = requests.post(
+            f"{self.base_url}/api/provisioning/config/{cabinet_id}/confirm",
+            json={"version": version},
+            headers=self._headers(),
             timeout=self.timeout,
         )
         return self._parse_response(response)
@@ -126,6 +168,12 @@ class ApiClient:
             message = response.text or "Lỗi kết nối máy chủ"
         raise ApiError(message, response.status_code)
 
+    def _headers(self) -> dict:
+        headers = {"Content-Type": "application/json"}
+        if self.jwt_token:
+            headers["Authorization"] = f"Bearer {self.jwt_token}"
+        return headers
+
     def _mock_verify_pin(self, code: str, mode: str | None) -> tuple[RentalData, CompartmentData]:
         if len(code) != 6 or not code.isdigit():
             raise ApiError("Mã phải gồm 6 chữ số", 400)
@@ -143,6 +191,21 @@ class ApiClient:
             expires_at=self._mock_expiry(days=7),
         )
         compartment = CompartmentData(id="A1", name="Tủ A - Ngăn A1", size=size, locker_name="Tủ A")
+        return rental, compartment
+
+    def _mock_verify_qr(self, token: str) -> tuple[RentalData, CompartmentData]:
+        if not token or token == "invalid":
+            raise ApiError("Ma QR khong hop le", 400)
+
+        rental = RentalData(
+            id="mock-rental-qr",
+            pin="847291",
+            compartment_id="A1",
+            compartment_name="A1",
+            expires_at=self._mock_expiry(days=7),
+            qr_data=token,
+        )
+        compartment = CompartmentData(id="A1", name="Tu A - Ngan A1", size="SMALL", locker_name="Tu A")
         return rental, compartment
 
     def _mock_plans(self, size: str | None) -> list[Plan]:

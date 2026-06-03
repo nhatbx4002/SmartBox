@@ -45,59 +45,66 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      {/* Background gradient */}
+      {/* Atmospheric layered orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-info/5 rounded-full blur-3xl" />
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-brand/[0.04] rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-info/[0.03] rounded-full blur-[100px]" />
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[40%] bg-success/[0.02] rounded-full blur-[80px]" />
       </div>
 
       <div className="relative w-full max-w-sm">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-brand flex items-center justify-center mb-4 shadow-lg shadow-brand/20">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20 3H4a1 1 0 00-1 1v16a1 1 0 001 1h16a1 1 0 001-1V4a1 1 0 00-1-1zM8 19H5v-6h3v6zm0-8H5V5h3v6zm5 8h-3v-6h3v6zm0-8h-3V5h3v6zm5 8h-3v-6h3v6zm0-8h-3V5h3v6z" />
-            </svg>
+        <div className="flex flex-col items-center mb-10">
+          <div className="relative mb-5">
+            <div className="w-16 h-16 rounded-2xl bg-brand flex items-center justify-center shadow-[0_0_40px_rgba(255,102,0,0.25)]">
+              <svg className="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20 3H4a1 1 0 00-1 1v16a1 1 0 001 1h16a1 1 0 001-1V4a1 1 0 00-1-1zM8 19H5v-6h3v6zm0-8H5V5h3v6zm5 8h-3v-6h3v6zm0-8h-3V5h3v6zm5 8h-3v-6h3v6zm0-8h-3V5h3v6z" />
+              </svg>
+            </div>
+            <div className="absolute -inset-1 rounded-2xl bg-brand/20 blur-xl -z-10" />
           </div>
-          <h1 className="text-2xl font-bold text-text-primary">SmartBox</h1>
-          <p className="text-text-secondary text-sm mt-1">Admin Dashboard</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">SmartBox</h1>
+          <p className="text-text-muted text-sm mt-1.5">Admin Dashboard</p>
         </div>
 
-        {/* Form Card */}
-        <div className="bg-surface rounded-2xl border border-border p-6 shadow-xl">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Email"
-              type="email"
-              placeholder="admin@smartbox.vn"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-            />
-            <Input
-              label="Mật khẩu"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-            />
+        {/* Refined card with hover glow border */}
+        <div className="relative group">
+          <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-brand/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative bg-surface rounded-2xl border border-border p-7 shadow-[0_8px_40px_rgba(0,0,0,0.45)]">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Input
+                label="Email"
+                type="email"
+                placeholder="admin@smartbox.vn"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+              />
+              <Input
+                label="Mật khẩu"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
 
-            {error && (
-              <div className="bg-error/10 border border-error/20 rounded-lg px-4 py-3">
-                <p className="text-sm text-error">{error}</p>
-              </div>
-            )}
+              {error && (
+                <div className="bg-error/8 border border-error/20 rounded-lg px-4 py-3">
+                  <p className="text-sm text-error">{error}</p>
+                </div>
+              )}
 
-            <Button type="submit" loading={loading} className="w-full" size="lg">
-              {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-            </Button>
-          </form>
+              <Button type="submit" loading={loading} className="w-full" size="lg">
+                {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              </Button>
+            </form>
 
-          <div className="mt-4 text-center">
-            <button className="text-sm text-text-secondary hover:text-brand underline cursor-pointer transition-colors">
-              Quên mật khẩu?
-            </button>
+            <div className="mt-5 pt-5 border-t border-border/50 text-center">
+              <button className="text-sm text-text-muted hover:text-brand cursor-pointer transition-colors duration-150">
+                Quên mật khẩu?
+              </button>
+            </div>
           </div>
         </div>
       </div>

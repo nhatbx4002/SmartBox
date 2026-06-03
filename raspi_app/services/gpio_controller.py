@@ -1,4 +1,6 @@
 from __future__ import annotations
+from pathlib import Path
+import time
 
 try:
     from smbus2 import SMBus
@@ -21,37 +23,69 @@ class GpioController:
         self.lock_state: dict[str, str] = {}
         self.pin_map: dict[str, int] = {}
         self.pin_target_map: dict[str, tuple[int, int, int]] = {}
+        self._mcp_device_registry: dict[str, tuple[int, int]] = {}
+        self._config: dict = {}
 
     def load_from_backend(self, api_client, cabinet_id: str) -> None:
-        cabinets = api_client.get_cabinets_provisioning(cabinet_id)
-        if not cabinets:
-            raise RuntimeError(f"No provisioning data found for cabinet {cabinet_id}")
+        try:
+            config = api_client.get_cabinet_config(cabinet_id)
+            cabinet = {
+                "mcpDevices": config.get("mcpDevices", []),
+                "compartments": config.get("compartments", []),
+            }
+        except Exception:
+            cabinets = api_client.get_cabinets_provisioning(cabinet_id)
+            if not cabinets:
+                raise RuntimeError(f"No provisioning data found for cabinet {cabinet_id}")
+            cabinet = cabinets[0]
 
-        cabinet = cabinets[0]
-        mcp_devices = {
-            str(device["id"]): (int(device["bus"]), int(device["address"]))
-            for device in cabinet.get("mcpDevices", [])
-            if device.get("id") is not None and device.get("bus") is not None and device.get("address") is not None
+        self._cache_mcp_devices(cabinet.get("mcpDevices", []))
+        self.reload_config(cabinet.get("compartments", []))
+
+        print(f"[GPIO] loaded MCP pin targets from backend: {self.pin_target_map}")
+
+    def discover_hardware(self, config: dict) -> dict:
+        self._config = config
+        found_addresses = self._scan_i2c_bus(bus=1)
+        discovered_mcp = [{"bus": 1, "address": int(address), "name": "MCP"} for address in found_addresses]
+
+        return {
+            "hardwareSerial": self._read_cpuinfo_serial(),
+            "firmwareVersion": self._read_firmware_version(),
+            "piModel": self._read_pi_model(),
+            "mcpDevices": discovered_mcp,
         }
 
+    def reload_config(self, compartments: list[dict]) -> None:
         self.pin_map = {}
         self.pin_target_map = {}
-        for compartment in cabinet.get("compartments", []):
+
+        for compartment in compartments:
             if compartment.get("mcp23017PinLock") is None:
                 continue
 
             pin = int(compartment["mcp23017PinLock"])
-            bus, address = self._lock_device_target(compartment, mcp_devices)
-            if compartment.get("name"):
-                key = str(compartment["name"])
-                self.pin_map[key] = pin
-                self.pin_target_map[key] = (bus, address, pin)
-            if compartment.get("id"):
-                key = str(compartment["id"])
-                self.pin_map[key] = pin
-                self.pin_target_map[key] = (bus, address, pin)
+            bus_number, address = self._lock_device_target(compartment, self._mcp_device_registry)
+            for key_field in ("name", "id"):
+                key = str(compartment.get(key_field, ""))
+                if key:
+                    self.pin_map[key] = pin
+                    self.pin_target_map[key] = (bus_number, address, pin)
 
-        print(f"[GPIO] loaded MCP pin targets from backend: {self.pin_target_map}")
+            if not self.mock and SMBus is not None:
+                try:
+                    with SMBus(bus_number) as bus:
+                        self._configure_output(bus, address, pin)
+                except Exception as error:
+                    print(f"[GPIO ERROR] configure output failed for {compartment.get('name')}: {error}")
+
+    def _cache_mcp_devices(self, mcp_devices: list[dict]) -> None:
+        self._mcp_device_registry = {}
+        for device in mcp_devices:
+            device_id = device.get("id")
+            if device_id is None or device.get("bus") is None or device.get("address") is None:
+                continue
+            self._mcp_device_registry[str(device_id)] = (int(device["bus"]), int(device["address"]))
 
     def unlock(self, compartment_id: str, duration: int = 3) -> bool:
         if self.mock:
@@ -69,6 +103,8 @@ class GpioController:
             with SMBus(bus_number) as bus:
                 self._configure_output(bus, address, pin)
                 self._write_pin(bus, address, pin, high=True)
+                time.sleep(duration)
+                self._write_pin(bus, address, pin, high=False)
             return True
         except Exception as error:
             print(f"[GPIO ERROR] unlock failed: {error}")
@@ -116,6 +152,52 @@ class GpioController:
             return mcp_devices[str(lock_device_id)]
 
         raise RuntimeError(f"Missing lock MCP device for compartment {compartment.get('name', compartment.get('id', 'unknown'))}")
+
+    def _read_cpuinfo_serial(self) -> str:
+        try:
+            for line in Path("/proc/cpuinfo").read_text(encoding="utf-8").splitlines():
+                if line.startswith("Serial"):
+                    return line.split(":", 1)[1].strip()
+        except Exception:
+            pass
+        return "UNKNOWN-SERIAL"
+
+    def _read_pi_model(self) -> str:
+        try:
+            return Path("/sys/firmware/devicetree/base/model").read_text(encoding="utf-8").strip("\x00\n ")
+        except Exception:
+            return "Raspberry Pi"
+
+    def _read_firmware_version(self) -> str:
+        try:
+            return Path(__file__).resolve().parents[1].joinpath("VERSION").read_text(encoding="utf-8").strip()
+        except Exception:
+            return "dev"
+
+    def _scan_i2c_bus(self, bus: int = 1) -> list[int]:
+        if self.mock:
+            provision = self._config.get("provision", {})
+            mock_addresses = provision.get("mock_mcp_addresses", [])
+            if mock_addresses:
+                return [int(address) for address in mock_addresses]
+            return [int(device["address"]) for device in self._config.get("mcp_devices", []) if device.get("address") is not None]
+
+        if SMBus is None:
+            print("[GPIO ERROR] smbus2 is not installed")
+            return []
+
+        found: list[int] = []
+        try:
+            with SMBus(bus) as i2c_bus:
+                for address in range(0x20, 0x28):
+                    try:
+                        i2c_bus.read_byte(address)
+                        found.append(address)
+                    except Exception:
+                        pass
+        except Exception as error:
+            print(f"[GPIO ERROR] I2C scan failed: {error}")
+        return found
 
     def _target_for_compartment(self, compartment_id: str) -> tuple[int, int, int]:
         target = self.pin_target_map.get(compartment_id)

@@ -3,7 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QLabel, QPushButton
 
-from screens.base import BaseController
+from screens.base import BaseController, process_events
 from services.api_client import ApiError
 from services.config_loader import get_config_value
 
@@ -34,6 +34,7 @@ class LockerOpenController(BaseController):
 
         self.compartment_id = self._compartment_key()
         self.finished = False
+        self.unlock_attempts = 0
         self.remaining = int(get_config_value(self.config, "app.countdown_open", 60))
         size_text = "Size 1 (Nhỏ)" if compartment.size == "SMALL" else "Size 2 (Lớn)"
 
@@ -46,17 +47,39 @@ class LockerOpenController(BaseController):
             "Vui lòng lấy đồ và đóng cửa thật kỹ" if is_pickup else "Vui lòng bỏ đồ vào tủ rồi đóng cửa thật kỹ"
         )
         self.finish_button.setEnabled(True)
+        self.finish_button.setText("HOÀN THÀNH")
         self.timer_label.setStyleSheet("")
         self._render_timer()
 
-        print(f"[locker_open] opening compartment key={self.compartment_id}")
+        self._attempt_unlock()
+
+    def _attempt_unlock(self) -> None:
+        self.unlock_attempts += 1
+        print(f"[locker_open] opening compartment key={self.compartment_id} (attempt {self.unlock_attempts})")
         opened = self.gpio_controller.unlock(self.compartment_id, duration=3)
         print(f"[locker_open] gpio unlock result={opened}")
-        self.mqtt_client.publish_unlock(self.compartment_id, duration=3)
-        rental_id = self.state.rental_data.id if self.state.rental_data else None
-        if rental_id:
-            self.mqtt_client.publish_door_opened(self.compartment_id, rental_id)
-        self.timer.start(1000)
+
+        if opened:
+            self.hide_error_dialog()
+            self.mqtt_client.publish_unlock(self.compartment_id, duration=3)
+            rental_id = self.state.rental_data.id if self.state.rental_data else None
+            if rental_id:
+                self.mqtt_client.publish_door_opened(self.compartment_id, rental_id)
+            self.timer.start(1000)
+        else:
+            if self.unlock_attempts < 3:
+                self.show_error_dialog(
+                    message=f"Không thể kích hoạt mở khóa tủ (Lần thử {self.unlock_attempts}/3). Vui lòng kiểm tra lại thiết bị.",
+                    title="LỖI PHẦN CỨNG",
+                    on_retry=self._attempt_unlock,
+                )
+            else:
+                self.timer.stop()
+                self.navigate("/error", {
+                    "title": "Lỗi phần cứng nghiêm trọng",
+                    "message": f"Kích hoạt mở khóa khoang tủ {self.compartment_id} thất bại sau 3 lần thử liên tiếp. GPIO không hoạt động.",
+                    "retry_route": "/",
+                }, replace=True)
 
     def on_exit(self) -> None:
         self.timer.stop()
@@ -75,20 +98,33 @@ class LockerOpenController(BaseController):
     def _finish(self) -> None:
         if self.finished:
             return
-        self.finished = True
-        self.finish_button.setEnabled(False)
         self.timer.stop()
         if self.compartment_id:
             self.gpio_controller.lock(self.compartment_id)
             self.mqtt_client.publish_lock(self.compartment_id)
 
-        # Pickup mode: mark rental as complete so compartment becomes AVAILABLE
+        self._complete_rental_action()
+
+    def _complete_rental_action(self) -> None:
         if self.state.mode == "pickup" and self.state.rental_data:
+            self.finish_button.setEnabled(False)
+            self.finish_button.setText("ĐANG HOÀN THÀNH...")
+            process_events()
             try:
                 self.api_client.complete_rental(self.state.rental_data.id)
-            except ApiError as e:
+                self.hide_error_dialog()
+            except Exception as e:
                 print(f"[locker_open] complete_rental failed: {e}")
+                self.finish_button.setEnabled(True)
+                self.finish_button.setText("HOÀN THÀNH")
+                self.show_error_dialog(
+                    message=str(e) or "Không thể đồng bộ trạng thái hoàn thành lên máy chủ.",
+                    title="LỖI ĐỒNG BỘ",
+                    on_retry=self._complete_rental_action,
+                )
+                return
 
+        self.finished = True
         self.state.reset_all()
         self.go_home()
 

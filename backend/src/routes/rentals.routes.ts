@@ -4,7 +4,7 @@ import { CompartmentSize, PaymentMethod } from '../generated/prisma';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate } from '../middleware/validate';
 import { verifyPin } from '../services/auth.service';
-import { completeRental, createRental, getByCode, handleUnlock } from '../services/rental.service';
+import { completeRental, createRental, getByCode, handleUnlock, verifyQrRental } from '../services/rental.service';
 
 const router = Router();
 
@@ -19,6 +19,10 @@ const createRentalSchema = z.object({
 const verifyPinSchema = z.object({
   code: z.string().length(6).regex(/^\d+$/),
   mode: z.enum(['deposit', 'pickup']).optional().nullable(),
+});
+
+const verifyQrSchema = z.object({
+  token: z.string().min(1),
 });
 
 router.post(
@@ -37,6 +41,30 @@ router.post(
         size: result.compartment.size,
         expiresAt: result.rental.expiresAt,
         qrData: result.rental.qrToken,
+      },
+    });
+  }),
+);
+
+router.post(
+  '/verify-qr',
+  validate(verifyQrSchema),
+  asyncHandler(async (req, res) => {
+    const result = await verifyQrRental(req.body.token);
+    res.json({
+      data: {
+        id: result.rental.id,
+        rentalId: result.rental.id,
+        pin: result.rental.code,
+        compartmentId: result.compartment.id,
+        compartmentName: result.compartment.name,
+        lockerName: result.compartment.cabinet.name,
+        size: result.compartment.size,
+        expiresAt: result.rental.expiresAt,
+        qrData: result.rental.qrToken,
+        authorized: true,
+        rental: result.rental,
+        compartment: result.compartment,
       },
     });
   }),

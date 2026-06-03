@@ -49,19 +49,27 @@ class RentPlanController(BaseController):
         size_text = "Size 1 (Nhỏ)" if self.state.selected_size == "SMALL" else "Size 2 (Lớn)"
         self.selected_size_label.setText(f"Bạn đã chọn {size_text}")
         self._load_plans()
-        self._apply_group_layout()
-        self._apply_selection()
 
     def _load_plans(self) -> None:
-        plans = self.api_client.get_plans(self.state.selected_size)
-        self.plans_by_id = {plan.id: plan for plan in plans}
-        for plan_id, button in self.plan_buttons.items():
-            plan = self.plans_by_id.get(plan_id)
-            if plan is None:
-                button.setEnabled(False)
-                continue
-            button.setEnabled(True)
-            button.setText(f"{plan.name}\n{format_currency(plan.price)}")
+        try:
+            plans = self.api_client.get_plans(self.state.selected_size)
+            self.plans_by_id = {plan.id: plan for plan in plans}
+            for plan_id, button in self.plan_buttons.items():
+                plan = self.plans_by_id.get(plan_id)
+                if plan is None:
+                    button.setEnabled(False)
+                    continue
+                button.setEnabled(True)
+                button.setText(f"{plan.name}\n{format_currency(plan.price)}")
+            self.hide_error_dialog()
+            self._apply_group_layout()
+            self._apply_selection()
+        except Exception as error:
+            self.show_error_dialog(
+                message=str(error) or "Không thể tải danh sách gói thuê. Vui lòng thử lại.",
+                title="LỖI TẢI GÓI THUÊ",
+                on_retry=self._load_plans,
+            )
 
     def _select_plan(self, plan_id: str) -> None:
         plan = self.plans_by_id.get(plan_id)

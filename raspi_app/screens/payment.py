@@ -3,6 +3,7 @@ from __future__ import annotations
 from PySide6.QtWidgets import QLabel, QPushButton
 
 from screens.base import BaseController, process_events
+from screens.inline_error import InlineError
 from services.api_client import ApiError
 from services.formatters import format_currency
 
@@ -23,6 +24,10 @@ class PaymentController(BaseController):
         }
         self.button_styles = {method: button.styleSheet() for method, button in self.method_buttons.items()}
 
+        # Embedded inline error banner placed in the empty space below payment options
+        self.error_banner = InlineError(self.widget)
+        self.error_banner.setGeometry(20, 720, 680, 64)
+
         self.child("btnBack", QPushButton).clicked.connect(lambda: self.navigate("/rent-phone"))
         self.pay_button.clicked.connect(self._pay_now)
         for method, button in self.method_buttons.items():
@@ -33,6 +38,7 @@ class PaymentController(BaseController):
             self.navigate("/rent-plan", replace=True)
             return
 
+        self.error_banner.clear()
         self.amount_label.setText(format_currency(self.state.selected_plan.price))
         size_text = "Size 1" if self.state.selected_size == "SMALL" else "Size 2"
         self.plan_info_label.setText(f"{size_text} - {self.state.selected_plan.name}")
@@ -40,6 +46,7 @@ class PaymentController(BaseController):
         self._apply_selection()
 
     def _select_method(self, method: str) -> None:
+        self.error_banner.clear()
         self.state.payment_method = method
         self._apply_selection()
 
@@ -50,10 +57,15 @@ class PaymentController(BaseController):
             if selected:
                 style += "\nbackground-color: #2E7D32; color: white; border: 3px solid #FF6600;"
             button.setStyleSheet(style)
-        self.pay_button.setEnabled(self.state.payment_method is not None)
+        # Always keep pay button enabled so user can click and receive validation feedback
+        self.pay_button.setEnabled(True)
 
     def _pay_now(self) -> None:
-        if not self.state.selected_plan or not self.state.payment_method:
+        self.error_banner.clear()
+        if not self.state.payment_method:
+            self.error_banner.show_error("Chưa chọn phương thức thanh toán")
+            return
+        if not self.state.selected_plan:
             return
 
         self.pay_button.setEnabled(False)
@@ -67,11 +79,15 @@ class PaymentController(BaseController):
                 payment_method=self.state.payment_method,
                 cabinet_id=getattr(self.app, "cabinet_id", None),
             )
+            self.hide_error_dialog()
         except ApiError as error:
-            self._show_payment_error(error.message)
+            if error.status_code and 400 <= error.status_code < 500:
+                self._show_payment_error(error.message)
+            else:
+                self._show_payment_error_dialog(error.message or "Lỗi hệ thống khi tạo đơn thuê.")
             return
         except Exception as error:
-            self._show_payment_error(f"Lỗi kết nối: {error}")
+            self._show_payment_error_dialog(str(error) or "Không thể kết nối đến máy chủ.")
             return
 
         self.state.rental_data = rental
@@ -79,6 +95,16 @@ class PaymentController(BaseController):
         self.navigate("/rent-success")
 
     def _show_payment_error(self, message: str) -> None:
-        self.plan_info_label.setText(f"Không thể thanh toán: {message}")
+        self.error_banner.show_error(message)
         self.pay_button.setText(self.pay_button_text)
         self.pay_button.setEnabled(True)
+
+    def _show_payment_error_dialog(self, message: str) -> None:
+        self.pay_button.setText(self.pay_button_text)
+        self.pay_button.setEnabled(True)
+        self.show_error_dialog(
+            message=message,
+            title="LỖI GIAO DỊCH",
+            on_retry=self._pay_now,
+        )
+

@@ -2,30 +2,148 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   CSS Custom Properties — design tokens (dark-only theme)
+   ============================================================ */
+:root {
+  --color-brand: #FF6600;
+  --color-brand-hover: #FF8533;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --duration-fast: 100ms;
+  --duration-base: 200ms;
+  --duration-slow: 350ms;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Base — reset & global
+   ============================================================ */
 @layer base {
-  * {
-    @apply border-border;
+  *,
+  *::before,
+  *::after {
+    @apply border-border-subtle;
   }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
   body {
-    @apply bg-background text-text-primary font-sans antialiased;
+    @apply bg-background text-text-primary font-sans;
+    font-size: 0.875rem;
+    line-height: 1.5;
   }
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+
+  /* ============================================================
+     Scrollbar — styled, cross-browser
+     ============================================================ */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #333333 transparent;
   }
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+
+  *::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
   }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-text-muted;
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #333333;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    background-clip: content-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #484848;
+    background-clip: content-box;
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Firefox thin scrollbar hover */
+  *:hover {
+    scrollbar-width: thin;
+    scrollbar-color: #484848 transparent;
+  }
+
+  /* ============================================================
+     Selection
+     ============================================================ */
+  ::selection {
+    background-color: rgba(255, 102, 0, 0.25);
+    color: #ffffff;
+  }
+
+  ::-moz-selection {
+    background-color: rgba(255, 102, 0, 0.25);
+    color: #ffffff;
+  }
+
+  /* ============================================================
+     Focus visible — styled ring, never removed
+     ============================================================ */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ============================================================
+     Typography resets
+     ============================================================ */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    line-height: 1.6;
+  }
+
+  code, kbd, samp, pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.875em;
+  }
+
+  /* ============================================================
+     Reduced motion — collapse everything to instant
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
+/* ============================================================
+   Components — reusable utilities
+   ============================================================ */
 @layer components {
-  .animate-shimmer {
+
+  /* ── Skeleton / shimmer loader ── */
+  .skeleton {
     background: linear-gradient(
       90deg,
       #1C1B1B 25%,
@@ -33,19 +151,199 @@
       #1C1B1B 75%
     );
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+  }
+
+  @keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── Surface cards ── */
+  .card {
+    @apply bg-surface-2 border border-border rounded-radius-lg;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.25);
+  }
+
+  .card-elevated {
+    @apply bg-surface-3 border border-border rounded-radius-xl;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.35),
+      0 4px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* ── Status indicators ── */
+  .status-dot {
+    @apply inline-block w-2 h-2 rounded-full;
+  }
+
+  .status-dot--online  { @apply bg-online; box-shadow: 0 0 6px rgba(0, 255, 65, 0.6); }
+  .status-dot--offline { @apply bg-text-muted; }
+  .status-dot--warning { @apply bg-warning; box-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
+  .status-dot--error   { @apply bg-error; box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
+
+  /* ── Pulse animation for live indicators ── */
+  .pulse-live {
+    animation: pulse-live 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-live {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  /* ── Brand badge ── */
+  .badge-brand {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-radius-full;
+    @apply text-label-xs font-medium;
+    background-color: rgba(255, 102, 0, 0.12);
+    color: #FF6600;
+    border: 1px solid rgba(255, 102, 0, 0.2);
+  }
+
+  /* ── Semantic badges ── */
+  .badge-success {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-radius-full text-label-xs font-medium;
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-radius-full text-label-xs font-medium;
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #F59E0B;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+
+  .badge-error {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-radius-full text-label-xs font-medium;
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  .badge-info {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-radius-full text-label-xs font-medium;
+    background-color: rgba(59, 130, 246, 0.12);
+    color: #3B82F6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  .badge-neutral {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-radius-full text-label-xs font-medium;
+    background-color: rgba(156, 163, 175, 0.1);
+    color: #9CA3AF;
+    border: 1px solid rgba(156, 163, 175, 0.15);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    @apply w-full h-px border-0;
+    background: linear-gradient(90deg, transparent, #333333 20%, #333333 80%, transparent);
+  }
+
+  /* ── Section label (uppercase eyebrow) ── */
+  .section-label {
+    @apply text-label-xs font-medium uppercase tracking-widest;
+    color: #6B7280;
+  }
+
+  /* ── Glass overlay ── */
+  .glass {
+    @apply bg-surface-2/80 backdrop-blur-md border border-white/10 rounded-radius-xl;
+    background: rgba(28, 27, 27, 0.8) !important;
+  }
+
+  /* ── Gradient text ── */
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #FF6600, #FF8533, #FFB596);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Transition helpers ── */
+  .transition-base {
+    transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .transition-smooth {
+    transition: all 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ── Stagger animation helpers ── */
+  .stagger-item {
+    opacity: 0;
+  }
+
+  .stagger-item.is-visible {
+    animation: staggerIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+/* ============================================================
+   Utilities — one-offs
+   ============================================================ */
+@layer utilities {
 
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  /* Prevent text selection on UI chrome */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Truncate with ellipsis */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Glow effects */
+  .glow-brand {
+    box-shadow: 0 0 0 1px rgba(255, 102, 0, 0.3), 0 0 16px rgba(255, 102, 0, 0.15);
+  }
+
+  .glow-online {
+    box-shadow: 0 0 0 1px rgba(0, 255, 65, 0.3), 0 0 12px rgba(0, 255, 65, 0.2);
+  }
+
+  /* Cursor helpers */
+  .cursor-grab  { cursor: grab; }
+  .cursor-grabbing { cursor: grabbing; }
+  .cursor-crosshair { cursor: crosshair; }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Number / tabular figures */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  /* Backdrop blur fallback for non-supporting browsers */
+  @supports not (backdrop-filter: blur(1px)) {
+    .glass,
+    .glass-elevated {
+      background: rgba(28, 27, 27, 0.95) !important;
+    }
   }
 }

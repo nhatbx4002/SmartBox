@@ -10,6 +10,7 @@ import {
   LocationsPage,
   NotificationsPage,
   AuditLogsPage,
+  ProfilesPage,
 } from '@/pages'
 
 export default function App() {
@@ -20,6 +21,8 @@ export default function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/cabinets" element={<CabinetListPage />} />
         <Route path="/cabinets/:id" element={<CabinetDetailPage />} />
+        <Route path="/profiles" element={<ProfilesPage />} />
+        <Route path="/profiles/:id" element={<ProfilesPage />} />
         <Route path="/rentals" element={<RentalsPage />} />
         <Route path="/rentals/:id" element={<RentalDetailPage />} />
         <Route path="/locations" element={<LocationsPage />} />

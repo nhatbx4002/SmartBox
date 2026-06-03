@@ -9,7 +9,10 @@ const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const admin_locations_routes_1 = __importDefault(require("./routes/admin.locations.routes"));
+const admin_profiles_routes_1 = __importDefault(require("./routes/admin.profiles.routes"));
 const audit_routes_1 = __importDefault(require("./routes/audit.routes"));
+const admin_cabinets_routes_1 = __importDefault(require("./routes/admin.cabinets.routes"));
+const admin_compartments_routes_1 = __importDefault(require("./routes/admin.compartments.routes"));
 const cabinets_routes_1 = __importDefault(require("./routes/cabinets.routes"));
 const dashboard_routes_1 = __importDefault(require("./routes/dashboard.routes"));
 const locations_routes_1 = __importDefault(require("./routes/locations.routes"));
@@ -56,8 +59,11 @@ async function bootstrap() {
             next(error);
         }
     });
+    app.use('/api/admin/cabinets', admin_cabinets_routes_1.default);
     app.use('/api/admin/cabinets', cabinets_routes_1.default);
+    app.use('/api/admin/compartments', admin_compartments_routes_1.default);
     app.use('/api/admin/locations', admin_locations_routes_1.default);
+    app.use('/api/admin/profiles', admin_profiles_routes_1.default);
     app.use('/api/public/locations', locations_routes_1.default);
     app.use('/api/admin/rentals', rentals_admin_routes_1.default);
     app.use('/api/audit-logs', audit_routes_1.default);

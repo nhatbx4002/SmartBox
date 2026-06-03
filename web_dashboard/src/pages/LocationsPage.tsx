@@ -130,17 +130,28 @@ export default function LocationsPage() {
         </Button>
       </div>
 
-      <Select
-        value={statusFilter}
-        onValueChange={setStatusFilter}
-        placeholder="Status: All"
-        options={[
-          { value: '', label: 'All statuses' },
-          { value: 'ACTIVE', label: 'Active' },
-          { value: 'INACTIVE', label: 'Inactive' },
-        ]}
-        className="w-44"
-      />
+      <div className="bg-surface rounded-xl border border-border p-4">
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-medium text-text-muted uppercase tracking-wide">Bộ lọc</span>
+          <div className="w-px h-5 bg-border" />
+          <Select
+            value={statusFilter}
+            onValueChange={setStatusFilter}
+            placeholder="Status: All"
+            options={[
+              { value: '', label: 'All statuses' },
+              { value: 'ACTIVE', label: 'Active' },
+              { value: 'INACTIVE', label: 'Inactive' },
+            ]}
+            className="w-44"
+          />
+          {statusFilter && (
+            <button onClick={() => setStatusFilter('')} className="text-xs text-brand hover:text-brand-hover cursor-pointer transition-colors">
+              Xóa lọc
+            </button>
+          )}
+        </div>
+      </div>
 
       <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <DataTable
@@ -156,31 +167,31 @@ export default function LocationsPage() {
         open={modalOpen}
         onOpenChange={(open) => { if (!open) resetForm(); setModalOpen(open) }}
         title={editingLocation ? 'Edit location' : 'Add location'}
-        size="lg"
+        size="md"
       >
-        <div className="space-y-4">
+        <div className="space-y-5">
           <Input
-            label="Location name *"
+            label="Location name"
             value={form.name}
             onChange={(event) => setForm({ ...form, name: event.target.value })}
             placeholder="UVerse SGU"
           />
           <Input
-            label="Address *"
+            label="Address"
             value={form.address}
             onChange={(event) => setForm({ ...form, address: event.target.value })}
             placeholder="273 An Duong Vuong, Q.5, TP.HCM"
           />
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Lat"
+              label="Latitude"
               type="number"
               value={form.lat}
               onChange={(event) => setForm({ ...form, lat: event.target.value })}
               placeholder="10.7629"
             />
             <Input
-              label="Lng"
+              label="Longitude"
               type="number"
               value={form.lng}
               onChange={(event) => setForm({ ...form, lng: event.target.value })}

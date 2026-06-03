@@ -174,23 +174,33 @@ export default function RentalsPage() {
         <h2 className="text-lg font-semibold text-text-primary">Rentals</h2>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <div className="flex-1 min-w-64">
-          <Input
-            placeholder="Search code, phone, cabinet..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
+      <div className="bg-surface rounded-xl border border-border p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex-1 min-w-48">
+            <Input
+              placeholder="Search code, phone, cabinet..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+          <Select
+            value={statusFilter}
+            onValueChange={setStatusFilter}
+            placeholder="Status: All"
+            options={statusOptions}
+            className="w-40"
           />
+          <Input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} className="w-40" />
+          <Input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} className="w-40" />
+          {(search || statusFilter || startDate || endDate) && (
+            <button
+              onClick={() => { setSearch(''); setStatusFilter(''); setStartDate(''); setEndDate('') }}
+              className="text-xs text-brand hover:text-brand-hover cursor-pointer transition-colors"
+            >
+              Xóa lọc
+            </button>
+          )}
         </div>
-        <Select
-          value={statusFilter}
-          onValueChange={setStatusFilter}
-          placeholder="Status: All"
-          options={statusOptions}
-          className="w-40"
-        />
-        <Input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} className="w-40" />
-        <Input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} className="w-40" />
       </div>
 
       <div className="bg-surface rounded-xl border border-border overflow-hidden">
@@ -207,8 +217,8 @@ export default function RentalsPage() {
         />
       </div>
 
-      <div className="flex items-center justify-between text-sm text-text-muted">
-        <span>Showing {rentalsData.length} / {rentals.length} results</span>
+      <div className="flex items-center justify-between text-sm text-text-muted px-1">
+        <span>Showing {rentalsData.length} of {rentals.length} rentals</span>
       </div>
     </div>
   )

@@ -11,6 +11,8 @@ import type {
   Notification,
   NotificationType,
   PaymentStatus,
+  ProvisioningConfig,
+  ProvisionProfile,
   Rental,
   RentalEvent,
 } from '@/types'
@@ -19,7 +21,14 @@ interface ApiEnvelope<T> {
   data: T
 }
 
-type BackendCabinetStatus = 'ACTIVE' | 'INACTIVE' | 'OFFLINE'
+type BackendCabinetStatus =
+  | 'ACTIVE'
+  | 'INACTIVE'
+  | 'OFFLINE'
+  | 'DRAFT'
+  | 'PENDING_REGISTRATION'
+  | 'PENDING_PROVISION'
+  | 'PROVISION_FAILED'
 type BackendPaymentStatus = 'PENDING' | 'PAID' | 'REFUNDED' | 'FAILED'
 
 interface BackendCompartment {
@@ -40,9 +49,48 @@ interface BackendCabinet {
   locationId: string
   status: BackendCabinetStatus
   lastHeartbeatAt?: string | null
+  provisionCode?: string | null
+  provisionCodeExpires?: string | null
+  configVersion?: number
+  hardwareSerial?: string | null
   location?: { name?: string } | null
   mcpDevices?: unknown[]
   compartments?: BackendCompartment[]
+  profile?: { id: string; name: string } | null
+}
+
+interface BackendProvisionMcpDevice {
+  id: string
+  bus: number
+  address: number
+  role: 'SENSOR' | 'LOCK'
+  name?: string | null
+}
+
+interface BackendProvisionProfile {
+  id: string
+  name: string
+  provisionKey: string
+  provisionSecret?: string | null
+  mode: ProvisionProfile['mode']
+  isActive: boolean
+  templateRows: number
+  templateCols: number
+  templateSizes: string | Compartment['size'][][]
+  mcpDevices: BackendProvisionMcpDevice[]
+  _count?: { cabinets?: number }
+  createdAt: string
+  updatedAt: string
+}
+
+interface BackendProvisioningConfig {
+  id?: string
+  strategy: string
+  provisionKey: string
+  provisionSecret?: string | null
+  webhookUrl?: string | null
+  isActive: boolean
+  updatedAt?: string
 }
 
 interface BackendLocation {
@@ -140,8 +188,45 @@ async function unwrap<T>(request: Promise<{ data: ApiEnvelope<T> }>): Promise<T>
 }
 
 function mapCabinetStatus(status: BackendCabinetStatus): CabinetStatus {
-  if (status === 'ACTIVE') return 'ONLINE'
-  return status
+  const map: Record<BackendCabinetStatus, CabinetStatus> = {
+    ACTIVE: 'ONLINE',
+    INACTIVE: 'INACTIVE',
+    OFFLINE: 'OFFLINE',
+    DRAFT: 'DRAFT',
+    PENDING_REGISTRATION: 'PENDING_REGISTRATION',
+    PENDING_PROVISION: 'PENDING_PROVISION',
+    PROVISION_FAILED: 'PROVISION_FAILED',
+  }
+  return map[status] ?? 'INACTIVE'
+}
+
+function mapTemplateSizes(templateSizes: BackendProvisionProfile['templateSizes']): Compartment['size'][][] {
+  return Array.isArray(templateSizes) ? templateSizes : (JSON.parse(templateSizes) as Compartment['size'][][])
+}
+
+function mapProfile(profile: BackendProvisionProfile): ProvisionProfile {
+  const sizes = mapTemplateSizes(profile.templateSizes)
+  return {
+    id: profile.id,
+    name: profile.name,
+    provisionKey: profile.provisionKey,
+    provisionSecret: profile.provisionSecret,
+    mode: profile.mode,
+    isActive: profile.isActive,
+    templateRows: profile.templateRows,
+    templateCols: profile.templateCols,
+    templateSizes: sizes,
+    mcpDevices: profile.mcpDevices.map((d) => ({
+      id: d.id,
+      bus: d.bus,
+      address: d.address,
+      role: d.role,
+      name: d.name ?? undefined,
+    })),
+    cabinetCount: profile._count?.cabinets ?? 0,
+    createdAt: profile.createdAt,
+    updatedAt: profile.updatedAt,
+  }
 }
 
 function mapPaymentStatus(status: BackendPaymentStatus): PaymentStatus {
@@ -181,7 +266,24 @@ function mapCabinet(cabinet: BackendCabinet): Cabinet {
     availableCompartments: compartments.filter((compartment) => compartment.status === 'AVAILABLE').length,
     totalCompartments: compartments.length,
     mcpDevices: cabinet.mcpDevices?.length ?? 0,
+    provisionCode: cabinet.provisionCode ?? null,
+    provisionCodeExpires: cabinet.provisionCodeExpires ?? null,
+    configVersion: cabinet.configVersion,
+    hardwareSerial: cabinet.hardwareSerial ?? null,
+    profile: cabinet.profile ?? null,
     compartments: compartments.map((compartment) => mapCompartment(compartment, cabinet.name)),
+  }
+}
+
+function mapProvisioningConfig(config: BackendProvisioningConfig): ProvisioningConfig {
+  return {
+    id: config.id,
+    strategy: config.strategy,
+    provisionKey: config.provisionKey,
+    provisionSecret: config.provisionSecret ?? null,
+    webhookUrl: config.webhookUrl ?? null,
+    isActive: config.isActive,
+    updatedAt: config.updatedAt,
   }
 }
 
@@ -349,4 +451,25 @@ export const auditApi = {
       ...result,
       items: result.items.map(mapAuditLog),
     })),
+}
+
+export const profilesApi = {
+  list: () =>
+    unwrap<BackendProvisionProfile[]>(api.get('/admin/profiles')).then((items) => items.map(mapProfile)),
+  get: (id: string) =>
+    unwrap<BackendProvisionProfile>(api.get(`/admin/profiles/${id}`)).then(mapProfile),
+  create: (data: unknown) =>
+    unwrap<BackendProvisionProfile>(api.post('/admin/profiles', data)).then(mapProfile),
+  update: (id: string, data: unknown) =>
+    unwrap<BackendProvisionProfile>(api.put(`/admin/profiles/${id}`, data)).then(mapProfile),
+  delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/profiles/${id}`)),
+}
+
+export const provisioningApi = {
+  getConfig: () =>
+    unwrap<BackendProvisioningConfig>(api.get('/provisioning/config')).then(mapProvisioningConfig),
+  updateConfig: (data: unknown) =>
+    unwrap<BackendProvisioningConfig>(api.put('/provisioning/config', data)).then(mapProvisioningConfig),
+  listCabinets: (params?: { cabinetId?: string }) =>
+    unwrap<BackendCabinet[]>(api.get('/provisioning/cabinets', { params })).then((items) => items.map(mapCabinet)),
 }

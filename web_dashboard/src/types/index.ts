@@ -26,7 +26,50 @@ export interface Compartment {
   doorStatus?: 'OPEN' | 'CLOSED'
 }
 
-export type CabinetStatus = 'ONLINE' | 'OFFLINE' | 'INACTIVE'
+export type CabinetStatus =
+  | 'ACTIVE' | 'ONLINE'
+  | 'OFFLINE'
+  | 'INACTIVE'
+  | 'PENDING_REGISTRATION'
+  | 'PENDING_PROVISION'
+  | 'PROVISION_FAILED'
+  | 'DRAFT'
+
+export type ProvisionMode = 'CHECK_EXISTING' | 'ALLOW_NEW'
+
+export interface ProvisionMcpDevice {
+  id: string
+  bus: number
+  address: number
+  role: 'SENSOR' | 'LOCK'
+  name?: string
+}
+
+export interface ProvisionProfile {
+  id: string
+  name: string
+  provisionKey: string
+  provisionSecret?: string | null
+  mode: ProvisionMode
+  isActive: boolean
+  templateRows: number
+  templateCols: number
+  templateSizes: CompartmentSize[][]
+  mcpDevices: ProvisionMcpDevice[]
+  cabinetCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ProvisioningConfig {
+  id?: string
+  strategy: string
+  provisionKey: string
+  provisionSecret?: string | null
+  webhookUrl?: string | null
+  isActive: boolean
+  updatedAt?: string
+}
 
 export interface Cabinet {
   id: string
@@ -38,6 +81,11 @@ export interface Cabinet {
   availableCompartments: number
   totalCompartments: number
   mcpDevices: number
+  provisionCode?: string | null
+  provisionCodeExpires?: string | null
+  configVersion?: number
+  hardwareSerial?: string | null
+  profile?: { id: string; name: string } | null
   compartments?: Compartment[]
 }
 

@@ -31,8 +31,14 @@ export declare function verifyPin(code: string): Promise<{
                 createdAt: Date;
                 updatedAt: Date;
                 status: import("../generated/prisma").$Enums.CabinetStatus;
-                locationId: string;
+                profileId: string | null;
                 lastHeartbeatAt: Date | null;
+                provisionCode: string | null;
+                provisionCodeExpires: Date | null;
+                configVersion: number;
+                hardwareSerial: string | null;
+                notes: string | null;
+                locationId: string;
             };
             realtimeStatus: {
                 id: string;
@@ -49,6 +55,8 @@ export declare function verifyPin(code: string): Promise<{
             status: import("../generated/prisma").$Enums.CompartmentAvailability;
             cabinetId: string;
             size: import("../generated/prisma").$Enums.CompartmentSize;
+            rowIndex: number;
+            colIndex: number;
             mcp23017PinLock: number;
             mcp23017PinSensor: number;
             lockMcpDeviceId: string | null;
@@ -61,11 +69,11 @@ export declare function verifyPin(code: string): Promise<{
             updatedAt: Date;
             maxOpens: number | null;
             size: import("../generated/prisma").$Enums.CompartmentSize;
+            isActive: boolean;
             description: string | null;
             rentalType: import("../generated/prisma").$Enums.RentalType;
             price: number;
             durationDays: number;
-            isActive: boolean;
         };
     } & {
         id: string;
@@ -92,8 +100,14 @@ export declare function verifyPin(code: string): Promise<{
             createdAt: Date;
             updatedAt: Date;
             status: import("../generated/prisma").$Enums.CabinetStatus;
-            locationId: string;
+            profileId: string | null;
             lastHeartbeatAt: Date | null;
+            provisionCode: string | null;
+            provisionCodeExpires: Date | null;
+            configVersion: number;
+            hardwareSerial: string | null;
+            notes: string | null;
+            locationId: string;
         };
         realtimeStatus: {
             id: string;
@@ -110,6 +124,8 @@ export declare function verifyPin(code: string): Promise<{
         status: import("../generated/prisma").$Enums.CompartmentAvailability;
         cabinetId: string;
         size: import("../generated/prisma").$Enums.CompartmentSize;
+        rowIndex: number;
+        colIndex: number;
         mcp23017PinLock: number;
         mcp23017PinSensor: number;
         lockMcpDeviceId: string | null;

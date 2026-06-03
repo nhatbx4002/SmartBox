@@ -9,6 +9,8 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QApplication, QLabel, QWidget
 
+from services.config_loader import get_config_value
+
 WidgetT = TypeVar("WidgetT", bound=QWidget)
 
 
@@ -18,7 +20,13 @@ class BaseController:
         self.route = route
         self.ui_file = ui_file
         self._click_filters: list[QObject] = []
+        self._network_status = "OFFLINE"
+        self._footer_widget: QWidget | None = None
+        self._footer_status_label: QLabel | None = None
+        self._footer_status_dot: QWidget | None = None
         self.widget = self._load_ui(ui_file)
+        self._attach_footer()
+        self._bind_network_monitor()
 
     @property
     def state(self):
@@ -39,6 +47,13 @@ class BaseController:
     @property
     def gpio_controller(self):
         return self.app.gpio_controller
+
+    @property
+    def network_status(self) -> str:
+        monitor = getattr(self.app, "network_monitor", None)
+        if monitor is not None:
+            return getattr(monitor, "current_status", "OFFLINE")
+        return self._network_status
 
     def on_enter(self, data: dict | None = None) -> None:
         pass
@@ -92,6 +107,61 @@ class BaseController:
         self._restore_file_pixmaps(widget, path)
         return widget
 
+    def _attach_footer(self) -> None:
+        footer = self.widget.findChild(QWidget, "DashboardFooterFrame")
+        if footer is None:
+            footer_path = Path(__file__).resolve().parents[1] / "ui" / "components" / "Footers.ui"
+            if not footer_path.exists():
+                return
+
+            loader = QUiLoader()
+            footer = loader.load(str(footer_path), self.widget)
+            if footer is None:
+                return
+
+        footer.setParent(self.widget)
+        footer.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        footer.setGeometry(0, self.widget.height() - 48, self.widget.width(), 48)
+        footer.raise_()
+        self._footer_widget = footer
+        version_label = footer.findChild(QLabel, "FooterVersionLabel")
+        if version_label is not None:
+            version_label.setText("Version v1.0")
+        self._footer_status_label = footer.findChild(QLabel, "FooterStatusLabel")
+        self._footer_status_dot = footer.findChild(QWidget, "FooterStatusDot")
+        self._apply_network_status(self.network_status)
+
+    def _bind_network_monitor(self) -> None:
+        monitor = getattr(self.app, "network_monitor", None)
+        if monitor is None:
+            self._apply_network_status(self.network_status)
+            return
+
+        try:
+            monitor.status_changed.connect(self._apply_network_status)
+        except Exception:
+            pass
+        self._apply_network_status(getattr(monitor, "current_status", "OFFLINE"))
+
+    def _apply_network_status(self, status: str) -> None:
+        normalized = (status or "OFFLINE").upper()
+        self._network_status = normalized
+
+        color = "#00FF41" if normalized == "ONLINE" else "#EF4444"
+
+        if self._footer_status_label is not None:
+            self._footer_status_label.setText(normalized)
+            self._footer_status_label.setStyleSheet(
+                "background-color: transparent; border: none; "
+                f"color: {color}; font-family: 'Be Vietnam Pro', 'Arial', sans-serif; "
+                "font-size: 12px; font-weight: 700;"
+            )
+
+        if self._footer_status_dot is not None:
+            self._footer_status_dot.setStyleSheet(
+                f"background-color: {color}; border: none; border-radius: 4px;"
+            )
+
     def _restore_file_pixmaps(self, root_widget: QWidget, ui_path: Path) -> None:
         tree = ElementTree.parse(ui_path)
         for widget_node in tree.findall(".//widget[@class='QLabel']"):
@@ -117,6 +187,46 @@ class BaseController:
 
             if not pixmap.isNull():
                 label.setPixmap(pixmap)
+
+    def show_error_dialog(
+        self,
+        message: str,
+        title: str = "ĐÃ XẢY RA LỖI",
+        on_retry: Callable[[], None] | None = None,
+        on_gohome: Callable[[], None] | None = None,
+    ) -> None:
+        from screens.error_dialog import ErrorDialog
+
+        if hasattr(self, "_error_dialog") and self._error_dialog:
+            try:
+                self._error_dialog.hide()
+                self._error_dialog.deleteLater()
+            except Exception:
+                pass
+
+        self._error_dialog = ErrorDialog(
+            self.widget,
+            retry_callback=on_retry,
+            go_home_callback=on_gohome or self.go_home,
+        )
+        hotline = get_config_value(self.config, "support.hotline", "1900 1234")
+        status = self.network_status
+        detail_message = message
+        if status == "OFFLINE" and "OFFLINE" not in detail_message.upper():
+            detail_message = f"{message}\nTrạng thái mạng: {status}"
+        self._error_dialog.show_error(
+            detail_message,
+            title=title,
+            hotline=f"Hotline: {hotline} • {status}",
+        )
+
+    def hide_error_dialog(self) -> None:
+        if hasattr(self, "_error_dialog") and self._error_dialog:
+            try:
+                self._error_dialog.hide()
+            except Exception:
+                pass
+
 
 
 def process_events() -> None:

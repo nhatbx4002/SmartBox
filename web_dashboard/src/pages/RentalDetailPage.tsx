@@ -108,12 +108,16 @@ export default function RentalDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-3 space-y-4">
+          {/* Info panel */}
           <div className="bg-surface rounded-xl border border-border p-6">
-            <h3 className="text-sm font-semibold text-text-primary mb-4">Info</h3>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-sm font-semibold text-text-primary">Rental details</h3>
+              <Badge variant={getRentalStatusVariant(rental.status)} dot>{rental.status}</Badge>
+            </div>
             <div className="space-y-3">
               {infoRows.map((row) => (
-                <div key={row.label} className="flex items-start justify-between gap-4">
-                  <span className="text-sm text-text-secondary w-32 shrink-0">{row.label}</span>
+                <div key={row.label} className="flex items-start justify-between gap-4 py-2 border-b border-border/50 last:border-0">
+                  <span className="text-sm text-text-muted w-36 shrink-0">{row.label}</span>
                   <span className={cn('text-sm font-medium text-text-primary text-right', row.mono && 'font-mono')}>
                     {row.value}
                   </span>
@@ -133,27 +137,30 @@ export default function RentalDetailPage() {
             </div>
           )}
 
+          {/* Logs panel */}
           <div className="bg-surface rounded-xl border border-border p-6">
-            <h3 className="text-sm font-semibold text-text-primary mb-4">Logs</h3>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-sm font-semibold text-text-primary">Logs</h3>
+            </div>
             {events.length === 0 ? (
               <p className="text-sm text-text-muted">No logs for this rental.</p>
             ) : (
               <div className="space-y-3">
                 {events.map((event) => (
-                  <div key={event.id} className="flex items-start gap-3">
+                  <div key={event.id} className="flex items-start gap-3 py-2 border-b border-border/40 last:border-0">
                     <div className={cn(
                       'w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5',
-                      event.success ? 'bg-success/20' : 'bg-error/20',
+                      event.success ? 'bg-success/15' : 'bg-error/15',
                     )}>
                       {event.success
-                        ? <CheckCircle className="h-3 w-3 text-success" />
-                        : <XCircle className="h-3 w-3 text-error" />}
+                        ? <CheckCircle className="h-3.5 w-3.5 text-success" />
+                        : <XCircle className="h-3.5 w-3.5 text-error" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="text-sm font-medium text-text-primary">{event.description}</span>
-                      <div className="flex items-center gap-2 mt-0.5 text-xs text-text-muted">
+                      <div className="flex items-center gap-3 mt-0.5 text-xs text-text-muted">
                         <span>{formatDateTime(event.timestamp)}</span>
-                        {event.ipAddress && <span>IP {event.ipAddress}</span>}
+                        {event.ipAddress && <span className="font-mono">IP {event.ipAddress}</span>}
                       </div>
                     </div>
                   </div>
@@ -163,26 +170,30 @@ export default function RentalDetailPage() {
           </div>
         </div>
 
+        {/* Timeline panel */}
         <div className="lg:col-span-2">
           <div className="bg-surface rounded-xl border border-border p-6">
-            <h3 className="text-sm font-semibold text-text-primary mb-4">Timeline</h3>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-sm font-semibold text-text-primary">Timeline</h3>
+            </div>
             {events.length === 0 ? (
               <p className="text-sm text-text-muted">No timeline events.</p>
             ) : (
               <div className="relative">
-                <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
-                <div className="space-y-4">
-                  {events.map((event) => (
+                <div className="absolute left-[11px] top-1 bottom-1 w-px bg-border" />
+                <div className="space-y-5">
+                  {events.map((event, i) => (
                     <div key={event.id} className="flex items-start gap-4 relative">
                       <div className={cn(
-                        'w-6 h-6 rounded-full border-2 bg-surface flex items-center justify-center shrink-0 z-10',
-                        event.success ? 'border-success' : 'border-error',
+                        'relative z-10 w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0',
+                        event.success ? 'border-success bg-success/10' : 'border-error bg-error/10',
                       )}>
                         <div className={cn('w-2 h-2 rounded-full', event.success ? 'bg-success' : 'bg-error')} />
                       </div>
                       <div className="pt-0.5">
                         <p className="text-sm font-medium text-text-primary">{event.description}</p>
-                        <p className="text-xs text-text-muted mt-0.5">{formatDateTime(event.timestamp)}</p>
+                        <p className="text-xs text-text-muted mt-1">{formatDateTime(event.timestamp)}</p>
+                        {i < events.length - 1 && <div className="mt-3 h-px bg-border/30" />}
                       </div>
                     </div>
                   ))}
