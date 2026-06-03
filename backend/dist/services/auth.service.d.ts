@@ -23,6 +23,7 @@ export declare function verifyPin(code: string): Promise<{
             updatedAt: Date;
             status: import("../generated/prisma").$Enums.UserStatus;
             phone: string;
+            fcmToken: string | null;
         } | null;
         compartment: {
             cabinet: {

@@ -13,6 +13,10 @@ import notificationsRoutes from './routes/notifications.routes';
 import provisioningRoutes from './routes/provisioning.routes';
 import rentalsAdminRoutes from './routes/rentals.admin.routes';
 import rentalsRoutes from './routes/rentals.routes';
+import userNotificationsRoutes from './routes/user-notifications.routes';
+import userRentalsRoutes from './routes/user-rentals.routes';
+import userLocationsRoutes from './routes/user-locations.routes';
+import usersRoutes from './routes/users.routes';
 import systemRoutes from './routes/system.routes';
 import { startExpiryChecker } from './jobs/expiryChecker';
 import { startHeartbeatMonitor } from './jobs/heartbeatMonitor';
@@ -36,6 +40,10 @@ async function bootstrap() {
   await connectMqtt({ waitForConnect: process.env.MQTT_REQUIRED === 'true' });
 
   app.use('/api/auth', authRoutes);
+  app.use('/api/users', usersRoutes);
+  app.use('/api/users/me/rentals', userRentalsRoutes);
+  app.use('/api/users/me/locations', userLocationsRoutes);
+  app.use('/api/users/me/notifications', userNotificationsRoutes);
   app.use('/api/rentals', rentalsRoutes);
   app.use('/api/lockers', lockersRoutes);
   app.use('/api/provisioning', provisioningRoutes);
