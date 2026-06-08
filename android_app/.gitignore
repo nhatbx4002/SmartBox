@@ -1,4 +1,4 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+﻿# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
 node_modules/
@@ -17,6 +17,8 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
+google-services.json
+GoogleService-Info.plist
 
 # Metro
 .metro-health-check*
@@ -26,18 +28,27 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
+# macOS & OS files
 .DS_Store
 *.pem
+Thumbs.db
+desktop.ini
 
 # local env files
+.env
 .env*.local
 
 # typescript
 *.tsbuildinfo
 
-example
+app-example
 
 # generated native folders
 /ios
 /android
+
+# Ignore all markdown files except README.md
+*.md
+**/*.md
+!README.md
+!**/README.md

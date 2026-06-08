@@ -188,7 +188,7 @@ export async function sendForgotPasswordOtp(phone: string) {
   return { ok: true };
 }
 
-export async function resetPasswordWithOtp(phone: string, otp: string, newPassword: string) {
+export async function verifyOtp(phone: string, otp: string) {
   cleanupExpiredOtps();
 
   const record = otpStore.get(phone);
@@ -209,10 +209,24 @@ export async function resetPasswordWithOtp(phone: string, otp: string, newPasswo
     throw UnauthorizedError(`Invalid OTP. ${remaining} attempt(s) remaining.`);
   }
 
+  // Consume OTP — generate a short-lived reset token
   otpStore.delete(phone);
+  const resetToken = signToken(
+    { sub: record.userId, phone },
+    requireEnv('JWT_SECRET'),
+    '5m',
+  );
+
+  return { resetToken };
+}
+
+export async function resetPasswordWithOtp(token: string, newPassword: string) {
+  const payload = verifyToken(token, requireEnv('JWT_SECRET'));
+  const userId = payload.sub as string;
+  if (!userId) throw UnauthorizedError('Invalid reset token');
 
   const passwordHash = await bcrypt.hash(newPassword, 10);
-  await prisma.user.update({ where: { id: record.userId }, data: { passwordHash } });
+  await prisma.user.update({ where: { id: userId }, data: { passwordHash } });
 
   return { ok: true };
 }

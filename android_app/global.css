@@ -1,0 +1,181 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+@theme {
+  /* Colors */
+  --color-brand: #FF6600;
+  --color-brand-light: #FF8533;
+  --color-brand-glow: rgba(255, 102, 0, 0.20);
+  --color-brand-glow-strong: rgba(255, 102, 0, 0.35);
+  --color-background: #0A0A0A;
+  --color-surface: #1C1C1B;
+  --color-surface-elevated: #2A2A29;
+  --color-surface-glass: rgba(28, 28, 27, 0.80);
+  --color-border: #252525;
+  --color-border-focused: #FF6600;
+  --color-text: #FFFFFF;
+  --color-text-secondary: #CCCCCC;
+  --color-text-muted: #999999;
+  --color-success: #00C853;
+  --color-success-bg: rgba(0, 200, 83, 0.12);
+  --color-warning: #FFB300;
+  --color-warning-bg: rgba(255, 179, 0, 0.12);
+  --color-error: #FF3D00;
+  --color-error-bg: rgba(255, 61, 0, 0.12);
+  --color-info: #2196F3;
+  --color-info-bg: rgba(33, 150, 243, 0.12);
+  --color-online: #00FF41;
+
+  /* Font Families */
+  --font-sans: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Spacing Scale */
+  --spacing-half: 2px;
+  --spacing-one: 4px;
+  --spacing-two: 8px;
+  --spacing-three: 16px;
+  --spacing-four: 24px;
+  --spacing-five: 32px;
+  --spacing-six: 64px;
+
+  /* Border Radius System */
+  --radius-input: 8px;
+  --radius-button: 8px;
+  --radius-card: 12px;
+  --radius-panel: 12px;
+  --radius-modal: 16px;
+  --radius-sheet: 24px;
+  --radius-fab: 28px;
+  --radius-badge: 6px;
+  --radius-avatar: 40px;
+  --radius-indicator: 10px;
+}
+
+/* Typography Custom Utilities */
+@utility text-h1 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 36px;
+}
+
+@utility text-h2 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 28px;
+}
+
+@utility text-h3 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+@utility text-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+@utility text-body-bold {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+@utility text-caption {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+@utility text-subtitle {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+@utility text-small {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@utility text-small-bold {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@utility text-otp {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: 4px;
+}
+
+@utility text-otp-large {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 64px;
+  letter-spacing: 6px;
+}
+
+@utility text-price {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 26px;
+}
+
+@utility text-btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+@utility text-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Custom shadow utilities for Active Brand Glow and Glass Base Panel */
+@utility shadow-brand-glow {
+  box-shadow: 0 0 8px rgba(255, 102, 0, 0.30);
+  shadow-color: #FF6600;
+  shadow-offset: 0px 0px;
+  shadow-opacity: 0.3;
+  shadow-radius: 8px;
+  elevation: 8;
+}
+
+@utility shadow-brand-glow-strong {
+  box-shadow: 0 0 12px rgba(255, 102, 0, 0.35);
+  shadow-color: #FF6600;
+  shadow-offset: 0px 0px;
+  shadow-opacity: 0.35;
+  shadow-radius: 12px;
+  elevation: 12;
+}
+
+@utility bg-glass {
+  background-color: rgba(28, 28, 27, 0.80);
+  border-width: 1px;
+  border-color: #252525;
+}

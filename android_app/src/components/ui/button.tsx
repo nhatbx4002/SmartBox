@@ -1,159 +1,160 @@
-import React from 'react';
+import React from "react";
 import {
-  ActivityIndicator,
-  GestureResponderEvent,
+  Text,
   Pressable,
+  ActivityIndicator,
+  StyleProp,
   ViewStyle,
-} from 'react-native';
-
-import { ThemedText } from '../themed-text';
-import { useTheme } from '@/hooks/use-theme';
-
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+  TextStyle,
+  AccessibilityInfo,
+} from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 
 interface ButtonProps {
-  onPress?: (event: GestureResponderEvent) => void;
   title: string;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  disabled?: boolean;
+  onPress?: () => void;
+  variant?: "primary" | "secondary" | "danger" | "ghost";
   loading?: boolean;
-  style?: ViewStyle;
-  fullWidth?: boolean;
+  disabled?: boolean;
+  className?: string;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
-export function Button({
-  onPress,
+export default function Button({
   title,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
+  onPress,
+  variant = "primary",
   loading = false,
+  disabled = false,
+  className,
   style,
-  fullWidth = true,
+  textStyle,
 }: ButtonProps) {
-  const theme = useTheme();
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
+  const [reduceMotion, setReduceMotion] = React.useState(false);
 
-  const getButtonStyles = (pressed: boolean): ViewStyle => {
-    const baseStyle: ViewStyle = {
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 8,
-      flexDirection: 'row',
-      opacity: pressed ? 0.8 : 1,
+  React.useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then((enabled) => {
+      setReduceMotion(enabled);
+    });
+  }, []);
+
+  const isInteractionDisabled = disabled || loading;
+
+  const pressSpringConfig = {
+    damping: 15,
+    stiffness: 120,
+    mass: 1,
+  };
+
+  const handlePressIn = () => {
+    if (isInteractionDisabled) return;
+    if (reduceMotion) {
+      scale.value = 0.97;
+      opacity.value = 0.8;
+    } else {
+      scale.value = withSpring(0.97, pressSpringConfig);
+      opacity.value = withSpring(0.8, pressSpringConfig);
+    }
+  };
+
+  const handlePressOut = () => {
+    if (isInteractionDisabled) return;
+    if (reduceMotion) {
+      scale.value = 1;
+      opacity.value = 1;
+    } else {
+      scale.value = withSpring(1, pressSpringConfig);
+      opacity.value = withSpring(1, pressSpringConfig);
+    }
+  };
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+      opacity: opacity.value,
     };
+  });
 
-    if (fullWidth) {
-      baseStyle.width = '100%';
+  // Base styles depending on state and variant
+  let buttonBg = "bg-brand";
+  let buttonBorder = "";
+  let buttonShadow = "shadow-brand-glow";
+  let textColor = "text-white";
+
+  if (variant === "primary") {
+    if (isInteractionDisabled) {
+      buttonBg = "";
+      buttonShadow = "";
+    } else {
+      buttonBg = "bg-brand active:bg-[#E65C00]";
+      buttonShadow = "shadow-brand-glow";
     }
-
-    // Size styling
-    let height = 48;
-    let paddingHorizontal = 16;
-    if (size === 'sm') {
-      height = 36;
-      paddingHorizontal = 12;
-    } else if (size === 'lg') {
-      height = 56;
-      paddingHorizontal = 24;
+  } else if (variant === "secondary") {
+    buttonBg = "bg-surface-glass";
+    buttonBorder = "border border-border";
+    buttonShadow = "";
+    textColor = "text-text";
+    if (isInteractionDisabled) {
+      buttonBg = "bg-surface-glass/40";
     }
-    baseStyle.height = height;
-    baseStyle.paddingHorizontal = paddingHorizontal;
-
-    // Disabled styles
-    if (disabled || loading) {
-      if (variant === 'primary') {
-        return {
-          ...baseStyle,
-          backgroundColor: '#4D331A',
-        };
-      }
-      return {
-        ...baseStyle,
-        backgroundColor: theme.surface,
-        borderColor: theme.border,
-        borderWidth: 1,
-        opacity: 0.5,
-      };
+  } else if (variant === "danger") {
+    buttonBg = "bg-error-bg";
+    buttonBorder = "border border-error";
+    buttonShadow = "";
+    textColor = "text-error";
+    if (isInteractionDisabled) {
+      buttonBg = "bg-error-bg/40";
     }
+  } else if (variant === "ghost") {
+    buttonBg = "bg-transparent";
+    buttonBorder = "";
+    buttonShadow = "";
+    textColor = "text-brand";
+  }
 
-    // Variant styling
-    switch (variant) {
-      case 'primary':
-        return {
-          ...baseStyle,
-          backgroundColor: pressed ? '#E65C00' : theme.brand,
-        };
-      case 'secondary':
-        return {
-          ...baseStyle,
-          backgroundColor: theme.surface,
-          borderColor: theme.border,
-          borderWidth: 1,
-        };
-      case 'ghost':
-        return {
-          ...baseStyle,
-          backgroundColor: 'transparent',
-        };
-      case 'danger':
-        return {
-          ...baseStyle,
-          backgroundColor: '#2A0D00',
-          borderColor: theme.error,
-          borderWidth: 1,
-        };
-      default:
-        return baseStyle;
-    }
-  };
-
-  const getTextColor = () => {
-    if (disabled || loading) {
-      if (variant === 'primary') return 'textMuted';
-      return 'textMuted';
-    }
-
-    switch (variant) {
-      case 'primary':
-        return 'text';
-      case 'secondary':
-        return 'text';
-      case 'ghost':
-        return 'brand';
-      case 'danger':
-        return 'error';
-      default:
-        return 'text';
-    }
-  };
-
-  const getFontSize = () => {
-    return size === 'sm' ? 14 : 16;
-  };
+  // Handle styles for primary disabled
+  const primaryDisabledStyle: ViewStyle = variant === "primary" && isInteractionDisabled ? {
+    backgroundColor: "rgba(255, 102, 0, 0.35)",
+  } : {};
 
   return (
     <Pressable
-      disabled={disabled || loading}
-      onPress={onPress}
-      style={({ pressed }) => [getButtonStyles(pressed), style]}
+      onPress={isInteractionDisabled ? undefined : onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      disabled={isInteractionDisabled}
+      style={style}
+      className={`w-full ${className || ""}`}
     >
-      {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'primary' ? '#FFFFFF' : theme.brand}
-        />
-      ) : (
-        <ThemedText
-          style={{ fontSize: getFontSize(), fontWeight: '600' }}
-          themeColor={getTextColor()}
-        >
-          {title}
-        </ThemedText>
-      )}
+      <Animated.View
+        style={[
+          animatedStyle,
+          primaryDisabledStyle,
+          variant === "primary" && !isInteractionDisabled ? {
+            shadowColor: "#FF6600",
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 8,
+          } : {},
+        ]}
+        className={`h-12 items-center justify-center rounded-button px-four flex-row ${buttonBg} ${buttonBorder} ${buttonShadow}`}
+      >
+        {loading ? (
+          <ActivityIndicator color={variant === "primary" ? "#FFFFFF" : "#FF6600"} size="small" />
+        ) : (
+          <Text className={`text-btn font-sans font-semibold text-center ${textColor}`} style={textStyle}>
+            {title}
+          </Text>
+        )}
+      </Animated.View>
     </Pressable>
   );
 }
-
-

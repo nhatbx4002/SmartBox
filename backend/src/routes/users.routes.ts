@@ -12,6 +12,7 @@ import {
   refreshUserToken,
   resetPasswordWithOtp,
   sendForgotPasswordOtp,
+  verifyOtp,
   updateUserProfile,
   userLogin,
   userRegister,
@@ -55,9 +56,13 @@ const forgotSchema = z.object({
   phone: z.string().regex(phoneRegex, 'Invalid Vietnamese mobile number'),
 });
 
-const resetSchema = z.object({
+const verifyOtpSchema = z.object({
   phone: z.string().regex(phoneRegex, 'Invalid Vietnamese mobile number'),
-  otp: z.string().length(6).regex(/^\d+$/, 'OTP must be 6 digits'),
+  code: z.string().length(6).regex(/^\d+$/, 'OTP must be 6 digits'),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, 'Reset token is required'),
   newPassword: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -147,10 +152,19 @@ router.post(
 );
 
 router.post(
-  '/reset-password',
-  validate(resetSchema),
+  '/verify-otp',
+  validate(verifyOtpSchema),
   asyncHandler(async (req, res) => {
-    await resetPasswordWithOtp(req.body.phone, req.body.otp, req.body.newPassword);
+    const result = await verifyOtp(req.body.phone, req.body.code);
+    res.json({ data: result });
+  }),
+);
+
+router.post(
+  '/reset-password',
+  validate(resetPasswordSchema),
+  asyncHandler(async (req, res) => {
+    await resetPasswordWithOtp(req.body.token, req.body.newPassword);
     res.json({ data: { ok: true } });
   }),
 );

@@ -1,93 +1,61 @@
-import React from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
-
-import { ThemedText } from '../themed-text';
-import { ThemeColor } from '@/constants/theme';
-
-export type BadgeStatus = 'active' | 'completed' | 'expired' | 'warning' | 'info';
+import React from "react";
+import { View, Text, StyleProp, ViewStyle } from "react-native";
 
 interface BadgeProps {
   label: string;
-  status?: BadgeStatus;
-  style?: ViewStyle;
+  status?: "active" | "completed" | "expired" | "warning" | "info";
+  className?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function Badge({ label, status = 'info', style }: BadgeProps) {
+export default function Badge({
+  label,
+  status = "active",
+  className,
+  style,
+}: BadgeProps) {
+  let bgClass = "";
+  let textClass = "";
+  let customStyle: ViewStyle = {};
 
-  const getBadgeStyle = (): ViewStyle => {
-    const baseStyle: ViewStyle = {
-      paddingVertical: 4,
-      paddingHorizontal: 10,
-      borderRadius: 6,
-      alignSelf: 'flex-start',
-      justifyContent: 'center',
-      alignItems: 'center',
-    };
-
-    switch (status) {
-      case 'active':
-        return {
-          ...baseStyle,
-          backgroundColor: '#0D2818',
-        };
-      case 'completed':
-        return {
-          ...baseStyle,
-          backgroundColor: '#1A1A1A',
-        };
-      case 'expired':
-        return {
-          ...baseStyle,
-          backgroundColor: '#2A0D00',
-        };
-      case 'warning':
-        return {
-          ...baseStyle,
-          backgroundColor: '#2A1F00',
-        };
-      case 'info':
-        return {
-          ...baseStyle,
-          backgroundColor: '#0D1F2A',
-        };
-      default:
-        return baseStyle;
-    }
-  };
-
-  const getTextColor = (): ThemeColor => {
-    switch (status) {
-      case 'active':
-        return 'success';
-      case 'completed':
-        return 'textMuted';
-      case 'expired':
-        return 'error';
-      case 'warning':
-        return 'warning';
-      case 'info':
-        return 'info';
-      default:
-        return 'text';
-    }
-  };
+  switch (status) {
+    case "active":
+      customStyle = { backgroundColor: "rgba(0, 200, 83, 0.22)" };
+      textClass = "text-[#00FF66]";
+      break;
+    case "completed":
+      customStyle = { backgroundColor: "rgba(42, 42, 41, 0.50)" };
+      textClass = "text-text-muted";
+      break;
+    case "expired":
+      customStyle = { backgroundColor: "rgba(255, 61, 0, 0.20)" };
+      textClass = "text-[#FF6E40]";
+      break;
+    case "warning":
+      customStyle = { backgroundColor: "rgba(255, 152, 0, 0.20)" };
+      textClass = "text-[#FFA726]";
+      break;
+    case "info":
+      bgClass = "bg-info-bg";
+      textClass = "text-info";
+      break;
+  }
 
   return (
-    <View style={[getBadgeStyle(), style]}>
-      <ThemedText
-        style={styles.text}
-        themeColor={getTextColor()}
-      >
+    <View
+      className={`px-two py-half rounded-badge items-center justify-center ${bgClass} ${className || ""}`}
+      style={[
+        {
+          borderRadius: 6, // 6px per border radius specification
+          alignSelf: "flex-start",
+        },
+        customStyle,
+        style,
+      ]}
+    >
+      <Text className={`text-small-bold font-sans ${textClass}`}>
         {label}
-      </ThemedText>
+      </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 12,
-    fontWeight: '600',
-    lineHeight: 16,
-  },
-});

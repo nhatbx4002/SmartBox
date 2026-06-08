@@ -1,23 +1,27 @@
 {
   "expo": {
-    "name": "android_app",
-    "slug": "android_app",
+    "name": "OmniBox",
+    "slug": "OmniBox-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/AppLogo.svg",
     "scheme": "androidapp",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "ios": {
-      "icon": "./assets/expo.icon"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/AppLogo.svg"
       },
-      "predictiveBackGestureEnabled": false
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "permission": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "output": "static",
@@ -28,17 +32,22 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "android": {
-            "image": "./assets/images/splash-icon.png",
-            "imageWidth": 76
-          }
+          "image": "./assets/images/AppLogo.png",
+          "backgroundColor": "#0A0A0A"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e49be4fa-e39c-47bf-83c0-caaab24ecaf5"
+      }
+    },
+    "owner": "nhatnehihi"
   }
 }

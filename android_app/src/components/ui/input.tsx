@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  StyleSheet,
-  TextInput,
-  TextInputProps,
   View,
-  ViewStyle,
+  Text,
+  TextInput,
   Pressable,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+  TextInputProps,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-import { ThemedText } from '../themed-text';
-import { useTheme } from '@/hooks/use-theme';
-
-interface InputProps extends TextInputProps {
+interface InputProps extends Omit<TextInputProps, "secureTextEntry"> {
   label?: string;
-  iconName?: keyof typeof Ionicons.glyphMap;
   error?: string;
+  leftIcon?: keyof typeof Ionicons.glyphMap;
   secureTextEntry?: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
-export function Input({
+export default function Input({
   label,
-  iconName,
   error,
+  leftIcon,
   secureTextEntry = false,
-  style,
+  containerStyle,
+  className,
+  value,
+  onChangeText,
+  placeholder,
   onFocus,
   onBlur,
-  disabled,
-  editable = true,
-  ...rest
+  ...props
 }: InputProps) {
-  const theme = useTheme();
   const [isFocused, setIsFocused] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleFocus = (e: any) => {
     setIsFocused(true);
@@ -45,111 +45,78 @@ export function Input({
     if (onBlur) onBlur(e);
   };
 
-  const isEditable = editable && !disabled;
+  // Determine border color and icon color
+  const getBorderClass = () => {
+    if (error) return "border-error";
+    if (isFocused) return "border-border-focused";
+    return "border-border";
+  };
 
-  const getInputContainerStyle = (): ViewStyle => {
-    const baseStyle: ViewStyle = {
-      height: 52,
-      borderRadius: 8,
-      borderWidth: 1,
-      backgroundColor: theme.surface,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 16,
-    };
-
-    if (!isEditable) {
-      baseStyle.borderColor = theme.surface;
-      baseStyle.backgroundColor = theme.surface;
-    } else if (error) {
-      baseStyle.borderColor = theme.error;
-    } else if (isFocused) {
-      baseStyle.borderColor = theme.brand;
-    } else {
-      baseStyle.borderColor = theme.border;
-    }
-
-    return baseStyle;
+  const getIconColor = () => {
+    if (error) return "#FF3D00"; // error
+    if (isFocused) return "#FF6600"; // brand
+    return "#A1A1A0"; // text-secondary
   };
 
   return (
-    <View style={styles.container}>
+    <View className={`w-full ${className || ""}`}>
+      {/* Label */}
       {label && (
-        <ThemedText style={styles.label} themeColor="textSecondary" type="small">
+        <Text className="text-small-bold text-text-secondary mb-two">
           {label}
-        </ThemedText>
+        </Text>
       )}
 
-      <View style={getInputContainerStyle()}>
-        {iconName && (
+      {/* Input Container */}
+      <View
+        className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input transition-colors duration-200 ${getBorderClass()}`}
+        style={containerStyle}
+      >
+        {/* Left Icon */}
+        {leftIcon && (
           <Ionicons
-            name={iconName}
+            name={leftIcon}
             size={20}
-            color={error ? theme.error : isFocused ? theme.brand : theme.textMuted}
-            style={styles.leftIcon}
+            color={getIconColor()}
+            style={{ marginRight: 8 }}
           />
         )}
 
+        {/* Text Input */}
         <TextInput
-          style={[
-            styles.input,
-            { color: isEditable ? theme.text : theme.textMuted },
-            style,
-          ]}
-          placeholderTextColor={theme.textMuted}
+          value={value}
+          onChangeText={onChangeText}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          secureTextEntry={secureTextEntry && !passwordVisible}
-          editable={isEditable}
-          {...rest}
+          placeholder={placeholder}
+          placeholderTextColor="#6B6B6A"
+          secureTextEntry={secureTextEntry && !isPasswordVisible}
+          className="flex-1 text-text text-body h-full font-sans"
+          autoCapitalize="none"
+          {...props}
         />
 
+        {/* Right Toggle Icon for Password */}
         {secureTextEntry && (
           <Pressable
-            onPress={() => setPasswordVisible(!passwordVisible)}
-            style={styles.rightIconButton}
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons
-              name={passwordVisible ? 'eye-off' : 'eye'}
+              name={isPasswordVisible ? "eye-off" : "eye"}
               size={20}
-              color={theme.textSecondary}
+              color="#A1A1A0"
             />
           </Pressable>
         )}
       </View>
 
-      {error && (
-        <ThemedText style={styles.errorText} themeColor="error" type="small">
+      {/* Error Message */}
+      {error ? (
+        <Text className="text-small text-error mt-two ml-one">
           {error}
-        </ThemedText>
-      )}
+        </Text>
+      ) : null}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginBottom: 16,
-  },
-  label: {
-    marginBottom: 6,
-  },
-  leftIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    height: '100%',
-    fontSize: 16,
-    padding: 0,
-    margin: 0,
-  },
-  rightIconButton: {
-    padding: 4,
-    marginLeft: 8,
-  },
-  errorText: {
-    marginTop: 4,
-  },
-});

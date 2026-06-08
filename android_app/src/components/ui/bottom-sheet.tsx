@@ -1,154 +1,203 @@
-import React, { useEffect, useCallback } from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import React, { useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  useWindowDimensions,
+  StyleProp,
+  ViewStyle,
+  AccessibilityInfo,
+} from "react-native";
+import {
+  GestureHandlerRootView,
+  Gesture,
+  GestureDetector,
+} from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-} from 'react-native-reanimated';
-
-import { useTheme } from '@/hooks/use-theme';
-
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+  interpolateColor,
+  runOnJS,
+} from "react-native-reanimated";
 
 interface BottomSheetProps {
-  snapPoints: number[]; // e.g. [100, 350, 700] representing height from bottom
   children: React.ReactNode;
-  activeSnapIndex?: number;
-  onChangeSnap?: (index: number) => void;
+  initialSnap?: "collapsed" | "half" | "expanded";
+  onSnap?: (snap: "collapsed" | "half" | "expanded") => void;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function BottomSheet({
-  snapPoints,
+export default function BottomSheet({
   children,
-  activeSnapIndex = 0,
-  onChangeSnap,
+  initialSnap = "collapsed",
+  onSnap,
+  style,
 }: BottomSheetProps) {
-  const theme = useTheme();
+  const { height: screenHeight } = useWindowDimensions();
+  const [reduceMotion, setReduceMotion] = React.useState(false);
 
-  // Convert height from bottom to translateY values (where 0 is top of screen)
-  const getTranslateYForIndex = useCallback((index: number) => {
-    const heightFromBottom = snapPoints[index];
-    return SCREEN_HEIGHT - heightFromBottom;
-  }, [snapPoints]);
+  React.useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then((enabled) => {
+      setReduceMotion(enabled);
+    });
+  }, []);
 
-  const translateY = useSharedValue(SCREEN_HEIGHT);
+  // Bottom Sheet Dimensions
+  const expandedHeight = screenHeight - 120;
+  const halfHeight = 360;
+  const collapsedHeight = 88;
 
-  // Sync with activeSnapIndex from parent
+  // Snap Y positions (translateY from fully expanded top)
+  const expandedY = 0;
+  const halfY = expandedHeight - halfHeight;
+  const collapsedY = expandedHeight - collapsedHeight;
+
+  // Animation values
+  const translateY = useSharedValue(collapsedY);
+  const isDragging = useSharedValue(0); // 0 = false, 1 = true
+  const contextY = useSharedValue(0);
+
+  // Set initial position
   useEffect(() => {
-    if (activeSnapIndex >= 0 && activeSnapIndex < snapPoints.length) {
-      translateY.value = withSpring(getTranslateYForIndex(activeSnapIndex), {
-        damping: 15,
-        stiffness: 120,
-      });
-    }
-  }, [activeSnapIndex, snapPoints.length, getTranslateYForIndex, translateY]);
+    let targetY = collapsedY;
+    if (initialSnap === "half") targetY = halfY;
+    if (initialSnap === "expanded") targetY = expandedY;
+    
+    translateY.value = targetY;
+  }, [initialSnap, collapsedY, halfY, expandedY, translateY]);
 
-  const context = useSharedValue({ y: 0 });
+  const snapSpringConfig = {
+    damping: 18,
+    stiffness: 120,
+    mass: 1,
+  };
 
-  const gesture = Gesture.Pan()
+  const handleSnapChange = (targetY: number) => {
+    if (!onSnap) return;
+    if (targetY === expandedY) onSnap("expanded");
+    else if (targetY === halfY) onSnap("half");
+    else if (targetY === collapsedY) onSnap("collapsed");
+  };
+
+  const panGesture = Gesture.Pan()
     .onStart(() => {
-      context.value = { y: translateY.value };
+      contextY.value = translateY.value;
+      if (reduceMotion) {
+        isDragging.value = 1;
+      } else {
+        isDragging.value = withSpring(1, { damping: 15 });
+      }
     })
     .onUpdate((event) => {
-      // Allow dragging but bound it within the min and max snap points
-      const newY = context.value.y + event.translationY;
-      const minY = SCREEN_HEIGHT - snapPoints[snapPoints.length - 1];
-      const maxY = SCREEN_HEIGHT - snapPoints[0];
-      // eslint-disable-next-line react-hooks/immutability
-      translateY.value = Math.max(minY, Math.min(maxY, newY));
+      // Allow dragging but bound it within expandedY and collapsedY
+      const newY = contextY.value + event.translationY;
+      translateY.value = Math.max(expandedY, Math.min(collapsedY, newY));
     })
     .onEnd((event) => {
+      if (reduceMotion) {
+        isDragging.value = 0;
+      } else {
+        isDragging.value = withSpring(0, { damping: 15 });
+      }
+
+      // Determine snap target based on current position and velocity
       const currentY = translateY.value;
-      // Find the closest snap point
-      let closestIndex = 0;
-      let minDistance = Infinity;
+      const velocityY = event.velocityY;
+      
+      let targetY = collapsedY;
 
-      for (let i = 0; i < snapPoints.length; i++) {
-        const snapY = getTranslateYForIndex(i);
-        const distance = Math.abs(currentY - snapY);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = i;
+      // Simple threshold check + velocity influence
+      if (velocityY < -500) {
+        // Flicking up
+        if (currentY > halfY) {
+          targetY = halfY;
+        } else {
+          targetY = expandedY;
+        }
+      } else if (velocityY > 500) {
+        // Flicking down
+        if (currentY < halfY) {
+          targetY = halfY;
+        } else {
+          targetY = collapsedY;
+        }
+      } else {
+        // Dragging slowly, snap to nearest point
+        const distToExpanded = Math.abs(currentY - expandedY);
+        const distToHalf = Math.abs(currentY - halfY);
+        const distToCollapsed = Math.abs(currentY - collapsedY);
+
+        const minDist = Math.min(distToExpanded, distToHalf, distToCollapsed);
+        if (minDist === distToExpanded) {
+          targetY = expandedY;
+        } else if (minDist === distToHalf) {
+          targetY = halfY;
+        } else {
+          targetY = collapsedY;
         }
       }
 
-      // Add velocity bias for swiping up/down quickly
-      if (Math.abs(event.velocityY) > 500) {
-        if (event.velocityY < 0 && closestIndex < snapPoints.length - 1) {
-          closestIndex = Math.min(snapPoints.length - 1, closestIndex + 1);
-        } else if (event.velocityY > 0 && closestIndex > 0) {
-          closestIndex = Math.max(0, closestIndex - 1);
-        }
+      if (reduceMotion) {
+        translateY.value = targetY;
+      } else {
+        translateY.value = withSpring(targetY, snapSpringConfig);
       }
-
-      // eslint-disable-next-line react-hooks/immutability
-      translateY.value = withSpring(getTranslateYForIndex(closestIndex), {
-        damping: 15,
-        stiffness: 120,
-      });
-
-      if (onChangeSnap) {
-        onChangeSnap(closestIndex);
-      }
+      
+      runOnJS(handleSnapChange)(targetY);
     });
 
-  const rBottomSheetStyle = useAnimatedStyle(() => {
+  // Animated styles for sheet container
+  const sheetAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: translateY.value }],
     };
   });
 
+  // Animated styles for grab handle background color and glow
+  const handleAnimatedStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      isDragging.value,
+      [0, 1],
+      ["#252525", "#FF6600"]
+    );
+
+    return {
+      backgroundColor,
+      shadowColor: "#FF6600",
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: isDragging.value * 0.4,
+      shadowRadius: isDragging.value * 8,
+      elevation: isDragging.value * 8,
+    };
+  });
+
   return (
-    <GestureDetector gesture={gesture}>
+    <GestureHandlerRootView style={StyleSheet.absoluteFillObject} pointerEvents="box-none">
       <Animated.View
         style={[
-          styles.bottomSheetContainer,
-          { backgroundColor: theme.surface, shadowColor: '#000' },
-          rBottomSheetStyle,
+          sheetAnimatedStyle,
+          {
+            height: expandedHeight,
+            top: screenHeight - expandedHeight,
+          },
+          style,
         ]}
+        className="absolute left-0 right-0 bg-surface-glass border border-border rounded-t-sheet"
       >
-        <View style={styles.lineWrapper}>
-          <View style={[styles.line, { backgroundColor: theme.border }]} />
-        </View>
-        <View style={styles.content}>
+        {/* Grab Handle Header */}
+        <GestureDetector gesture={panGesture}>
+          <View className="items-center py-three cursor-pointer w-full" hitSlop={{ top: 20, bottom: 20, left: 0, right: 0 }}>
+            <Animated.View
+              style={[{ width: 48, height: 6, borderRadius: 3 }, handleAnimatedStyle]}
+            />
+          </View>
+        </GestureDetector>
+
+        {/* Content Container */}
+        <View className="flex-1 px-four">
           {children}
         </View>
       </Animated.View>
-    </GestureDetector>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  bottomSheetContainer: {
-    height: SCREEN_HEIGHT,
-    width: '100%',
-    position: 'absolute',
-    top: 0,
-    borderRadius: 24,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 24,
-    zIndex: 100,
-  },
-  lineWrapper: {
-    width: '100%',
-    height: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  line: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-  },
-  content: {
-    flex: 1,
-  },
-});
