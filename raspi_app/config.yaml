@@ -9,7 +9,7 @@ camera:
   fps: 30
   rotation_degrees: 0
   scan_interval_ms: 120
-  reconnect_delay_ms: 1000
+  reconnect_delay_ms: 33
 
 provision: {}
 
