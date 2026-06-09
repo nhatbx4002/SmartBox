@@ -14,6 +14,7 @@ import {
   updateUserProfile,
   userLogin,
   userRegister,
+  verifyOtp,
 } from '../src/services/user.service';
 
 test('userRegister creates a user and returns signed tokens', async (t) => {
@@ -256,7 +257,8 @@ test('forgot and reset password flow uses a one-time OTP', async (t) => {
   const otp = otpMatch?.[1];
   if (!otp) throw new Error('OTP missing');
 
-  const reset = await resetPasswordWithOtp('0909555666', otp, 'new-secret');
+  const { resetToken } = await verifyOtp('0909555666', otp);
+  const reset = await resetPasswordWithOtp(resetToken, 'new-secret');
 
   assert.deepEqual(reset, { ok: true });
 });

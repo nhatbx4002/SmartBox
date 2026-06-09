@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -52,7 +52,6 @@ export default function FAQListScreen() {
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
-      {/* Header */}
       <View className="flex-row items-center px-four py-three border-b border-border/40 bg-surface/50">
         <Pressable
           onPress={() => router.back()}

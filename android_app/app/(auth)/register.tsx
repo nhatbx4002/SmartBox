@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,78 +19,56 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { useAuthStore } from "../../src/store/authStore";
+
+function formatPhoneNumber(text: string) {
+  const cleaned = text.replace(/\D/g, "").slice(0, 10);
+  if (cleaned.length > 6) return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+  if (cleaned.length > 3) return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+  return cleaned;
+}
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const register = useAuthStore((state) => state.register);
+  const updateProfile = useAuthStore((state) => state.updateProfile);
+  const isLoading = useAuthStore((state) => state.isLoading);
 
-  // Form states
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Focus states
-  const [isNameFocused, setIsNameFocused] = useState(false);
-  const [isPhoneFocused, setIsPhoneFocused] = useState(false);
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
-
-  // Error states
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [formError, setFormError] = useState("");
 
-  // Loading state
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Button spring values
   const buttonScale = useSharedValue(1);
   const buttonOpacity = useSharedValue(1);
 
-  // Phone number formatter: "09x xxx xxxx"
-  const formatPhoneNumber = (text: string) => {
-    const cleaned = text.replace(/\D/g, "");
-    const limited = cleaned.slice(0, 10);
-    
-    let formatted = limited;
-    if (limited.length > 3 && limited.length <= 6) {
-      formatted = `${limited.slice(0, 3)} ${limited.slice(3)}`;
-    } else if (limited.length > 6) {
-      formatted = `${limited.slice(0, 3)} ${limited.slice(3, 6)} ${limited.slice(6)}`;
-    }
-    return formatted;
-  };
-
-  const handlePhoneChange = (text: string) => {
-    const formatted = formatPhoneNumber(text);
-    setPhone(formatted);
-    if (phoneError) setPhoneError("");
-  };
-
   const validate = () => {
     let isValid = true;
+    const rawPhone = phone.replace(/\s/g, "");
 
     if (!fullName.trim()) {
-      setNameError("Họ và tên không được trùng.");
+      setNameError("Họ và tên không được để trống.");
       isValid = false;
     } else {
       setNameError("");
     }
 
-    const rawPhone = phone.replace(/\s/g, "");
     if (rawPhone.length !== 10 || !rawPhone.startsWith("0")) {
-      setPhoneError("Số điện thoại phải bắt đầu bằng số 0.");
+      setPhoneError("Số điện thoại không hợp lệ.");
       isValid = false;
     } else {
       setPhoneError("");
     }
 
     if (password.length < 6) {
-      setPasswordError("Mật khẩu ít nhất phải có 6 kí tự.");
+      setPasswordError("Mật khẩu ít nhất 6 ký tự.");
       isValid = false;
     } else {
       setPasswordError("");
@@ -105,39 +84,41 @@ export default function RegisterScreen() {
     return isValid;
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!validate()) return;
 
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      // Route back to login upon successful registration
-      router.replace("/login");
-    }, 1500);
+    try {
+      setFormError("");
+      await register({
+        phone: phone.replace(/\s/g, ""),
+        password,
+      });
+
+      if (fullName.trim()) {
+        await updateProfile(fullName.trim());
+      }
+
+      router.replace("/home");
+    } catch (error: any) {
+      const message = error?.message || "Đăng ký thất bại.";
+      setFormError(message);
+      Alert.alert("Đăng ký thất bại", message);
+    }
   };
 
-  const pressSpringConfig = {
-    damping: 15,
-    stiffness: 120,
-    mass: 1,
-  };
-
+  const pressSpringConfig = { damping: 15, stiffness: 120, mass: 1 };
   const handlePressIn = () => {
     buttonScale.value = withSpring(0.97, pressSpringConfig);
     buttonOpacity.value = withSpring(0.85, pressSpringConfig);
   };
-
   const handlePressOut = () => {
     buttonScale.value = withSpring(1, pressSpringConfig);
     buttonOpacity.value = withSpring(1, pressSpringConfig);
   };
-
-  const animatedButtonStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: buttonScale.value }],
-      opacity: buttonOpacity.value,
-    };
-  });
+  const animatedButtonStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+    opacity: buttonOpacity.value,
+  }));
 
   return (
     <KeyboardAvoidingView
@@ -146,170 +127,99 @@ export default function RegisterScreen() {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} className="px-four py-six">
-          
-          {/* Ambient Background Glow Effects */}
-          <View className="absolute top-[-50px] right-[-50px] w-64 h-64 rounded-full bg-brand-glow opacity-25" />
-          <View className="absolute bottom-[-80px] left-[-80px] w-80 h-80 rounded-full bg-brand-glow opacity-20" />
-          
-          {/* Header */}
           <View className="items-center mb-six z-10">
             <Text className="text-h1 text-white font-sans text-center">Tạo tài khoản</Text>
             <Text className="text-caption text-text-secondary mt-one text-center">Tham gia hệ thống của OmniBox</Text>
           </View>
 
-          {/* Form Card */}
-          <View className="bg-glass p-four rounded-panel border border-border gap-four shadow-lg z-10">
-            
-            {/* Full Name Input */}
+          <View className="bg-glass p-four rounded-panel border border-border gap-four z-10">
             <View>
               <Text className="text-small-bold text-text-secondary mb-two">Họ và tên</Text>
-              <View 
-                className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input transition-colors duration-200 ${
-                  nameError 
-                    ? "border-error" 
-                    : isNameFocused 
-                      ? "border-border-focused" 
-                      : "border-border"
-                }`}
-              >
-                <Ionicons 
-                  name="person-outline" 
-                  size={20} 
-                  color={nameError ? "#FF3D00" : isNameFocused ? "#FF6600" : "#A1A1A0"} 
-                  className="mr-two"
-                />
+              <View className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input ${nameError ? "border-error" : "border-border"}`}>
+                <Ionicons name="person-outline" size={20} color={nameError ? "#FF3D00" : "#A1A1A0"} />
                 <TextInput
                   value={fullName}
-                  onChangeText={(text) => { setFullName(text); if (nameError) setNameError(""); }}
-                  onFocus={() => setIsNameFocused(true)}
-                  onBlur={() => setIsNameFocused(false)}
+                  onChangeText={(text) => {
+                    setFullName(text);
+                    setNameError("");
+                    setFormError("");
+                  }}
                   placeholder="Nguyễn Văn A"
                   placeholderTextColor="#6B6B6A"
-                  className="flex-1 text-text text-body h-full font-sans"
+                  className="flex-1 text-text text-body h-full font-sans ml-two"
                 />
               </View>
-              {nameError ? (
-                <Text className="text-small text-error mt-two ml-one">{nameError}</Text>
-              ) : null}
+              {nameError ? <Text className="text-small text-error mt-two ml-one">{nameError}</Text> : null}
             </View>
 
-            {/* Phone Input */}
             <View>
               <Text className="text-small-bold text-text-secondary mb-two">Số điện thoại</Text>
-              <View 
-                className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input transition-colors duration-200 ${
-                  phoneError 
-                    ? "border-error" 
-                    : isPhoneFocused 
-                      ? "border-border-focused" 
-                      : "border-border"
-                }`}
-              >
-                <Ionicons 
-                  name="phone-portrait-outline" 
-                  size={20} 
-                  color={phoneError ? "#FF3D00" : isPhoneFocused ? "#FF6600" : "#A1A1A0"} 
-                  className="mr-two"
-                />
+              <View className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input ${phoneError ? "border-error" : "border-border"}`}>
+                <Ionicons name="phone-portrait-outline" size={20} color={phoneError ? "#FF3D00" : "#A1A1A0"} />
                 <TextInput
                   value={phone}
-                  onChangeText={handlePhoneChange}
-                  onFocus={() => setIsPhoneFocused(true)}
-                  onBlur={() => setIsPhoneFocused(false)}
+                  onChangeText={(text) => {
+                    setPhone(formatPhoneNumber(text));
+                    setPhoneError("");
+                    setFormError("");
+                  }}
                   keyboardType="numeric"
                   placeholder="09x xxx xxxx"
                   placeholderTextColor="#6B6B6A"
-                  className="flex-1 text-text text-body h-full font-sans"
+                  className="flex-1 text-text text-body h-full font-sans ml-two"
                 />
               </View>
-              {phoneError ? (
-                <Text className="text-small text-error mt-two ml-one">{phoneError}</Text>
-              ) : null}
+              {phoneError ? <Text className="text-small text-error mt-two ml-one">{phoneError}</Text> : null}
             </View>
 
-            {/* Password Input */}
             <View>
               <Text className="text-small-bold text-text-secondary mb-two">Mật khẩu</Text>
-              <View 
-                className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input transition-colors duration-200 ${
-                  passwordError 
-                    ? "border-error" 
-                    : isPasswordFocused 
-                      ? "border-border-focused" 
-                      : "border-border"
-                }`}
-              >
-                <Ionicons 
-                  name="lock-closed-outline" 
-                  size={20} 
-                  color={passwordError ? "#FF3D00" : isPasswordFocused ? "#FF6600" : "#A1A1A0"} 
-                  className="mr-two"
-                />
+              <View className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input ${passwordError ? "border-error" : "border-border"}`}>
+                <Ionicons name="lock-closed-outline" size={20} color={passwordError ? "#FF3D00" : "#A1A1A0"} />
                 <TextInput
                   value={password}
-                  onChangeText={(text) => { setPassword(text); if (passwordError) setPasswordError(""); }}
-                  onFocus={() => setIsPasswordFocused(true)}
-                  onBlur={() => setIsPasswordFocused(false)}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    setPasswordError("");
+                    setFormError("");
+                  }}
                   secureTextEntry={!showPassword}
                   placeholder="*******"
                   placeholderTextColor="#6B6B6A"
-                  className="flex-1 text-text text-body h-full font-sans"
+                  className="flex-1 text-text text-body h-full font-sans ml-two"
                 />
-                <Pressable onPress={() => setShowPassword(!showPassword)} className="p-one">
-                  <Ionicons 
-                    name={showPassword ? "eye-off-outline" : "eye-outline"} 
-                    size={20} 
-                    color="#A1A1A0" 
-                  />
+                <Pressable onPress={() => setShowPassword((value) => !value)} className="p-one">
+                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#A1A1A0" />
                 </Pressable>
               </View>
-              {passwordError ? (
-                <Text className="text-small text-error mt-two ml-one">{passwordError}</Text>
-              ) : null}
+              {passwordError ? <Text className="text-small text-error mt-two ml-one">{passwordError}</Text> : null}
             </View>
 
-            {/* Confirm Password Input */}
             <View>
               <Text className="text-small-bold text-text-secondary mb-two">Xác nhận mật khẩu</Text>
-              <View 
-                className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input transition-colors duration-200 ${
-                  confirmPasswordError 
-                    ? "border-error" 
-                    : isConfirmPasswordFocused 
-                      ? "border-border-focused" 
-                      : "border-border"
-                }`}
-              >
-                <Ionicons 
-                  name="lock-closed-outline" 
-                  size={20} 
-                  color={confirmPasswordError ? "#FF3D00" : isConfirmPasswordFocused ? "#FF6600" : "#A1A1A0"} 
-                  className="mr-two"
-                />
+              <View className={`flex-row items-center h-12 px-three bg-surface-glass border rounded-input ${confirmPasswordError ? "border-error" : "border-border"}`}>
+                <Ionicons name="lock-closed-outline" size={20} color={confirmPasswordError ? "#FF3D00" : "#A1A1A0"} />
                 <TextInput
                   value={confirmPassword}
-                  onChangeText={(text) => { setConfirmPassword(text); if (confirmPasswordError) setConfirmPasswordError(""); }}
-                  onFocus={() => setIsConfirmPasswordFocused(true)}
-                  onBlur={() => setIsConfirmPasswordFocused(false)}
+                  onChangeText={(text) => {
+                    setConfirmPassword(text);
+                    setConfirmPasswordError("");
+                    setFormError("");
+                  }}
                   secureTextEntry={!showConfirmPassword}
                   placeholder="*******"
                   placeholderTextColor="#6B6B6A"
-                  className="flex-1 text-text text-body h-full font-sans"
+                  className="flex-1 text-text text-body h-full font-sans ml-two"
                 />
-                <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)} className="p-one">
-                  <Ionicons 
-                    name={showConfirmPassword ? "eye-off-outline" : "eye-outline"} 
-                    size={20} 
-                    color="#A1A1A0" 
-                  />
+                <Pressable onPress={() => setShowConfirmPassword((value) => !value)} className="p-one">
+                  <Ionicons name={showConfirmPassword ? "eye-off-outline" : "eye-outline"} size={20} color="#A1A1A0" />
                 </Pressable>
               </View>
-              {confirmPasswordError ? (
-                <Text className="text-small text-error mt-two ml-one">{confirmPasswordError}</Text>
-              ) : null}
+              {confirmPasswordError ? <Text className="text-small text-error mt-two ml-one">{confirmPasswordError}</Text> : null}
             </View>
 
-            {/* Register Button */}
+            {formError ? <Text className="text-small text-error">{formError}</Text> : null}
+
             <Animated.View style={animatedButtonStyle} className="mt-two">
               <Pressable
                 onPressIn={handlePressIn}
@@ -318,24 +228,17 @@ export default function RegisterScreen() {
                 disabled={isLoading}
                 className="h-12 bg-brand rounded-button justify-center items-center shadow-brand-glow active:bg-brand-light"
               >
-                {isLoading ? (
-                  <ActivityIndicator color="#FFFFFF" size="small" />
-                ) : (
-                  <Text className="text-btn text-white">Đăng ký</Text>
-                )}
+                {isLoading ? <ActivityIndicator color="#FFFFFF" size="small" /> : <Text className="text-btn text-white">Đăng ký</Text>}
               </Pressable>
             </Animated.View>
-            
           </View>
 
-          {/* Back to Login Redirect */}
           <View className="flex-row justify-center items-center mt-four z-10">
             <Text className="text-caption text-text-secondary">Đã có tài khoản? </Text>
             <Pressable onPress={() => router.push("/login")}>
               <Text className="text-caption text-brand font-semibold">Đăng nhập ngay</Text>
             </Pressable>
           </View>
-
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

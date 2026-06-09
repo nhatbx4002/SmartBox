@@ -67,6 +67,7 @@ async function bootstrap() {
     app.use('/api/admin/cabinets', cabinets_routes_1.default);
     app.use('/api/admin/locations', admin_locations_routes_1.default);
     app.use('/api/public/locations', locations_routes_1.default);
+    app.use('/api/locations', locations_routes_1.default);
     app.use('/api/admin/rentals', rentals_admin_routes_1.default);
     app.use('/api/audit-logs', audit_routes_1.default);
     app.use('/api/dashboard', dashboard_routes_1.default);

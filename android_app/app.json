@@ -4,7 +4,7 @@
     "slug": "OmniBox-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/AppLogo.svg",
+    "icon": "./assets/images/AppLogo.png",
     "scheme": "androidapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/AppLogo.svg"
+        "foregroundImage": "./assets/images/AppLogo.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,

@@ -93,7 +93,7 @@ export default function Button({
       buttonBg = "";
       buttonShadow = "";
     } else {
-      buttonBg = "bg-brand active:bg-[#E65C00]";
+      buttonBg = "bg-brand";
       buttonShadow = "shadow-brand-glow";
     }
   } else if (variant === "secondary") {

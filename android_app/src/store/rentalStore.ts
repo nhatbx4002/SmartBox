@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import { rentalService } from '../services/rental';
 import { RentalWithRelations, CreateRentalPayload } from '../types';
 
@@ -62,8 +62,9 @@ export const useRentalStore = create<RentalState>((set) => ({
   unlockRental: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await rentalService.unlockRental(id);
-      const updatedRental = response.data;
+      await rentalService.unlockRental(id);
+      const detailResponse = await rentalService.getRentalById(id);
+      const updatedRental = detailResponse.data;
       set((state) => ({
         rentals: state.rentals.map((r) => (r.id === id ? updatedRental : r)),
         currentRental: state.currentRental?.id === id ? updatedRental : state.currentRental,
@@ -80,14 +81,11 @@ export const useRentalStore = create<RentalState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       await rentalService.completeRental(id);
+      const detailResponse = await rentalService.getRentalById(id);
+      const updatedRental = detailResponse.data;
       set((state) => ({
-        rentals: state.rentals.map((r) =>
-          r.id === id ? { ...r, status: 'COMPLETED' as any, paymentStatus: 'PAID' as any } : r
-        ),
-        currentRental:
-          state.currentRental?.id === id
-            ? { ...state.currentRental, status: 'COMPLETED' as any, paymentStatus: 'PAID' as any }
-            : state.currentRental,
+        rentals: state.rentals.map((r) => (r.id === id ? updatedRental : r)),
+        currentRental: state.currentRental?.id === id ? updatedRental : state.currentRental,
         isLoading: false,
       }));
     } catch (err: any) {

@@ -1,5 +1,6 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import { authService } from '../services/auth';
+import { setUnauthorizedHandler } from '../services/api';
 import { userService } from '../services/user';
 import { tokenStorage } from '../services/tokenStorage';
 import { User, LoginPayload, RegisterPayload } from '../types';
@@ -17,7 +18,7 @@ interface AuthState {
   updateProfile: (name?: string, email?: string, password?: string) => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   accessToken: null,
   isAuthenticated: false,
@@ -78,7 +79,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const token = await tokenStorage.getAccessToken();
       const refreshToken = await tokenStorage.getRefreshToken();
-      
+
       if (token && refreshToken) {
         try {
           const profileResponse = await userService.getProfile();
@@ -94,9 +95,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           await tokenStorage.clearTokens();
         }
       }
+
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
       return false;
-    } catch (err) {
+    } catch {
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
       return false;
     }
@@ -113,3 +115,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 }));
+
+setUnauthorizedHandler(() => {
+  useAuthStore.setState({
+    user: null,
+    accessToken: null,
+    isAuthenticated: false,
+    isLoading: false,
+    error: 'Session expired. Please log in again.',
+  });
+});

@@ -164,7 +164,7 @@ export interface Notification {
 }
 
 export interface CabinetWithCompartments extends Cabinet {
-  compartments: Array<Compartment & { realtimeStatus?: CompartmentRealtimeStatus | null }>;
+  compartments: (Compartment & { realtimeStatus?: CompartmentRealtimeStatus | null })[];
 }
 
 export interface LocationDetail extends Location {

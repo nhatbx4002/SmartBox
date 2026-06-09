@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import { locationService, LocationListItem, UserLocationDetail } from '../services/location';
 import { PricePlan } from '../types';
 
@@ -43,12 +43,12 @@ export const useLocationStore = create<LocationState>((set) => ({
   },
 
   fetchPlans: async (size) => {
-    set({ isLoading: true, error: null });
+    set({ error: null });
     try {
       const response = await locationService.getPlans(size);
-      set({ plans: response.data, isLoading: false });
+      set({ plans: response.data });
     } catch (err: any) {
-      set({ error: err.message || 'Failed to fetch price plans', isLoading: false });
+      set({ error: err.message || 'Failed to fetch price plans' });
     }
   },
 }));

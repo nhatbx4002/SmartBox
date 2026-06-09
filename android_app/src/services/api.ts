@@ -1,7 +1,7 @@
-﻿import { Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { tokenStorage } from './tokenStorage';
 
-const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001';
 
 export class ApiError extends Error {
   status?: number;
@@ -21,6 +21,11 @@ interface RequestOptions extends RequestInit {
 
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
+let unauthorizedHandler: (() => void | Promise<void>) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void | Promise<void>) | null) {
+  unauthorizedHandler = handler;
+}
 
 function subscribeTokenRefresh(cb: (token: string) => void) {
   refreshSubscribers.push(cb);
@@ -31,19 +36,21 @@ function onRefreshed(token: string) {
   refreshSubscribers = [];
 }
 
+async function handleUnauthorized() {
+  await tokenStorage.clearTokens();
+  await unauthorizedHandler?.();
+}
+
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const url = `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
-  
-  // Prepare headers
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...options.headers,
   };
 
-  // Attach access token if present
   const token = await tokenStorage.getAccessToken();
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   const response = await fetch(url, {
@@ -59,10 +66,9 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     return {} as T;
   }
 
-  // Handle 401 Unauthorized -> Refresh Token
   if (response.status === 401) {
     if (path.includes('/api/users/refresh')) {
-      await tokenStorage.clearTokens();
+      await handleUnauthorized();
       throw new ApiError('Session expired. Please log in again.', 401);
     }
 
@@ -82,32 +88,31 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
             const result = refreshData.data;
             const newAccessToken = result?.accessToken;
             const newRefreshToken = result?.refreshToken || refreshToken;
-            
-            if (newAccessToken) {
-              await tokenStorage.saveTokens(newAccessToken, newRefreshToken);
-              onRefreshed(newAccessToken);
-              isRefreshing = false;
-            } else {
+
+            if (!newAccessToken) {
               throw new Error('No access token in refresh response');
             }
+
+            await tokenStorage.saveTokens(newAccessToken, newRefreshToken);
+            onRefreshed(newAccessToken);
+            isRefreshing = false;
           } else {
             throw new Error('Refresh token request failed');
           }
-        } catch (error) {
+        } catch {
           isRefreshing = false;
           refreshSubscribers = [];
-          await tokenStorage.clearTokens();
+          await handleUnauthorized();
           throw new ApiError('Session expired. Please log in again.', 401);
         }
       }
 
-      // Queue the current request to retry after token is refreshed
       return new Promise<T>((resolve, reject) => {
         subscribeTokenRefresh(async (newToken) => {
           try {
             const retryHeaders = {
               ...headers,
-              'Authorization': `Bearer ${newToken}`,
+              Authorization: `Bearer ${newToken}`,
             };
             const retryResponse = await fetch(url, { ...options, headers: retryHeaders });
             if (retryResponse.ok) {
@@ -135,7 +140,6 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     }
   }
 
-  // Handle other HTTP errors
   let errorMessage = 'An error occurred';
   let errorData: any = null;
   try {
