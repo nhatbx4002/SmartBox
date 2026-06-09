@@ -9,12 +9,23 @@ __pycache__/
 *.pyd
 .venv/
 raspi_app/venv/
+venv/
+env/
+ENV/
+
+# Python run & test cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+htmlcov/
+*.spec
 
 # Build & Dist
 **/dist
 **/build
 /docs/plans
-/raspi_app/tests
 .worktrees/
 
 # TypeScript / Build cache

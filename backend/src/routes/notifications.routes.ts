@@ -2,12 +2,14 @@ import { Router } from 'express';
 import { NotFoundError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
 import { asyncHandler } from '../middleware/asyncHandler';
-import { listNotifications, markAllNotificationsRead } from '../services/notification.service';
+import { requireAdmin } from '../middleware/auth';
+import { listNotifications } from '../services/notification.service';
 
 const router = Router();
 
 router.get(
   '/',
+  requireAdmin,
   asyncHandler(async (req, res) => {
     const userId = req.query.userId?.toString();
     const isReadRaw = req.query.isRead?.toString();
@@ -21,8 +23,17 @@ router.get(
 
 router.put(
   '/read-all',
-  asyncHandler(async (_req, res) => {
-    res.json({ data: await markAllNotificationsRead() });
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const userId = req.query.userId?.toString();
+    const result = await prisma.notification.updateMany({
+      where: {
+        ...(userId ? { userId } : {}),
+        isRead: false,
+      },
+      data: { isRead: true },
+    });
+    res.json({ data: { ok: true, count: result.count } });
   }),
 );
 

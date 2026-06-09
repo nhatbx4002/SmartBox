@@ -67,17 +67,23 @@ class QrCameraScanner:
             self.stop()
             return False
 
-    def capture(self) -> QrScanFrame:
+    def capture(self, skip_qr: bool = False) -> QrScanFrame:
         if self._error:
             return QrScanFrame(error=self._error)
-        if self._camera is None or self._detector is None or self._cv2 is None:
+        if self._camera is None or self._cv2 is None:
             return QrScanFrame(error="Camera chua san sang")
 
         try:
             frame = self._camera.capture_array()
-            token, _points, _straight = self._detector.detectAndDecode(frame)
+            token = None
+            if not skip_qr and self._detector is not None:
+                try:
+                    token, _points, _straight = self._detector.detectAndDecode(frame)
+                    token = token.strip() or None
+                except Exception:
+                    pass
             image = self._to_qimage(frame)
-            return QrScanFrame(image=image, token=token.strip() or None)
+            return QrScanFrame(image=image, token=token)
         except Exception as error:
             self._error = f"Khong the doc camera Pi: {error}"
             return QrScanFrame(error=self._error)

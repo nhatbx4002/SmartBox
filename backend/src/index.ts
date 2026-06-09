@@ -8,7 +8,6 @@ import adminProfilesRoutes from './routes/admin.profiles.routes';
 import auditRoutes from './routes/audit.routes';
 import adminCabinetsRoutes from './routes/admin.cabinets.routes';
 import adminCompartmentsRoutes from './routes/admin.compartments.routes';
-import cabinetsRoutes from './routes/cabinets.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import locationsRoutes from './routes/locations.routes';
 import lockersRoutes from './routes/lockers.routes';
@@ -66,7 +65,6 @@ async function bootstrap() {
     }
   });
   app.use('/api/admin/cabinets', adminCabinetsRoutes);
-  app.use('/api/admin/cabinets', cabinetsRoutes);
   app.use('/api/admin/compartments', adminCompartmentsRoutes);
   app.use('/api/admin/locations', adminLocationsRoutes);
   app.use('/api/admin/profiles', adminProfilesRoutes);

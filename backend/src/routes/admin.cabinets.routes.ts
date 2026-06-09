@@ -9,6 +9,7 @@ import { createAuditLog } from '../services/audit.service';
 import { updateCabinet, deleteCabinet } from '../services/cabinet.service';
 import { createCompartment, deleteCompartment, updateCompartment } from '../services/compartment.service';
 import { createCabinetFromProfile } from '../services/profile.service';
+import { unlockCompartment } from '../services/locker.service';
 
 const router = Router({ mergeParams: true });
 
@@ -136,6 +137,15 @@ router.delete(
     const result = await deleteCompartment(req.params.compId);
     await audit(req, AuditAction.UPDATE_CABINET, 'Compartment', req.params.compId, {});
     res.json({ data: result });
+  }),
+);
+
+router.post(
+  '/:id/unlock/:compId',
+  asyncHandler(async (req, res) => {
+    await unlockCompartment(req.params.id, req.params.compId);
+    await audit(req, AuditAction.UNLOCK_COMPARTMENT, 'Cabinet', req.params.id, { compartmentId: req.params.compId });
+    res.json({ data: { ok: true } });
   }),
 );
 

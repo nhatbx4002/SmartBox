@@ -182,7 +182,9 @@ export async function upsertProvisioningConfig(input: {
 }
 
 function signCabinetToken(cabinetId: string): string {
-  return signToken({ sub: cabinetId, type: 'CABINET' }, process.env.JWT_SECRET || '', '365d');
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET is required');
+  return signToken({ sub: cabinetId, type: 'CABINET' }, secret, '365d');
 }
 
 async function issueCredentials(cabinetId: string) {

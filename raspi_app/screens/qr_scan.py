@@ -36,11 +36,13 @@ class QRScanController(BaseController):
         self.scan_interval_ms = int(get_config_value(self.config, "camera.scan_interval_ms", 120))
         self.processing = False
         self.last_token = ""
+        self.poll_count = 0
 
     def on_enter(self, data: dict | None = None) -> None:
         self.state.mode = "pickup"
         self.processing = False
         self.last_token = ""
+        self.poll_count = 0
         self.retry_button.hide()
         self.status_label.setText("Đang khởi động camera...")
         self.hint_label.setText("Đưa mã QR vào giữa khung quét")
@@ -64,20 +66,27 @@ class QRScanController(BaseController):
         self.scanner.stop()
         self.processing = False
         self.last_token = ""
+        self.poll_count = 0
         self._start_camera()
 
     def _poll_camera(self) -> None:
         if self.processing:
             return
 
-        frame = self.scanner.capture()
+        self.poll_count += 1
+        skip_qr = (self.poll_count % 5 != 0)
+        frame = self.scanner.capture(skip_qr=skip_qr)
         if frame.error:
             self._show_camera_error(frame.error)
             return
 
         if frame.image is not None:
+            target_size = self.preview_label.size()
+            if target_size.width() <= 10 or target_size.height() <= 10:
+                from PySide6.QtCore import QSize
+                target_size = QSize(584, 664)
             pixmap = QPixmap.fromImage(frame.image).scaled(
-                self.preview_label.size(),
+                target_size,
                 aspectMode=Qt.KeepAspectRatio,
                 transformMode=Qt.SmoothTransformation,
             )
