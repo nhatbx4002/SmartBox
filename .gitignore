@@ -2,12 +2,25 @@
 node_modules
 **/node_modules
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+raspi_app/venv/
+
 # Build & Dist
 **/dist
 **/build
 /docs/plans
 /raspi_app/tests
 .worktrees/
+
+# TypeScript / Build cache
+*.tsbuildinfo
+.parcel-cache/
+.turbo/
 
 # Environment Variables & Sensitive data
 backend/.env
@@ -29,12 +42,36 @@ skills-lock.json
 
 # System files
 Thumbs.db
+ehthumbs.db
 desktop.ini
 .DS_Store
+._*
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.AppleDB
 
-# Agent logs/files
-**/.agents
-**/tests
+# Logs & Cache
+*.log
+coverage/
+.npm/
+.yarn/
+.pnpm-store/
+
+# Logs & Cache
+*.log
+vite.stderr.log
+vite.stdout.log
+coverage/
+.npm/
+.yarn/
+.pnpm-store/
+.understand-anything/
 
 # Ignore all markdown files except README.md
 *.md
