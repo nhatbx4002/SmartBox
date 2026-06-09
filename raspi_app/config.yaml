@@ -3,10 +3,11 @@ api:
   timeout: 10
 
 camera:
-  # ESP32-CAM stream URL, for example: "http://192.168.1.50:81/stream"
-  stream_url: ""
+  backend: "picamera2"
   preview_width: 640
   preview_height: 480
+  fps: 30
+  rotation_degrees: 0
   scan_interval_ms: 120
   reconnect_delay_ms: 1000
 

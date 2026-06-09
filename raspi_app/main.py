@@ -56,12 +56,15 @@ class KioskApp(QWidget):
                 mock=False,
             )
             self.api_client.jwt_token = self.jwt_token
+            camera_backend = get_config_value(self.config, "camera.backend", "picamera2")
             self.qr_scanner = QrCameraScanner(
-                stream_url=get_config_value(self.config, "camera.stream_url", ""),
+                backend=camera_backend,
                 size=(
                     int(get_config_value(self.config, "camera.preview_width", 640)),
                     int(get_config_value(self.config, "camera.preview_height", 480)),
                 ),
+                fps=int(get_config_value(self.config, "camera.fps", 30)),
+                rotation_degrees=int(get_config_value(self.config, "camera.rotation_degrees", 0)),
             )
 
             # Assert hardware check (must find at least 1 I2C expander)

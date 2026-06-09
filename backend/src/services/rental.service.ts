@@ -22,59 +22,47 @@ export async function createRental(input: {
   paymentMethod?: PaymentMethod;
   cabinetId?: string;
 }) {
-  const plan = await prisma.pricePlan.findFirst({
-    where: { id: input.planId, size: input.size, isActive: true },
-  });
-  console.log(`[createRental] looking for plan id="${input.planId}" size=${input.size}:`, plan ? `found "${plan.name}"` : 'NOT FOUND');
-  if (!plan) {
-    // Debug: log all plans for this size
-    const allPlans = await prisma.pricePlan.findMany({ where: { size: input.size, isActive: true }, select: { id: true, name: true } });
-    console.log(`[createRental] available plans for size=${input.size}:`, allPlans);
-    throw NotFoundError(`Khong tim thay goi ${input.size === CompartmentSize.SMALL ? 'Size 1' : 'Size 2'} phu hop`);
-  }
+  return prisma.$transaction(async (tx) => {
+    const plan = await tx.pricePlan.findFirst({
+      where: { id: input.planId, size: input.size, isActive: true },
+    });
+    if (!plan) {
+      throw NotFoundError(`Khong tim thay goi ${input.size === CompartmentSize.SMALL ? 'Size 1' : 'Size 2'} phu hop`);
+    }
 
-  const cabinetFilter = input.cabinetId ? { id: input.cabinetId } : {};
-  const cabinet = await prisma.cabinet.findFirst({ where: cabinetFilter });
-  if (!cabinet) throw NotFoundError('Cabinet not found');
-  if (cabinet.status !== CabinetStatus.ACTIVE) {
-    throw BadRequestError(`Cabinet "${cabinet.name}" hien dang ${cabinet.status.toLowerCase()}`);
-  }
+    const cabinet = await tx.cabinet.findFirst({
+      where: { id: input.cabinetId ?? undefined, status: CabinetStatus.ACTIVE },
+    });
+    if (!cabinet) throw NotFoundError('Cabinet not found');
+    if (cabinet.status !== CabinetStatus.ACTIVE) {
+      throw BadRequestError(`Cabinet "${cabinet.name}" hien dang ${cabinet.status.toLowerCase()}`);
+    }
 
-  // Debug: log all compartments for this cabinet
-  const allCompartments = await prisma.compartment.findMany({
-    where: { cabinetId: cabinet.id },
-    select: { id: true, name: true, size: true, status: true },
-  });
-  console.log(`[createRental] cabinet="${cabinet.id}" size=${input.size} compartments:`, allCompartments);
-
-  const compartment = await prisma.compartment.findFirst({
-    where: {
-      size: input.size,
-      status: CompartmentAvailability.AVAILABLE,
-      cabinet: {
-        id: input.cabinetId ?? undefined,
-        status: CabinetStatus.ACTIVE,
+    const compartment = await tx.compartment.findFirst({
+      where: {
+        size: input.size,
+        status: CompartmentAvailability.AVAILABLE,
+        cabinetId: cabinet.id,
       },
-    },
-    include: { cabinet: true },
-    orderBy: [{ cabinetId: 'asc' }, { name: 'asc' }],
-  });
-  if (!compartment) {
-    throw BadRequestError(`Khong con ngho trong — ngho "${cabinet.name}" da het cho ${input.size === CompartmentSize.SMALL ? 'Size 1' : 'Size 2'}`);
-  }
+      include: { cabinet: true },
+      orderBy: { name: 'asc' },
+    });
+    if (!compartment) {
+      throw BadRequestError(`Khong con ngho trong — ngho "${cabinet.name}" da het cho ${input.size === CompartmentSize.SMALL ? 'Size 1' : 'Size 2'}`);
+    }
 
-  const code = await generateUniqueCode();
-  const codeHash = await bcrypt.hash(code, 10);
-  const expiresAt = new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000);
-  const qrToken = signQrToken(`pending-${crypto.randomUUID()}`, expiresAt);
-  const paymentMockEnabled = process.env.PAYMENT_MOCK_ENABLED !== 'false';
+    const code = await generateUniqueCode();
+    const codeHash = await bcrypt.hash(code, 10);
+    const expiresAt = new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000);
+    const paymentMockEnabled = process.env.PAYMENT_MOCK_ENABLED === 'true';
 
-  const rental = await prisma.$transaction(async (tx) => {
     const user = await tx.user.upsert({
       where: { phone: input.phone },
       update: {},
       create: { phone: input.phone },
     });
+
+    const qrToken = signQrToken(`pending-${crypto.randomUUID()}`, expiresAt);
 
     const created = await tx.rental.create({
       data: {
@@ -109,23 +97,18 @@ export async function createRental(input: {
       },
     });
 
-    return created;
-  });
-
-  await prisma.rental.update({
-    where: { id: rental.id },
-    data: { qrToken: signQrToken(rental.id, expiresAt) },
+    return { rental: created, code, compartment: created.compartment, qrToken };
   });
 
   await createNotification({
     userId: rental.userId,
     type: NotificationType.RENTAL_STARTED,
     title: 'Rental started',
-    body: `Your rental code is ${code}.`,
+    body: `Your rental code is ${rental.code}.`,
     data: { rentalId: rental.id, compartmentId: rental.compartmentId },
   });
 
-  return { rental: { ...rental, qrToken: signQrToken(rental.id, expiresAt) }, code, compartment: rental.compartment };
+  return { rental: { ...rental, qrToken: signQrToken(rental.id, rental.expiresAt) }, code: rental.code, compartment: rental.compartment };
 }
 
 export async function getByCode(code: string) {

@@ -21,8 +21,15 @@ class QRScanController(BaseController):
         self.retry_button = self.child("btnRetry", QPushButton)
         self.child("btnBack", QPushButton).clicked.connect(self.go_back)
         self.retry_button.clicked.connect(self._restart_camera)
+        camera_backend = get_config_value(self.config, "camera.backend", "picamera2")
         self.scanner = getattr(app, "qr_scanner", None) or QrCameraScanner(
-            stream_url=get_config_value(self.config, "camera.stream_url", ""),
+            backend=camera_backend,
+            size=(
+                int(get_config_value(self.config, "camera.preview_width", 640)),
+                int(get_config_value(self.config, "camera.preview_height", 480)),
+            ),
+            fps=int(get_config_value(self.config, "camera.fps", 30)),
+            rotation_degrees=int(get_config_value(self.config, "camera.rotation_degrees", 0)),
         )
         self.timer = QTimer(self.widget)
         self.timer.timeout.connect(self._poll_camera)
@@ -106,7 +113,7 @@ class QRScanController(BaseController):
     def _show_camera_error(self, message: str) -> None:
         self.timer.stop()
         self.status_label.setText(message)
-        self.hint_label.setText("Kiểm tra Raspberry Pi Camera Rev 1.3 rồi thử lại")
+        self.hint_label.setText("Kiểm tra Raspberry Pi Camera v1.3 rồi thử lại")
         self.retry_button.show()
 
     def _show_scan_error(self, message: str) -> None:
