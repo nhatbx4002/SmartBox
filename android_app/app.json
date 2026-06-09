@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "OmniBox",
+    "slug": "OmniBox-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/AppLogo.png",
+    "scheme": "androidapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/AppLogo.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "permission": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/AppLogo.png",
+          "backgroundColor": "#0A0A0A"
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e49be4fa-e39c-47bf-83c0-caaab24ecaf5"
+      }
+    },
+    "owner": "nhatnehihi"
+  }
+}

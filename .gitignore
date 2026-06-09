@@ -1,12 +1,43 @@
-backend/node_modules
-backend/.env
-
+﻿# Dependency
 node_modules
-/docs/plans
-/raspi_app/tests
-
-backend/.env
 **/node_modules
+
+# Build & Dist
 **/dist
 **/build
-**/docs
+/docs/plans
+/raspi_app/tests
+.worktrees/
+
+# Environment Variables & Sensitive data
+backend/.env
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# IDEs / Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.claude/
+skills-lock.json
+
+# System files
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Agent logs/files
+**/.agents
+**/tests
+
+# Ignore all markdown files except README.md
+*.md
+**/*.md
+!README.md
+!**/README.md

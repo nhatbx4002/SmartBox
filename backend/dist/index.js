@@ -21,6 +21,10 @@ const notifications_routes_1 = __importDefault(require("./routes/notifications.r
 const provisioning_routes_1 = __importDefault(require("./routes/provisioning.routes"));
 const rentals_admin_routes_1 = __importDefault(require("./routes/rentals.admin.routes"));
 const rentals_routes_1 = __importDefault(require("./routes/rentals.routes"));
+const user_notifications_routes_1 = __importDefault(require("./routes/user-notifications.routes"));
+const user_rentals_routes_1 = __importDefault(require("./routes/user-rentals.routes"));
+const user_locations_routes_1 = __importDefault(require("./routes/user-locations.routes"));
+const users_routes_1 = __importDefault(require("./routes/users.routes"));
 const system_routes_1 = __importDefault(require("./routes/system.routes"));
 const expiryChecker_1 = require("./jobs/expiryChecker");
 const heartbeatMonitor_1 = require("./jobs/heartbeatMonitor");
@@ -40,6 +44,10 @@ async function bootstrap() {
     await prisma_1.prisma.$connect();
     await (0, mqtt_1.connectMqtt)({ waitForConnect: process.env.MQTT_REQUIRED === 'true' });
     app.use('/api/auth', auth_routes_1.default);
+    app.use('/api/users', users_routes_1.default);
+    app.use('/api/users/me/rentals', user_rentals_routes_1.default);
+    app.use('/api/users/me/locations', user_locations_routes_1.default);
+    app.use('/api/users/me/notifications', user_notifications_routes_1.default);
     app.use('/api/rentals', rentals_routes_1.default);
     app.use('/api/lockers', lockers_routes_1.default);
     app.use('/api/provisioning', provisioning_routes_1.default);
@@ -65,6 +73,7 @@ async function bootstrap() {
     app.use('/api/admin/locations', admin_locations_routes_1.default);
     app.use('/api/admin/profiles', admin_profiles_routes_1.default);
     app.use('/api/public/locations', locations_routes_1.default);
+    app.use('/api/locations', locations_routes_1.default);
     app.use('/api/admin/rentals', rentals_admin_routes_1.default);
     app.use('/api/audit-logs', audit_routes_1.default);
     app.use('/api/dashboard', dashboard_routes_1.default);

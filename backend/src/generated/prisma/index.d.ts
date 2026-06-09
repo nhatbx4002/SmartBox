@@ -3788,6 +3788,7 @@ export namespace Prisma {
     phone: string | null
     passwordHash: string | null
     name: string | null
+    fcmToken: string | null
     status: $Enums.UserStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3799,6 +3800,7 @@ export namespace Prisma {
     phone: string | null
     passwordHash: string | null
     name: string | null
+    fcmToken: string | null
     status: $Enums.UserStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3810,6 +3812,7 @@ export namespace Prisma {
     phone: number
     passwordHash: number
     name: number
+    fcmToken: number
     status: number
     createdAt: number
     updatedAt: number
@@ -3823,6 +3826,7 @@ export namespace Prisma {
     phone?: true
     passwordHash?: true
     name?: true
+    fcmToken?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -3834,6 +3838,7 @@ export namespace Prisma {
     phone?: true
     passwordHash?: true
     name?: true
+    fcmToken?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -3845,6 +3850,7 @@ export namespace Prisma {
     phone?: true
     passwordHash?: true
     name?: true
+    fcmToken?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -3929,6 +3935,7 @@ export namespace Prisma {
     phone: string
     passwordHash: string | null
     name: string | null
+    fcmToken: string | null
     status: $Enums.UserStatus
     createdAt: Date
     updatedAt: Date
@@ -3957,6 +3964,7 @@ export namespace Prisma {
     phone?: boolean
     passwordHash?: boolean
     name?: boolean
+    fcmToken?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3972,6 +3980,7 @@ export namespace Prisma {
     phone?: boolean
     passwordHash?: boolean
     name?: boolean
+    fcmToken?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3983,6 +3992,7 @@ export namespace Prisma {
     phone?: boolean
     passwordHash?: boolean
     name?: boolean
+    fcmToken?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4009,6 +4019,7 @@ export namespace Prisma {
       phone: string
       passwordHash: string | null
       name: string | null
+      fcmToken: string | null
       status: $Enums.UserStatus
       createdAt: Date
       updatedAt: Date
@@ -4413,6 +4424,7 @@ export namespace Prisma {
     readonly phone: FieldRef<"User", 'String'>
     readonly passwordHash: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
+    readonly fcmToken: FieldRef<"User", 'String'>
     readonly status: FieldRef<"User", 'UserStatus'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -20376,6 +20388,7 @@ export namespace Prisma {
     phone: 'phone',
     passwordHash: 'passwordHash',
     name: 'name',
+    fcmToken: 'fcmToken',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -21032,6 +21045,7 @@ export namespace Prisma {
     phone?: StringFilter<"User"> | string
     passwordHash?: StringNullableFilter<"User"> | string | null
     name?: StringNullableFilter<"User"> | string | null
+    fcmToken?: StringNullableFilter<"User"> | string | null
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -21046,6 +21060,7 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
+    fcmToken?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21063,6 +21078,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     passwordHash?: StringNullableFilter<"User"> | string | null
     name?: StringNullableFilter<"User"> | string | null
+    fcmToken?: StringNullableFilter<"User"> | string | null
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -21077,6 +21093,7 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
+    fcmToken?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21094,6 +21111,7 @@ export namespace Prisma {
     phone?: StringWithAggregatesFilter<"User"> | string
     passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     name?: StringNullableWithAggregatesFilter<"User"> | string | null
+    fcmToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     status?: EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -22406,6 +22424,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22420,6 +22439,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22434,6 +22454,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22448,6 +22469,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22462,6 +22484,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22473,6 +22496,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22484,6 +22508,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24007,6 +24032,7 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrder
     name?: SortOrder
+    fcmToken?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -24018,6 +24044,7 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrder
     name?: SortOrder
+    fcmToken?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -24029,6 +24056,7 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrder
     name?: SortOrder
+    fcmToken?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28664,6 +28692,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28677,6 +28706,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28816,6 +28846,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28829,6 +28860,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29272,6 +29304,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29285,6 +29318,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29314,6 +29348,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29327,6 +29362,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29340,6 +29376,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29353,6 +29390,7 @@ export namespace Prisma {
     phone: string
     passwordHash?: string | null
     name?: string | null
+    fcmToken?: string | null
     status?: $Enums.UserStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -29382,6 +29420,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29395,6 +29434,7 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    fcmToken?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
