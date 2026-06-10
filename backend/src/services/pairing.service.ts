@@ -8,6 +8,7 @@ import { getCabinetConfigSnapshot, publishCabinetConfigReload } from './cabinet.
 const PAIRING_SESSION_TTL_MS = 10 * 60 * 1000;
 const PAIRING_RATE_LIMIT_PER_HOUR = 5;
 const PAIRING_CODE_LENGTH = 6;
+const DEFAULT_MQTT_BROKER_URL = 'mqtt://localhost:1883';
 
 export type StartPairingInput = {
   hardwareSerial: string;
@@ -171,7 +172,7 @@ export async function approvePairingSession(sessionId: string, input: ApprovePai
     cabinetId: approval.cabinet.id,
     jwt: signCabinetToken(approval.cabinet.id),
     mqttConfig: {
-      brokerUrl: process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883',
+      brokerUrl: getDeviceMqttBrokerUrl(),
       username: approval.credential.mqttUsername,
       password: approval.credential.mqttPassword,
     },
@@ -243,7 +244,7 @@ async function buildApprovedSessionPayload(cabinetId: string) {
   return {
     jwt: signCabinetToken(cabinetId),
     mqttConfig: {
-      brokerUrl: process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883',
+      brokerUrl: getDeviceMqttBrokerUrl(),
       username: credential.mqttUsername,
       password: credential.mqttPassword,
     },
@@ -315,4 +316,8 @@ function signCabinetToken(cabinetId: string): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error('JWT_SECRET is required');
   return signToken({ sub: cabinetId, type: 'CABINET' }, secret, '365d');
+}
+
+function getDeviceMqttBrokerUrl(): string {
+  return process.env.MQTT_DEVICE_BROKER_URL || process.env.MQTT_BROKER_URL || DEFAULT_MQTT_BROKER_URL;
 }

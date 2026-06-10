@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from threading import Event
 
 import paho.mqtt.client as mqtt
 
@@ -21,6 +22,8 @@ class MqttClient:
         self._client = None
         self.reconnect_attempts = 0
         self.disconnect_callback = None
+        self._connect_event = Event()
+        self._connect_error = None
 
         if not self.mock:
             try:
@@ -47,10 +50,13 @@ class MqttClient:
         if is_success:
             self.connected = True
             self.reconnect_attempts = 0
+            self._connect_error = None
             print("[MQTT] Connected successfully")
         else:
             print(f"[MQTT] Connection failed with rc: {rc}")
             self.connected = False
+            self._connect_error = rc
+        self._connect_event.set()
 
     def _on_disconnect(self, *args, **kwargs) -> None:
         self.connected = False
@@ -73,12 +79,18 @@ class MqttClient:
             self.connected = True
             return
         if self._client is not None:
+            self._connect_event.clear()
+            self._connect_error = None
             rc = self._client.reconnect()
-            if rc == 0:
-                self.connected = True
-            else:
+            if rc != 0:
                 self.connected = False
                 raise RuntimeError(f"Reconnect failed with code {rc}")
+            timeout = float(self.config.get("mqtt", {}).get("connect_timeout", 10))
+            if not self._connect_event.wait(timeout):
+                self.connected = False
+                raise TimeoutError(f"MQTT reconnect timed out after {timeout:g}s")
+            if not self.connected:
+                raise RuntimeError(f"MQTT reconnect rejected with rc={self._connect_error}")
 
     def connect(self, username: str | None = None, password: str | None = None) -> None:
         if self.mock:
@@ -90,9 +102,18 @@ class MqttClient:
 
         broker = self.config.get("mqtt", {}).get("broker", "localhost")
         port = int(self.config.get("mqtt", {}).get("port", 1883))
-        self._client.connect(broker, port)
+        timeout = float(self.config.get("mqtt", {}).get("connect_timeout", 10))
+        print(f"[MQTT] Connecting to {broker}:{port} as cabinet={self.cabinet_id}")
+        self._connect_event.clear()
+        self._connect_error = None
+        self.connected = False
+        self._client.connect(broker, port, keepalive=60)
         self._client.loop_start()
-        self.connected = True
+        if not self._connect_event.wait(timeout):
+            self.connected = False
+            raise TimeoutError(f"MQTT connect timed out after {timeout:g}s: {broker}:{port}")
+        if not self.connected:
+            raise RuntimeError(f"MQTT connection rejected with rc={self._connect_error}: {broker}:{port}")
 
     def disconnect(self) -> None:
         if not self.mock and self._client is not None:
