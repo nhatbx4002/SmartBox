@@ -341,6 +341,11 @@ class KioskApp(QWidget):
         save_config(self.config)
         print(f"[CONFIG] Applied v{config_version}")
 
+        # Notify current screen so it can update (e.g., hide not-configured overlay)
+        controller = self.controllers.get(self.current_route)
+        if controller is not None:
+            controller.on_config_updated()
+
     def _register_controllers(self) -> None:
         controller_types = [
             HomeController,

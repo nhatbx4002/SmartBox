@@ -61,6 +61,10 @@ class BaseController:
     def on_exit(self) -> None:
         pass
 
+    def on_config_updated(self) -> None:
+        """Called when cabinet config is reloaded (via MQTT or polling)."""
+        pass
+
     def navigate(self, route: str, data: dict | None = None, replace: bool = False) -> None:
         self.app.navigate(route, data=data, replace=replace)
 
