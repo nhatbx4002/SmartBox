@@ -64,6 +64,11 @@ export type ProvisionMcpDevice = $Result.DefaultSelection<Prisma.$ProvisionMcpDe
  */
 export type CabinetCredential = $Result.DefaultSelection<Prisma.$CabinetCredentialPayload>
 /**
+ * Model PairingSession
+ * 
+ */
+export type PairingSession = $Result.DefaultSelection<Prisma.$PairingSessionPayload>
+/**
  * Model CompartmentStatus
  * 
  */
@@ -134,7 +139,8 @@ export const CabinetStatus: {
   DRAFT: 'DRAFT',
   PENDING_PROVISION: 'PENDING_PROVISION',
   PROVISION_FAILED: 'PROVISION_FAILED',
-  PENDING_REGISTRATION: 'PENDING_REGISTRATION'
+  PENDING_REGISTRATION: 'PENDING_REGISTRATION',
+  CONFIGURING: 'CONFIGURING'
 };
 
 export type CabinetStatus = (typeof CabinetStatus)[keyof typeof CabinetStatus]
@@ -561,6 +567,16 @@ export class PrismaClient<
     * ```
     */
   get cabinetCredential(): Prisma.CabinetCredentialDelegate<ExtArgs>;
+
+  /**
+   * `prisma.pairingSession`: Exposes CRUD operations for the **PairingSession** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PairingSessions
+    * const pairingSessions = await prisma.pairingSession.findMany()
+    * ```
+    */
+  get pairingSession(): Prisma.PairingSessionDelegate<ExtArgs>;
 
   /**
    * `prisma.compartmentStatus`: Exposes CRUD operations for the **CompartmentStatus** model.
@@ -1082,6 +1098,7 @@ export namespace Prisma {
     ProvisionProfile: 'ProvisionProfile',
     ProvisionMcpDevice: 'ProvisionMcpDevice',
     CabinetCredential: 'CabinetCredential',
+    PairingSession: 'PairingSession',
     CompartmentStatus: 'CompartmentStatus',
     PricePlan: 'PricePlan',
     Rental: 'Rental',
@@ -1104,7 +1121,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "admin" | "user" | "location" | "cabinet" | "mcpDevice" | "compartment" | "provisioningConfig" | "provisionProfile" | "provisionMcpDevice" | "cabinetCredential" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "auditLog" | "notification" | "userSession"
+      modelProps: "admin" | "user" | "location" | "cabinet" | "mcpDevice" | "compartment" | "provisioningConfig" | "provisionProfile" | "provisionMcpDevice" | "cabinetCredential" | "pairingSession" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "auditLog" | "notification" | "userSession"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1805,6 +1822,76 @@ export namespace Prisma {
           count: {
             args: Prisma.CabinetCredentialCountArgs<ExtArgs>
             result: $Utils.Optional<CabinetCredentialCountAggregateOutputType> | number
+          }
+        }
+      }
+      PairingSession: {
+        payload: Prisma.$PairingSessionPayload<ExtArgs>
+        fields: Prisma.PairingSessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PairingSessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PairingSessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>
+          }
+          findFirst: {
+            args: Prisma.PairingSessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PairingSessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>
+          }
+          findMany: {
+            args: Prisma.PairingSessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>[]
+          }
+          create: {
+            args: Prisma.PairingSessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>
+          }
+          createMany: {
+            args: Prisma.PairingSessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PairingSessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>[]
+          }
+          delete: {
+            args: Prisma.PairingSessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>
+          }
+          update: {
+            args: Prisma.PairingSessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.PairingSessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PairingSessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.PairingSessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PairingSessionPayload>
+          }
+          aggregate: {
+            args: Prisma.PairingSessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePairingSession>
+          }
+          groupBy: {
+            args: Prisma.PairingSessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PairingSessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PairingSessionCountArgs<ExtArgs>
+            result: $Utils.Optional<PairingSessionCountAggregateOutputType> | number
           }
         }
       }
@@ -13183,6 +13270,928 @@ export namespace Prisma {
 
 
   /**
+   * Model PairingSession
+   */
+
+  export type AggregatePairingSession = {
+    _count: PairingSessionCountAggregateOutputType | null
+    _min: PairingSessionMinAggregateOutputType | null
+    _max: PairingSessionMaxAggregateOutputType | null
+  }
+
+  export type PairingSessionMinAggregateOutputType = {
+    id: string | null
+    hardwareSerial: string | null
+    pairingCode: string | null
+    status: string | null
+    cabinetId: string | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PairingSessionMaxAggregateOutputType = {
+    id: string | null
+    hardwareSerial: string | null
+    pairingCode: string | null
+    status: string | null
+    cabinetId: string | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PairingSessionCountAggregateOutputType = {
+    id: number
+    hardwareSerial: number
+    discoveredMcpDevices: number
+    pairingCode: number
+    status: number
+    cabinetId: number
+    expiresAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PairingSessionMinAggregateInputType = {
+    id?: true
+    hardwareSerial?: true
+    pairingCode?: true
+    status?: true
+    cabinetId?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PairingSessionMaxAggregateInputType = {
+    id?: true
+    hardwareSerial?: true
+    pairingCode?: true
+    status?: true
+    cabinetId?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PairingSessionCountAggregateInputType = {
+    id?: true
+    hardwareSerial?: true
+    discoveredMcpDevices?: true
+    pairingCode?: true
+    status?: true
+    cabinetId?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PairingSessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PairingSession to aggregate.
+     */
+    where?: PairingSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PairingSessions to fetch.
+     */
+    orderBy?: PairingSessionOrderByWithRelationInput | PairingSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PairingSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PairingSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PairingSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PairingSessions
+    **/
+    _count?: true | PairingSessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PairingSessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PairingSessionMaxAggregateInputType
+  }
+
+  export type GetPairingSessionAggregateType<T extends PairingSessionAggregateArgs> = {
+        [P in keyof T & keyof AggregatePairingSession]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePairingSession[P]>
+      : GetScalarType<T[P], AggregatePairingSession[P]>
+  }
+
+
+
+
+  export type PairingSessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PairingSessionWhereInput
+    orderBy?: PairingSessionOrderByWithAggregationInput | PairingSessionOrderByWithAggregationInput[]
+    by: PairingSessionScalarFieldEnum[] | PairingSessionScalarFieldEnum
+    having?: PairingSessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PairingSessionCountAggregateInputType | true
+    _min?: PairingSessionMinAggregateInputType
+    _max?: PairingSessionMaxAggregateInputType
+  }
+
+  export type PairingSessionGroupByOutputType = {
+    id: string
+    hardwareSerial: string
+    discoveredMcpDevices: JsonValue
+    pairingCode: string
+    status: string
+    cabinetId: string | null
+    expiresAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: PairingSessionCountAggregateOutputType | null
+    _min: PairingSessionMinAggregateOutputType | null
+    _max: PairingSessionMaxAggregateOutputType | null
+  }
+
+  type GetPairingSessionGroupByPayload<T extends PairingSessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PairingSessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PairingSessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PairingSessionGroupByOutputType[P]>
+            : GetScalarType<T[P], PairingSessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PairingSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    hardwareSerial?: boolean
+    discoveredMcpDevices?: boolean
+    pairingCode?: boolean
+    status?: boolean
+    cabinetId?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pairingSession"]>
+
+  export type PairingSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    hardwareSerial?: boolean
+    discoveredMcpDevices?: boolean
+    pairingCode?: boolean
+    status?: boolean
+    cabinetId?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pairingSession"]>
+
+  export type PairingSessionSelectScalar = {
+    id?: boolean
+    hardwareSerial?: boolean
+    discoveredMcpDevices?: boolean
+    pairingCode?: boolean
+    status?: boolean
+    cabinetId?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $PairingSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PairingSession"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      hardwareSerial: string
+      discoveredMcpDevices: Prisma.JsonValue
+      pairingCode: string
+      status: string
+      cabinetId: string | null
+      expiresAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["pairingSession"]>
+    composites: {}
+  }
+
+  type PairingSessionGetPayload<S extends boolean | null | undefined | PairingSessionDefaultArgs> = $Result.GetResult<Prisma.$PairingSessionPayload, S>
+
+  type PairingSessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<PairingSessionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: PairingSessionCountAggregateInputType | true
+    }
+
+  export interface PairingSessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PairingSession'], meta: { name: 'PairingSession' } }
+    /**
+     * Find zero or one PairingSession that matches the filter.
+     * @param {PairingSessionFindUniqueArgs} args - Arguments to find a PairingSession
+     * @example
+     * // Get one PairingSession
+     * const pairingSession = await prisma.pairingSession.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PairingSessionFindUniqueArgs>(args: SelectSubset<T, PairingSessionFindUniqueArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one PairingSession that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {PairingSessionFindUniqueOrThrowArgs} args - Arguments to find a PairingSession
+     * @example
+     * // Get one PairingSession
+     * const pairingSession = await prisma.pairingSession.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PairingSessionFindUniqueOrThrowArgs>(args: SelectSubset<T, PairingSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first PairingSession that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PairingSessionFindFirstArgs} args - Arguments to find a PairingSession
+     * @example
+     * // Get one PairingSession
+     * const pairingSession = await prisma.pairingSession.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PairingSessionFindFirstArgs>(args?: SelectSubset<T, PairingSessionFindFirstArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first PairingSession that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PairingSessionFindFirstOrThrowArgs} args - Arguments to find a PairingSession
+     * @example
+     * // Get one PairingSession
+     * const pairingSession = await prisma.pairingSession.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PairingSessionFindFirstOrThrowArgs>(args?: SelectSubset<T, PairingSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more PairingSessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PairingSessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PairingSessions
+     * const pairingSessions = await prisma.pairingSession.findMany()
+     * 
+     * // Get first 10 PairingSessions
+     * const pairingSessions = await prisma.pairingSession.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pairingSessionWithIdOnly = await prisma.pairingSession.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PairingSessionFindManyArgs>(args?: SelectSubset<T, PairingSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a PairingSession.
+     * @param {PairingSessionCreateArgs} args - Arguments to create a PairingSession.
+     * @example
+     * // Create one PairingSession
+     * const PairingSession = await prisma.pairingSession.create({
+     *   data: {
+     *     // ... data to create a PairingSession
+     *   }
+     * })
+     * 
+     */
+    create<T extends PairingSessionCreateArgs>(args: SelectSubset<T, PairingSessionCreateArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many PairingSessions.
+     * @param {PairingSessionCreateManyArgs} args - Arguments to create many PairingSessions.
+     * @example
+     * // Create many PairingSessions
+     * const pairingSession = await prisma.pairingSession.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PairingSessionCreateManyArgs>(args?: SelectSubset<T, PairingSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PairingSessions and returns the data saved in the database.
+     * @param {PairingSessionCreateManyAndReturnArgs} args - Arguments to create many PairingSessions.
+     * @example
+     * // Create many PairingSessions
+     * const pairingSession = await prisma.pairingSession.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PairingSessions and only return the `id`
+     * const pairingSessionWithIdOnly = await prisma.pairingSession.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PairingSessionCreateManyAndReturnArgs>(args?: SelectSubset<T, PairingSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a PairingSession.
+     * @param {PairingSessionDeleteArgs} args - Arguments to delete one PairingSession.
+     * @example
+     * // Delete one PairingSession
+     * const PairingSession = await prisma.pairingSession.delete({
+     *   where: {
+     *     // ... filter to delete one PairingSession
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PairingSessionDeleteArgs>(args: SelectSubset<T, PairingSessionDeleteArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one PairingSession.
+     * @param {PairingSessionUpdateArgs} args - Arguments to update one PairingSession.
+     * @example
+     * // Update one PairingSession
+     * const pairingSession = await prisma.pairingSession.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PairingSessionUpdateArgs>(args: SelectSubset<T, PairingSessionUpdateArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more PairingSessions.
+     * @param {PairingSessionDeleteManyArgs} args - Arguments to filter PairingSessions to delete.
+     * @example
+     * // Delete a few PairingSessions
+     * const { count } = await prisma.pairingSession.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PairingSessionDeleteManyArgs>(args?: SelectSubset<T, PairingSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PairingSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PairingSessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PairingSessions
+     * const pairingSession = await prisma.pairingSession.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PairingSessionUpdateManyArgs>(args: SelectSubset<T, PairingSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one PairingSession.
+     * @param {PairingSessionUpsertArgs} args - Arguments to update or create a PairingSession.
+     * @example
+     * // Update or create a PairingSession
+     * const pairingSession = await prisma.pairingSession.upsert({
+     *   create: {
+     *     // ... data to create a PairingSession
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PairingSession we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PairingSessionUpsertArgs>(args: SelectSubset<T, PairingSessionUpsertArgs<ExtArgs>>): Prisma__PairingSessionClient<$Result.GetResult<Prisma.$PairingSessionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of PairingSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PairingSessionCountArgs} args - Arguments to filter PairingSessions to count.
+     * @example
+     * // Count the number of PairingSessions
+     * const count = await prisma.pairingSession.count({
+     *   where: {
+     *     // ... the filter for the PairingSessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends PairingSessionCountArgs>(
+      args?: Subset<T, PairingSessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PairingSessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PairingSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PairingSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PairingSessionAggregateArgs>(args: Subset<T, PairingSessionAggregateArgs>): Prisma.PrismaPromise<GetPairingSessionAggregateType<T>>
+
+    /**
+     * Group by PairingSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PairingSessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PairingSessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PairingSessionGroupByArgs['orderBy'] }
+        : { orderBy?: PairingSessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PairingSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPairingSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PairingSession model
+   */
+  readonly fields: PairingSessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PairingSession.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PairingSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PairingSession model
+   */ 
+  interface PairingSessionFieldRefs {
+    readonly id: FieldRef<"PairingSession", 'String'>
+    readonly hardwareSerial: FieldRef<"PairingSession", 'String'>
+    readonly discoveredMcpDevices: FieldRef<"PairingSession", 'Json'>
+    readonly pairingCode: FieldRef<"PairingSession", 'String'>
+    readonly status: FieldRef<"PairingSession", 'String'>
+    readonly cabinetId: FieldRef<"PairingSession", 'String'>
+    readonly expiresAt: FieldRef<"PairingSession", 'DateTime'>
+    readonly createdAt: FieldRef<"PairingSession", 'DateTime'>
+    readonly updatedAt: FieldRef<"PairingSession", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PairingSession findUnique
+   */
+  export type PairingSessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * Filter, which PairingSession to fetch.
+     */
+    where: PairingSessionWhereUniqueInput
+  }
+
+  /**
+   * PairingSession findUniqueOrThrow
+   */
+  export type PairingSessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * Filter, which PairingSession to fetch.
+     */
+    where: PairingSessionWhereUniqueInput
+  }
+
+  /**
+   * PairingSession findFirst
+   */
+  export type PairingSessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * Filter, which PairingSession to fetch.
+     */
+    where?: PairingSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PairingSessions to fetch.
+     */
+    orderBy?: PairingSessionOrderByWithRelationInput | PairingSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PairingSessions.
+     */
+    cursor?: PairingSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PairingSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PairingSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PairingSessions.
+     */
+    distinct?: PairingSessionScalarFieldEnum | PairingSessionScalarFieldEnum[]
+  }
+
+  /**
+   * PairingSession findFirstOrThrow
+   */
+  export type PairingSessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * Filter, which PairingSession to fetch.
+     */
+    where?: PairingSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PairingSessions to fetch.
+     */
+    orderBy?: PairingSessionOrderByWithRelationInput | PairingSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PairingSessions.
+     */
+    cursor?: PairingSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PairingSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PairingSessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PairingSessions.
+     */
+    distinct?: PairingSessionScalarFieldEnum | PairingSessionScalarFieldEnum[]
+  }
+
+  /**
+   * PairingSession findMany
+   */
+  export type PairingSessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * Filter, which PairingSessions to fetch.
+     */
+    where?: PairingSessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PairingSessions to fetch.
+     */
+    orderBy?: PairingSessionOrderByWithRelationInput | PairingSessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PairingSessions.
+     */
+    cursor?: PairingSessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PairingSessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PairingSessions.
+     */
+    skip?: number
+    distinct?: PairingSessionScalarFieldEnum | PairingSessionScalarFieldEnum[]
+  }
+
+  /**
+   * PairingSession create
+   */
+  export type PairingSessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * The data needed to create a PairingSession.
+     */
+    data: XOR<PairingSessionCreateInput, PairingSessionUncheckedCreateInput>
+  }
+
+  /**
+   * PairingSession createMany
+   */
+  export type PairingSessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PairingSessions.
+     */
+    data: PairingSessionCreateManyInput | PairingSessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PairingSession createManyAndReturn
+   */
+  export type PairingSessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many PairingSessions.
+     */
+    data: PairingSessionCreateManyInput | PairingSessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PairingSession update
+   */
+  export type PairingSessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * The data needed to update a PairingSession.
+     */
+    data: XOR<PairingSessionUpdateInput, PairingSessionUncheckedUpdateInput>
+    /**
+     * Choose, which PairingSession to update.
+     */
+    where: PairingSessionWhereUniqueInput
+  }
+
+  /**
+   * PairingSession updateMany
+   */
+  export type PairingSessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PairingSessions.
+     */
+    data: XOR<PairingSessionUpdateManyMutationInput, PairingSessionUncheckedUpdateManyInput>
+    /**
+     * Filter which PairingSessions to update
+     */
+    where?: PairingSessionWhereInput
+  }
+
+  /**
+   * PairingSession upsert
+   */
+  export type PairingSessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * The filter to search for the PairingSession to update in case it exists.
+     */
+    where: PairingSessionWhereUniqueInput
+    /**
+     * In case the PairingSession found by the `where` argument doesn't exist, create a new PairingSession with this data.
+     */
+    create: XOR<PairingSessionCreateInput, PairingSessionUncheckedCreateInput>
+    /**
+     * In case the PairingSession was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PairingSessionUpdateInput, PairingSessionUncheckedUpdateInput>
+  }
+
+  /**
+   * PairingSession delete
+   */
+  export type PairingSessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+    /**
+     * Filter which PairingSession to delete.
+     */
+    where: PairingSessionWhereUniqueInput
+  }
+
+  /**
+   * PairingSession deleteMany
+   */
+  export type PairingSessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PairingSessions to delete
+     */
+    where?: PairingSessionWhereInput
+  }
+
+  /**
+   * PairingSession without action
+   */
+  export type PairingSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PairingSession
+     */
+    select?: PairingSessionSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Model CompartmentStatus
    */
 
@@ -20518,6 +21527,21 @@ export namespace Prisma {
   export type CabinetCredentialScalarFieldEnum = (typeof CabinetCredentialScalarFieldEnum)[keyof typeof CabinetCredentialScalarFieldEnum]
 
 
+  export const PairingSessionScalarFieldEnum: {
+    id: 'id',
+    hardwareSerial: 'hardwareSerial',
+    discoveredMcpDevices: 'discoveredMcpDevices',
+    pairingCode: 'pairingCode',
+    status: 'status',
+    cabinetId: 'cabinetId',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PairingSessionScalarFieldEnum = (typeof PairingSessionScalarFieldEnum)[keyof typeof PairingSessionScalarFieldEnum]
+
+
   export const CompartmentStatusScalarFieldEnum: {
     id: 'id',
     compartmentId: 'compartmentId',
@@ -20634,6 +21658,13 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const NullableJsonNullValueInput: {
@@ -20822,6 +21853,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
    * Reference to a field of type 'LockStatus'
    */
   export type EnumLockStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LockStatus'>
@@ -20930,13 +21968,6 @@ export namespace Prisma {
    * Reference to a field of type 'AuditAction[]'
    */
   export type ListEnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
@@ -21771,6 +22802,78 @@ export namespace Prisma {
     mqttPassword?: StringWithAggregatesFilter<"CabinetCredential"> | string
     createdAt?: DateTimeWithAggregatesFilter<"CabinetCredential"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CabinetCredential"> | Date | string
+  }
+
+  export type PairingSessionWhereInput = {
+    AND?: PairingSessionWhereInput | PairingSessionWhereInput[]
+    OR?: PairingSessionWhereInput[]
+    NOT?: PairingSessionWhereInput | PairingSessionWhereInput[]
+    id?: StringFilter<"PairingSession"> | string
+    hardwareSerial?: StringFilter<"PairingSession"> | string
+    discoveredMcpDevices?: JsonFilter<"PairingSession">
+    pairingCode?: StringFilter<"PairingSession"> | string
+    status?: StringFilter<"PairingSession"> | string
+    cabinetId?: StringNullableFilter<"PairingSession"> | string | null
+    expiresAt?: DateTimeFilter<"PairingSession"> | Date | string
+    createdAt?: DateTimeFilter<"PairingSession"> | Date | string
+    updatedAt?: DateTimeFilter<"PairingSession"> | Date | string
+  }
+
+  export type PairingSessionOrderByWithRelationInput = {
+    id?: SortOrder
+    hardwareSerial?: SortOrder
+    discoveredMcpDevices?: SortOrder
+    pairingCode?: SortOrder
+    status?: SortOrder
+    cabinetId?: SortOrderInput | SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PairingSessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    pairingCode?: string
+    cabinetId?: string
+    AND?: PairingSessionWhereInput | PairingSessionWhereInput[]
+    OR?: PairingSessionWhereInput[]
+    NOT?: PairingSessionWhereInput | PairingSessionWhereInput[]
+    hardwareSerial?: StringFilter<"PairingSession"> | string
+    discoveredMcpDevices?: JsonFilter<"PairingSession">
+    status?: StringFilter<"PairingSession"> | string
+    expiresAt?: DateTimeFilter<"PairingSession"> | Date | string
+    createdAt?: DateTimeFilter<"PairingSession"> | Date | string
+    updatedAt?: DateTimeFilter<"PairingSession"> | Date | string
+  }, "id" | "pairingCode" | "cabinetId">
+
+  export type PairingSessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    hardwareSerial?: SortOrder
+    discoveredMcpDevices?: SortOrder
+    pairingCode?: SortOrder
+    status?: SortOrder
+    cabinetId?: SortOrderInput | SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PairingSessionCountOrderByAggregateInput
+    _max?: PairingSessionMaxOrderByAggregateInput
+    _min?: PairingSessionMinOrderByAggregateInput
+  }
+
+  export type PairingSessionScalarWhereWithAggregatesInput = {
+    AND?: PairingSessionScalarWhereWithAggregatesInput | PairingSessionScalarWhereWithAggregatesInput[]
+    OR?: PairingSessionScalarWhereWithAggregatesInput[]
+    NOT?: PairingSessionScalarWhereWithAggregatesInput | PairingSessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PairingSession"> | string
+    hardwareSerial?: StringWithAggregatesFilter<"PairingSession"> | string
+    discoveredMcpDevices?: JsonWithAggregatesFilter<"PairingSession">
+    pairingCode?: StringWithAggregatesFilter<"PairingSession"> | string
+    status?: StringWithAggregatesFilter<"PairingSession"> | string
+    cabinetId?: StringNullableWithAggregatesFilter<"PairingSession"> | string | null
+    expiresAt?: DateTimeWithAggregatesFilter<"PairingSession"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"PairingSession"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PairingSession"> | Date | string
   }
 
   export type CompartmentStatusWhereInput = {
@@ -23229,6 +24332,90 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     mqttUsername?: StringFieldUpdateOperationsInput | string
     mqttPassword?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PairingSessionCreateInput = {
+    id?: string
+    hardwareSerial: string
+    discoveredMcpDevices: JsonNullValueInput | InputJsonValue
+    pairingCode: string
+    status?: string
+    cabinetId?: string | null
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PairingSessionUncheckedCreateInput = {
+    id?: string
+    hardwareSerial: string
+    discoveredMcpDevices: JsonNullValueInput | InputJsonValue
+    pairingCode: string
+    status?: string
+    cabinetId?: string | null
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PairingSessionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hardwareSerial?: StringFieldUpdateOperationsInput | string
+    discoveredMcpDevices?: JsonNullValueInput | InputJsonValue
+    pairingCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    cabinetId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PairingSessionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hardwareSerial?: StringFieldUpdateOperationsInput | string
+    discoveredMcpDevices?: JsonNullValueInput | InputJsonValue
+    pairingCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    cabinetId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PairingSessionCreateManyInput = {
+    id?: string
+    hardwareSerial: string
+    discoveredMcpDevices: JsonNullValueInput | InputJsonValue
+    pairingCode: string
+    status?: string
+    cabinetId?: string | null
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PairingSessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hardwareSerial?: StringFieldUpdateOperationsInput | string
+    discoveredMcpDevices?: JsonNullValueInput | InputJsonValue
+    pairingCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    cabinetId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PairingSessionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hardwareSerial?: StringFieldUpdateOperationsInput | string
+    discoveredMcpDevices?: JsonNullValueInput | InputJsonValue
+    pairingCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    cabinetId?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24703,6 +25890,87 @@ export namespace Prisma {
     mqttPassword?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+  export type JsonFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type PairingSessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    hardwareSerial?: SortOrder
+    discoveredMcpDevices?: SortOrder
+    pairingCode?: SortOrder
+    status?: SortOrder
+    cabinetId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PairingSessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    hardwareSerial?: SortOrder
+    pairingCode?: SortOrder
+    status?: SortOrder
+    cabinetId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PairingSessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    hardwareSerial?: SortOrder
+    pairingCode?: SortOrder
+    status?: SortOrder
+    cabinetId?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type EnumLockStatusFilter<$PrismaModel = never> = {
@@ -26695,6 +27963,28 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+  export type NestedJsonFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumLockStatusFilter<$PrismaModel = never> = {
@@ -30431,6 +31721,10 @@ export namespace Prisma {
      * @deprecated Use CabinetCredentialDefaultArgs instead
      */
     export type CabinetCredentialArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CabinetCredentialDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use PairingSessionDefaultArgs instead
+     */
+    export type PairingSessionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PairingSessionDefaultArgs<ExtArgs>
     /**
      * @deprecated Use CompartmentStatusDefaultArgs instead
      */

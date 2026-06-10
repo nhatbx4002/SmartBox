@@ -14,7 +14,7 @@ export function startHeartbeatMonitor() {
       const threshold = new Date(Date.now() - timeoutSeconds * 1000);
       const offlineCabinets = await prisma.cabinet.findMany({
         where: {
-          status: { not: CabinetStatus.OFFLINE },
+          status: { notIn: [CabinetStatus.OFFLINE, CabinetStatus.CONFIGURING] },
           OR: [{ lastHeartbeatAt: null }, { lastHeartbeatAt: { lt: threshold } }],
         },
       });

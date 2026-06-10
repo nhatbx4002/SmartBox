@@ -1,12 +1,13 @@
 import {
+  CabinetStatus,
   CompartmentAvailability,
   CompartmentSize,
   Prisma,
 } from '../generated/prisma';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../lib/errors';
-import { publishMqtt } from '../lib/mqtt';
 import { prisma } from '../lib/prisma';
 import { emitCompartmentStatus } from '../lib/socket';
+import { publishCabinetConfigReload } from './cabinet.service';
 
 export type CompartmentInput = {
   name: string;
@@ -23,6 +24,10 @@ export type CompartmentInput = {
 export async function createCompartment(cabinetId: string, input: CompartmentInput) {
   const cabinet = await prisma.cabinet.findUnique({ where: { id: cabinetId } });
   if (!cabinet) throw NotFoundError('Cabinet not found');
+  const allowedStatuses: CabinetStatus[] = [CabinetStatus.CONFIGURING, CabinetStatus.ACTIVE];
+  if (!allowedStatuses.includes(cabinet.status)) {
+    throw BadRequestError('Cabinet status must be CONFIGURING or ACTIVE');
+  }
 
   await validateCompartmentConflicts(cabinetId, input);
 
@@ -50,6 +55,12 @@ export async function createCompartment(cabinetId: string, input: CompartmentInp
 export async function updateCompartment(id: string, input: Partial<CompartmentInput>) {
   const current = await prisma.compartment.findUnique({ where: { id } });
   if (!current) throw NotFoundError('Compartment not found');
+  const cabinet = await prisma.cabinet.findUnique({ where: { id: current.cabinetId } });
+  if (!cabinet) throw NotFoundError('Cabinet not found');
+  const allowedStatuses: CabinetStatus[] = [CabinetStatus.CONFIGURING, CabinetStatus.ACTIVE];
+  if (!allowedStatuses.includes(cabinet.status)) {
+    throw BadRequestError('Cabinet status must be CONFIGURING or ACTIVE');
+  }
 
   const merged = { ...current, ...input };
   await validateCompartmentConflicts(current.cabinetId, {
@@ -80,6 +91,13 @@ export async function deleteCompartment(id: string) {
   if (!current) throw NotFoundError('Compartment not found');
   if (current.status === CompartmentAvailability.OCCUPIED) {
     throw ForbiddenError('Cannot delete occupied compartment');
+  }
+
+  const cabinet = await prisma.cabinet.findUnique({ where: { id: current.cabinetId } });
+  if (!cabinet) throw NotFoundError('Cabinet not found');
+  const allowedStatuses: CabinetStatus[] = [CabinetStatus.CONFIGURING, CabinetStatus.ACTIVE];
+  if (!allowedStatuses.includes(cabinet.status)) {
+    throw BadRequestError('Cabinet status must be CONFIGURING or ACTIVE');
   }
 
   const compartment = await prisma.compartment.delete({ where: { id } });
@@ -137,10 +155,7 @@ async function bumpConfigAndPublish(cabinetId: string): Promise<number> {
     },
   });
 
-  publishMqtt(`smartbox/${cabinetId}/config/reload`, {
-    configVersion: cabinet.configVersion,
-    compartments: cabinet.compartments,
-  });
+  await publishCabinetConfigReload(cabinetId);
 
   return cabinet.configVersion;
 }

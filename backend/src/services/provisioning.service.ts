@@ -3,6 +3,7 @@ import { CabinetStatus } from '../generated/prisma';
 import { BadRequestError, NotFoundError, UnauthorizedError } from '../lib/errors';
 import { signToken } from '../lib/jwt';
 import { prisma } from '../lib/prisma';
+import { getCabinetConfigSnapshot } from './cabinet.service';
 import { autoProvisionFromProfile, getProfileByKey, validateMcpDevices } from './profile.service';
 
 export type RegisterCabinetInput = {
@@ -89,24 +90,10 @@ export async function registerCabinet(input: RegisterCabinetInput) {
 }
 
 export async function getCabinetConfig(cabinetId: string, version?: number) {
-  const cabinet = await prisma.cabinet.findUnique({
-    where: { id: cabinetId },
-    include: {
-      mcpDevices: { orderBy: [{ bus: 'asc' }, { address: 'asc' }] },
-      compartments: {
-        include: { lockMcpDevice: true, sensorMcpDevice: true, realtimeStatus: true },
-        orderBy: [{ rowIndex: 'asc' }, { colIndex: 'asc' }, { name: 'asc' }],
-      },
-    },
-  });
-  if (!cabinet) throw NotFoundError('Cabinet not found');
-
+  const cabinet = await getCabinetConfigSnapshot(cabinetId);
   return {
-    cabinetId: cabinet.id,
-    configVersion: cabinet.configVersion,
+    ...cabinet,
     needsReload: version === undefined ? true : version < cabinet.configVersion,
-    mcpDevices: cabinet.mcpDevices,
-    compartments: cabinet.compartments,
   };
 }
 

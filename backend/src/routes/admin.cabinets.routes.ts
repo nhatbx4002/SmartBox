@@ -6,7 +6,14 @@ import { requireAdmin } from '../middleware/auth';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate } from '../middleware/validate';
 import { createAuditLog } from '../services/audit.service';
-import { updateCabinet, deleteCabinet } from '../services/cabinet.service';
+import {
+  activateCabinet,
+  createCabinet,
+  deactivateCabinet,
+  deleteCabinet,
+  testOpenCompartment,
+  updateCabinet,
+} from '../services/cabinet.service';
 import { createCompartment, deleteCompartment, updateCompartment } from '../services/compartment.service';
 import { createCabinetFromProfile } from '../services/profile.service';
 
@@ -14,8 +21,8 @@ const router = Router({ mergeParams: true });
 
 const cabinetCreateSchema = z.object({
   locationId: z.string().min(1),
-  profileId: z.string().cuid(),
   deviceName: z.string().min(1),
+  profileId: z.string().cuid().optional(),
   hardwareSerial: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -85,7 +92,15 @@ router.post(
   '/',
   validate(cabinetCreateSchema),
   asyncHandler(async (req, res) => {
-    const cabinet = await createCabinetFromProfile(req.body);
+    const cabinet = req.body.profileId
+      ? await createCabinetFromProfile(req.body)
+      : await createCabinet({
+          locationId: req.body.locationId,
+          name: req.body.deviceName,
+          hardwareSerial: req.body.hardwareSerial,
+          notes: req.body.notes,
+          status: CabinetStatus.DRAFT,
+        });
     await audit(req, AuditAction.CREATE_CABINET, 'Cabinet', cabinet.id, req.body);
     res.status(201).json({ data: cabinet });
   }),
@@ -139,6 +154,48 @@ router.delete(
   }),
 );
 
+<<<<<<< Updated upstream
+=======
+router.post(
+  '/:id/unlock/:compId',
+  asyncHandler(async (req, res) => {
+    await unlockCompartment(req.params.id, req.params.compId);
+    await audit(req, AuditAction.UNLOCK_COMPARTMENT, 'Cabinet', req.params.id, { compartmentId: req.params.compId });
+    res.json({ data: { ok: true } });
+  }),
+);
+
+router.post(
+  '/:id/activate',
+  asyncHandler(async (req, res) => {
+    const cabinet = await activateCabinet(req.params.id);
+    await audit(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, { status: cabinet.status });
+    res.json({ data: { cabinet, configVersion: cabinet.configVersion } });
+  }),
+);
+
+router.post(
+  '/:id/deactivate',
+  asyncHandler(async (req, res) => {
+    const cabinet = await deactivateCabinet(req.params.id);
+    await audit(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, { status: cabinet.status });
+    res.json({ data: { cabinet } });
+  }),
+);
+
+router.post(
+  '/:id/compartments/:compId/test-open',
+  asyncHandler(async (req, res) => {
+    const result = await testOpenCompartment(req.params.id, req.params.compId);
+    await audit(req, AuditAction.UNLOCK_COMPARTMENT, 'Cabinet', req.params.id, {
+      compartmentId: req.params.compId,
+      action: 'test-open',
+    });
+    res.json({ data: result });
+  }),
+);
+
+>>>>>>> Stashed changes
 async function audit(
   req: { admin?: { id: string }; ip?: string },
   action: AuditAction,

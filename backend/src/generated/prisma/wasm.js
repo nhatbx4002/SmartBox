@@ -241,6 +241,18 @@ exports.Prisma.CabinetCredentialScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PairingSessionScalarFieldEnum = {
+  id: 'id',
+  hardwareSerial: 'hardwareSerial',
+  discoveredMcpDevices: 'discoveredMcpDevices',
+  pairingCode: 'pairingCode',
+  status: 'status',
+  cabinetId: 'cabinetId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CompartmentStatusScalarFieldEnum = {
   id: 'id',
   compartmentId: 'compartmentId',
@@ -335,6 +347,10 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
@@ -377,7 +393,8 @@ exports.CabinetStatus = exports.$Enums.CabinetStatus = {
   DRAFT: 'DRAFT',
   PENDING_PROVISION: 'PENDING_PROVISION',
   PROVISION_FAILED: 'PROVISION_FAILED',
-  PENDING_REGISTRATION: 'PENDING_REGISTRATION'
+  PENDING_REGISTRATION: 'PENDING_REGISTRATION',
+  CONFIGURING: 'CONFIGURING'
 };
 
 exports.CompartmentSize = exports.$Enums.CompartmentSize = {
@@ -489,6 +506,7 @@ exports.Prisma.ModelName = {
   ProvisionProfile: 'ProvisionProfile',
   ProvisionMcpDevice: 'ProvisionMcpDevice',
   CabinetCredential: 'CabinetCredential',
+  PairingSession: 'PairingSession',
   CompartmentStatus: 'CompartmentStatus',
   PricePlan: 'PricePlan',
   Rental: 'Rental',

@@ -12,3 +12,4 @@ export const NotFoundError = (message = 'Not found') => new AppError(404, 'NOT_F
 export const UnauthorizedError = (message = 'Unauthorized') => new AppError(401, 'UNAUTHORIZED', message);
 export const BadRequestError = (message = 'Bad request') => new AppError(400, 'BAD_REQUEST', message);
 export const ForbiddenError = (message = 'Forbidden') => new AppError(403, 'FORBIDDEN', message);
+export const TooManyRequestsError = (message = 'Too many requests') => new AppError(429, 'TOO_MANY_REQUESTS', message);

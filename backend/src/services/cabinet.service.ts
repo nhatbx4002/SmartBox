@@ -5,10 +5,13 @@ import {
   DoorStatus,
   LockStatus,
   LockerAction,
+  RentalStatus,
 } from '../generated/prisma';
 import { BadRequestError, NotFoundError } from '../lib/errors';
+import { publishMqtt } from '../lib/mqtt';
 import { emitCabinetStatus, emitCompartmentStatus } from '../lib/socket';
 import { prisma } from '../lib/prisma';
+import { unlockCompartment } from './locker.service';
 
 export async function listCabinets() {
   return prisma.cabinet.findMany({
@@ -30,8 +33,22 @@ export async function createCabinet(input: {
   id?: string;
   locationId: string;
   name: string;
+  profileId?: string | null;
+  status?: CabinetStatus;
+  hardwareSerial?: string | null;
+  notes?: string | null;
 }) {
-  return prisma.cabinet.create({ data: input });
+  return prisma.cabinet.create({
+    data: {
+      id: input.id,
+      locationId: input.locationId,
+      name: input.name,
+      profileId: input.profileId ?? null,
+      status: input.status ?? CabinetStatus.DRAFT,
+      hardwareSerial: input.hardwareSerial ?? null,
+      notes: input.notes ?? null,
+    },
+  });
 }
 
 export async function updateCabinet(
@@ -99,23 +116,130 @@ export async function updateHeartbeat(cabinetId: string) {
   return cabinet;
 }
 
+export async function getCabinetConfigSnapshot(cabinetId: string) {
+  const cabinet = await prisma.cabinet.findUnique({
+    where: { id: cabinetId },
+    include: {
+      mcpDevices: { orderBy: [{ bus: 'asc' }, { address: 'asc' }] },
+      compartments: {
+        include: { lockMcpDevice: true, sensorMcpDevice: true, realtimeStatus: true },
+        orderBy: [{ rowIndex: 'asc' }, { colIndex: 'asc' }, { name: 'asc' }],
+      },
+    },
+  });
+  if (!cabinet) throw NotFoundError('Cabinet not found');
+
+  return {
+    cabinetId: cabinet.id,
+    status: cabinet.status,
+    configVersion: cabinet.configVersion,
+    mcpDevices: cabinet.mcpDevices,
+    compartments: cabinet.compartments,
+  };
+}
+
+export async function publishCabinetConfigReload(cabinetId: string) {
+  const config = await getCabinetConfigSnapshot(cabinetId);
+  publishMqtt(`smartbox/${cabinetId}/config/reload`, config);
+  return config;
+}
+
+export async function activateCabinet(cabinetId: string) {
+  const current = await prisma.cabinet.findUnique({
+    where: { id: cabinetId },
+    include: { compartments: true },
+  });
+  if (!current) throw NotFoundError('Cabinet not found');
+  if (current.status !== CabinetStatus.CONFIGURING) {
+    throw BadRequestError('Cabinet status is not CONFIGURING');
+  }
+  if (current.compartments.length < 1) {
+    throw BadRequestError('Tủ phải có ít nhất một ngăn');
+  }
+
+  const cabinet = await prisma.cabinet.update({
+    where: { id: cabinetId },
+    data: { status: CabinetStatus.ACTIVE },
+  });
+
+  await publishCabinetConfigReload(cabinetId);
+  emitCabinetStatus(cabinetId, { status: cabinet.status });
+  return cabinet;
+}
+
+export async function deactivateCabinet(cabinetId: string) {
+  const current = await prisma.cabinet.findUnique({ where: { id: cabinetId } });
+  if (!current) throw NotFoundError('Cabinet not found');
+  if (current.status !== CabinetStatus.ACTIVE) {
+    throw BadRequestError('Cabinet status is not ACTIVE');
+  }
+
+  const activeRentals = await prisma.rental.count({
+    where: {
+      status: RentalStatus.ACTIVE,
+      compartment: { cabinetId },
+    },
+  });
+  if (activeRentals > 0) {
+    throw BadRequestError('Cabinet has active rentals');
+  }
+
+  const cabinet = await prisma.cabinet.update({
+    where: { id: cabinetId },
+    data: { status: CabinetStatus.INACTIVE },
+  });
+
+  await publishCabinetConfigReload(cabinetId);
+  emitCabinetStatus(cabinetId, { status: cabinet.status });
+  return cabinet;
+}
+
+export async function testOpenCompartment(cabinetId: string, compartmentId: string) {
+  const cabinet = await prisma.cabinet.findUnique({ where: { id: cabinetId } });
+  if (!cabinet) throw NotFoundError('Cabinet not found');
+  const allowedStatuses: CabinetStatus[] = [CabinetStatus.CONFIGURING, CabinetStatus.ACTIVE];
+  if (!allowedStatuses.includes(cabinet.status)) {
+    throw BadRequestError('Cabinet status must be CONFIGURING or ACTIVE');
+  }
+
+  const compartment = await prisma.compartment.findFirst({
+    where: { id: compartmentId, cabinetId },
+  });
+  if (!compartment) throw NotFoundError('Compartment not found');
+
+  await unlockCompartment(cabinetId, compartmentId);
+  return { ok: true, cabinetId, compartmentId, compartmentName: compartment.name };
+}
+
 const validCabinetStatusTransitions: Record<CabinetStatus, CabinetStatus[]> = {
-  [CabinetStatus.DRAFT]: [CabinetStatus.PENDING_PROVISION],
+  [CabinetStatus.DRAFT]: [CabinetStatus.PENDING_PROVISION, CabinetStatus.CONFIGURING, CabinetStatus.INACTIVE],
   [CabinetStatus.PENDING_PROVISION]: [
     CabinetStatus.ACTIVE,
     CabinetStatus.PENDING_REGISTRATION,
     CabinetStatus.PROVISION_FAILED,
     CabinetStatus.INACTIVE,
+    CabinetStatus.CONFIGURING,
   ],
   [CabinetStatus.PENDING_REGISTRATION]: [
     CabinetStatus.ACTIVE,
     CabinetStatus.PROVISION_FAILED,
     CabinetStatus.INACTIVE,
+    CabinetStatus.CONFIGURING,
   ],
-  [CabinetStatus.PROVISION_FAILED]: [CabinetStatus.PENDING_PROVISION, CabinetStatus.PENDING_REGISTRATION],
+  [CabinetStatus.PROVISION_FAILED]: [
+    CabinetStatus.PENDING_PROVISION,
+    CabinetStatus.PENDING_REGISTRATION,
+    CabinetStatus.CONFIGURING,
+  ],
   [CabinetStatus.ACTIVE]: [CabinetStatus.INACTIVE, CabinetStatus.OFFLINE],
-  [CabinetStatus.INACTIVE]: [CabinetStatus.ACTIVE, CabinetStatus.DRAFT, CabinetStatus.PENDING_PROVISION],
+  [CabinetStatus.INACTIVE]: [
+    CabinetStatus.ACTIVE,
+    CabinetStatus.DRAFT,
+    CabinetStatus.PENDING_PROVISION,
+    CabinetStatus.CONFIGURING,
+  ],
   [CabinetStatus.OFFLINE]: [CabinetStatus.ACTIVE],
+  [CabinetStatus.CONFIGURING]: [CabinetStatus.ACTIVE, CabinetStatus.INACTIVE],
 };
 
 function validateCabinetStatusTransition(from: CabinetStatus, to: CabinetStatus) {

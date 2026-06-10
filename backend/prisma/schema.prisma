@@ -31,6 +31,7 @@ enum CabinetStatus {
   PENDING_PROVISION
   PROVISION_FAILED
   PENDING_REGISTRATION
+  CONFIGURING
 }
 
 enum CompartmentSize {
@@ -297,6 +298,22 @@ model CabinetCredential {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   cabinet       Cabinet  @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+}
+
+model PairingSession {
+  id                   String   @id @default(cuid())
+  hardwareSerial       String
+  discoveredMcpDevices Json
+  pairingCode          String   @unique
+  status               String   @default("PENDING")
+  cabinetId            String?  @unique
+  expiresAt            DateTime
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([pairingCode])
+  @@index([status, expiresAt])
+  @@index([cabinetId])
 }
 
 model CompartmentStatus {
