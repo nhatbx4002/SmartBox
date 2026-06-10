@@ -13,6 +13,10 @@ class GpioController:
 
     _IODIRA = 0x00
     _IODIRB = 0x01
+    _GPPUA = 0x0C
+    _GPPUB = 0x0D
+    _GPIOA = 0x12
+    _GPIOB = 0x13
     _OLATA = 0x14
     _OLATB = 0x15
 
@@ -23,6 +27,8 @@ class GpioController:
         self.lock_state: dict[str, str] = {}
         self.pin_map: dict[str, int] = {}
         self.pin_target_map: dict[str, tuple[int, int, int]] = {}
+        self.sensor_pin_map: dict[str, int] = {}
+        self.sensor_target_map: dict[str, tuple[int, int, int]] = {}
         self._mcp_device_registry: dict[str, tuple[int, int]] = {}
         self._config: dict = {}
 
@@ -59,25 +65,37 @@ class GpioController:
     def reload_config(self, compartments: list[dict]) -> None:
         self.pin_map = {}
         self.pin_target_map = {}
+        self.sensor_pin_map = {}
+        self.sensor_target_map = {}
 
         for compartment in compartments:
-            if compartment.get("mcp23017PinLock") is None:
-                continue
-
-            pin = int(compartment["mcp23017PinLock"])
-            bus_number, address = self._lock_device_target(compartment, self._mcp_device_registry)
-            for key_field in ("name", "id"):
-                key = str(compartment.get(key_field, ""))
-                if key:
+            if compartment.get("mcp23017PinLock") is not None:
+                pin = int(compartment["mcp23017PinLock"])
+                bus_number, address = self._device_target(compartment, self._mcp_device_registry, "lock")
+                for key in self._compartment_keys(compartment):
                     self.pin_map[key] = pin
                     self.pin_target_map[key] = (bus_number, address, pin)
 
-            if not self.mock and SMBus is not None:
-                try:
-                    with SMBus(bus_number) as bus:
-                        self._configure_output(bus, address, pin)
-                except Exception as error:
-                    print(f"[GPIO ERROR] configure output failed for {compartment.get('name')}: {error}")
+                if not self.mock and SMBus is not None:
+                    try:
+                        with SMBus(bus_number) as bus:
+                            self._configure_output(bus, address, pin)
+                    except Exception as error:
+                        print(f"[GPIO ERROR] configure output failed for {compartment.get('name')}: {error}")
+
+            if compartment.get("mcp23017PinSensor") is not None:
+                pin = int(compartment["mcp23017PinSensor"])
+                bus_number, address = self._device_target(compartment, self._mcp_device_registry, "sensor")
+                for key in self._compartment_keys(compartment):
+                    self.sensor_pin_map[key] = pin
+                    self.sensor_target_map[key] = (bus_number, address, pin)
+
+                if not self.mock and SMBus is not None:
+                    try:
+                        with SMBus(bus_number) as bus:
+                            self._configure_input_pullup(bus, address, pin)
+                    except Exception as error:
+                        print(f"[GPIO ERROR] configure sensor input failed for {compartment.get('name')}: {error}")
 
     def _cache_mcp_devices(self, mcp_devices: list[dict]) -> None:
         self._mcp_device_registry = {}
@@ -132,7 +150,24 @@ class GpioController:
             return False
 
     def get_door_status(self, compartment_id: str) -> str:
-        return "CLOSED"
+        if self.mock:
+            return self.lock_state.get(f"{compartment_id}:door", "CLOSED")
+
+        if SMBus is None:
+            print("[GPIO ERROR] smbus2 is not installed")
+            return "UNKNOWN"
+
+        try:
+            bus_number, address, pin = self._target_for_sensor(compartment_id)
+            with SMBus(bus_number) as bus:
+                self._configure_input_pullup(bus, address, pin)
+                is_high = self._read_pin(bus, address, pin)
+            closed_when_high = bool(self._config.get("gpio", {}).get("sensor_closed_value", False))
+            is_closed = is_high if closed_when_high else not is_high
+            return "CLOSED" if is_closed else "OPEN"
+        except Exception as error:
+            print(f"[GPIO ERROR] door status read failed: {error}")
+            return "UNKNOWN"
 
     def _registers_for_pin(self, pin: int) -> tuple[int, int, int]:
         if not 0 <= pin <= 15:
@@ -142,16 +177,24 @@ class GpioController:
             return self._IODIRA, self._OLATA, pin
         return self._IODIRB, self._OLATB, pin - 8
 
-    def _lock_device_target(self, compartment: dict, mcp_devices: dict[str, tuple[int, int]]) -> tuple[int, int]:
-        lock_device = compartment.get("lockMcpDevice")
-        if isinstance(lock_device, dict) and lock_device.get("bus") is not None and lock_device.get("address") is not None:
-            return int(lock_device["bus"]), int(lock_device["address"])
+    def _device_target(self, compartment: dict, mcp_devices: dict[str, tuple[int, int]], role: str) -> tuple[int, int]:
+        device = compartment.get(f"{role}McpDevice")
+        if isinstance(device, dict) and device.get("bus") is not None and device.get("address") is not None:
+            return int(device["bus"]), int(device["address"])
 
-        lock_device_id = compartment.get("lockMcpDeviceId")
-        if lock_device_id is not None and str(lock_device_id) in mcp_devices:
-            return mcp_devices[str(lock_device_id)]
+        device_id = compartment.get(f"{role}McpDeviceId")
+        if device_id is not None and str(device_id) in mcp_devices:
+            return mcp_devices[str(device_id)]
 
-        raise RuntimeError(f"Missing lock MCP device for compartment {compartment.get('name', compartment.get('id', 'unknown'))}")
+        raise RuntimeError(f"Missing {role} MCP device for compartment {compartment.get('name', compartment.get('id', 'unknown'))}")
+
+    def _compartment_keys(self, compartment: dict) -> list[str]:
+        keys: list[str] = []
+        for key_field in ("name", "id"):
+            key = str(compartment.get(key_field, ""))
+            if key:
+                keys.append(key)
+        return keys
 
     def _read_cpuinfo_serial(self) -> str:
         try:
@@ -205,10 +248,24 @@ class GpioController:
             return target
         raise RuntimeError(f"No MCP pin mapping loaded for compartment {compartment_id}")
 
+    def _target_for_sensor(self, compartment_id: str) -> tuple[int, int, int]:
+        target = self.sensor_target_map.get(compartment_id)
+        if target is not None:
+            return target
+        raise RuntimeError(f"No MCP sensor pin mapping loaded for compartment {compartment_id}")
+
     def _configure_output(self, bus, address: int, pin: int) -> None:
         iodir_register, _olat_register, bit = self._registers_for_pin(pin)
         iodir = bus.read_byte_data(address, iodir_register)
         bus.write_byte_data(address, iodir_register, iodir & ~(1 << bit))
+
+    def _configure_input_pullup(self, bus, address: int, pin: int) -> None:
+        iodir_register, _olat_register, bit = self._registers_for_pin(pin)
+        gppu_register = self._pullup_register_for_pin(pin)
+        iodir = bus.read_byte_data(address, iodir_register)
+        bus.write_byte_data(address, iodir_register, iodir | (1 << bit))
+        gppu = bus.read_byte_data(address, gppu_register)
+        bus.write_byte_data(address, gppu_register, gppu | (1 << bit))
 
     def _write_pin(self, bus, address: int, pin: int, high: bool) -> None:
         _iodir_register, olat_register, bit = self._registers_for_pin(pin)
@@ -218,3 +275,20 @@ class GpioController:
         else:
             value = olat & ~(1 << bit)
         bus.write_byte_data(address, olat_register, value)
+
+    def _read_pin(self, bus, address: int, pin: int) -> bool:
+        gpio_register, bit = self._gpio_register_for_pin(pin)
+        value = bus.read_byte_data(address, gpio_register)
+        return bool(value & (1 << bit))
+
+    def _pullup_register_for_pin(self, pin: int) -> int:
+        if not 0 <= pin <= 15:
+            raise ValueError(f"Unsupported MCP23017 pin: {pin}")
+        return self._GPPUA if pin < 8 else self._GPPUB
+
+    def _gpio_register_for_pin(self, pin: int) -> tuple[int, int]:
+        if not 0 <= pin <= 15:
+            raise ValueError(f"Unsupported MCP23017 pin: {pin}")
+        if pin < 8:
+            return self._GPIOA, pin
+        return self._GPIOB, pin - 8

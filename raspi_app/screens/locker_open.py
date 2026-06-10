@@ -22,6 +22,8 @@ class LockerOpenController(BaseController):
         self.finish_button.clicked.connect(self._finish)
         self.timer = QTimer(self.widget)
         self.timer.timeout.connect(self._tick)
+        self.door_status_timer = QTimer(self.widget)
+        self.door_status_timer.timeout.connect(self._refresh_door_status)
         self.remaining = 0
         self.compartment_id = ""
         self.finished = False
@@ -50,6 +52,7 @@ class LockerOpenController(BaseController):
         self.finish_button.setText("HOÀN THÀNH")
         self.timer_label.setStyleSheet("")
         self._render_timer()
+        self._refresh_door_status()
 
         self._attempt_unlock()
 
@@ -66,6 +69,7 @@ class LockerOpenController(BaseController):
             if rental_id:
                 self.mqtt_client.publish_door_opened(self.compartment_id, rental_id)
             self.timer.start(1000)
+            self.door_status_timer.start(1000)
         else:
             if self.unlock_attempts < 3:
                 self.show_error_dialog(
@@ -83,6 +87,7 @@ class LockerOpenController(BaseController):
 
     def on_exit(self) -> None:
         self.timer.stop()
+        self.door_status_timer.stop()
 
     def _tick(self) -> None:
         self.remaining -= 1
@@ -98,7 +103,11 @@ class LockerOpenController(BaseController):
     def _finish(self) -> None:
         if self.finished:
             return
+        if not self._door_is_closed():
+            self._show_close_door_required()
+            return
         self.timer.stop()
+        self.door_status_timer.stop()
         if self.compartment_id:
             self.gpio_controller.lock(self.compartment_id)
             self.mqtt_client.publish_lock(self.compartment_id)
@@ -127,6 +136,43 @@ class LockerOpenController(BaseController):
         self.finished = True
         self.state.reset_all()
         self.go_home()
+
+    def _refresh_door_status(self) -> None:
+        if not self.compartment_id or self.finished:
+            return
+
+        status = self._door_status()
+        if status == "CLOSED":
+            self.finish_button.setEnabled(True)
+            self.finish_button.setText("HOÀN THÀNH")
+            is_pickup = self.state.mode == "pickup"
+            self.instruction_label.setText(
+                "Vui lòng lấy đồ và đóng cửa thật kỹ" if is_pickup else "Vui lòng bỏ đồ vào tủ rồi đóng cửa thật kỹ"
+            )
+        else:
+            self.finish_button.setEnabled(False)
+            self.finish_button.setText("CHƯA ĐÓNG CỬA")
+            self.instruction_label.setText("Vui lòng đóng cửa tủ thật kỹ trước khi hoàn thành")
+
+    def _door_status(self) -> str:
+        try:
+            return str(self.gpio_controller.get_door_status(self.compartment_id)).upper()
+        except Exception as error:
+            print(f"[locker_open] door status read failed: {error}")
+            return "UNKNOWN"
+
+    def _door_is_closed(self) -> bool:
+        return self._door_status() == "CLOSED"
+
+    def _show_close_door_required(self) -> None:
+        self.timer.stop()
+        self.door_status_timer.start(1000)
+        self._refresh_door_status()
+        self.show_error_dialog(
+            message="Cửa tủ chưa đóng. Vui lòng đóng cửa thật kỹ rồi bấm Hoàn thành.",
+            title="CHƯA ĐÓNG CỬA TỦ",
+            on_retry=self._finish,
+        )
 
     def _locker_text(self) -> str:
         rental = self.state.rental_data

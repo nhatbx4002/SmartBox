@@ -74,7 +74,7 @@ class QRScanController(BaseController):
             return
 
         self.poll_count += 1
-        skip_qr = (self.poll_count % 5 != 0)
+        skip_qr = (self.poll_count % 10 != 0)
         frame = self.scanner.capture(skip_qr=skip_qr)
         if frame.error:
             self._show_camera_error(frame.error)
