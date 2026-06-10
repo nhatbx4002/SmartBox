@@ -98,9 +98,12 @@ class PairingController(BaseController):
             return
 
         self._poll_in_flight = True
+        print(f"[PAIRING POLL] session_id={self._session_id}")
         try:
             result = self.api_client.get_pairing_session(self._session_id)
+            print(f"[PAIRING POLL] result status={result.get('status')}")
         except ApiError as error:
+            print(f"[PAIRING POLL] ApiError: {error.message} (code={error.status_code})")
             self._handle_poll_error(error.message or "Không thể kiểm tra trạng thái ghép.")
             return
         except Exception as error:
