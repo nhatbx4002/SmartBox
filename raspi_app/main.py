@@ -226,7 +226,23 @@ class KioskApp(QWidget):
         self.config = load_config()
         self.state.reset_pairing_flow()
         self._load_normal_config()
-        self._start_paired_runtime()
+
+        # Set up API client and GPIO before MQTT (so polling works even if MQTT fails)
+        self.api_client.jwt_token = self.jwt_token
+        self.gpio_controller._config = self.config
+
+        # Start config polling even if MQTT is not ready yet
+        if not hasattr(self, "config_poll_timer"):
+            self.config_poll_timer = QTimer(self)
+            self.config_poll_timer.timeout.connect(self._poll_config)
+        self.config_poll_timer.start(30000)
+        self._poll_config()
+
+        try:
+            self._start_paired_runtime()
+        except Exception as error:
+            print(f"[PAIRING] MQTT connect failed (will retry): {error}")
+            # Pi still works without MQTT — config polling handles updates
 
     def restart_pairing_flow(self) -> dict:
         self.state.reset_pairing_flow()
