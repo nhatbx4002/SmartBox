@@ -6,54 +6,52 @@ from services.api_client import ApiClient
 
 class ApiClientProvisioningTests(unittest.TestCase):
     @patch("services.api_client.requests.post")
-    def test_provision_cabinet_posts_profile_based_payload(self, post):
+    def test_start_pairing_posts_direct_pair_payload(self, post):
         response = Mock(ok=True)
         response.json.return_value = {
             "data": {
-                "cabinetId": "cabinet-a",
-                "jwtToken": "jwt-token",
-                "mqttConfig": {"username": "cabinet-a", "password": "secret"},
+                "sessionId": "pairing-session-1",
+                "pairingCode": "ABC123",
+                "expiresInSeconds": 600,
             }
         }
         post.return_value = response
 
-        client = ApiClient(base_url="http://localhost:3000", timeout=30, mock=False)
-        payload = {
-            "provisionKey": "smartbox-24-prod",
-            "provisionSecret": "secret-1",
-            "provisionCode": "AB12CD34",
-            "hardwareSerial": "RPI-001",
-            "deviceName": "Tu A - Tang 1",
-            "discoveredMcpDevices": [{"bus": 1, "address": 32, "name": "MCP"}],
-            "firmwareVersion": "1.2.3",
-            "piModel": "Pi 4",
-        }
+        client = ApiClient(base_url="http://localhost:3001", timeout=30, mock=False)
+        devices = [{"bus": 1, "address": 32, "name": "MCP"}]
 
-        data = client.provision_cabinet(payload)
+        data = client.start_pairing("RPI-001", devices)
 
-        self.assertEqual(data["cabinetId"], "cabinet-a")
+        self.assertEqual(data["sessionId"], "pairing-session-1")
         post.assert_called_once_with(
-            "http://localhost:3000/api/provisioning/register",
-            json=payload,
-            headers={"Content-Type": "application/json"},
+            "http://localhost:3001/api/pair/start",
+            json={"hardwareSerial": "RPI-001", "discoveredMcpDevices": devices},
             timeout=30,
         )
 
     @patch("services.api_client.requests.get")
-    def test_get_cabinets_provisioning_filters_by_cabinet_id(self, get):
+    def test_get_cabinet_config_fetches_snapshot_with_auth(self, get):
         response = Mock(ok=True)
-        response.json.return_value = {"data": [{"id": "cabinet-a", "compartments": []}]}
+        response.json.return_value = {
+            "data": {
+                "cabinetId": "cabinet-a",
+                "configVersion": 2,
+                "mcpDevices": [{"id": "mcp-lock", "bus": 1, "address": 32}],
+                "compartments": [],
+            }
+        }
         get.return_value = response
 
-        client = ApiClient(base_url="http://localhost:3000", timeout=7, mock=False)
+        client = ApiClient(base_url="http://localhost:3001", timeout=7, mock=False)
         client.jwt_token = "cabinet-token"
-        data = client.get_cabinets_provisioning("cabinet-a")
+        data = client.get_cabinet_config("cabinet-a")
 
-        self.assertEqual(data, [{"id": "cabinet-a", "compartments": []}])
+        self.assertEqual(data["cabinetId"], "cabinet-a")
+        self.assertEqual(data["configVersion"], 2)
         get.assert_called_once_with(
-            "http://localhost:3000/api/provisioning/cabinets",
+            "http://localhost:3001/api/cabinets/cabinet-a/config",
             headers={"Content-Type": "application/json", "Authorization": "Bearer cabinet-token"},
-            params={"cabinetId": "cabinet-a"},
+            params={},
             timeout=7,
         )
 

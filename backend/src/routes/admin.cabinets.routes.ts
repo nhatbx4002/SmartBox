@@ -41,8 +41,8 @@ const compartmentSchema = z.object({
   colIndex: z.number().int().min(0).optional(),
   lockMcpDeviceId: z.string().nullable().optional(),
   sensorMcpDeviceId: z.string().nullable().optional(),
-  mcp23017PinLock: z.number().int().min(0),
-  mcp23017PinSensor: z.number().int().min(0),
+  mcp23017PinLock: z.number().int().min(0).max(15),
+  mcp23017PinSensor: z.number().int().min(0).max(15).nullable().optional(),
 });
 
 const compartmentUpdateSchema = compartmentSchema.partial();

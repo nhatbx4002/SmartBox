@@ -59,7 +59,7 @@ class KioskApp(QWidget):
             )
             self.network_monitor.start()
             self.api_client = ApiClient(
-                base_url=get_config_value(self.config, "api.base_url", "http://localhost:5000"),
+                base_url=get_config_value(self.config, "api.base_url", "http://localhost:3001"),
                 timeout=get_config_value(self.config, "api.timeout", 10),
                 mock=False,
             )
@@ -296,8 +296,8 @@ class KioskApp(QWidget):
             username=get_config_value(self.config, "mqtt.username", None),
             password=get_config_value(self.config, "mqtt.password", None),
         )
-        self.mqtt_client.subscribe_unlock(self.cabinet_id, self.gpio_controller.unlock)
-        self.mqtt_client.subscribe_lock(self.cabinet_id, self.gpio_controller.lock)
+        self.mqtt_client.subscribe_unlock(self.cabinet_id, self._handle_unlock_command)
+        self.mqtt_client.subscribe_lock(self.cabinet_id, self._handle_lock_command)
         self.mqtt_client.subscribe_config_reload(self.cabinet_id, self._on_config_reload)
         self.mqtt_client.disconnect_callback = self._on_mqtt_failure
 
@@ -326,6 +326,16 @@ class KioskApp(QWidget):
         except Exception as error:
             print(f"[CONFIG POLL] failed: {error}")
 
+    def _reload_config_from_backend(self) -> bool:
+        try:
+            result = self.api_client.get_cabinet_config(self.cabinet_id)
+            version = int(result.get("configVersion", self.config.get("config_version", 0)) or 0)
+            self._apply_config_snapshot(version, result.get("compartments", []), result.get("mcpDevices", []))
+            return True
+        except Exception as error:
+            print(f"[CONFIG] backend reload failed: {error}")
+            return False
+
     def _on_config_reload(self, config_version: int | None, compartments: list) -> None:
         if config_version is None:
             return
@@ -334,7 +344,15 @@ class KioskApp(QWidget):
         if int(config_version) <= current_version:
             return
 
+        self._apply_config_snapshot(int(config_version), compartments)
+
+    def _apply_config_snapshot(self, config_version: int, compartments: list, mcp_devices: list | None = None) -> None:
+        current_version = int(self.config.get("config_version", 0) or 0)
         print(f"[CONFIG] Reloading v{config_version} (from v{current_version})")
+        if mcp_devices is not None:
+            self.gpio_controller._cache_mcp_devices(mcp_devices)
+            self.config["mcpDevices"] = mcp_devices
+            self.config["mcp_devices"] = mcp_devices
         self.gpio_controller.reload_config(compartments)
         self.config["config_version"] = int(config_version)
         self.config["compartments"] = compartments
@@ -345,6 +363,18 @@ class KioskApp(QWidget):
         controller = self.controllers.get(self.current_route)
         if controller is not None:
             controller.on_config_updated()
+
+    def _handle_unlock_command(self, compartment_id: str) -> bool:
+        if compartment_id not in self.gpio_controller.pin_target_map:
+            print(f"[MQTT] missing mapping for unlock {compartment_id}; reloading config")
+            self._reload_config_from_backend()
+        return self.gpio_controller.unlock(compartment_id)
+
+    def _handle_lock_command(self, compartment_id: str) -> bool:
+        if compartment_id not in self.gpio_controller.pin_target_map:
+            print(f"[MQTT] missing mapping for lock {compartment_id}; reloading config")
+            self._reload_config_from_backend()
+        return self.gpio_controller.lock(compartment_id)
 
     def _register_controllers(self) -> None:
         controller_types = [

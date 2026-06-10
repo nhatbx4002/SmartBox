@@ -7,14 +7,17 @@ import { createCompartment, deleteCompartment } from '../src/services/compartmen
 test('createCompartment rejects duplicate lock pin on the same MCP device', async (t) => {
   const originals = {
     cabinetFindUnique: prisma.cabinet.findUnique,
+    mcpDeviceFindFirst: prisma.mcpDevice.findFirst,
     compartmentFindFirst: prisma.compartment.findFirst,
   };
   t.after(() => {
     (prisma.cabinet.findUnique as unknown) = originals.cabinetFindUnique;
+    (prisma.mcpDevice.findFirst as unknown) = originals.mcpDeviceFindFirst;
     (prisma.compartment.findFirst as unknown) = originals.compartmentFindFirst;
   });
 
   (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.ACTIVE });
+  (prisma.mcpDevice.findFirst as unknown) = async () => ({ id: 'mcp-1', cabinetId: 'cabinet-1' });
   (prisma.compartment.findFirst as unknown) = async (args: {
     where?: { mcp23017PinLock?: number; lockMcpDeviceId?: string };
   }) => {
@@ -44,17 +47,20 @@ test('createCompartment creates compartment and increments cabinet configVersion
   const originals = {
     cabinetFindUnique: prisma.cabinet.findUnique,
     cabinetUpdate: prisma.cabinet.update,
+    mcpDeviceFindFirst: prisma.mcpDevice.findFirst,
     compartmentFindFirst: prisma.compartment.findFirst,
     compartmentCreate: prisma.compartment.create,
   };
   t.after(() => {
     (prisma.cabinet.findUnique as unknown) = originals.cabinetFindUnique;
     (prisma.cabinet.update as unknown) = originals.cabinetUpdate;
+    (prisma.mcpDevice.findFirst as unknown) = originals.mcpDeviceFindFirst;
     (prisma.compartment.findFirst as unknown) = originals.compartmentFindFirst;
     (prisma.compartment.create as unknown) = originals.compartmentCreate;
   });
 
   (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.ACTIVE });
+  (prisma.mcpDevice.findFirst as unknown) = async () => ({ id: 'mcp-1', cabinetId: 'cabinet-1' });
   (prisma.compartment.findFirst as unknown) = async () => null;
   (prisma.compartment.create as unknown) = async () => ({
     id: 'comp-3',
@@ -81,6 +87,55 @@ test('createCompartment creates compartment and increments cabinet configVersion
 
   assert.equal(result.configVersion, 2);
   assert.equal(result.compartment.id, 'comp-3');
+});
+
+test('createCompartment allows multiple compartments without sensors', async (t) => {
+  const calls: unknown[] = [];
+  const originals = {
+    cabinetFindUnique: prisma.cabinet.findUnique,
+    cabinetUpdate: prisma.cabinet.update,
+    mcpDeviceFindFirst: prisma.mcpDevice.findFirst,
+    compartmentFindFirst: prisma.compartment.findFirst,
+    compartmentCreate: prisma.compartment.create,
+  };
+  t.after(() => {
+    (prisma.cabinet.findUnique as unknown) = originals.cabinetFindUnique;
+    (prisma.cabinet.update as unknown) = originals.cabinetUpdate;
+    (prisma.mcpDevice.findFirst as unknown) = originals.mcpDeviceFindFirst;
+    (prisma.compartment.findFirst as unknown) = originals.compartmentFindFirst;
+    (prisma.compartment.create as unknown) = originals.compartmentCreate;
+  });
+
+  (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.CONFIGURING });
+  (prisma.mcpDevice.findFirst as unknown) = async () => ({ id: 'mcp-1', cabinetId: 'cabinet-1' });
+  (prisma.compartment.findFirst as unknown) = async (args: unknown) => {
+    calls.push(args);
+    return null;
+  };
+  (prisma.compartment.create as unknown) = async (args: { data: { mcp23017PinSensor: number; sensorMcpDeviceId?: string | null } }) => ({
+    id: 'comp-4',
+    cabinetId: 'cabinet-1',
+    name: 'A4',
+    status: CompartmentAvailability.AVAILABLE,
+    ...args.data,
+  });
+  (prisma.cabinet.update as unknown) = async () => ({
+    id: 'cabinet-1',
+    configVersion: 2,
+    compartments: [{ id: 'comp-4', name: 'A4' }],
+  });
+
+  const result = await createCompartment('cabinet-1', {
+    name: 'A4',
+    size: CompartmentSize.SMALL,
+    lockMcpDeviceId: 'mcp-1',
+    sensorMcpDeviceId: null,
+    mcp23017PinLock: 6,
+  });
+
+  assert.equal(result.compartment.mcp23017PinSensor, 0);
+  assert.equal(result.compartment.sensorMcpDeviceId, null);
+  assert.equal(calls.length, 2);
 });
 
 test('deleteCompartment rejects occupied compartments', async (t) => {

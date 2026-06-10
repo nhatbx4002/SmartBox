@@ -30,6 +30,7 @@ type BackendCabinetStatus =
   | 'PENDING_REGISTRATION'
   | 'PENDING_PROVISION'
   | 'PROVISION_FAILED'
+  | 'CONFIGURING'
 type BackendPaymentStatus = 'PENDING' | 'PAID' | 'REFUNDED' | 'FAILED'
 
 interface BackendCompartment {
@@ -38,10 +39,24 @@ interface BackendCompartment {
   size: Compartment['size']
   status: Compartment['status']
   cabinetId: string
+  mcp23017PinLock?: number
+  mcp23017PinSensor?: number | null
+  lockMcpDeviceId?: string | null
+  sensorMcpDeviceId?: string | null
+  lockMcpDevice?: BackendMcpDevice | null
+  sensorMcpDevice?: BackendMcpDevice | null
   realtimeStatus?: {
     lockStatus?: Compartment['lockStatus'] | 'UNKNOWN' | 'FAULTY'
     doorStatus?: Compartment['doorStatus'] | 'UNKNOWN'
   } | null
+}
+
+interface BackendMcpDevice {
+  id: string
+  bus: number
+  address: number
+  name?: string | null
+  role?: string | null
 }
 
 interface BackendCabinet {
@@ -55,7 +70,7 @@ interface BackendCabinet {
   configVersion?: number
   hardwareSerial?: string | null
   location?: { name?: string } | null
-  mcpDevices?: unknown[]
+  mcpDevices?: BackendMcpDevice[]
   compartments?: BackendCompartment[]
   profile?: { id: string; name: string } | null
 }
@@ -197,6 +212,7 @@ function mapCabinetStatus(status: BackendCabinetStatus): CabinetStatus {
     PENDING_REGISTRATION: 'PENDING_REGISTRATION',
     PENDING_PROVISION: 'PENDING_PROVISION',
     PROVISION_FAILED: 'PROVISION_FAILED',
+    CONFIGURING: 'CONFIGURING',
   }
   return map[status] ?? 'INACTIVE'
 }
@@ -250,6 +266,28 @@ function mapCompartment(compartment: BackendCompartment, cabinetName: string): C
     status: compartment.status,
     cabinetId: compartment.cabinetId,
     cabinetName,
+    mcp23017PinLock: compartment.mcp23017PinLock,
+    mcp23017PinSensor: compartment.mcp23017PinSensor ?? undefined,
+    lockMcpDeviceId: compartment.lockMcpDeviceId ?? undefined,
+    sensorMcpDeviceId: compartment.sensorMcpDeviceId ?? undefined,
+    lockMcpDevice: compartment.lockMcpDevice
+      ? {
+          id: compartment.lockMcpDevice.id,
+          bus: compartment.lockMcpDevice.bus,
+          address: compartment.lockMcpDevice.address,
+          name: compartment.lockMcpDevice.name ?? undefined,
+          role: compartment.lockMcpDevice.role ?? undefined,
+        }
+      : undefined,
+    sensorMcpDevice: compartment.sensorMcpDevice
+      ? {
+          id: compartment.sensorMcpDevice.id,
+          bus: compartment.sensorMcpDevice.bus,
+          address: compartment.sensorMcpDevice.address,
+          name: compartment.sensorMcpDevice.name ?? undefined,
+          role: compartment.sensorMcpDevice.role ?? undefined,
+        }
+      : undefined,
     lockStatus: lockStatus === 'LOCKED' || lockStatus === 'UNLOCKED' ? lockStatus : undefined,
     doorStatus: doorStatus === 'OPEN' || doorStatus === 'CLOSED' ? doorStatus : undefined,
   }
@@ -266,7 +304,13 @@ function mapCabinet(cabinet: BackendCabinet): Cabinet {
     lastSeen: cabinet.lastHeartbeatAt ?? undefined,
     availableCompartments: compartments.filter((compartment) => compartment.status === 'AVAILABLE').length,
     totalCompartments: compartments.length,
-    mcpDevices: cabinet.mcpDevices?.length ?? 0,
+    mcpDevices: (cabinet.mcpDevices ?? []).map((device) => ({
+      id: device.id,
+      bus: device.bus,
+      address: device.address,
+      name: device.name ?? undefined,
+      role: device.role ?? undefined,
+    })),
     provisionCode: cabinet.provisionCode ?? null,
     provisionCodeExpires: cabinet.provisionCodeExpires ?? null,
     configVersion: cabinet.configVersion,

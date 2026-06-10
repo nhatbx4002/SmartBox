@@ -131,8 +131,11 @@ export async function getCabinetConfigSnapshot(cabinetId: string) {
     cabinetId: cabinet.id,
     status: cabinet.status,
     configVersion: cabinet.configVersion,
-    mcpDevices: cabinet.mcpDevices,
-    compartments: cabinet.compartments,
+    mcpDevices: cabinet.mcpDevices ?? [],
+    compartments: (cabinet.compartments ?? []).map((compartment) => ({
+      ...compartment,
+      mcp23017PinSensor: compartment.sensorMcpDeviceId ? compartment.mcp23017PinSensor : null,
+    })),
   };
 }
 

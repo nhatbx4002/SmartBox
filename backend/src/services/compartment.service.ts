@@ -17,7 +17,7 @@ export type CompartmentInput = {
   lockMcpDeviceId?: string | null;
   sensorMcpDeviceId?: string | null;
   mcp23017PinLock: number;
-  mcp23017PinSensor: number;
+  mcp23017PinSensor?: number | null;
   status?: CompartmentAvailability;
 };
 
@@ -41,7 +41,7 @@ export async function createCompartment(cabinetId: string, input: CompartmentInp
       lockMcpDeviceId: input.lockMcpDeviceId,
       sensorMcpDeviceId: input.sensorMcpDeviceId,
       mcp23017PinLock: input.mcp23017PinLock,
-      mcp23017PinSensor: input.mcp23017PinSensor,
+      mcp23017PinSensor: input.sensorMcpDeviceId ? Number(input.mcp23017PinSensor) : 0,
       status: input.status ?? CompartmentAvailability.AVAILABLE,
     },
     include: { realtimeStatus: true, lockMcpDevice: true, sensorMcpDevice: true },
@@ -75,9 +75,23 @@ export async function updateCompartment(id: string, input: Partial<CompartmentIn
     status: merged.status,
   }, id);
 
+  const data: Prisma.CompartmentUncheckedUpdateInput = {};
+  if (input.name !== undefined) data.name = input.name;
+  if (input.size !== undefined) data.size = input.size;
+  if (input.rowIndex !== undefined) data.rowIndex = input.rowIndex;
+  if (input.colIndex !== undefined) data.colIndex = input.colIndex;
+  if (input.lockMcpDeviceId !== undefined) data.lockMcpDeviceId = input.lockMcpDeviceId;
+  if (input.sensorMcpDeviceId !== undefined) data.sensorMcpDeviceId = input.sensorMcpDeviceId;
+  if (input.mcp23017PinLock !== undefined) data.mcp23017PinLock = input.mcp23017PinLock;
+  if (input.mcp23017PinSensor !== undefined && input.mcp23017PinSensor !== null) {
+    data.mcp23017PinSensor = input.mcp23017PinSensor;
+  }
+  if (input.sensorMcpDeviceId === null) data.mcp23017PinSensor = 0;
+  if (input.status !== undefined) data.status = input.status;
+
   const compartment = await prisma.compartment.update({
     where: { id },
-    data: input,
+    data,
     include: { realtimeStatus: true, lockMcpDevice: true, sensorMcpDevice: true },
   });
 
@@ -106,6 +120,21 @@ export async function deleteCompartment(id: string) {
 }
 
 async function validateCompartmentConflicts(cabinetId: string, input: CompartmentInput, excludeId?: string) {
+  validatePin(input.mcp23017PinLock, 'Lock pin');
+  if (!input.lockMcpDeviceId) {
+    throw BadRequestError('Lock MCP device is required');
+  }
+  await assertMcpDeviceBelongsToCabinet(cabinetId, input.lockMcpDeviceId, 'Lock MCP device');
+
+  const hasSensor = Boolean(input.sensorMcpDeviceId);
+  if (hasSensor) {
+    if (input.mcp23017PinSensor === null || input.mcp23017PinSensor === undefined) {
+      throw BadRequestError('Sensor pin is required when sensor MCP device is set');
+    }
+    validatePin(input.mcp23017PinSensor, 'Sensor pin');
+    await assertMcpDeviceBelongsToCabinet(cabinetId, input.sensorMcpDeviceId!, 'Sensor MCP device');
+  }
+
   const notSelf = excludeId ? { not: excludeId } : undefined;
   const nameConflict = await prisma.compartment.findFirst({
     where: {
@@ -121,10 +150,27 @@ async function validateCompartmentConflicts(cabinetId: string, input: Compartmen
   });
   if (lockConflict) throw BadRequestError('Lock pin already used');
 
-  const sensorConflict = await prisma.compartment.findFirst({
-    where: pinWhere(cabinetId, 'sensor', input.sensorMcpDeviceId ?? null, input.mcp23017PinSensor, excludeId),
+  if (hasSensor) {
+    const sensorConflict = await prisma.compartment.findFirst({
+      where: pinWhere(cabinetId, 'sensor', input.sensorMcpDeviceId!, input.mcp23017PinSensor!, excludeId),
+    });
+    if (sensorConflict) throw BadRequestError('Sensor pin already used');
+  }
+}
+
+function validatePin(pin: number, label: string) {
+  if (!Number.isInteger(pin) || pin < 0 || pin > 15) {
+    throw BadRequestError(`${label} must be between 0 and 15`);
+  }
+}
+
+async function assertMcpDeviceBelongsToCabinet(cabinetId: string, mcpDeviceId: string, label: string) {
+  const device = await prisma.mcpDevice.findFirst({
+    where: { id: mcpDeviceId, cabinetId },
   });
-  if (sensorConflict) throw BadRequestError('Sensor pin already used');
+  if (!device) {
+    throw BadRequestError(`${label} does not belong to cabinet`);
+  }
 }
 
 function pinWhere(
