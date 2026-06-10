@@ -65,8 +65,15 @@ class KioskApp(QWidget):
             )
             self.gpio_controller = GpioController(mock=False)
             self.mqtt_client = MqttClient(self.config, mock=True)
+            camera_stream_url = str(get_config_value(self.config, "camera.stream_url", "") or "").strip()
+            camera_source = (
+                camera_stream_url
+                if camera_stream_url
+                else int(get_config_value(self.config, "camera.device_index", 0))
+            )
             self.qr_scanner = QrCameraScanner(
-                stream_url=get_config_value(self.config, "camera.stream_url", ""),
+                stream_url=camera_source,
+                backend=str(get_config_value(self.config, "camera.backend", "opencv")),
                 size=(
                     int(get_config_value(self.config, "camera.preview_width", 640)),
                     int(get_config_value(self.config, "camera.preview_height", 480)),

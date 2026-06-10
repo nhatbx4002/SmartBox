@@ -21,8 +21,15 @@ class QRScanController(BaseController):
         self.retry_button = self.child("btnRetry", QPushButton)
         self.child("btnBack", QPushButton).clicked.connect(self.go_back)
         self.retry_button.clicked.connect(self._restart_camera)
+        camera_stream_url = str(get_config_value(self.config, "camera.stream_url", "") or "").strip()
+        camera_source = (
+            camera_stream_url
+            if camera_stream_url
+            else int(get_config_value(self.config, "camera.device_index", 0))
+        )
         self.scanner = getattr(app, "qr_scanner", None) or QrCameraScanner(
-            stream_url=get_config_value(self.config, "camera.stream_url", ""),
+            stream_url=camera_source,
+            backend=str(get_config_value(self.config, "camera.backend", "opencv")),
         )
         self.timer = QTimer(self.widget)
         self.timer.timeout.connect(self._poll_camera)
