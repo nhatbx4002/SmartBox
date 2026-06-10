@@ -122,12 +122,15 @@ class ApiClient:
         params = {}
         if version is not None:
             params["version"] = version
+        url = f"{self.base_url}/api/cabinets/{cabinet_id}/config"
+        print(f"[API] GET {url} (version={version})")
         response = requests.get(
-            f"{self.base_url}/api/cabinets/{cabinet_id}/config",
+            url,
             headers=self._headers(),
             params=params,
             timeout=self.timeout,
         )
+        print(f"[API] Response: {response.status_code} {response.reason}")
         return self._parse_response(response)
 
     def get_pairing_session(self, session_id: str) -> dict:
