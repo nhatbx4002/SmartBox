@@ -1,9 +1,9 @@
-provision:
-  key: smartbox-24-prod
-discovered_mcp_devices:
-- bus: 1
-  address: 32
-  name: MCP
-- bus: 1
-  address: 33
-  name: MCP
+api:
+  base_url: "http://192.168.1.29:3001"
+  timeout: 10
+
+mqtt:
+  broker: "192.168.1.29"
+  port: 1883
+  username: ""
+  password: ""
