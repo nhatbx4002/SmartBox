@@ -2,7 +2,7 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 import type { RentalStatus, CompartmentStatus, CabinetStatus, NotificationType } from '@/types'
 
-type BadgeVariant = 'success' | 'error' | 'warning' | 'muted' | 'info' | 'brand' | 'online' | 'offline' | 'inactive'
+type BadgeVariant = 'success' | 'error' | 'warning' | 'muted' | 'info' | 'brand' | 'online' | 'offline' | 'inactive' | 'neutral'
 
 const variantClasses: Record<BadgeVariant, string> = {
   success: 'bg-success/15 text-success',
@@ -14,6 +14,7 @@ const variantClasses: Record<BadgeVariant, string> = {
   online: 'bg-online/15 text-online',
   offline: 'bg-error/15 text-error',
   inactive: 'bg-white/5 text-text-muted',
+  neutral: 'bg-zinc-800 text-zinc-400',
 }
 
 interface BadgeProps {
@@ -68,6 +69,7 @@ export function getCabinetStatusVariant(status: CabinetStatus): BadgeVariant {
     PROVISION_FAILED: 'error',
     DRAFT: 'muted',
     ACTIVE: 'online',
+    CONFIGURING: 'warning',
   }
   return map[status] ?? 'muted'
 }

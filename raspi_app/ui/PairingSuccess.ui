@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PairingSuccessRootFrame</class>
+ <widget class="QWidget" name="PairingSuccessRootFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>1280</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#PairingSuccessRootFrame {
+    background-color: #0A0A0A;
+}
+
+#SuccessCard {
+    background-color: #121212;
+    border: 1px solid #2A2A2A;
+    border-radius: 28px;
+}
+
+#lblTitle {
+    color: #FFFFFF;
+    font-family: "Be Vietnam Pro", "Arial", sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+}
+
+#lblCabinetId {
+    color: #FF6600;
+    font-family: "Be Vietnam Pro", "Arial", sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+#lblMessage,
+#lblCountdown {
+    color: #B0B0B0;
+    font-family: "Be Vietnam Pro", "Arial", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#lblSuccessIcon {
+    color: #2E7D32;
+    font-family: "Segoe UI Symbol", "Arial", sans-serif;
+    font-size: 160px;
+    font-weight: 700;
+    qproperty-alignment: AlignCenter;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>28</number>
+   </property>
+   <property name="topMargin">
+    <number>24</number>
+   </property>
+   <property name="rightMargin">
+    <number>28</number>
+   </property>
+   <property name="bottomMargin">
+    <number>70</number>
+   </property>
+   <property name="spacing">
+    <number>18</number>
+   </property>
+   <item>
+    <spacer name="topSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>120</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QFrame" name="SuccessCard">
+     <layout class="QVBoxLayout" name="cardLayout">
+      <property name="leftMargin">
+       <number>28</number>
+      </property>
+      <property name="topMargin">
+       <number>28</number>
+      </property>
+      <property name="rightMargin">
+       <number>28</number>
+      </property>
+      <property name="bottomMargin">
+       <number>28</number>
+      </property>
+      <property name="spacing">
+       <number>16</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="lblSuccessIcon">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>180</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>✓</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblTitle">
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+        <property name="text">
+         <string>GHÉP TỦ THÀNH CÔNG</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblCabinetId">
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+        <property name="text">
+         <string>Cabinet: --</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblMessage">
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+        <property name="text">
+         <string>Thiết bị đang khởi tạo cấu hình ban đầu.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblCountdown">
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+        <property name="text">
+         <string>Tự động vào màn hình chính sau 3 giây</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="bottomSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>120</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

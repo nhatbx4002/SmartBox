@@ -5,6 +5,7 @@ import {
   DashboardPage,
   CabinetListPage,
   CabinetDetailPage,
+  PairingQueuePage,
   RentalsPage,
   RentalDetailPage,
   LocationsPage,
@@ -19,6 +20,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<AppLayout />}>
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/pairing" element={<PairingQueuePage />} />
         <Route path="/cabinets" element={<CabinetListPage />} />
         <Route path="/cabinets/:id" element={<CabinetDetailPage />} />
         <Route path="/profiles" element={<ProfilesPage />} />

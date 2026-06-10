@@ -4,18 +4,15 @@ import express from 'express';
 import { createServer } from 'http';
 import authRoutes from './routes/auth.routes';
 import adminLocationsRoutes from './routes/admin.locations.routes';
-import adminProfilesRoutes from './routes/admin.profiles.routes';
 import auditRoutes from './routes/audit.routes';
 import adminCabinetsRoutes from './routes/admin.cabinets.routes';
 import adminCompartmentsRoutes from './routes/admin.compartments.routes';
 import cabinetsRoutes from './routes/cabinets.routes';
 import dashboardRoutes from './routes/dashboard.routes';
-import cabinetsRoutes from './routes/cabinets.routes';
 import locationsRoutes from './routes/locations.routes';
 import lockersRoutes from './routes/lockers.routes';
 import notificationsRoutes from './routes/notifications.routes';
 import pairingRoutes from './routes/pairing.routes';
-import provisioningRoutes from './routes/provisioning.routes';
 import rentalsAdminRoutes from './routes/rentals.admin.routes';
 import rentalsRoutes from './routes/rentals.routes';
 import userNotificationsRoutes from './routes/user-notifications.routes';
@@ -53,7 +50,6 @@ async function bootstrap() {
   app.use('/api/lockers', lockersRoutes);
   app.use('/api/cabinets', cabinetsRoutes);
   app.use('/api/pair', pairingRoutes);
-  app.use('/api/provisioning', provisioningRoutes);
   app.get('/api/plans', async (req, res, next) => {
     try {
       const rawSize = req.query.size?.toString();
@@ -73,7 +69,6 @@ async function bootstrap() {
   app.use('/api/admin/cabinets', cabinetsRoutes);
   app.use('/api/admin/compartments', adminCompartmentsRoutes);
   app.use('/api/admin/locations', adminLocationsRoutes);
-  app.use('/api/admin/profiles', adminProfilesRoutes);
   app.use('/api/public/locations', locationsRoutes);
   app.use('/api/locations', locationsRoutes);
   app.use('/api/admin/rentals', rentalsAdminRoutes);

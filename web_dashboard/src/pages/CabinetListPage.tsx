@@ -19,6 +19,7 @@ const cabinetStatusLabels: Record<Cabinet['status'], string> = {
   PENDING_PROVISION: 'Pending Provision',
   PROVISION_FAILED: 'Provision Failed',
   DRAFT: 'Draft',
+  CONFIGURING: 'Configuring',
 }
 
 function formatProvisionExpiry(value?: string | null) {
@@ -211,6 +212,7 @@ export default function CabinetListPage() {
             placeholder="Status: All"
             options={[
               { value: '', label: 'All statuses' },
+              { value: 'CONFIGURING', label: 'Configuring' },
               { value: 'ONLINE', label: 'Online' },
               { value: 'OFFLINE', label: 'Offline' },
               { value: 'INACTIVE', label: 'Inactive' },

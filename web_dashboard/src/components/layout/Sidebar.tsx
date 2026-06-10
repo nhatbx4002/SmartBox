@@ -11,6 +11,7 @@ import {
   FileText,
   Settings,
   ShieldCheck,
+  Link,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore, useUIStore } from '@/store'
@@ -18,6 +19,7 @@ import type { AdminRole } from '@/types'
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
+  { to: '/pairing', icon: Link, label: 'Ghép tủ', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
   { to: '/cabinets', icon: Warehouse, label: 'Tủ', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
   { to: '/profiles', icon: Settings, label: 'Profiles', roles: ['SUPER_ADMIN'] as AdminRole[] },
   { to: '/locations', icon: MapPin, label: 'Địa điểm', roles: ['SUPER_ADMIN'] as AdminRole[] },

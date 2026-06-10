@@ -80,18 +80,6 @@ test('createRental filters available compartments by cabinetId when provided', a
   (prisma.lockerLog.create as unknown) = async () => ({ id: 'locker-log-1' }) as never;
   (prisma.$transaction as unknown) = (async (callback: (tx: unknown) => Promise<unknown>) =>
     callback({
-<<<<<<< Updated upstream
-=======
-      pricePlan: { findFirst: async () => ({ id: 'small-1-day', size: CompartmentSize.SMALL, isActive: true, durationDays: 1, maxOpens: 2 }) },
-      cabinet: { findFirst: async () => ({ id: 'cabinet-a', name: 'Tu A', status: CabinetStatus.ACTIVE }) },
-      compartment: {
-        findFirst: async (args: unknown) => {
-          compartmentFindCalls.push(args);
-          return { id: 'compartment-a1', name: 'A1', size: CompartmentSize.SMALL, cabinetId: 'cabinet-a', cabinet: { id: 'cabinet-a', name: 'Tu A', status: CabinetStatus.ACTIVE } };
-        },
-        update: async () => ({ id: 'compartment-a1' }),
-      },
->>>>>>> Stashed changes
       user: { upsert: async () => ({ id: 'user-1', phone: '0909123456' }) },
       rental: { create: async () => rental },
       compartment: { update: async () => ({ id: 'compartment-a1' }) },

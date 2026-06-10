@@ -56,15 +56,55 @@ export async function getPairingSessionByCode(pairingCode: string) {
   const refreshed = await prisma.pairingSession.findUnique({ where: { id: session.id } });
   if (!refreshed) throw NotFoundError('Pairing session not found');
   return {
-    sessionId: refreshed.id,
+    id: refreshed.id,
     pairingCode: refreshed.pairingCode,
     hardwareSerial: refreshed.hardwareSerial,
     discoveredMcpDevices: normalizeDiscoveredDevices(refreshed.discoveredMcpDevices),
-    status: refreshed.status,
-    createdAt: refreshed.createdAt,
-    expiresAt: refreshed.expiresAt,
-    cabinetId: refreshed.cabinetId,
+    status: refreshed.status as PairingSessionStatus,
+    createdAt: refreshed.createdAt.toISOString(),
+    expiresAt: refreshed.expiresAt.toISOString(),
+    cabinetId: refreshed.cabinetId ?? undefined,
   };
+}
+
+export async function listPairingSessions() {
+  const sessions = await prisma.pairingSession.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const now = new Date();
+  const result = await Promise.all(
+    sessions.map(async (s) => {
+      if (s.status === 'PENDING' && s.expiresAt < now) {
+        await prisma.pairingSession.update({
+          where: { id: s.id },
+          data: { status: 'EXPIRED' },
+        });
+        return {
+          id: s.id,
+          hardwareSerial: s.hardwareSerial,
+          discoveredMcpDevices: normalizeDiscoveredDevices(s.discoveredMcpDevices),
+          pairingCode: s.pairingCode,
+          status: 'EXPIRED' as PairingSessionStatus,
+          cabinetId: s.cabinetId ?? undefined,
+          createdAt: s.createdAt.toISOString(),
+          expiresAt: s.expiresAt.toISOString(),
+        };
+      }
+      return {
+        id: s.id,
+        hardwareSerial: s.hardwareSerial,
+        discoveredMcpDevices: normalizeDiscoveredDevices(s.discoveredMcpDevices),
+        pairingCode: s.pairingCode,
+        status: s.status as PairingSessionStatus,
+        cabinetId: s.cabinetId ?? undefined,
+        createdAt: s.createdAt.toISOString(),
+        expiresAt: s.expiresAt.toISOString(),
+      };
+    }),
+  );
+
+  return result;
 }
 
 export async function approvePairingSession(sessionId: string, input: ApprovePairingInput) {
@@ -172,19 +212,21 @@ async function expirePairingSessionIfNeeded(sessionId: string, status: PairingSe
 async function buildPairingSessionResponse(session: NonNullable<Awaited<ReturnType<typeof loadSession>>>) {
   if (session.status === 'APPROVED' && session.cabinetId) {
     return {
-      status: session.status,
+      id: session.id,
+      status: session.status as PairingSessionStatus,
       cabinetId: session.cabinetId,
       ...(await buildApprovedSessionPayload(session.cabinetId)),
     };
   }
 
   return {
-    status: session.status,
+    id: session.id,
+    status: session.status as PairingSessionStatus,
     pairingCode: session.pairingCode,
     hardwareSerial: session.hardwareSerial,
     discoveredMcpDevices: normalizeDiscoveredDevices(session.discoveredMcpDevices),
-    createdAt: session.createdAt,
-    expiresAt: session.expiresAt,
+    createdAt: session.createdAt.toISOString(),
+    expiresAt: session.expiresAt.toISOString(),
   };
 }
 

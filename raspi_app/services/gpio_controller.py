@@ -2,6 +2,8 @@ from __future__ import annotations
 from pathlib import Path
 import time
 
+from services.config_loader import save_config
+
 try:
     from smbus2 import SMBus
 except ImportError:
@@ -27,20 +29,17 @@ class GpioController:
         self._config: dict = {}
 
     def load_from_backend(self, api_client, cabinet_id: str) -> None:
-        try:
-            config = api_client.get_cabinet_config(cabinet_id)
-            cabinet = {
-                "mcpDevices": config.get("mcpDevices", []),
-                "compartments": config.get("compartments", []),
-            }
-        except Exception:
-            cabinets = api_client.get_cabinets_provisioning(cabinet_id)
-            if not cabinets:
-                raise RuntimeError(f"No provisioning data found for cabinet {cabinet_id}")
-            cabinet = cabinets[0]
+        # compartments and mcpDevices are already persisted in config.yaml by apply_pairing_result
+        # no API call needed — just read from self._config
+        config = self._config
+        mcp_devices = config.get("mcpDevices", config.get("mcp_devices", config.get("discovered_mcp_devices", [])))
+        compartments = config.get("compartments", [])
 
-        self._cache_mcp_devices(cabinet.get("mcpDevices", []))
-        self.reload_config(cabinet.get("compartments", []))
+        if not mcp_devices and not compartments:
+            raise RuntimeError(f"No provisioning data found for cabinet {cabinet_id}")
+
+        self._cache_mcp_devices(mcp_devices)
+        self.reload_config(compartments)
 
         print(f"[GPIO] loaded MCP pin targets from backend: {self.pin_target_map}")
 
@@ -48,6 +47,7 @@ class GpioController:
         self._config = config
         found_addresses = self._scan_i2c_bus(bus=1)
         discovered_mcp = [{"bus": 1, "address": int(address), "name": "MCP"} for address in found_addresses]
+        self._save_discovered_devices(discovered_mcp)
 
         return {
             "hardwareSerial": self._read_cpuinfo_serial(),
@@ -78,6 +78,13 @@ class GpioController:
                         self._configure_output(bus, address, pin)
                 except Exception as error:
                     print(f"[GPIO ERROR] configure output failed for {compartment.get('name')}: {error}")
+
+    def _save_discovered_devices(self, devices: list[dict]) -> None:
+        self._config["discovered_mcp_devices"] = devices
+        try:
+            save_config(self._config)
+        except Exception as error:
+            print(f"[GPIO ERROR] failed to persist discovered devices: {error}")
 
     def _cache_mcp_devices(self, mcp_devices: list[dict]) -> None:
         self._mcp_device_registry = {}

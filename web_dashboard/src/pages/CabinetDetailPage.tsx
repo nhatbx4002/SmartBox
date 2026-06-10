@@ -1,248 +1,630 @@
 import * as React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, DoorOpen, Lock, Trash2 } from 'lucide-react'
+import {
+  ArrowLeft,
+  Check,
+  Lock,
+  Pencil,
+  Plus,
+  Power,
+  RefreshCw,
+  Trash2,
+  Zap,
+} from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Button, Badge, Modal, Skeleton } from '@/components/ui'
-import { getCabinetStatusVariant, getCompartmentStatusVariant, getCompartmentStatusColor } from '@/components/ui/Badge'
-import { cn, formatRelativeTime } from '@/lib/utils'
-import type { CabinetStatus } from '@/types'
-
-const statusLabel: Record<CabinetStatus, string> = {
-  ONLINE: 'Online',
-  OFFLINE: 'Offline',
-  INACTIVE: 'Inactive',
-  PENDING_REGISTRATION: 'Pending Registration',
-  PENDING_PROVISION: 'Pending Provision',
-  PROVISION_FAILED: 'Provision Failed',
-  DRAFT: 'Draft',
-  ACTIVE: 'Active',
-}
+import { Badge, Button, Input, Modal, Select } from '@/components/ui'
 import { cabinetsApi } from '@/lib/api'
-import type { Compartment, CompartmentStatus } from '@/types'
+import type { Compartment, McpDevice, CompartmentSize } from '@/types'
 
-const statusLabels: Record<CompartmentStatus, string> = {
-  AVAILABLE: 'Available',
-  OCCUPIED: 'Occupied',
-  MAINTENANCE: 'Maintenance',
-  RESERVED: 'Reserved',
+const STATUS_CONFIG: Record<string, { label: string; variant: 'success' | 'warning' | 'error' | 'neutral' }> = {
+  ACTIVE: { label: 'Hoạt động', variant: 'success' },
+  OFFLINE: { label: 'Offline', variant: 'error' },
+  INACTIVE: { label: 'Tắt', variant: 'neutral' },
+  CONFIGURING: { label: 'Đang cấu hình', variant: 'warning' },
+  DRAFT: { label: 'Bản nháp', variant: 'neutral' },
+  PENDING_PROVISION: { label: 'Chờ provision', variant: 'warning' },
+  PENDING_REGISTRATION: { label: 'Chờ đăng ký', variant: 'warning' },
+  PROVISION_FAILED: { label: 'Provision lỗi', variant: 'error' },
+}
+
+function formatTime(dateStr?: string): string {
+  if (!dateStr) return '—'
+  return new Date(dateStr).toLocaleString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 }
 
 export default function CabinetDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [selectedCompartment, setSelectedCompartment] = React.useState<Compartment | null>(null)
-  const [modalOpen, setModalOpen] = React.useState(false)
 
-  const { data: cabinet, isLoading } = useQuery({
+  const { data: cabinet, isLoading, refetch } = useQuery({
     queryKey: ['cabinet', id],
-    queryFn: () => cabinetsApi.get(id as string),
-    enabled: Boolean(id),
+    queryFn: () => cabinetsApi.get(id!),
+    enabled: !!id,
   })
 
-  const unlockMutation = useMutation({
-    mutationFn: (compartmentId: string) => cabinetsApi.openCompartment(id as string, compartmentId),
+  const [addModal, setAddModal] = React.useState(false)
+  const [editCompartment, setEditCompartment] = React.useState<Compartment | null>(null)
+  const [testLoading, setTestLoading] = React.useState<string | null>(null)
+  const [activateLoading, setActivateLoading] = React.useState(false)
+  const [deactivateLoading, setDeactivateLoading] = React.useState(false)
+
+  // Activation
+  const activateCabinet = useMutation({
+    mutationFn: () => cabinetsApi.activate(id!),
     onSuccess: () => {
-      toast.success('Compartment unlocked')
+      toast.success('Tủ đã được kích hoạt thành công')
       queryClient.invalidateQueries({ queryKey: ['cabinet', id] })
-      queryClient.invalidateQueries({ queryKey: ['cabinets'] })
-      setModalOpen(false)
     },
-    onError: () => toast.error('Could not unlock compartment'),
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Kích hoạt thất bại'
+      toast.error(msg)
+    },
+    onSettled: () => setActivateLoading(false),
   })
 
-  const deleteMutation = useMutation({
-    mutationFn: () => cabinetsApi.delete(id as string),
+  const deactivateCabinet = useMutation({
+    mutationFn: () => cabinetsApi.deactivate(id!),
     onSuccess: () => {
-      toast.success('Cabinet deleted')
-      queryClient.invalidateQueries({ queryKey: ['cabinets'] })
-      navigate('/cabinets')
+      toast.success('Tủ đã được tắt')
+      queryClient.invalidateQueries({ queryKey: ['cabinet', id] })
     },
-    onError: () => toast.error('Could not delete cabinet'),
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Tắt tủ thất bại'
+      toast.error(msg)
+    },
+    onSettled: () => setDeactivateLoading(false),
   })
 
-  const openCompartmentDetail = (compartment: Compartment) => {
-    setSelectedCompartment(compartment)
-    setModalOpen(true)
-  }
+  // Test open
+  const testOpen = useMutation({
+    mutationFn: (compId: string) => cabinetsApi.testOpen(id!, compId),
+    onSuccess: (result) => {
+      toast.success(`Mở thử ngăn ${result.compartmentName} — đã gửi lệnh`)
+    },
+    onError: () => {
+      toast.error('Mở thử thất bại. Kiểm tra kết nối tủ.')
+    },
+    onSettled: () => setTestLoading(null),
+  })
+
+  const statusCfg = cabinet ? STATUS_CONFIG[cabinet.status] ?? { label: cabinet.status, variant: 'neutral' as const } : null
 
   if (isLoading) {
     return (
-      <div className="space-y-6 animate-fade-in">
-        <Skeleton className="h-10 w-64" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 6 }).map((_, index) => <Skeleton key={index} className="h-24" />)}
-        </div>
+      <div className="flex items-center justify-center py-20">
+        <RefreshCw className="h-6 w-6 animate-spin text-zinc-500" />
       </div>
     )
   }
 
   if (!cabinet) {
     return (
-      <div className="space-y-4 animate-fade-in">
-        <Button variant="ghost" onClick={() => navigate('/cabinets')}>
-          <ArrowLeft className="h-4 w-4" /> Back to cabinets
+      <div className="text-center py-20">
+        <p className="text-zinc-400">Không tìm thấy tủ</p>
+        <Button variant="ghost" size="sm" className="mt-4" onClick={() => navigate('/cabinets')}>
+          Quay lại
         </Button>
-        <p className="text-sm text-text-muted">Cabinet not found.</p>
       </div>
     )
   }
 
+  const mcpDevices: McpDevice[] = Array.isArray(cabinet.mcpDevices) ? cabinet.mcpDevices : []
+  const isConfigurable = cabinet.status === 'CONFIGURING'
+  const isActive = cabinet.status === 'ACTIVE'
+  const canAddCompartment = isConfigurable
+  const canActivate = isConfigurable && (cabinet.compartments?.length ?? 0) > 0
+
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/cabinets')}
-            className="p-2 rounded-lg hover:bg-surface-elevated transition-colors cursor-pointer"
+            className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 text-text-secondary" />
+            <ArrowLeft className="h-4 w-4 text-zinc-400" />
           </button>
           <div>
-            <h2 className="text-lg font-semibold text-text-primary">{cabinet.name}</h2>
-            <p className="text-sm text-text-secondary">{cabinet.locationName}</p>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-semibold text-zinc-100">{cabinet.name}</h1>
+              <Badge variant={statusCfg?.variant as never}>{statusCfg?.label}</Badge>
+            </div>
+            <p className="mt-0.5 text-sm text-zinc-400">{cabinet.locationName}</p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="danger" size="sm" loading={deleteMutation.isPending} onClick={() => deleteMutation.mutate()}>
-            <Trash2 className="h-4 w-4" /> Delete
+        <div className="flex items-center gap-2">
+          {canActivate && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => { setActivateLoading(true); activateCabinet.mutate() }}
+              loading={activateLoading}
+            >
+              <Check className="mr-1.5 h-4 w-4" />
+              Hoàn tất cấu hình
+            </Button>
+          )}
+          {isActive && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setDeactivateLoading(true); deactivateCabinet.mutate() }}
+              loading={deactivateLoading}
+            >
+              <Power className="mr-1.5 h-4 w-4" />
+              Tắt tủ
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={() => refetch()}>
+            <RefreshCw className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: 'Name', value: cabinet.name },
-          { label: 'Location', value: cabinet.locationName },
-          { label: 'Profile', value: cabinet.profile?.name ?? '-' },
-          {
-            label: 'Status',
-            value: <Badge variant={getCabinetStatusVariant(cabinet.status)} dot>{statusLabel[cabinet.status] ?? cabinet.status}</Badge>,
-          },
-          { label: 'Last seen', value: cabinet.lastSeen ? formatRelativeTime(cabinet.lastSeen) : '-' },
-          { label: 'MCP devices', value: cabinet.mcpDevices.toString() },
-          { label: 'Compartments', value: cabinet.totalCompartments.toString() },
-          { label: 'Available', value: `${cabinet.availableCompartments}/${cabinet.totalCompartments}` },
-        ].map((item, i) => {
-          const tints = [
-            'hover:bg-brand/5',
-            'hover:bg-info/5',
-            'hover:bg-success/5',
-            'hover:bg-warning/5',
-            'hover:bg-error/5',
-            'hover:bg-brand/5',
-            'hover:bg-info/5',
-            'hover:bg-success/5',
-          ]
-          return (
-            <div key={item.label} className={`group bg-surface rounded-xl border border-border p-4 transition-colors ${tints[i]}`}>
-              <p className="text-label text-text-muted uppercase mb-1.5">{item.label}</p>
-              <p className="text-sm font-semibold text-text-primary">{item.value}</p>
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="bg-surface rounded-xl border border-border p-6">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="text-sm font-semibold text-text-primary">Compartment grid</h3>
-          <div className="flex flex-wrap gap-4 text-xs text-text-muted">
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-success/25 border border-success/50" /> Available</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-info/25 border border-info/50" /> Occupied</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-error/25 border border-error/50" /> Maintenance</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-warning/25 border border-warning/50" /> Reserved</span>
+      {/* Configuring banner */}
+      {isConfigurable && (
+        <div className="rounded-xl bg-orange-500/10 border border-orange-500/20 p-4 flex items-start gap-3">
+          <div className="shrink-0 mt-0.5">
+            <Zap className="h-5 w-5 text-orange-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-orange-300">Tủ đang trong giai đoạn cấu hình</p>
+            <p className="mt-0.5 text-xs text-orange-400/70">
+              Thêm các ngăn bên dưới, đấu nối chân MCP23017, bấm TEST để xác nhận đấu dây, sau đó bấm Hoàn tất cấu hình.
+            </p>
           </div>
         </div>
-        {cabinet.compartments?.length ? (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-            {cabinet.compartments.map((compartment) => {
-              const colors = getCompartmentStatusColor(compartment.status)
-              return (
-                <button
-                  key={compartment.id}
-                  onClick={() => openCompartmentDetail(compartment)}
-                  className={cn(
-                    'group w-full aspect-square rounded-xl border flex flex-col items-center justify-center gap-1',
-                    'hover:scale-105 hover:shadow-lg transition-all duration-150 cursor-pointer',
-                    colors.bg, colors.border,
-                  )}
-                >
-                  <span className={cn('text-sm font-bold', colors.text)}>{compartment.name}</span>
-                  <span className={cn('text-[10px] font-medium', colors.text)}>{compartment.size}</span>
-                </button>
-              )
-            })}
+      )}
+
+      {/* Cabinet info */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <InfoCard
+          label="Serial"
+          value={cabinet.hardwareSerial ? (
+            <span className="font-mono">{cabinet.hardwareSerial}</span>
+          ) : '—'}
+        />
+        <InfoCard
+          label="Địa điểm"
+          value={cabinet.locationName}
+        />
+        <InfoCard
+          label="Phiên bản cấu hình"
+          value={cabinet.configVersion != null ? `v${cabinet.configVersion}` : '—'}
+        />
+        <InfoCard
+          label="MCP Devices"
+          value={
+            mcpDevices.length > 0 ? (
+              <div className="flex flex-wrap gap-1">
+                {mcpDevices.map((m) => (
+                  <span key={m.id} className="px-2 py-0.5 rounded bg-zinc-800 text-xs font-mono text-zinc-300">
+                    Bus {m.bus} @ 0x{m.address.toString(16).toUpperCase().padStart(2, '0')}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span className="text-zinc-600">Chưa phát hiện MCP</span>
+            )
+          }
+        />
+        <InfoCard
+          label="Tổng ngăn"
+          value={`${cabinet.compartments?.length ?? 0} / ${cabinet.totalCompartments}`}
+        />
+        <InfoCard
+          label="Ngày tạo"
+          value={formatTime(cabinet.createdAt)}
+        />
+      </div>
+
+      {/* Compartments */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-semibold text-zinc-200">Ngăn ({cabinet.compartments?.length ?? 0})</h2>
+          {canAddCompartment && (
+            <Button variant="primary" size="sm" onClick={() => setAddModal(true)}>
+              <Plus className="mr-1.5 h-4 w-4" />
+              Thêm ngăn
+            </Button>
+          )}
+        </div>
+
+        {(!cabinet.compartments || cabinet.compartments.length === 0) ? (
+          <div className="rounded-xl border-2 border-dashed border-zinc-800 py-12 text-center">
+            {isConfigurable ? (
+              <>
+                <div className="text-zinc-600 mb-2">
+                  <Plus className="h-8 w-8 mx-auto" />
+                </div>
+                <p className="text-zinc-400 text-sm">Chưa có ngăn nào</p>
+                <p className="text-zinc-600 text-xs mt-1">Bấm "Thêm ngăn" để bắt đầu cấu hình</p>
+              </>
+            ) : (
+              <p className="text-zinc-500 text-sm">Tủ này chưa có ngăn nào</p>
+            )}
           </div>
         ) : (
-          <p className="text-sm text-text-muted">No compartments found for this cabinet.</p>
+          <CompartmentTable
+            compartments={cabinet.compartments!}
+            cabinetId={cabinet.id}
+            isConfigurable={isConfigurable}
+            onEdit={setEditCompartment}
+            onTest={(compId) => { setTestLoading(compId); testOpen.mutate(compId) }}
+            testLoading={testLoading}
+            onDelete={() => queryClient.invalidateQueries({ queryKey: ['cabinet', id] })}
+          />
         )}
       </div>
 
-      {selectedCompartment && (
-        <Modal
-          open={modalOpen}
-          onOpenChange={setModalOpen}
-          title={`Compartment ${selectedCompartment.name}`}
-          size="sm"
-        >
-          <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-surface-elevated rounded-lg p-3">
-                <p className="text-label text-text-muted uppercase mb-1.5">Size</p>
-                <p className="text-sm font-semibold">{selectedCompartment.size}</p>
-              </div>
-              <div className="bg-surface-elevated rounded-lg p-3">
-                <p className="text-label text-text-muted uppercase mb-1.5">Status</p>
-                <Badge variant={getCompartmentStatusVariant(selectedCompartment.status)} dot>
-                  {statusLabels[selectedCompartment.status]}
-                </Badge>
-              </div>
-            </div>
+      {/* Add Compartment Modal */}
+      <CompartmentFormModal
+        open={addModal}
+        onOpenChange={(open) => !open && setAddModal(false)}
+        cabinetId={cabinet.id}
+        mcpDevices={mcpDevices}
+        onSuccess={() => {
+          setAddModal(false)
+          queryClient.invalidateQueries({ queryKey: ['cabinet', id] })
+        }}
+      />
 
-            {selectedCompartment.currentRentalId && (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-surface-elevated rounded-lg p-3">
-                  <p className="text-label text-text-muted uppercase mb-1.5">Rental</p>
-                  <p className="text-sm font-mono font-semibold">#{selectedCompartment.currentRentalId}</p>
-                </div>
-                <div className="bg-surface-elevated rounded-lg p-3">
-                  <p className="text-label text-text-muted uppercase mb-1.5">Customer</p>
-                  <p className="text-sm font-semibold">{selectedCompartment.customerPhone || '-'}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-surface-elevated rounded-lg p-3">
-                <p className="text-label text-text-muted uppercase mb-1.5">Lock</p>
-                <p className="text-sm font-semibold flex items-center gap-1.5">
-                  <Lock className="h-3.5 w-3.5 text-warning" /> {selectedCompartment.lockStatus || 'Unknown'}
-                </p>
-              </div>
-              <div className="bg-surface-elevated rounded-lg p-3">
-                <p className="text-label text-text-muted uppercase mb-1.5">Door</p>
-                <p className="text-sm font-semibold flex items-center gap-1.5">
-                  <DoorOpen className="h-3.5 w-3.5 text-error" /> {selectedCompartment.doorStatus || 'Unknown'}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-1">
-              <Button
-                className="flex-1"
-                loading={unlockMutation.isPending}
-                onClick={() => unlockMutation.mutate(selectedCompartment.id)}
-              >
-                Unlock
-              </Button>
-              <Button variant="ghost" onClick={() => setModalOpen(false)}>
-                Close
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
+      {/* Edit Compartment Modal */}
+      <CompartmentFormModal
+        open={!!editCompartment}
+        onOpenChange={(open) => !open && setEditCompartment(null)}
+        cabinetId={cabinet.id}
+        mcpDevices={mcpDevices}
+        compartment={editCompartment ?? undefined}
+        onSuccess={() => {
+          setEditCompartment(null)
+          queryClient.invalidateQueries({ queryKey: ['cabinet', id] })
+        }}
+      />
     </div>
+  )
+}
+
+function InfoCard({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="p-4 rounded-xl bg-surface border border-zinc-800">
+      <p className="text-xs text-zinc-500 mb-1">{label}</p>
+      <div className="text-sm text-zinc-200">{value}</div>
+    </div>
+  )
+}
+
+function CompartmentTable({
+  compartments,
+  cabinetId,
+  isConfigurable,
+  onEdit,
+  onTest,
+  testLoading,
+  onDelete,
+}: {
+  compartments: Compartment[]
+  cabinetId: string
+  isConfigurable: boolean
+  onEdit: (c: Compartment) => void
+  onTest: (id: string) => void
+  testLoading: string | null
+  onDelete: () => void
+}) {
+  const deleteCompartment = useMutation({
+    mutationFn: (compId: string) => cabinetsApi.deleteCompartment(cabinetId, compId),
+    onSuccess: () => {
+      toast.success('Đã xóa ngăn')
+      onDelete()
+    },
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Xóa thất bại'
+      toast.error(msg)
+    },
+  })
+
+  return (
+    <div className="rounded-xl border border-zinc-800 overflow-hidden">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-zinc-900 border-b border-zinc-800">
+            <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider w-16">Tên</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider w-20">Kích cỡ</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider w-32">MCP Khóa</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider w-24">Pin Khóa</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider w-32">MCP Cảm biến</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider w-24">Pin Cảm biến</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider w-20">Trạng thái</th>
+            <th className="px-4 py-3 text-right text-xs font-medium text-zinc-500 uppercase tracking-wider w-40">Hành động</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-zinc-800">
+          {compartments.map((comp) => (
+            <tr key={comp.id} className="hover:bg-zinc-900/50 transition-colors">
+              <td className="px-4 py-3 font-medium text-zinc-100">{comp.name}</td>
+              <td className="px-4 py-3 text-zinc-400">
+                <Badge variant={comp.size === 'LARGE' ? 'neutral' : 'neutral'}>
+                  {comp.size === 'LARGE' ? 'Lớn' : 'Nhỏ'}
+                </Badge>
+              </td>
+              <td className="px-4 py-3 font-mono text-xs text-zinc-400">
+                {comp.lockMcpDevice
+                  ? `0x${comp.lockMcpDevice.address.toString(16).toUpperCase().padStart(2, '0')}`
+                  : '—'}
+              </td>
+              <td className="px-4 py-3 font-mono text-xs text-zinc-400">
+                {comp.mcp23017PinLock ?? '—'}
+              </td>
+              <td className="px-4 py-3 font-mono text-xs text-zinc-400">
+                {comp.sensorMcpDevice
+                  ? `0x${comp.sensorMcpDevice.address.toString(16).toUpperCase().padStart(2, '0')}`
+                  : <span className="text-zinc-600">Không có</span>}
+              </td>
+              <td className="px-4 py-3 font-mono text-xs text-zinc-400">
+                {comp.mcp23017PinSensor != null ? comp.mcp23017PinSensor : '—'}
+              </td>
+              <td className="px-4 py-3">
+                <CompartmentStatusBadge status={comp.status} />
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center justify-end gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2"
+                    onClick={() => onTest(comp.id)}
+                    disabled={testLoading === comp.id}
+                    title="Mở thử"
+                  >
+                    {testLoading === comp.id ? (
+                      <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Lock className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                  {isConfigurable && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2"
+                        onClick={() => onEdit(comp)}
+                        title="Sửa"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                        onClick={() => {
+                          if (confirm(`Xóa ngăn "${comp.name}"?`)) {
+                            deleteCompartment.mutate(comp.id)
+                          }
+                        }}
+                        title="Xóa"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function CompartmentStatusBadge({ status }: { status: string }) {
+  const cfg: Record<string, { label: string; variant: 'success' | 'warning' | 'error' | 'neutral' }> = {
+    AVAILABLE: { label: 'Trống', variant: 'success' },
+    OCCUPIED: { label: 'Đang thuê', variant: 'warning' },
+    MAINTENANCE: { label: 'Bảo trì', variant: 'error' },
+    RESERVED: { label: 'Đặt trước', variant: 'neutral' },
+  }
+  const c = cfg[status] ?? { label: status, variant: 'neutral' as const }
+  return <Badge variant={c.variant}>{c.label}</Badge>
+}
+
+interface CompartmentFormData {
+  name: string
+  size: CompartmentSize
+  lockMcpDeviceId: string
+  mcp23017PinLock: number
+  sensorMcpDeviceId: string
+  mcp23017PinSensor: number
+}
+
+function CompartmentFormModal({
+  open,
+  onOpenChange,
+  cabinetId,
+  mcpDevices,
+  compartment,
+  onSuccess,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  cabinetId: string
+  mcpDevices: McpDevice[]
+  compartment?: Compartment
+  onSuccess: () => void
+}) {
+  const isEdit = !!compartment
+  const queryClient = useQueryClient()
+
+  const [form, setForm] = React.useState<CompartmentFormData>({
+    name: '',
+    size: 'SMALL',
+    lockMcpDeviceId: '',
+    mcp23017PinLock: 0,
+    sensorMcpDeviceId: '',
+    mcp23017PinSensor: 0,
+  })
+
+  // Reset form when modal opens/closes or compartment changes
+  React.useEffect(() => {
+    if (open) {
+      if (compartment) {
+        setForm({
+          name: compartment.name,
+          size: compartment.size,
+          lockMcpDeviceId: compartment.lockMcpDeviceId ?? '',
+          mcp23017PinLock: compartment.mcp23017PinLock ?? 0,
+          sensorMcpDeviceId: compartment.sensorMcpDeviceId ?? '',
+          mcp23017PinSensor: compartment.mcp23017PinSensor ?? 0,
+        })
+      } else {
+        setForm({ name: '', size: 'SMALL', lockMcpDeviceId: '', mcp23017PinLock: 0, sensorMcpDeviceId: '', mcp23017PinSensor: 0 })
+      }
+    }
+  }, [open, compartment])
+
+  const saveMutation = useMutation({
+    mutationFn: () => {
+      const payload = {
+        name: form.name.trim(),
+        size: form.size,
+        lockMcpDeviceId: form.lockMcpDeviceId || null,
+        mcp23017PinLock: form.mcp23017PinLock,
+        sensorMcpDeviceId: form.sensorMcpDeviceId || null,
+        mcp23017PinSensor: form.mcp23017PinSensor,
+      }
+      if (isEdit && compartment) {
+        return cabinetsApi.updateCompartment(cabinetId, compartment.id, payload)
+      }
+      return cabinetsApi.addCompartment(cabinetId, payload)
+    },
+    onSuccess: () => {
+      toast.success(isEdit ? 'Đã cập nhật ngăn' : 'Đã thêm ngăn')
+      queryClient.invalidateQueries({ queryKey: ['cabinet', cabinetId] })
+      onSuccess()
+    },
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Lưu thất bại'
+      toast.error(msg)
+    },
+  })
+
+  const mcpOptions = mcpDevices.map((m) => ({
+    value: m.id,
+    label: `Bus ${m.bus} @ 0x${m.address.toString(16).toUpperCase().padStart(2, '0')}`,
+  }))
+
+  const pinOptions = Array.from({ length: 16 }, (_, i) => ({
+    value: String(i),
+    label: String(i),
+  }))
+
+  const handleSubmit = () => {
+    if (!form.name.trim()) {
+      toast.error('Vui lòng nhập tên ngăn')
+      return
+    }
+    if (!form.lockMcpDeviceId) {
+      toast.error('Vui lòng chọn MCP device cho khóa')
+      return
+    }
+    saveMutation.mutate()
+  }
+
+  return (
+    <Modal
+      open={open}
+      onOpenChange={onOpenChange}
+      title={isEdit ? 'Sửa ngăn' : 'Thêm ngăn'}
+      description="Khai báo chân đấu nối MCP23017 cho ngăn này"
+    >
+      <div className="space-y-4 py-2">
+        <Input
+          label="Tên ngăn"
+          value={form.name}
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value.toUpperCase() }))}
+          placeholder="VD: A1, B2, C3"
+        />
+
+        <div>
+          <label className="block text-xs font-medium text-zinc-400 mb-2">Kích cỡ</label>
+          <div className="flex gap-4">
+            {(['SMALL', 'LARGE'] as CompartmentSize[]).map((size) => (
+              <label key={size} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="size"
+                  value={size}
+                  checked={form.size === size}
+                  onChange={() => setForm((f) => ({ ...f, size }))}
+                  className="accent-brand"
+                />
+                <span className="text-sm text-zinc-200">{size === 'SMALL' ? 'Nhỏ' : 'Lớn'}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Select
+            label="MCP Khóa"
+            options={mcpOptions}
+            value={form.lockMcpDeviceId}
+            onValueChange={(v) => setForm((f) => ({ ...f, lockMcpDeviceId: v }))}
+            placeholder="Chọn MCP"
+          />
+          <Select
+            label="Pin Khóa (0-15)"
+            options={pinOptions}
+            value={String(form.mcp23017PinLock)}
+            onValueChange={(v) => setForm((f) => ({ ...f, mcp23017PinLock: Number(v) }))}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Select
+            label="MCP Cảm biến"
+            options={[{ value: '', label: 'Không có' }, ...mcpOptions]}
+            value={form.sensorMcpDeviceId}
+            onValueChange={(v) => setForm((f) => ({ ...f, sensorMcpDeviceId: v }))}
+            placeholder="Chọn MCP"
+          />
+          <Select
+            label="Pin Cảm biến (0-15)"
+            options={pinOptions}
+            value={String(form.mcp23017PinSensor)}
+            onValueChange={(v) => setForm((f) => ({ ...f, mcp23017PinSensor: Number(v) }))}
+          />
+        </div>
+
+        <div className="rounded-lg bg-zinc-900 p-3 border border-zinc-800">
+          <p className="text-xs text-zinc-500">
+            Sau khi lưu, bấm TEST trên hàng ngăn để xác nhận đấu dây đúng với thực tế.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-2">
+        <Button variant="outline" onClick={() => onOpenChange(false)}>
+          Hủy
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          loading={saveMutation.isPending}
+        >
+          {isEdit ? 'Lưu thay đổi' : 'Thêm ngăn'}
+        </Button>
+      </div>
+    </Modal>
   )
 }

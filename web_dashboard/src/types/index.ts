@@ -24,6 +24,22 @@ export interface Compartment {
   expiresAt?: string
   lockStatus?: 'LOCKED' | 'UNLOCKED'
   doorStatus?: 'OPEN' | 'CLOSED'
+  // Full detail fields (from cabinet detail API)
+  mcp23017PinLock?: number
+  mcp23017PinSensor?: number
+  lockMcpDeviceId?: string
+  sensorMcpDeviceId?: string
+  lockMcpDevice?: McpDevice
+  sensorMcpDevice?: McpDevice
+  realtimeStatus?: { lockStatus: string; doorStatus: string }
+}
+
+export interface McpDevice {
+  id: string
+  bus: number
+  address: number
+  name?: string
+  role?: string
 }
 
 export type CabinetStatus =
@@ -34,6 +50,7 @@ export type CabinetStatus =
   | 'PENDING_PROVISION'
   | 'PROVISION_FAILED'
   | 'DRAFT'
+  | 'CONFIGURING'
 
 export type ProvisionMode = 'CHECK_EXISTING' | 'ALLOW_NEW'
 
@@ -80,13 +97,15 @@ export interface Cabinet {
   lastSeen?: string
   availableCompartments: number
   totalCompartments: number
-  mcpDevices: number
+  mcpDevices: number | McpDevice[]
   provisionCode?: string | null
   provisionCodeExpires?: string | null
   configVersion?: number
   hardwareSerial?: string | null
+  notes?: string | null
   profile?: { id: string; name: string } | null
   compartments?: Compartment[]
+  createdAt?: string
 }
 
 export type RentalStatus = 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'EXPIRED'
@@ -168,6 +187,30 @@ export interface AuditLog {
   target: string
   ipAddress: string
   success: boolean
+}
+
+export type PairingSessionStatus = 'PENDING' | 'APPROVED' | 'EXPIRED' | 'CANCELLED'
+
+export interface DiscoveredMcpDevice {
+  bus: number
+  address: number
+}
+
+export interface PairingSession {
+  id: string
+  hardwareSerial: string
+  discoveredMcpDevices: DiscoveredMcpDevice[]
+  pairingCode: string
+  status: PairingSessionStatus
+  cabinetId?: string
+  expiresAt: string
+  createdAt: string
+}
+
+export interface PairingStartResponse {
+  sessionId: string
+  pairingCode: string
+  expiresInSeconds: number
 }
 
 export interface DashboardStats {

@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
 from typing import Optional
 
 
@@ -39,6 +41,11 @@ class AppState:
     payment_method: Optional[str] = None
     rental_data: Optional[RentalData] = None
     compartment_data: Optional[CompartmentData] = None
+    pairing_session_id: Optional[str] = None
+    pairing_code: Optional[str] = None
+    pairing_expires_at: Optional[datetime] = None
+    discovered_mcp_devices: list[dict] = field(default_factory=list)
+    pairing_status: str = "IDLE"
 
     def reset_rent_flow(self) -> None:
         self.selected_size = None
@@ -48,6 +55,14 @@ class AppState:
         self.rental_data = None
         self.compartment_data = None
 
+    def reset_pairing_flow(self) -> None:
+        self.pairing_session_id = None
+        self.pairing_code = None
+        self.pairing_expires_at = None
+        self.discovered_mcp_devices = []
+        self.pairing_status = "IDLE"
+
     def reset_all(self) -> None:
         self.mode = None
         self.reset_rent_flow()
+        self.reset_pairing_flow()

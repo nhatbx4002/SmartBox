@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from secrets import choice, token_hex
+import string
 
 import requests
 
@@ -22,6 +24,8 @@ class ApiClient:
         self.timeout = timeout
         self.mock = mock
         self.jwt_token: str | None = None
+        self._pairing_sessions: dict[str, dict] = {}
+        self._pairing_poll_counts: dict[str, int] = {}
 
     def verify_pin(self, code: str, mode: str | None) -> tuple[RentalData, CompartmentData]:
         if self.mock:
@@ -75,42 +79,71 @@ class ApiClient:
             return {"available": len(data) > 0, "count": len(data), "size": size, "items": data}
         return data
 
-    def get_cabinets_provisioning(self, cabinet_id: str | None = None) -> list[dict]:
-        params = {"cabinetId": cabinet_id} if cabinet_id else {}
-        response = requests.get(
-            f"{self.base_url}/api/provisioning/cabinets",
-            headers=self._headers(),
-            params=params,
-            timeout=self.timeout,
-        )
-        return self._parse_response(response)
+    def start_pairing(self, hardwareSerial: str, discoveredMcpDevices: list[dict]) -> dict:
+        if self.mock:
+            session_id = f"ps_{token_hex(6)}"
+            pairing_code = self._mock_pairing_code()
+            session = {
+                "id": session_id,
+                "sessionId": session_id,
+                "pairingCode": pairing_code,
+                "hardwareSerial": hardwareSerial,
+                "discoveredMcpDevices": discoveredMcpDevices,
+                "status": "PENDING",
+                "createdAt": datetime.now(timezone.utc).isoformat(),
+                "expiresAt": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+                "expiresInSeconds": 600,
+            }
+            self._pairing_sessions[session_id] = session
+            self._pairing_poll_counts[session_id] = 0
+            return session
 
-    def provision_cabinet(self, payload: dict) -> dict:
         response = requests.post(
-            f"{self.base_url}/api/provisioning/register",
-            json=payload,
-            headers=self._headers(),
-            timeout=30,
-        )
-        return self._parse_response(response)
-
-    def get_cabinet_config(self, cabinet_id: str, version: int | None = None) -> dict:
-        params = {"version": version} if version is not None else {}
-        response = requests.get(
-            f"{self.base_url}/api/provisioning/config/{cabinet_id}",
-            headers=self._headers(),
-            params=params,
+            f"{self.base_url}/api/pair/start",
+            json={
+                "hardwareSerial": hardwareSerial,
+                "discoveredMcpDevices": discoveredMcpDevices,
+            },
             timeout=self.timeout,
         )
         return self._parse_response(response)
 
-    def confirm_config_applied(self, cabinet_id: str, version: int) -> dict:
-        response = requests.post(
-            f"{self.base_url}/api/provisioning/config/{cabinet_id}/confirm",
-            json={"version": version},
-            headers=self._headers(),
-            timeout=self.timeout,
-        )
+    def get_pairing_session(self, session_id: str) -> dict:
+        if self.mock:
+            session = self._pairing_sessions.get(session_id)
+            if session is None:
+                raise ApiError("Pairing session not found", 404)
+
+            self._pairing_poll_counts[session_id] = self._pairing_poll_counts.get(session_id, 0) + 1
+            if self._pairing_poll_counts[session_id] >= 3:
+                if session.get("status") != "APPROVED":
+                    session = {
+                        **session,
+                        "status": "APPROVED",
+                        "cabinetId": f"cab_{session_id[-6:]}",
+                        "jwt": f"jwt_{token_hex(12)}",
+                        "mqttConfig": {
+                            "brokerUrl": "mqtt://192.168.1.29:1883",
+                            "username": f"cab_{session_id[-6:]}",
+                            "password": token_hex(12),
+                        },
+                        "configVersion": 1,
+                        "compartments": [
+                            {
+                                "id": "comp-A1",
+                                "name": "A1",
+                                "lockMcpDeviceId": "mcp-1",
+                                "mcp23017PinLock": 4,
+                            }
+                        ],
+                        "mcpDevices": [
+                            {"id": "mcp-1", "bus": 1, "address": 32, "name": "MCP23017"}
+                        ],
+                    }
+                    self._pairing_sessions[session_id] = session
+            return self._pairing_sessions[session_id]
+
+        response = requests.get(f"{self.base_url}/api/pair/{session_id}", timeout=self.timeout)
         return self._parse_response(response)
 
     def create_rental(
@@ -270,6 +303,10 @@ class ApiClient:
 
     def _mock_expiry(self, days: int) -> str:
         return (datetime.now(timezone.utc) + timedelta(days=days)).isoformat()
+
+    def _mock_pairing_code(self) -> str:
+        alphabet = string.ascii_uppercase + string.digits
+        return "".join(choice(alphabet) for _ in range(6))
 
     def _ui_plan_id(self, item: dict) -> str:
         rental_type = str(item.get("rentalType", "")).upper()

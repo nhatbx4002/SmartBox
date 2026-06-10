@@ -8,6 +8,7 @@ import {
   cancelPairingSession,
   getPairingSession,
   getPairingSessionByCode,
+  listPairingSessions,
   startPairingSession,
 } from '../services/pairing.service';
 
@@ -29,6 +30,14 @@ const approveSchema = z.object({
   locationId: z.string().min(1),
   cabinetName: z.string().min(1),
 });
+
+router.get(
+  '/',
+  requireAdmin,
+  asyncHandler(async (_req, res) => {
+    res.json({ data: await listPairingSessions() });
+  }),
+);
 
 router.post(
   '/start',

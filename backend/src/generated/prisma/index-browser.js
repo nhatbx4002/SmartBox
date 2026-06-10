@@ -160,12 +160,9 @@ exports.Prisma.LocationScalarFieldEnum = {
 exports.Prisma.CabinetScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
-  profileId: 'profileId',
   name: 'name',
   status: 'status',
   lastHeartbeatAt: 'lastHeartbeatAt',
-  provisionCode: 'provisionCode',
-  provisionCodeExpires: 'provisionCodeExpires',
   configVersion: 'configVersion',
   hardwareSerial: 'hardwareSerial',
   notes: 'notes',
@@ -197,39 +194,6 @@ exports.Prisma.CompartmentScalarFieldEnum = {
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ProvisioningConfigScalarFieldEnum = {
-  id: 'id',
-  strategy: 'strategy',
-  provisionKey: 'provisionKey',
-  provisionSecret: 'provisionSecret',
-  webhookUrl: 'webhookUrl',
-  isActive: 'isActive',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ProvisionProfileScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  provisionKey: 'provisionKey',
-  provisionSecret: 'provisionSecret',
-  mode: 'mode',
-  isActive: 'isActive',
-  templateRows: 'templateRows',
-  templateCols: 'templateCols',
-  templateSizes: 'templateSizes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ProvisionMcpDeviceScalarFieldEnum = {
-  id: 'id',
-  profileId: 'profileId',
-  bus: 'bus',
-  address: 'address',
-  role: 'role',
-  name: 'name'
 };
 
 exports.Prisma.CabinetCredentialScalarFieldEnum = {
@@ -502,9 +466,6 @@ exports.Prisma.ModelName = {
   Cabinet: 'Cabinet',
   McpDevice: 'McpDevice',
   Compartment: 'Compartment',
-  ProvisioningConfig: 'ProvisioningConfig',
-  ProvisionProfile: 'ProvisionProfile',
-  ProvisionMcpDevice: 'ProvisionMcpDevice',
   CabinetCredential: 'CabinetCredential',
   PairingSession: 'PairingSession',
   CompartmentStatus: 'CompartmentStatus',

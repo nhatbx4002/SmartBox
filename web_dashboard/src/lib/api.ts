@@ -10,6 +10,7 @@ import type {
   Location,
   Notification,
   NotificationType,
+  PairingSession,
   PaymentStatus,
   ProvisioningConfig,
   ProvisionProfile,
@@ -381,6 +382,26 @@ export const cabinetsApi = {
   delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/cabinets/${id}`)),
   openCompartment: (cabinetId: string, compId: string) =>
     unwrap<{ ok: boolean }>(api.post(`/admin/cabinets/${cabinetId}/unlock/${compId}`)),
+  activate: (id: string) =>
+    unwrap<{ cabinet: BackendCabinet; configVersion: number }>(api.post(`/admin/cabinets/${id}/activate`)).then(
+      (r) => ({ ...r, cabinet: mapCabinet(r.cabinet) }),
+    ),
+  deactivate: (id: string) =>
+    unwrap<{ cabinet: BackendCabinet }>(api.post(`/admin/cabinets/${id}/deactivate`)).then(
+      (r) => ({ ...r, cabinet: mapCabinet(r.cabinet) }),
+    ),
+  testOpen: (cabinetId: string, compId: string) =>
+    unwrap<{ ok: boolean; compartmentName: string }>(api.post(`/admin/cabinets/${cabinetId}/compartments/${compId}/test-open`)),
+  addCompartment: (cabinetId: string, data: unknown) =>
+    unwrap<{ compartment: BackendCompartment; configVersion: number }>(api.post(`/admin/cabinets/${cabinetId}/compartments`, data)).then(
+      (r) => ({ ...r, compartment: mapCompartment(r.compartment, data && typeof data === 'object' && 'name' in data ? String((data as { name: string }).name) : '') }),
+    ),
+  updateCompartment: (cabinetId: string, compId: string, data: unknown) =>
+    unwrap<{ compartment: BackendCompartment }>(api.put(`/admin/cabinets/${cabinetId}/compartments/${compId}`, data)).then(
+      (r) => ({ ...r, compartment: mapCompartment(r.compartment, '') }),
+    ),
+  deleteCompartment: (cabinetId: string, compId: string) =>
+    unwrap<{ ok: boolean }>(api.delete(`/admin/cabinets/${cabinetId}/compartments/${compId}`)),
 }
 
 export const rentalsApi = {
@@ -463,6 +484,19 @@ export const profilesApi = {
   update: (id: string, data: unknown) =>
     unwrap<BackendProvisionProfile>(api.put(`/admin/profiles/${id}`, data)).then(mapProfile),
   delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/profiles/${id}`)),
+}
+
+export const pairingApi = {
+  list: () =>
+    unwrap<PairingSession[]>(api.get('/pair')),
+  getByCode: (code: string) =>
+    unwrap<PairingSession>(api.get(`/pair/by-code/${code}`)),
+  get: (sessionId: string) =>
+    unwrap<PairingSession>(api.get(`/pair/${sessionId}`)),
+  approve: (sessionId: string, data: { locationId: string; cabinetName: string }) =>
+    unwrap<{ cabinetId: string }>(api.post(`/pair/${sessionId}/approve`, data)),
+  cancel: (sessionId: string) =>
+    unwrap<{ ok: boolean }>(api.post(`/pair/${sessionId}/cancel`)),
 }
 
 export const provisioningApi = {

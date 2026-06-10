@@ -33,7 +33,6 @@ export async function createCabinet(input: {
   id?: string;
   locationId: string;
   name: string;
-  profileId?: string | null;
   status?: CabinetStatus;
   hardwareSerial?: string | null;
   notes?: string | null;
@@ -43,7 +42,6 @@ export async function createCabinet(input: {
       id: input.id,
       locationId: input.locationId,
       name: input.name,
-      profileId: input.profileId ?? null,
       status: input.status ?? CabinetStatus.DRAFT,
       hardwareSerial: input.hardwareSerial ?? null,
       notes: input.notes ?? null,

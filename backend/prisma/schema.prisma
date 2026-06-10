@@ -180,19 +180,15 @@ model Location {
 model Cabinet {
   id              String        @id @default(cuid())
   locationId      String
-  profileId       String?
   name            String
   status          CabinetStatus @default(ACTIVE)
   lastHeartbeatAt DateTime?
-  provisionCode        String?   @unique
-  provisionCodeExpires DateTime?
-  configVersion        Int       @default(1)
-  hardwareSerial       String?
-  notes                String?
+  configVersion   Int           @default(1)
+  hardwareSerial  String?
+  notes           String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   location        Location      @relation(fields: [locationId], references: [id])
-  profile         ProvisionProfile? @relation(fields: [profileId], references: [id])
   credential      CabinetCredential?
   compartments    Compartment[]
   mcpDevices      McpDevice[]
@@ -200,9 +196,7 @@ model Cabinet {
 
   @@index([locationId])
   @@index([status])
-  @@index([provisionCode])
   @@index([hardwareSerial])
-  @@index([profileId])
 }
 
 model McpDevice {
@@ -247,47 +241,6 @@ model Compartment {
   @@index([lockMcpDeviceId])
   @@index([sensorMcpDeviceId])
   @@index([status])
-}
-
-model ProvisioningConfig {
-  id              String   @id @default(cuid())
-  strategy        String   @default("ENV")
-  provisionKey    String   @default("smartbox-provision")
-  provisionSecret String?
-  webhookUrl      String?
-  isActive        Boolean  @default(true)
-  updatedAt       DateTime @updatedAt
-}
-
-model ProvisionProfile {
-  id              String               @id @default(cuid())
-  name            String               @unique
-  provisionKey    String               @unique
-  provisionSecret String?
-  mode            String               @default("ALLOW_NEW")
-  isActive        Boolean              @default(true)
-  templateRows    Int
-  templateCols    Int
-  templateSizes   String
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
-  mcpDevices      ProvisionMcpDevice[]
-  cabinets        Cabinet[]
-
-  @@index([provisionKey])
-}
-
-model ProvisionMcpDevice {
-  id        String           @id @default(cuid())
-  profileId String
-  bus       Int              @default(1)
-  address   Int
-  role      String
-  name      String?
-  profile   ProvisionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  @@unique([profileId, bus, address])
-  @@index([profileId])
 }
 
 model CabinetCredential {

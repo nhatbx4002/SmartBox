@@ -15,14 +15,13 @@ import {
   updateCabinet,
 } from '../services/cabinet.service';
 import { createCompartment, deleteCompartment, updateCompartment } from '../services/compartment.service';
-import { createCabinetFromProfile } from '../services/profile.service';
+import { unlockCompartment } from '../services/locker.service';
 
 const router = Router({ mergeParams: true });
 
 const cabinetCreateSchema = z.object({
   locationId: z.string().min(1),
   deviceName: z.string().min(1),
-  profileId: z.string().cuid().optional(),
   hardwareSerial: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -56,7 +55,6 @@ router.get(
     const cabinets = await prisma.cabinet.findMany({
       include: {
         location: true,
-        profile: true,
         mcpDevices: { orderBy: [{ bus: 'asc' }, { address: 'asc' }] },
         compartments: {
           include: { realtimeStatus: true, lockMcpDevice: true, sensorMcpDevice: true },
@@ -76,7 +74,6 @@ router.get(
       where: { id: req.params.id },
       include: {
         location: true,
-        profile: true,
         mcpDevices: { orderBy: [{ bus: 'asc' }, { address: 'asc' }] },
         compartments: {
           include: { realtimeStatus: true, lockMcpDevice: true, sensorMcpDevice: true },
@@ -92,15 +89,13 @@ router.post(
   '/',
   validate(cabinetCreateSchema),
   asyncHandler(async (req, res) => {
-    const cabinet = req.body.profileId
-      ? await createCabinetFromProfile(req.body)
-      : await createCabinet({
-          locationId: req.body.locationId,
-          name: req.body.deviceName,
-          hardwareSerial: req.body.hardwareSerial,
-          notes: req.body.notes,
-          status: CabinetStatus.DRAFT,
-        });
+    const cabinet = await createCabinet({
+      locationId: req.body.locationId,
+      name: req.body.deviceName,
+      hardwareSerial: req.body.hardwareSerial,
+      notes: req.body.notes,
+      status: CabinetStatus.DRAFT,
+    });
     await audit(req, AuditAction.CREATE_CABINET, 'Cabinet', cabinet.id, req.body);
     res.status(201).json({ data: cabinet });
   }),
@@ -154,8 +149,6 @@ router.delete(
   }),
 );
 
-<<<<<<< Updated upstream
-=======
 router.post(
   '/:id/unlock/:compId',
   asyncHandler(async (req, res) => {
@@ -195,7 +188,6 @@ router.post(
   }),
 );
 
->>>>>>> Stashed changes
 async function audit(
   req: { admin?: { id: string }; ip?: string },
   action: AuditAction,

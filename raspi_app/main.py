@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication, QStackedWidget, QVBoxLayout, QWidget
-import yaml
 
 import resources_rc
 from screens.error import ErrorController
@@ -12,6 +14,8 @@ from screens.home import HomeController
 from screens.locker_open import LockerOpenController
 from screens.loading import LoadingController
 from screens.otp import OtpController, OtpPickupController
+from screens.pairing_screen import PairingController
+from screens.pairing_success_screen import PairingSuccessController
 from screens.payment import PaymentController
 from screens.pickup_method import PickupMethodController
 from screens.qr_payment import QRPaymentController
@@ -23,7 +27,14 @@ from screens.rent_success import RentSuccessController
 from screens.support import SupportController
 from services.api_client import ApiClient
 from services.app_state import AppState
-from services.config_loader import get_config_value, load_config
+from services.config_loader import (
+    get_config_value,
+    get_pairing_session_id,
+    is_paired,
+    is_pairing_in_progress,
+    load_config,
+    save_config,
+)
 from services.gpio_controller import GpioController
 from services.mqtt_client import MqttClient
 from services.network_status import NetworkStatusMonitor
@@ -36,14 +47,11 @@ class KioskApp(QWidget):
         self.config = {}
         self.state = AppState()
         self.startup_error = None
+        self.startup_route = "/"
+        self.startup_data: dict = {}
 
         try:
             self.config = load_config()
-            if self._is_provisioning_mode():
-                self._provision_cabinet()
-                self.config = load_config()
-
-            self._load_normal_config()
             self.network_monitor = NetworkStatusMonitor(
                 self,
                 poll_interval_ms=get_config_value(self.config, "network.poll_interval_ms", 5000),
@@ -55,7 +63,8 @@ class KioskApp(QWidget):
                 timeout=get_config_value(self.config, "api.timeout", 10),
                 mock=False,
             )
-            self.api_client.jwt_token = self.jwt_token
+            self.gpio_controller = GpioController(mock=False)
+            self.mqtt_client = MqttClient(self.config, mock=True)
             self.qr_scanner = QrCameraScanner(
                 stream_url=get_config_value(self.config, "camera.stream_url", ""),
                 size=(
@@ -64,34 +73,20 @@ class KioskApp(QWidget):
                 ),
             )
 
-            # Assert hardware check (must find at least 1 I2C expander)
-            discovery = GpioController(mock=False).discover_hardware(self.config)
-            if not discovery.get("mcpDevices") or len(discovery["mcpDevices"]) == 0:
-                raise RuntimeError("Không tìm thấy thiết bị I2C MCP23017 nào để điều khiển mạch khóa.")
-
-            self.gpio_controller = GpioController(mock=False)
-            self.gpio_controller.load_from_backend(self.api_client, self.cabinet_id)
-            self.mqtt_client = MqttClient(self.config, cabinet_id=self.cabinet_id, mock=False)
-            self.mqtt_client.connect(
-                username=self.config.get("mqtt_username") or get_config_value(self.config, "mqtt.username", None),
-                password=self.config.get("mqtt_password") or get_config_value(self.config, "mqtt.password", None),
-            )
-            self.mqtt_client.subscribe_unlock(self.cabinet_id, self.gpio_controller.unlock)
-            self.mqtt_client.subscribe_lock(self.cabinet_id, self.gpio_controller.lock)
-            self.mqtt_client.subscribe_config_reload(self.cabinet_id, self._on_config_reload)
-            
-            # Register watchdog failure callback
-            self.mqtt_client.disconnect_callback = self._on_mqtt_failure
-
-            self.heartbeat_timer = QTimer(self)
-            self.heartbeat_timer.timeout.connect(self._publish_heartbeat)
-            self.heartbeat_timer.start(int(get_config_value(self.config, "mqtt.heartbeat_interval_ms", 30000)))
-            self._publish_heartbeat()
+            self._load_normal_config()
+            if is_paired(self.config):
+                self._start_paired_runtime()
+                self.startup_route = "/"
+            elif is_pairing_in_progress(self.config):
+                self.startup_route = "/pairing"
+                self.startup_data = self._resume_pairing_flow()
+            else:
+                self.startup_route = "/pairing"
+                self.startup_data = self._start_pairing_flow()
         except Exception as error:
             print(f"[FATAL STARTUP ERROR] {error}")
             self.startup_error = error
 
-            # Provide fallback stubs so controllers registration works safely
             if not hasattr(self, "api_client"):
                 self.api_client = ApiClient(mock=True)
             if not hasattr(self, "gpio_controller"):
@@ -117,93 +112,184 @@ class KioskApp(QWidget):
         layout.addWidget(self.stack)
 
         self._register_controllers()
-        
+
         if self.startup_error:
-            self.navigate("/error", {
-                "title": "Không thể khởi động tủ",
-                "message": str(self.startup_error),
-                "retry_route": "/",
-            }, replace=True)
+            self.navigate(
+                "/error",
+                {
+                    "title": "KhĂ´ng thá»ƒ khá»Ÿi Ä‘á»™ng tá»§",
+                    "message": str(self.startup_error),
+                    "retry_route": "/",
+                },
+                replace=True,
+            )
+        elif self.startup_route == "/pairing":
+            self.navigate("/pairing", self.startup_data, replace=True)
         else:
             self.navigate("/", replace=True)
 
     def _is_provisioning_mode(self) -> bool:
-        return bool(get_config_value(self.config, "provision.key"))
+        return False
 
-    def _provision_cabinet(self) -> None:
-        gpio = GpioController(mock=False)
-        discovery = gpio.discover_hardware(self.config)
-        payload = {
-            "provisionKey": get_config_value(self.config, "provision.key"),
-            "hardwareSerial": discovery["hardwareSerial"],
-            "deviceName": get_config_value(self.config, "provision.device_name"),
-            "discoveredMcpDevices": discovery.get("mcpDevices", []),
-            "firmwareVersion": discovery.get("firmwareVersion"),
-            "piModel": discovery.get("piModel"),
+    def _provision_cabinet(self) -> dict:
+        return self._start_pairing_flow()
+
+    def _start_pairing_flow(self) -> dict:
+        discovery = self.gpio_controller.discover_hardware(self.config)
+        result = self.api_client.start_pairing(
+            hardwareSerial=discovery["hardwareSerial"],
+            discoveredMcpDevices=discovery.get("mcpDevices", []),
+        )
+
+        expires_at = result.get("expiresAt")
+        if not expires_at:
+            expires_seconds = int(result.get("expiresInSeconds", 600))
+            expires_at = (datetime.now(timezone.utc) + timedelta(seconds=expires_seconds)).isoformat()
+
+        pairing_data = {
+            "sessionId": result.get("sessionId") or result.get("id"),
+            "pairingCode": result.get("pairingCode", ""),
+            "expiresAt": expires_at,
+            "hardwareSerial": discovery.get("hardwareSerial", ""),
+            "mcpDevices": discovery.get("mcpDevices", []),
         }
-        provision_secret = get_config_value(self.config, "provision.secret")
-        if provision_secret:
-            payload["provisionSecret"] = provision_secret
-        provision_code = get_config_value(self.config, "provision.code")
-        if provision_code:
-            payload["provisionCode"] = provision_code
+        self._save_pairing_state(pairing_data, discovery)
+        self.state.pairing_status = "PAIRING"
+        self.state.pairing_session_id = pairing_data["sessionId"]
+        self.state.pairing_code = pairing_data["pairingCode"]
+        self.state.pairing_expires_at = self._parse_datetime(pairing_data["expiresAt"])
+        self.state.discovered_mcp_devices = list(pairing_data["mcpDevices"] or [])
+        return pairing_data
 
-        api_client = ApiClient(
-            base_url=get_config_value(self.config, "api.base_url", "http://localhost:5000"),
-            timeout=get_config_value(self.config, "api.timeout", 10),
-            mock=False,
+    def _resume_pairing_flow(self) -> dict:
+        session_id = get_pairing_session_id(self.config)
+        if not session_id:
+            return self._start_pairing_flow()
+
+        pairing_data = {
+            "sessionId": session_id,
+            "pairingCode": get_config_value(self.config, "pairing_code", ""),
+            "expiresAt": get_config_value(self.config, "pairing_expires_at", ""),
+            "hardwareSerial": get_config_value(self.config, "hardware_serial", ""),
+            "mcpDevices": get_config_value(self.config, "discovered_mcp_devices", []),
+        }
+        self.state.pairing_status = "PAIRING"
+        self.state.pairing_session_id = session_id
+        self.state.pairing_code = pairing_data["pairingCode"]
+        self.state.pairing_expires_at = self._parse_datetime(pairing_data["expiresAt"])
+        self.state.discovered_mcp_devices = list(pairing_data["mcpDevices"] or [])
+        return pairing_data
+
+    def apply_pairing_result(self, result: dict) -> None:
+        updated_config = dict(self.config)
+        mqtt_config = result.get("mqttConfig", {})
+        cabinet_id = str(result.get("cabinetId") or result.get("cabinet_id") or updated_config.get("cabinet_id") or "")
+        jwt_token = str(result.get("jwt") or result.get("jwtToken") or result.get("jwt_token") or updated_config.get("jwt_token") or "")
+
+        updated_config["cabinet_id"] = cabinet_id
+        updated_config["jwt_token"] = jwt_token
+        updated_config["config_version"] = int(
+            result.get("configVersion", result.get("config_version", updated_config.get("config_version", 1)))
         )
-        result = api_client.provision_cabinet(payload)
-        self._save_provisioned_config(
-            cabinet_id=result["cabinetId"],
-            jwt_token=result["jwtToken"],
-            mqtt_config=result.get("mqttConfig", {}),
-            config_version=result.get("configVersion", 1),
-        )
-        print(f"[PROVISION] Registered: {result['cabinetId']}")
+        updated_config["pairing_session_id"] = get_pairing_session_id(self.config) or result.get("id") or ""
+        updated_config["pairing_code"] = self.state.pairing_code or updated_config.get("pairing_code", "")
+        if self.state.pairing_expires_at is not None:
+            updated_config["pairing_expires_at"] = self.state.pairing_expires_at.isoformat()
+        updated_config["pairing_status"] = "APPROVED"
 
-    def _save_provisioned_config(self, cabinet_id: str, jwt_token: str, mqtt_config: dict, config_version: int) -> None:
-        config_path = Path(__file__).resolve().parent / "config.yaml"
-        with config_path.open("r", encoding="utf-8") as file:
-            cfg = yaml.safe_load(file) or {}
+        if result.get("compartments") is not None:
+            updated_config["compartments"] = result.get("compartments", [])
+        if result.get("mcpDevices") is not None:
+            devices = result.get("mcpDevices", [])
+            updated_config["mcpDevices"] = devices
+            updated_config["mcp_devices"] = devices
+            updated_config["discovered_mcp_devices"] = devices
+        if result.get("hardwareSerial"):
+            updated_config["hardware_serial"] = result["hardwareSerial"]
 
-        for key in [
-            "provision_key",
-            "provision_secret",
-            "provision_code",
-            "location_id",
-            "cabinet_name",
-            "mcp_devices",
-            "compartment_layout",
-        ]:
-            cfg.pop(key, None)
-        cfg.pop("provision", None)
-
-        cfg["cabinet_id"] = cabinet_id
-        cfg["jwt_token"] = jwt_token
-        cfg["config_version"] = int(config_version)
-
-        hardware = cfg.setdefault("hardware", {})
+        hardware = updated_config.setdefault("hardware", {})
         hardware["cabinet_id"] = cabinet_id
 
-        mqtt_cfg = cfg.setdefault("mqtt", {})
-        if mqtt_config.get("username"):
-            mqtt_cfg["username"] = mqtt_config["username"]
-        if mqtt_config.get("password"):
-            mqtt_cfg["password"] = mqtt_config["password"]
+        mqtt_cfg = updated_config.setdefault("mqtt", {})
         if mqtt_config.get("brokerUrl"):
             parsed = urlparse(str(mqtt_config["brokerUrl"]))
             if parsed.hostname:
                 mqtt_cfg["broker"] = parsed.hostname
             if parsed.port:
                 mqtt_cfg["port"] = parsed.port
+        if mqtt_config.get("username"):
+            mqtt_cfg["username"] = mqtt_config["username"]
+        if mqtt_config.get("password"):
+            mqtt_cfg["password"] = mqtt_config["password"]
 
-        with config_path.open("w", encoding="utf-8") as file:
-            yaml.safe_dump(cfg, file, default_flow_style=False, allow_unicode=True, sort_keys=False)
+        save_config(updated_config)
+        self.config = load_config()
+        self.state.reset_pairing_flow()
+        self._load_normal_config()
+        self._start_paired_runtime()
+
+    def restart_pairing_flow(self) -> dict:
+        self.state.reset_pairing_flow()
+        for key in [
+            "pairing_session_id",
+            "pairing_code",
+            "pairing_expires_at",
+            "pairing_status",
+            "hardware_serial",
+            "firmware_version",
+            "pi_model",
+            "discovered_mcp_devices",
+        ]:
+            self.config.pop(key, None)
+        save_config(self.config)
+        data = self._start_pairing_flow()
+        if hasattr(self, "controllers") and "/pairing" in self.controllers:
+            self.navigate("/pairing", data, replace=True)
+        return data
+
+    def _save_pairing_state(self, pairing_data: dict, discovery: dict) -> None:
+        self.config["pairing_session_id"] = pairing_data.get("sessionId", "")
+        self.config["pairing_code"] = pairing_data.get("pairingCode", "")
+        self.config["pairing_expires_at"] = pairing_data.get("expiresAt", "")
+        self.config["pairing_status"] = "PAIRING"
+        self.config["hardware_serial"] = discovery.get("hardwareSerial", "")
+        self.config["firmware_version"] = discovery.get("firmwareVersion", "")
+        self.config["pi_model"] = discovery.get("piModel", "")
+        self.config["discovered_mcp_devices"] = pairing_data.get("mcpDevices", [])
+        save_config(self.config)
+
+    def _parse_datetime(self, value: str | None):
+        if not value:
+            return None
+        try:
+            return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        except ValueError:
+            return None
 
     def _load_normal_config(self) -> None:
         self.cabinet_id = self.config.get("cabinet_id") or get_config_value(self.config, "hardware.cabinet_id", "cabinet-a")
         self.jwt_token = self.config.get("jwt_token", "")
+
+    def _start_paired_runtime(self) -> None:
+        self.api_client.jwt_token = self.jwt_token
+        self.gpio_controller._config = self.config
+        self.gpio_controller.load_from_backend(self.api_client, self.cabinet_id)
+
+        self.mqtt_client = MqttClient(self.config, cabinet_id=self.cabinet_id, mock=False)
+        self.mqtt_client.connect(
+            username=get_config_value(self.config, "mqtt.username", None),
+            password=get_config_value(self.config, "mqtt.password", None),
+        )
+        self.mqtt_client.subscribe_unlock(self.cabinet_id, self.gpio_controller.unlock)
+        self.mqtt_client.subscribe_lock(self.cabinet_id, self.gpio_controller.lock)
+        self.mqtt_client.subscribe_config_reload(self.cabinet_id, self._on_config_reload)
+        self.mqtt_client.disconnect_callback = self._on_mqtt_failure
+
+        if not hasattr(self, "heartbeat_timer"):
+            self.heartbeat_timer = QTimer(self)
+            self.heartbeat_timer.timeout.connect(self._publish_heartbeat)
+        self.heartbeat_timer.start(int(get_config_value(self.config, "mqtt.heartbeat_interval_ms", 30000)))
+        self._publish_heartbeat()
 
     def _on_config_reload(self, config_version: int | None, compartments: list) -> None:
         if config_version is None:
@@ -216,10 +302,8 @@ class KioskApp(QWidget):
         print(f"[CONFIG] Reloading v{config_version} (from v{current_version})")
         self.gpio_controller.reload_config(compartments)
         self.config["config_version"] = int(config_version)
-        try:
-            self.api_client.confirm_config_applied(self.cabinet_id, int(config_version))
-        except Exception as error:
-            print(f"[CONFIG] confirm failed: {error}")
+        self.config["compartments"] = compartments
+        save_config(self.config)
         print(f"[CONFIG] Applied v{config_version}")
 
     def _register_controllers(self) -> None:
@@ -239,6 +323,8 @@ class KioskApp(QWidget):
             SupportController,
             LoadingController,
             ErrorController,
+            PairingController,
+            PairingSuccessController,
         ]
         for controller_type in controller_types:
             controller = controller_type(self)
@@ -287,8 +373,8 @@ class KioskApp(QWidget):
         if self.current_route and self.current_route in self.controllers:
             controller = self.controllers[self.current_route]
             controller.show_error_dialog(
-                message="Mất kết nối với máy chủ điều khiển MQTT. Đang tự động kết nối lại...",
-                title="LỖI MẤT KẾT NỐI",
+                message="Máº¥t káº¿t ná»‘i vá»›i mĂ¡y chá»§ Ä‘iá»u khiá»ƒn MQTT. Äang tá»± Ä‘á»™ng káº¿t ná»‘i láº¡i...",
+                title="Lá»–I Máº¤T Káº¾T Ná»I",
                 on_retry=self._retry_mqtt,
             )
 
@@ -301,7 +387,7 @@ class KioskApp(QWidget):
                 if self.current_route and self.current_route in self.controllers:
                     self.controllers[self.current_route].hide_error_dialog()
             else:
-                raise RuntimeError("Không thể kết nối đến MQTT broker.")
+                raise RuntimeError("KhĂ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n MQTT broker.")
         except Exception as error:
             print(f"[MQTT Watchdog retry error] {error}")
             self._on_mqtt_failure()

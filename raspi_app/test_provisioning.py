@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import patch
 
 from services.api_client import ApiClient
 from services.gpio_controller import GpioController
@@ -18,23 +17,31 @@ class FakeResponse:
 
 
 class ProvisioningTests(unittest.TestCase):
-    def test_api_client_confirm_config_uses_cabinet_token_and_version_body(self):
-        calls = {}
+    def test_api_client_start_pairing_mock_returns_session_and_code(self):
+        client = ApiClient("http://backend.local", mock=True)
 
-        def fake_post(url, json=None, headers=None, timeout=None):
-            calls.update({"url": url, "json": json, "headers": headers, "timeout": timeout})
-            return FakeResponse({"ok": True})
+        result = client.start_pairing("RPI-001", [{"bus": 1, "address": 32}])
 
-        with patch("services.api_client.requests.post", fake_post):
-            client = ApiClient("http://backend.local", mock=False)
-            client.jwt_token = "cabinet-token"
+        self.assertTrue(result["sessionId"].startswith("ps_"))
+        self.assertEqual(result["pairingCode"], result["pairingCode"].upper())
+        self.assertEqual(len(result["pairingCode"]), 6)
+        self.assertEqual(result["discoveredMcpDevices"], [{"bus": 1, "address": 32}])
+        self.assertEqual(result["expiresInSeconds"], 600)
 
-            result = client.confirm_config_applied("cab-1", 7)
+    def test_api_client_get_pairing_session_returns_approved_after_approval(self):
+        client = ApiClient("http://backend.local", mock=True)
+        session = client.start_pairing("RPI-001", [{"bus": 1, "address": 32}])
 
-        self.assertTrue(result["ok"])
-        self.assertEqual(calls["url"], "http://backend.local/api/provisioning/config/cab-1/confirm")
-        self.assertEqual(calls["json"], {"version": 7})
-        self.assertEqual(calls["headers"]["Authorization"], "Bearer cabinet-token")
+        first = client.get_pairing_session(session["sessionId"])
+        second = client.get_pairing_session(session["sessionId"])
+        third = client.get_pairing_session(session["sessionId"])
+
+        self.assertEqual(first["status"], "PENDING")
+        self.assertEqual(second["status"], "PENDING")
+        self.assertEqual(third["status"], "APPROVED")
+        self.assertIn("cabinetId", third)
+        self.assertIn("mqttConfig", third)
+        self.assertEqual(third["configVersion"], 1)
 
     def test_gpio_discover_hardware_returns_hardware_identity_and_mcp_devices(self):
         gpio = GpioController(mock=True)

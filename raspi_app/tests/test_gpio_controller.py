@@ -52,6 +52,7 @@ class GpioControllerProvisioningTests(unittest.TestCase):
         gpio.load_from_backend(api_client, "cabinet-a")
 
         self.assertEqual(gpio.pin_map, {"A1": 0, "B1": 8})
+        self.assertEqual(gpio.sensor_pin_map, {})
 
     def test_load_from_backend_also_maps_backend_compartment_ids(self):
         api_client = type(
@@ -170,6 +171,66 @@ class GpioControllerMcp23017Tests(unittest.TestCase):
                 (0x21, 0x15, 0x00),
             ],
         )
+
+    def test_reload_config_builds_sensor_pin_map(self):
+        gpio = GpioController(mock=True)
+        gpio._cache_mcp_devices([{"id": "mcp-sensor", "bus": 1, "address": 0x20}])
+
+        gpio.reload_config(
+            [
+                {
+                    "id": "compartment-db-id",
+                    "name": "A1",
+                    "mcp23017PinSensor": 12,
+                    "sensorMcpDeviceId": "mcp-sensor",
+                }
+            ]
+        )
+
+        self.assertEqual(gpio.sensor_pin_map, {"A1": 12, "compartment-db-id": 12})
+        self.assertEqual(gpio.sensor_target_map["A1"], (1, 0x20, 12))
+
+    def test_get_door_status_reads_pullup_sensor_low_as_closed(self):
+        class FakeSensorSMBus(FakeSMBus):
+            def read_byte_data(self, _address: int, register: int) -> int:
+                if register in (0x00, 0x01):
+                    return 0xFF
+                if register in (0x0C, 0x0D):
+                    return 0x00
+                if register == 0x13:
+                    return 0x00
+                return 0x00
+
+        gpio = GpioController(mock=False)
+        gpio.sensor_target_map = {"A1": (1, 0x20, 12)}
+
+        with patch("services.gpio_controller.SMBus", FakeSensorSMBus):
+            self.assertEqual(gpio.get_door_status("A1"), "CLOSED")
+
+        self.assertEqual(
+            FakeSMBus.writes,
+            [
+                (0x20, 0x01, 0xFF),
+                (0x20, 0x0D, 0x10),
+            ],
+        )
+
+    def test_get_door_status_reads_pullup_sensor_high_as_open(self):
+        class FakeSensorSMBus(FakeSMBus):
+            def read_byte_data(self, _address: int, register: int) -> int:
+                if register in (0x00, 0x01):
+                    return 0xFF
+                if register in (0x0C, 0x0D):
+                    return 0x00
+                if register == 0x13:
+                    return 0x10
+                return 0x00
+
+        gpio = GpioController(mock=False)
+        gpio.sensor_target_map = {"A1": (1, 0x20, 12)}
+
+        with patch("services.gpio_controller.SMBus", FakeSensorSMBus):
+            self.assertEqual(gpio.get_door_status("A1"), "OPEN")
 
 
 if __name__ == "__main__":

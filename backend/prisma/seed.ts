@@ -1,4 +1,6 @@
+
 import 'dotenv/config';
+// @ts-ignore
 import bcrypt from 'bcrypt';
 import {
   AdminRole,
