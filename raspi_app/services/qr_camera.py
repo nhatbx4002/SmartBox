@@ -24,12 +24,14 @@ class QrCameraScanner:
         self,
         stream_url: str = "",
         size: tuple[int, int] = (640, 480),
+        camera_factory: Callable[[], Any] | None = None,
         capture_factory: Callable[[str], Any] | None = None,
         detector_factory: Callable[[], Any] | None = None,
         cv2_module: Any | None = None,
     ):
         self.stream_url = stream_url.strip()
         self.size = size
+        self._camera_factory = camera_factory
         self._capture_factory = capture_factory
         self._detector_factory = detector_factory
         self._cv2_module = cv2_module
@@ -42,7 +44,7 @@ class QrCameraScanner:
         if self._capture is not None and self._detector is not None:
             return True
 
-        if not self.stream_url:
+        if not self.stream_url and self._camera_factory is None and self._capture_factory is None:
             self._error = "Chua cau hinh URL stream camera"
             return False
 
@@ -55,7 +57,15 @@ class QrCameraScanner:
 
             self._cv2 = cv2
             self._detector = self._detector_factory() if self._detector_factory else cv2.QRCodeDetector()
-            self._capture = self._capture_factory(self.stream_url) if self._capture_factory else cv2.VideoCapture(self.stream_url)
+            if self._camera_factory is not None:
+                self._capture = self._camera_factory()
+                start = getattr(self._capture, "start", None)
+                if callable(start):
+                    start()
+            elif self._capture_factory is not None:
+                self._capture = self._capture_factory(self.stream_url)
+            else:
+                self._capture = cv2.VideoCapture(self.stream_url)
             if hasattr(self._capture, "isOpened") and not self._capture.isOpened():
                 raise RuntimeError(f"Khong the mo stream camera: {self.stream_url}")
             self._error = None
@@ -72,7 +82,13 @@ class QrCameraScanner:
             return QrScanFrame(error="Camera stream chua san sang")
 
         try:
-            ok, frame = self._capture.read()
+            if hasattr(self._capture, "read"):
+                ok, frame = self._capture.read()
+            elif hasattr(self._capture, "capture_array"):
+                frame = self._capture.capture_array()
+                ok = frame is not None
+            else:
+                raise RuntimeError("Capture backend does not support read or capture_array")
             if not ok or frame is None:
                 self._error = "Mat ket noi stream camera"
                 return QrScanFrame(error=self._error)
@@ -90,6 +106,10 @@ class QrCameraScanner:
                 release = getattr(self._capture, "release", None)
                 if callable(release):
                     release()
+                else:
+                    close = getattr(self._capture, "close", None)
+                    if callable(close):
+                        close()
             except Exception:
                 pass
 

@@ -29,14 +29,24 @@ class GpioController:
         self._config: dict = {}
 
     def load_from_backend(self, api_client, cabinet_id: str) -> None:
-        # compartments and mcpDevices are already persisted in config.yaml by apply_pairing_result
-        # no API call needed — just read from self._config
-        config = self._config
-        mcp_devices = config.get("mcpDevices", config.get("mcp_devices", config.get("discovered_mcp_devices", [])))
-        compartments = config.get("compartments", [])
+        # Try API first (gets latest compartments), fall back to persisted config
+        compartments = []
+        mcp_devices = []
+
+        try:
+            api_config = api_client.get_cabinet_config(cabinet_id)
+            compartments = api_config.get("compartments", [])
+            mcp_devices = api_config.get("mcpDevices", [])
+            print(f"[GPIO] loaded config from API: {len(compartments)} compartments")
+        except Exception as api_error:
+            print(f"[GPIO] API config fetch failed ({api_error}), using persisted config")
+            config = self._config
+            mcp_devices = config.get("mcpDevices", config.get("mcp_devices", config.get("discovered_mcp_devices", [])))
+            compartments = config.get("compartments", [])
 
         if not mcp_devices and not compartments:
-            raise RuntimeError(f"No provisioning data found for cabinet {cabinet_id}")
+            print(f"[GPIO] WARNING: no compartments or mcpDevices — cabinet {cabinet_id} may not be fully configured yet")
+            return
 
         self._cache_mcp_devices(mcp_devices)
         self.reload_config(compartments)

@@ -291,6 +291,25 @@ class KioskApp(QWidget):
         self.heartbeat_timer.start(int(get_config_value(self.config, "mqtt.heartbeat_interval_ms", 30000)))
         self._publish_heartbeat()
 
+        # Periodic config polling as MQTT fallback (every 30s)
+        if not hasattr(self, "config_poll_timer"):
+            self.config_poll_timer = QTimer(self)
+            self.config_poll_timer.timeout.connect(self._poll_config)
+        self.config_poll_timer.start(30000)
+        self._poll_config()
+
+    def _poll_config(self) -> None:
+        """Poll backend for cabinet config version. Triggers reload if version changed."""
+        try:
+            result = self.api_client.get_cabinet_config(self.cabinet_id)
+            version = int(result.get("configVersion", 0) or 0)
+            current_version = int(self.config.get("config_version", 0) or 0)
+            if version > current_version:
+                print(f"[CONFIG POLL] detected version change: v{current_version} -> v{version}")
+                self._on_config_reload(version, result.get("compartments", []))
+        except Exception as error:
+            print(f"[CONFIG POLL] failed: {error}")
+
     def _on_config_reload(self, config_version: int | None, compartments: list) -> None:
         if config_version is None:
             return

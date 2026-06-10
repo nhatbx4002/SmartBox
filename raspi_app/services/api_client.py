@@ -26,6 +26,8 @@ class ApiClient:
         self.jwt_token: str | None = None
         self._pairing_sessions: dict[str, dict] = {}
         self._pairing_poll_counts: dict[str, int] = {}
+        self._mock_compartments: list[dict] = []
+        self._config_version_override: int | None = None
 
     def verify_pin(self, code: str, mode: str | None) -> tuple[RentalData, CompartmentData]:
         if self.mock:
@@ -104,6 +106,26 @@ class ApiClient:
                 "hardwareSerial": hardwareSerial,
                 "discoveredMcpDevices": discoveredMcpDevices,
             },
+            timeout=self.timeout,
+        )
+        return self._parse_response(response)
+
+    def get_cabinet_config(self, cabinet_id: str, version: int | None = None) -> dict:
+        if self.mock:
+            return {
+                "cabinetId": cabinet_id,
+                "configVersion": self._config_version_override or 1,
+                "compartments": self._mock_compartments,
+                "mcpDevices": [{"id": "mcp-1", "bus": 1, "address": 32}],
+            }
+
+        params = {}
+        if version is not None:
+            params["version"] = version
+        response = requests.get(
+            f"{self.base_url}/api/cabinets/{cabinet_id}/config",
+            headers=self._headers(),
+            params=params,
             timeout=self.timeout,
         )
         return self._parse_response(response)
