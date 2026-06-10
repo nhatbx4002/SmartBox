@@ -129,8 +129,8 @@ class PairingController(BaseController):
             try:
                 self.app.apply_pairing_result(result)
             except Exception as error:
-                self._show_error(str(error) or "Không thể hoàn tất cấu hình thiết bị.")
-                return
+                # Log but don't block — MQTT may fail, Pi still works via polling
+                print(f"[PAIRING SCREEN] apply_pairing_result warning: {error}")
             self.navigate("/pairing-success", {"cabinetId": result.get("cabinetId", "")}, replace=True)
             return
 
