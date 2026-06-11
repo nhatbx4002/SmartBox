@@ -78,8 +78,8 @@ class QRScanController(BaseController):
         if frame.image is not None:
             pixmap = QPixmap.fromImage(frame.image).scaled(
                 self.preview_label.size(),
-                aspectMode=Qt.KeepAspectRatio,
-                transformMode=Qt.SmoothTransformation,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation,
             )
             self.preview_label.setPixmap(pixmap)
 

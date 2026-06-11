@@ -58,7 +58,17 @@ def _open_picamera2(size: tuple[int, int]):
         traceback.print_exc()
         return None
 
-    camera = Picamera2()
+    try:
+        camera = Picamera2()
+    except RuntimeError as error:
+        message = str(error)
+        if "Device or resource busy" in message or "Camera __init__ sequence did not complete" in message:
+            print("[camera] ERROR: Picamera2 camera is busy.")
+            print("[camera] Close SmartBox kiosk/QR scan screen and any libcamera/rpicam process, then retry.")
+            print("[camera] Useful checks on Raspberry Pi:")
+            print("[camera]   pgrep -af 'python|picamera|libcamera|rpicam'")
+            print("[camera]   sudo fuser -v /dev/video* /dev/media*")
+        raise
     config = camera.create_preview_configuration(
         main={
             "size": size,
@@ -165,6 +175,8 @@ def main() -> int:
     finally:
         if capture is not None:
             try:
+                if hasattr(capture, "stop"):
+                    capture.stop()
                 if hasattr(capture, "release"):
                     capture.release()
                 elif hasattr(capture, "close"):

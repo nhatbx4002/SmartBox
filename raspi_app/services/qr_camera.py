@@ -110,6 +110,9 @@ class QrCameraScanner:
     def stop(self) -> None:
         if self._capture is not None:
             try:
+                stop = getattr(self._capture, "stop", None)
+                if callable(stop):
+                    stop()
                 release = getattr(self._capture, "release", None)
                 if callable(release):
                     release()
