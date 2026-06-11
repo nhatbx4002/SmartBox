@@ -2,7 +2,7 @@
   base_url: http://192.168.139.175:3001
   timeout: 10
 mqtt:
-  broker: 192.168.1.29
+  broker: 192.168.139.175
   port: 1883
 camera:
   backend: picamera2
