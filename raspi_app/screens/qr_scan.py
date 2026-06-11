@@ -36,11 +36,15 @@ class QRScanController(BaseController):
         self.scan_interval_ms = int(get_config_value(self.config, "camera.scan_interval_ms", 120))
         self.processing = False
         self.last_token = ""
+        self.frame_count = 0
+        self.preview_label.setScaledContents(False)
 
     def on_enter(self, data: dict | None = None) -> None:
         self.state.mode = "pickup"
         self.processing = False
         self.last_token = ""
+        self.frame_count = 0
+        self.preview_label.clear()
         self.retry_button.hide()
         self.status_label.setText("Đang khởi động camera...")
         self.hint_label.setText("Đưa mã QR vào giữa khung quét")
@@ -76,12 +80,22 @@ class QRScanController(BaseController):
             return
 
         if frame.image is not None:
+            self.frame_count += 1
             pixmap = QPixmap.fromImage(frame.image).scaled(
                 self.preview_label.size(),
                 Qt.KeepAspectRatio,
                 Qt.SmoothTransformation,
             )
             self.preview_label.setPixmap(pixmap)
+            self.preview_label.repaint()
+            if self.frame_count == 1 or self.frame_count % 30 == 0:
+                print(
+                    f"[qr_scan] frame={self.frame_count} "
+                    f"image={frame.image.width()}x{frame.image.height()} "
+                    f"preview={self.preview_label.width()}x{self.preview_label.height()} "
+                    f"pixmap={pixmap.width()}x{pixmap.height()} "
+                    f"token={'yes' if frame.token else 'no'}"
+                )
 
         if frame.token:
             self._handle_scan(frame.token)
