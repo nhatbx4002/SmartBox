@@ -189,7 +189,7 @@ class GpioController:
                 self._configure_input_pullup(bus, address, pin)
                 _iodir_register, _pullup_register, gpio_register, bit = self._input_registers_for_pin(pin)
                 value = bus.read_byte_data(address, gpio_register)
-                return "OPEN" if value & (1 << bit) else "CLOSED"
+                return "CLOSED" if value & (1 << bit) else "OPEN"
         except Exception as error:
             print(f"[GPIO ERROR] get door status failed: {error}")
             return "UNKNOWN"

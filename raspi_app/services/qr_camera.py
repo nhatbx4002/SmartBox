@@ -38,6 +38,7 @@ class QrCameraScanner:
                 main={
                     "size": self.size,
                     "format": "RGB888",
+                    "fps": 30,
                 }
             )
             self._camera.configure(config)
