@@ -73,9 +73,9 @@ def _open_picamera2(size: tuple[int, int]):
         main={
             "size": size,
             "format": "RGB888",
-            "fps": 30,
         }
     )
+    config["controls"] = {"FrameRate": 30}
     camera.configure(config)
     camera.start()
     print(f"[camera] picamera2 started size={size[0]}x{size[1]}")
