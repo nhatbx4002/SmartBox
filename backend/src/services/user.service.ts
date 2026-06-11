@@ -103,15 +103,17 @@ export async function refreshUserToken(refreshTokenValue: string) {
   if (!payload.sub) throw UnauthorizedError('Invalid refresh token');
 
   return {
-    accessToken: signToken(
-      {
-        sub: String(payload.sub),
-        phone: payload.phone ? String(payload.phone) : undefined,
-        email: payload.email ? String(payload.email) : undefined,
-      },
-      requireEnv('JWT_SECRET'),
-      process.env.JWT_EXPIRES_IN || '15m',
-    ),
+    data: {
+      accessToken: signToken(
+        {
+          sub: String(payload.sub),
+          phone: payload.phone ? String(payload.phone) : undefined,
+          email: payload.email ? String(payload.email) : undefined,
+        },
+        requireEnv('JWT_SECRET'),
+        process.env.JWT_EXPIRES_IN || '15m',
+      ),
+    },
   };
 }
 
