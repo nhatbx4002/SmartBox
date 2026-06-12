@@ -29,7 +29,7 @@ class MqttClient:
         username = self.config.get("mqtt", {}).get("username")
         password = self.config.get("mqtt", {}).get("password")
         if username:
-            self._client.username_pw_set(username, password)
+            self._client.username_pw_set(str(username), str(password))
 
         broker = self.config.get("mqtt", {}).get("broker", "localhost")
         port = int(self.config.get("mqtt", {}).get("port", 1883))
