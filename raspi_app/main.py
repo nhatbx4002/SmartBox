@@ -64,7 +64,7 @@ class KioskApp(QWidget):
                 mock=False,
             )
             self.gpio_controller = GpioController(mock=False)
-            self.mqtt_client = MqttClient(self.config, mock=True)
+            self.mqtt_client = MqttClient(self.config, cabinet_id="demo")
             camera_stream_url = str(get_config_value(self.config, "camera.stream_url", "") or "").strip()
             camera_source = (
                 camera_stream_url
@@ -99,7 +99,7 @@ class KioskApp(QWidget):
             if not hasattr(self, "gpio_controller"):
                 self.gpio_controller = GpioController(mock=True)
             if not hasattr(self, "mqtt_client"):
-                self.mqtt_client = MqttClient(self.config, mock=True)
+                self.mqtt_client = MqttClient(self.config, cabinet_id="demo")
             if not hasattr(self, "network_monitor"):
                 self.network_monitor = NetworkStatusMonitor(self)
                 self.network_monitor.start()
@@ -298,15 +298,11 @@ class KioskApp(QWidget):
         self.gpio_controller._config = self.config
         self.gpio_controller.load_from_backend(self.api_client, self.cabinet_id)
 
-        self.mqtt_client = MqttClient(self.config, cabinet_id=self.cabinet_id, mock=False)
-        self.mqtt_client.connect(
-            username=get_config_value(self.config, "mqtt.username", None),
-            password=get_config_value(self.config, "mqtt.password", None),
-        )
-        self.mqtt_client.subscribe_unlock(self.cabinet_id, self._handle_unlock_command)
-        self.mqtt_client.subscribe_lock(self.cabinet_id, self._handle_lock_command)
-        self.mqtt_client.subscribe_config_reload(self.cabinet_id, self._on_config_reload)
-        self.mqtt_client.disconnect_callback = self._on_mqtt_failure
+        self.mqtt_client = MqttClient(self.config, cabinet_id=self.cabinet_id)
+        self.mqtt_client.set_unlock_callback(self._handle_unlock_command)
+        self.mqtt_client.set_lock_callback(self._handle_lock_command)
+        self.mqtt_client.set_config_reload_callback(self._on_config_reload)
+        self.mqtt_client.connect()
 
         if not hasattr(self, "heartbeat_timer"):
             self.heartbeat_timer = QTimer(self)
@@ -457,14 +453,14 @@ class KioskApp(QWidget):
 
     def _retry_mqtt(self) -> None:
         try:
-            self.mqtt_client.reconnect_attempts = 0
-            self.mqtt_client._try_reconnect()
+            self.mqtt_client.disconnect()
+            self.mqtt_client.connect()
             if self.mqtt_client.connected:
                 print("[MQTT] Watchdog retry successfully reconnected")
                 if self.current_route and self.current_route in self.controllers:
                     self.controllers[self.current_route].hide_error_dialog()
             else:
-                raise RuntimeError("KhĂ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n MQTT broker.")
+                raise RuntimeError("Khong the ket noi MQTT broker.")
         except Exception as error:
             print(f"[MQTT Watchdog retry error] {error}")
             self._on_mqtt_failure()

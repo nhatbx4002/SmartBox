@@ -1,195 +1,109 @@
 from __future__ import annotations
 
 import json
-from threading import Event
 
 import paho.mqtt.client as mqtt
 
 
 class MqttClient:
-    """Mock-safe MQTT facade for the kiosk controllers."""
+    """Simple MQTT client for kiosk."""
 
-    def __init__(self, config: dict | str | None = None, cabinet_id: str = "smartbox-demo", mock: bool = True):
-        if isinstance(config, str):
-            cabinet_id = config
-            config = None
-
-        self.config = config or {}
+    def __init__(self, config: dict, cabinet_id: str):
+        self.config = config
         self.cabinet_id = cabinet_id
-        self.mock = mock
         self.connected = False
-        self.last_event: dict | None = None
         self._client = None
-        self.reconnect_attempts = 0
-        self.disconnect_callback = None
-        self._connect_event = Event()
-        self._connect_error = None
+        self._on_unlock_callback = None
+        self._on_lock_callback = None
+        self._on_config_reload_callback = None
 
-        if not self.mock:
-            self._client = mqtt.Client(
-                client_id=self.cabinet_id,
-                callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
-            )
-            self._client.on_connect = self._on_connect
-            self._client.on_disconnect = self._on_disconnect
+    def connect(self) -> None:
+        self._client = mqtt.Client(
+            client_id=self.cabinet_id,
+            callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+        )
+        self._client.on_connect = self._on_connect
+        self._client.on_disconnect = self._on_disconnect
+        self._client.on_message = self._on_message
+
+        username = self.config.get("mqtt", {}).get("username")
+        password = self.config.get("mqtt", {}).get("password")
+        if username:
+            self._client.username_pw_set(username, password)
+
+        broker = self.config.get("mqtt", {}).get("broker", "localhost")
+        port = int(self.config.get("mqtt", {}).get("port", 1883))
+        print(f"[MQTT] Connecting to {broker}:{port} as {self.cabinet_id}")
+        self._client.connect(broker, port, keepalive=60)
+        self._client.loop_start()
 
     def _on_connect(self, client, userdata, flags, reason_code, properties) -> None:
         if reason_code == 0:
             self.connected = True
-            self.reconnect_attempts = 0
-            self._connect_error = None
             print("[MQTT] Connected successfully")
+            self._subscribe_all()
         else:
-            print(f"[MQTT] Connection failed with rc: {reason_code}")
-            self.connected = False
-            self._connect_error = reason_code
-        self._connect_event.set()
+            print(f"[MQTT] Connection failed: {reason_code}")
 
     def _on_disconnect(self, client, userdata, reason_code, properties) -> None:
         self.connected = False
-        if reason_code == 0:
-            print("[MQTT] Disconnected cleanly")
-        else:
-            print(f"[MQTT] Unexpected disconnect (rc={reason_code})")
-            self.reconnect_attempts += 1
-            if self.reconnect_attempts >= 3:
-                if self.disconnect_callback:
-                    self.disconnect_callback()
+        print(f"[MQTT] Disconnected: {reason_code}")
 
-    def _try_reconnect(self) -> None:
-        if self.mock:
-            self.connected = True
-            return
-        if self._client is not None:
-            self._connect_event.clear()
-            self._connect_error = None
-            rc = self._client.reconnect()
-            if rc != 0:
-                self.connected = False
-                raise RuntimeError(f"Reconnect failed with code {rc}")
-            timeout = float(self.config.get("mqtt", {}).get("connect_timeout", 10))
-            if not self._connect_event.wait(timeout):
-                self.connected = False
-                raise TimeoutError(f"MQTT reconnect timed out after {timeout:g}s")
-            if not self.connected:
-                raise RuntimeError(f"MQTT reconnect rejected with rc={self._connect_error}")
+    def _on_message(self, client, userdata, msg) -> None:
+        topic = msg.topic
+        try:
+            payload = json.loads(msg.payload.decode())
+        except Exception:
+            payload = {}
 
-    def connect(self, username: str | None = None, password: str | None = None) -> None:
-        if self.mock:
-            self.connected = True
-            return
+        parts = topic.split("/")
+        if len(parts) >= 4:
+            if parts[2] == "lock":
+                compartment = parts[3]
+                if parts[4] == "unlock" and self._on_unlock_callback:
+                    self._on_unlock_callback(compartment)
+                elif parts[4] == "lock" and self._on_lock_callback:
+                    self._on_lock_callback(compartment)
 
-        # Use provided credentials, fallback to config
-        user = username or self.config.get("mqtt", {}).get("username")
-        pwd = password or self.config.get("mqtt", {}).get("password")
-        if user:
-            self._client.username_pw_set(user, pwd)
+        if len(parts) >= 3 and parts[2] == "reload" and self._on_config_reload_callback:
+            self._on_config_reload_callback(
+                payload.get("configVersion"),
+                payload.get("compartments", []),
+            )
 
-        broker = self.config.get("mqtt", {}).get("broker", "localhost")
-        port = int(self.config.get("mqtt", {}).get("port", 1883))
-        timeout = float(self.config.get("mqtt", {}).get("connect_timeout", 10))
-        print(f"[MQTT] Connecting to {broker}:{port} as cabinet={self.cabinet_id} user={user}")
-        self._connect_event.clear()
-        self._connect_error = None
-        self.connected = False
-        self._client.connect(broker, port, keepalive=60)
-        self._client.loop_start()
-        if not self._connect_event.wait(timeout):
-            self.connected = False
-            raise TimeoutError(f"MQTT connect timed out after {timeout:g}s: {broker}:{port}")
-        if not self.connected:
-            raise RuntimeError(f"MQTT connection rejected with rc={self._connect_error}: {broker}:{port}")
+    def _subscribe_all(self) -> None:
+        self._client.subscribe(f"smartbox/{self.cabinet_id}/lock/+/unlock")
+        self._client.subscribe(f"smartbox/{self.cabinet_id}/lock/+/lock")
+        self._client.subscribe(f"smartbox/{self.cabinet_id}/config/reload")
 
-    def disconnect(self) -> None:
-        if not self.mock and self._client is not None:
-            self._client.loop_stop()
-            self._client.disconnect()
-        self.connected = False
+    def set_unlock_callback(self, cb) -> None:
+        self._on_unlock_callback = cb
 
-    def subscribe_unlock(self, cabinet_id: str, callback) -> None:
-        topic = f"smartbox/{cabinet_id}/lock/+/unlock"
+    def set_lock_callback(self, cb) -> None:
+        self._on_lock_callback = cb
 
-        if self.mock:
-            self.last_event = {"topic": topic, "payload": {"subscription": "unlock"}}
-            return
-
-        def on_message(client, userdata, msg):
-            parts = msg.topic.split("/")
-            if len(parts) >= 5:
-                callback(parts[3])
-
-        self._client.message_callback_add(topic, on_message)
-        self._client.subscribe(topic)
-
-    def subscribe_lock(self, cabinet_id: str, callback) -> None:
-        topic = f"smartbox/{cabinet_id}/lock/+/lock"
-
-        if self.mock:
-            self.last_event = {"topic": topic, "payload": {"subscription": "lock"}}
-            return
-
-        def on_message(client, userdata, msg):
-            parts = msg.topic.split("/")
-            if len(parts) >= 5:
-                callback(parts[3])
-
-        self._client.message_callback_add(topic, on_message)
-        self._client.subscribe(topic)
-
-    def subscribe_config_reload(self, cabinet_id: str, callback) -> None:
-        topic = f"smartbox/{cabinet_id}/config/reload"
-
-        if self.mock:
-            self._config_reload_callback = callback
-            self.last_event = {"topic": topic, "payload": {"subscription": "config_reload"}}
-            return
-
-        def on_message(client, userdata, msg):
-            try:
-                payload = json.loads(msg.payload.decode("utf-8"))
-                callback(payload.get("configVersion"), payload.get("compartments", []))
-            except Exception as error:
-                print(f"[MQTT ERROR] config reload message failed: {error}")
-
-        self._client.message_callback_add(topic, on_message)
-        self._client.subscribe(topic)
+    def set_config_reload_callback(self, cb) -> None:
+        self._on_config_reload_callback = cb
 
     def publish_unlock(self, compartment_id: str, duration: int = 3) -> None:
-        topic = f"smartbox/{self.cabinet_id}/lock/{compartment_id}/unlock"
-        payload = {"compartmentId": compartment_id, "duration": duration}
-        self.last_event = {
-            "topic": topic,
-            "payload": payload,
-        }
-        if not self.mock and self._client is not None:
-            self._client.publish(topic, json.dumps(payload), qos=1)
+        if self.connected:
+            topic = f"smartbox/{self.cabinet_id}/lock/{compartment_id}/unlock"
+            self._client.publish(topic, json.dumps({"compartmentId": compartment_id, "duration": duration}), qos=1)
+            print(f"[MQTT] Published unlock: {compartment_id}")
 
     def publish_lock(self, compartment_id: str) -> None:
-        topic = f"smartbox/{self.cabinet_id}/lock/{compartment_id}/lock"
-        payload = {"compartmentId": compartment_id}
-        self.last_event = {
-            "topic": topic,
-            "payload": payload,
-        }
-        if not self.mock and self._client is not None:
-            self._client.publish(topic, json.dumps(payload), qos=1)
-
-    def publish_door_opened(self, compartment_id: str, rental_id: str) -> None:
-        topic = f"smartbox/{self.cabinet_id}/event/{compartment_id}"
-        payload = {"event": "opened", "rentalId": rental_id}
-        self.last_event = {
-            "topic": topic,
-            "payload": payload,
-        }
-        if not self.mock and self._client is not None:
-            self._client.publish(topic, json.dumps(payload), qos=1)
+        if self.connected:
+            topic = f"smartbox/{self.cabinet_id}/lock/{compartment_id}/lock"
+            self._client.publish(topic, json.dumps({"compartmentId": compartment_id}), qos=1)
+            print(f"[MQTT] Published lock: {compartment_id}")
 
     def publish_heartbeat(self) -> None:
-        topic = f"smartbox/{self.cabinet_id}/heartbeat"
-        payload = {"cabinetId": self.cabinet_id}
-        self.last_event = {
-            "topic": topic,
-            "payload": payload,
-        }
-        if not self.mock and self._client is not None:
-            self._client.publish(topic, json.dumps(payload), qos=1)
+        if self.connected:
+            topic = f"smartbox/{self.cabinet_id}/heartbeat"
+            self._client.publish(topic, json.dumps({"cabinetId": self.cabinet_id}), qos=1)
+
+    def disconnect(self) -> None:
+        if self._client:
+            self._client.loop_stop()
+            self._client.disconnect()
+            self.connected = False
