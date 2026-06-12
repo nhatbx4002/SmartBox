@@ -26,80 +26,35 @@ class MqttClient:
         self._connect_error = None
 
         if not self.mock:
-            try:
-                self._client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-            except (AttributeError, TypeError):
-                self._client = mqtt.Client()
-
+            self._client = mqtt.Client(
+                client_id=self.cabinet_id,
+                callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+            )
             self._client.on_connect = self._on_connect
             self._client.on_disconnect = self._on_disconnect
 
-            username = self.config.get("mqtt", {}).get("username") or None
-            password = self.config.get("mqtt", {}).get("password") or None
-            if username:
-                self._client.username_pw_set(username, password)
+    def _on_connect(self, client, userdata, flags, reason_code, properties) -> None:
+        if reason_code == 0:
+            self.connected = True
+            self.reconnect_attempts = 0
+            self._connect_error = None
+            print("[MQTT] Connected successfully")
+        else:
+            print(f"[MQTT] Connection failed with rc: {reason_code}")
+            self.connected = False
+            self._connect_error = reason_code
+        self._connect_event.set()
 
-    def _on_connect(self, *args, **kwargs) -> None:
-        # args: (client, userdata, flags, reason_code, properties)
-        # reason_code can be int (MQTTv3) or ReasonCode object (MQTTv5)
-        try:
-            if len(args) >= 4:
-                rc = args[3]
-            else:
-                rc = args[-1] if args else 0
-
-            # Extract numeric value
-            if hasattr(rc, "value"):
-                rc_val = rc.value
-            elif hasattr(rc, "is_connection_accepted"):
-                rc_val = 0 if rc.is_connection_accepted else 135
-            else:
-                rc_val = int(rc) if isinstance(rc, (int, str)) else 0
-
-            is_success = rc_val == 0
-
-            if is_success:
-                self.connected = True
-                self.reconnect_attempts = 0
-                self._connect_error = None
-                print("[MQTT] Connected successfully")
-            else:
-                rc_name = str(rc) if hasattr(rc, "__str__") else f"code={rc_val}"
-                print(f"[MQTT] Connection failed with rc: {rc_name}")
-                self.connected = False
-                self._connect_error = rc
-        except Exception as e:
-            print(f"[MQTT] _on_connect error: {e}")
-        finally:
-            self._connect_event.set()
-
-    def _on_disconnect(self, *args, **kwargs) -> None:
+    def _on_disconnect(self, client, userdata, reason_code, properties) -> None:
         self.connected = False
-        try:
-            # args: (client, userdata, reason_code, properties)
-            if len(args) >= 3:
-                rc = args[2]
-            else:
-                rc = args[-1] if args else 0
-
-            if hasattr(rc, "value"):
-                rc_val = rc.value
-            else:
-                rc_val = int(rc) if isinstance(rc, (int, str)) else 0
-
-            is_clean = rc_val == 0
-
-            if not is_clean:
-                rc_name = str(rc) if hasattr(rc, "__str__") else f"code={rc_val}"
-                print(f"[MQTT] Unexpected disconnect (rc={rc_name})")
-                self.reconnect_attempts += 1
-                if self.reconnect_attempts >= 3:
-                    if self.disconnect_callback:
-                        self.disconnect_callback()
-            else:
-                print("[MQTT] Disconnected cleanly")
-        except Exception as e:
-            print(f"[MQTT] _on_disconnect error: {e}")
+        if reason_code == 0:
+            print("[MQTT] Disconnected cleanly")
+        else:
+            print(f"[MQTT] Unexpected disconnect (rc={reason_code})")
+            self.reconnect_attempts += 1
+            if self.reconnect_attempts >= 3:
+                if self.disconnect_callback:
+                    self.disconnect_callback()
 
     def _try_reconnect(self) -> None:
         if self.mock:
@@ -124,13 +79,16 @@ class MqttClient:
             self.connected = True
             return
 
-        if username:
-            self._client.username_pw_set(username, password)
+        # Use provided credentials, fallback to config
+        user = username or self.config.get("mqtt", {}).get("username")
+        pwd = password or self.config.get("mqtt", {}).get("password")
+        if user:
+            self._client.username_pw_set(user, pwd)
 
         broker = self.config.get("mqtt", {}).get("broker", "localhost")
         port = int(self.config.get("mqtt", {}).get("port", 1883))
         timeout = float(self.config.get("mqtt", {}).get("connect_timeout", 10))
-        print(f"[MQTT] Connecting to {broker}:{port} as cabinet={self.cabinet_id}")
+        print(f"[MQTT] Connecting to {broker}:{port} as cabinet={self.cabinet_id} user={user}")
         self._connect_event.clear()
         self._connect_error = None
         self.connected = False
@@ -217,7 +175,6 @@ class MqttClient:
             self._client.publish(topic, json.dumps(payload), qos=1)
 
     def publish_door_opened(self, compartment_id: str, rental_id: str) -> None:
-        """Notify backend that the door was physically opened for a rental."""
         topic = f"smartbox/{self.cabinet_id}/event/{compartment_id}"
         payload = {"event": "opened", "rentalId": rental_id}
         self.last_event = {
