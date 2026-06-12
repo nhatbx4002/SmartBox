@@ -1,9 +1,11 @@
 ﻿api:
-  base_url: http://192.168.139.175:3001
+  base_url: http://192.168.1.29:3001
   timeout: 10
 mqtt:
-  broker: 192.168.139.175
+  broker: lebavui.io.vn
   port: 1883
+  username: nhatbx_225897
+  password: 589758
 camera:
   backend: picamera2
   stream_url: ''
