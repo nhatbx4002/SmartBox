@@ -167,45 +167,6 @@ class KioskApp(QWidget):
         self.state.pairing_expires_at = self._parse_datetime(pairing_data["expiresAt"])
         self.state.discovered_mcp_devices = list(pairing_data["mcpDevices"] or [])
 
-        # Start MQTT for pairing
-        if hasattr(self, "mqtt_client") and self.mqtt_client:
-            try:
-                self.mqtt_client.stop_pairing_listen()
-            except Exception:
-                pass
-            try:
-                self.mqtt_client.disconnect()
-            except Exception:
-                pass
-        self.mqtt_client = MqttClient(self.config, cabinet_id=pairing_data["sessionId"])
-        self.mqtt_client.start_pairing_listen(pairing_data["sessionId"], self._on_pairing_message)
-        self.mqtt_client.connect()
-
-        if self.api_client.mock:
-            mock_payload = {
-                "status": "APPROVED",
-                "cabinetId": f"cab_{pairing_data['sessionId'][-6:]}",
-                "jwt": "mock_jwt_token_here",
-                "mqttConfig": {
-                    "brokerUrl": "mqtt://localhost:1883",
-                    "username": "mock_user",
-                    "password": "mock_password",
-                },
-                "configVersion": 1,
-                "compartments": [
-                    {
-                        "id": "comp-A1",
-                        "name": "A1",
-                        "lockMcpDeviceId": "mcp-1",
-                        "mcp23017PinLock": 4,
-                    }
-                ],
-                "mcpDevices": [
-                    {"id": "mcp-1", "bus": 1, "address": 32, "name": "MCP23017"}
-                ],
-            }
-            QTimer.singleShot(3000, lambda: self._on_pairing_message(mock_payload))
-
         return pairing_data
 
     def _resume_pairing_flow(self) -> dict:
@@ -226,66 +187,7 @@ class KioskApp(QWidget):
         self.state.pairing_expires_at = self._parse_datetime(pairing_data["expiresAt"])
         self.state.discovered_mcp_devices = list(pairing_data["mcpDevices"] or [])
 
-        # Start MQTT for pairing
-        if hasattr(self, "mqtt_client") and self.mqtt_client:
-            try:
-                self.mqtt_client.stop_pairing_listen()
-            except Exception:
-                pass
-            try:
-                self.mqtt_client.disconnect()
-            except Exception:
-                pass
-        self.mqtt_client = MqttClient(self.config, cabinet_id=session_id)
-        self.mqtt_client.start_pairing_listen(session_id, self._on_pairing_message)
-        self.mqtt_client.connect()
-
-        if self.api_client.mock:
-            mock_payload = {
-                "status": "APPROVED",
-                "cabinetId": f"cab_{session_id[-6:]}",
-                "jwt": "mock_jwt_token_here",
-                "mqttConfig": {
-                    "brokerUrl": "mqtt://localhost:1883",
-                    "username": "mock_user",
-                    "password": "mock_password",
-                },
-                "configVersion": 1,
-                "compartments": [
-                    {
-                        "id": "comp-A1",
-                        "name": "A1",
-                        "lockMcpDeviceId": "mcp-1",
-                        "mcp23017PinLock": 4,
-                    }
-                ],
-                "mcpDevices": [
-                    {"id": "mcp-1", "bus": 1, "address": 32, "name": "MCP23017"}
-                ],
-            }
-            QTimer.singleShot(3000, lambda: self._on_pairing_message(mock_payload))
-
         return pairing_data
-
-    def _on_pairing_message(self, payload: dict) -> None:
-        status = str(payload.get("status", "")).upper()
-        if status != "APPROVED":
-            return
-        # Marshal to Qt main thread (paho runs this on its own thread)
-        QTimer.singleShot(0, lambda: self._handle_pairing_approved(payload))
-
-    def _handle_pairing_approved(self, payload: dict) -> None:
-        try:
-            self.mqtt_client.stop_pairing_listen()
-        except Exception as error:
-            print(f"[PAIRING] stop_pairing_listen warning: {error}")
-        try:
-            self.apply_pairing_result(payload)
-        except Exception as error:
-            print(f"[PAIRING] apply_pairing_result error: {error}")
-        cabinet_id = str(payload.get("cabinetId") or "")
-        if "/pairing-success" in self.controllers:
-            self.navigate("/pairing-success", {"cabinetId": cabinet_id}, replace=True)
 
     def apply_pairing_result(self, result: dict) -> None:
         # Idempotency: skip if already paired with the same cabinet_id

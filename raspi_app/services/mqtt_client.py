@@ -16,9 +16,6 @@ class MqttClient:
         self._on_unlock_callback = None
         self._on_lock_callback = None
         self._on_config_reload_callback = None
-        self._pairing_mode = False
-        self._pairing_topic = None
-        self._on_pairing_callback = None
 
     def connect(self) -> None:
         self._client = mqtt.Client(
@@ -44,12 +41,7 @@ class MqttClient:
         if reason_code == 0:
             self.connected = True
             print("[MQTT] Connected successfully")
-            if self._pairing_mode:
-                if self._pairing_topic:
-                    self._client.subscribe(self._pairing_topic)
-                    print(f"[MQTT] Subscribed to pairing topic: {self._pairing_topic}")
-            else:
-                self._subscribe_all()
+            self._subscribe_all()
         else:
             print(f"[MQTT] Connection failed: {reason_code}")
 
@@ -68,11 +60,6 @@ class MqttClient:
         except Exception:
             payload = {}
 
-        if self._pairing_mode and self._pairing_topic and topic == self._pairing_topic:
-            if self._on_pairing_callback:
-                self._on_pairing_callback(payload)
-            return
-
         parts = topic.split("/")
         if len(parts) >= 4:
             if parts[2] == "lock":
@@ -88,27 +75,6 @@ class MqttClient:
                 payload.get("compartments", []),
                 payload.get("mcpDevices", []),
             )
-
-    def start_pairing_listen(self, session_id: str, callback) -> None:
-        """K?ch ho?t ch? ?? nghe tin pairing t? backend."""
-        self._pairing_mode = True
-        self._pairing_topic = f"smartbox/pairing/{session_id}"
-        self._on_pairing_callback = callback
-        if self.connected and self._client:
-            self._client.subscribe(self._pairing_topic)
-            print(f"[MQTT] Subscribed to pairing topic: {self._pairing_topic}")
-
-    def stop_pairing_listen(self) -> None:
-        """D?n d?p sau khi pairing th?nh c?ng ho?c b? h?y."""
-        if not self._pairing_mode:
-            return
-        if self.connected and self._client and self._pairing_topic:
-            self._client.publish(self._pairing_topic, b"", qos=1, retain=True)
-            self._client.unsubscribe(self._pairing_topic)
-            print(f"[MQTT] Unsubscribed and cleared retained message on {self._pairing_topic}")
-        self._pairing_mode = False
-        self._pairing_topic = None
-        self._on_pairing_callback = None
 
     def _subscribe_all(self) -> None:
         self._client.subscribe(f"smartbox/{self.cabinet_id}/lock/+/unlock")
