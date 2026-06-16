@@ -40,7 +40,6 @@ class QrCameraScanner:
             config = self._camera.create_preview_configuration(
                 main={
                     "size": self.size,
-                    "format": "RGB888",
                 }
             )
             config["controls"] = {"FrameRate": 30}
@@ -67,7 +66,7 @@ class QrCameraScanner:
                 self._error = "Mất kết nối camera"
                 return QrScanFrame(error=self._error)
 
-            gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             token, points, _straight = self._detector.detectAndDecode(gray_frame)
             detected = points is not None and len(points) > 0
 
@@ -76,7 +75,7 @@ class QrCameraScanner:
 
             height, width, channels = frame.shape
             bytes_per_line = channels * width
-            image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888).copy()
+            image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_BGR888).copy()
 
             return QrScanFrame(image=image, token=token.strip() if isinstance(token, str) else None, detected=detected, frame_ok=True)
         except Exception as error:

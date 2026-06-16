@@ -86,7 +86,11 @@ class QRScanController(BaseController):
 
             if frame.detected and not frame.token:
                 print("[qr_scan] QR DETECTED but NOT DECODED (move closer / steady / lighting)")
+                self.status_label.setText("Đã thấy mã QR — giữ yên")
                 self.hint_label.setText("Đưa gần hơn / đủ sáng để đọc mã")
+            elif not frame.detected and not self.processing:
+                self.status_label.setText("Sẵn sàng quét QR")
+                self.hint_label.setText("Đưa mã QR vào giữa khung quét")
 
         if frame.token:
             print(f"[qr_scan] QR DECODED token='{frame.token}'")
