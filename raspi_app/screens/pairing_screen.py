@@ -42,13 +42,13 @@ class PairingController(BaseController):
         self._apply_network_status_display()
 
         if not self._session_id:
-            self._show_error("Kh?ng t?m th?y phi?n gh?p.")
+            self._show_error("Không tìm thấy phiên ghép.")
             return
 
-        self.title_label.setText("?ANG CH? DUY?T")
+        self.title_label.setText("ĐANG CHỜ DUYỆT")
         self.code_label.setText(self._pairing_code or "------")
         self.mcp_label.setText(self._format_mcp_devices(mcp_devices))
-        self.status_label.setText("?ang k?t n?i ??n m?y ch? ph? duy?t...")
+        self.status_label.setText("Đang kết nối đến máy chủ phê duyệt...")
         
         # Start listening to MQTT pairing pushes
         if self.app.mqtt_client:
@@ -63,7 +63,7 @@ class PairingController(BaseController):
             self.app.mqtt_client.stop_pairing_listen()
 
     def _on_mqtt_pairing_message(self, payload: dict) -> None:
-        # Nh?n tin nh?n t? background thread c?a MQTT, d?ng QTimer ?? chuy?n sang main UI thread
+        # Nhận tin nhắn từ background thread của MQTT, dùng QTimer để chuyển sang main UI thread
         QTimer.singleShot(0, lambda: self._handle_mqtt_pairing(payload))
 
     def _handle_mqtt_pairing(self, payload: dict) -> None:
@@ -83,7 +83,7 @@ class PairingController(BaseController):
             self.countdown_timer.stop()
             if self.app.mqtt_client:
                 self.app.mqtt_client.stop_pairing_listen()
-            self.status_label.setText("Gh?p th?nh c?ng. ?ang c?u h?nh thi?t b?...")
+            self.status_label.setText("Ghép thành công. Đang cấu hình thiết bị...")
             try:
                 self.app.apply_pairing_result(payload)
             except Exception as error:
@@ -95,7 +95,7 @@ class PairingController(BaseController):
             self.countdown_timer.stop()
             if self.app.mqtt_client:
                 self.app.mqtt_client.stop_pairing_listen()
-            self.status_label.setText("Phi?n gh?p ?? b? hu? ho?c h?t h?n.")
+            self.status_label.setText("Phiên ghép đã bị huỷ hoặc hết hạn.")
             self.retry_button.show()
             return
 
@@ -112,13 +112,13 @@ class PairingController(BaseController):
 
     def _tick_countdown(self) -> None:
         if self._expires_at is None:
-            self.countdown_label.setText("H?t h?n sau: --:--")
+            self.countdown_label.setText("Hết hạn sau: --:--")
             return
 
         remaining = int((self._expires_at - datetime.now(timezone.utc)).total_seconds())
         if remaining <= 0:
-            self.countdown_label.setText("M? ?? h?t h?n")
-            self.status_label.setText("Phi?n gh?p ?? h?t h?n.")
+            self.countdown_label.setText("Mã đã hết hạn")
+            self.status_label.setText("Phiên ghép đã hết hạn.")
             self.retry_button.show()
             if self.app.mqtt_client:
                 self.app.mqtt_client.stop_pairing_listen()
@@ -147,12 +147,11 @@ class PairingController(BaseController):
 
     def _format_mcp_devices(self, devices: list[dict]) -> str:
         if not devices:
-            return "Ch?a ph?t hi?n MCP23017 n?o."
+            return "Chưa phát hiện MCP23017 nào."
 
-        lines = [f"Ph?t hi?n {len(devices)} MCP23017:"]
+        lines = [f"Phát hiện {len(devices)} MCP23017:"]
         for device in devices[:4]:
             bus = device.get("bus", "?")
             address = device.get("address", "?")
             lines.append(f"Bus {bus} @ 0x{int(address):02X}" if isinstance(address, int) else f"Bus {bus} @ {address}")
-        return "
-".join(lines)
+        return "\n".join(lines)
