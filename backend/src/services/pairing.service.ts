@@ -274,8 +274,8 @@ export async function approvePairingSession(sessionId: string, input : ApprovePa
     jwt,
     mqttConfig: {
       brokerUrl: mqttBrokerUrl,
-      username: process.env.JWT_USERNAME,
-      password: process.env.JWT_PASSWORD,
+      username: process.env.MQTT_USERNAME,
+      password: process.env.MQTT_PASSWORD,
     },
     configVersion: config.configVersion,
     compartments: config.compartments,
