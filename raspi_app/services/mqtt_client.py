@@ -82,10 +82,11 @@ class MqttClient:
                 elif parts[4] == "lock" and self._on_lock_callback:
                     self._on_lock_callback(compartment)
 
-        if len(parts) >= 3 and parts[2] == "reload" and self._on_config_reload_callback:
+        if len(parts) >= 4 and parts[2] == "config" and parts[3] == "reload" and self._on_config_reload_callback:
             self._on_config_reload_callback(
                 payload.get("configVersion"),
                 payload.get("compartments", []),
+                payload.get("mcpDevices", []),
             )
 
     def start_pairing_listen(self, session_id: str, callback) -> None:

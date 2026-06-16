@@ -112,9 +112,9 @@ export async function getPairingSession(sessionId: string){
     const mqttBrokerUrl = process.env.MQTT_BROKER_URL;
     const jwt = (() => {
       const secret = process.env.JWT_SECRET;
-
+      if (!secret) throw new Error('JWT_SECRET is required');
       return signToken({sub: session.cabinetId, type: 'CABINET'}, secret!, '365d');
-    })
+    })();
 
     emitPairingSession(sessionId, {
       status: 'APPROVED',
