@@ -208,9 +208,16 @@ class KioskApp(QWidget):
         return pairing_data
 
     def apply_pairing_result(self, result: dict) -> None:
+        # Idempotency: skip if already paired with the same cabinet_id
+        new_cabinet_id = str(result.get("cabinetId") or result.get("cabinet_id") or "")
+        existing_cabinet_id = str(self.config.get("cabinet_id") or "")
+        if existing_cabinet_id and new_cabinet_id and existing_cabinet_id == new_cabinet_id:
+            print(f"[PAIRING] Already paired with cabinet {new_cabinet_id}, skipping apply_pairing_result")
+            return
+
         updated_config = dict(self.config)
         mqtt_config = result.get("mqttConfig", {})
-        cabinet_id = str(result.get("cabinetId") or result.get("cabinet_id") or updated_config.get("cabinet_id") or "")
+        cabinet_id = new_cabinet_id or str(updated_config.get("cabinet_id") or "")
         jwt_token = str(result.get("jwt") or result.get("jwtToken") or result.get("jwt_token") or updated_config.get("jwt_token") or "")
 
         updated_config["cabinet_id"] = cabinet_id
@@ -255,15 +262,19 @@ class KioskApp(QWidget):
         self._load_normal_config()
 
         # Set up API client and GPIO before MQTT (so polling works even if MQTT fails)
-        self.api_client.jwt_token = self.jwt_token
+        self.cabinet_id = cabinet_id
+        self.jwt_token = jwt_token
+        self.api_client.jwt_token = jwt_token
         self.gpio_controller._config = self.config
 
-        # Start config polling even if MQTT is not ready yet
+        # Start config polling even if MQTT is not ready yet (delay first poll by 5s to avoid firing before paired_runtime sets things up)
         if not hasattr(self, "config_poll_timer"):
             self.config_poll_timer = QTimer(self)
             self.config_poll_timer.timeout.connect(self._poll_config)
         self.config_poll_timer.start(30000)
-        self._poll_config()
+        # Only poll if cabinet_id is available; otherwise wait for paired_runtime
+        if cabinet_id:
+            self._poll_config()
 
         try:
             self._start_paired_runtime()
