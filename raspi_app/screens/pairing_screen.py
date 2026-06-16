@@ -6,7 +6,6 @@ from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QLabel, QPushButton
 
 from screens.base import BaseController
-from services.api_client import ApiError
 from services.config_loader import get_config_value, get_pairing_session_id, save_config
 
 
@@ -28,15 +27,9 @@ class PairingController(BaseController):
         self._session_id: str | None = None
         self._pairing_code: str = ""
         self._expires_at: datetime | None = None
-        self._failure_count = 0
-        self._poll_in_flight = False
 
         self.countdown_timer = QTimer(self.widget)
         self.countdown_timer.timeout.connect(self._tick_countdown)
-
-        self.poll_timer = QTimer(self.widget)
-        self.poll_timer.setSingleShot(True)
-        self.poll_timer.timeout.connect(self._poll_pairing)
 
     def on_enter(self, data: dict | None = None) -> None:
         data = data or {}
@@ -46,25 +39,65 @@ class PairingController(BaseController):
         mcp_devices = data.get("mcpDevices") or get_config_value(self.config, "discovered_mcp_devices", [])
 
         self.retry_button.hide()
-        self._failure_count = 0
-        self._poll_in_flight = False
         self._apply_network_status_display()
 
         if not self._session_id:
-            self._show_error("Không tìm thấy phiên ghép.")
+            self._show_error("Kh?ng t?m th?y phi?n gh?p.")
             return
 
-        self.title_label.setText("ĐANG CHỜ DUYỆT")
+        self.title_label.setText("?ANG CH? DUY?T")
         self.code_label.setText(self._pairing_code or "------")
         self.mcp_label.setText(self._format_mcp_devices(mcp_devices))
-        self.status_label.setText("Đang kết nối đến máy chủ phê duyệt...")
+        self.status_label.setText("?ang k?t n?i ??n m?y ch? ph? duy?t...")
+        
+        # Start listening to MQTT pairing pushes
+        if self.app.mqtt_client:
+            self.app.mqtt_client.start_pairing_listen(self._session_id, self._on_mqtt_pairing_message)
+
         self._tick_countdown()
         self.countdown_timer.start(1000)
-        self.poll_timer.start(500)
 
     def on_exit(self) -> None:
         self.countdown_timer.stop()
-        self.poll_timer.stop()
+        if self.app.mqtt_client:
+            self.app.mqtt_client.stop_pairing_listen()
+
+    def _on_mqtt_pairing_message(self, payload: dict) -> None:
+        # Nh?n tin nh?n t? background thread c?a MQTT, d?ng QTimer ?? chuy?n sang main UI thread
+        QTimer.singleShot(0, lambda: self._handle_mqtt_pairing(payload))
+
+    def _handle_mqtt_pairing(self, payload: dict) -> None:
+        if not payload or not self._session_id:
+            return
+
+        status = str(payload.get("status", "")).upper()
+        if payload.get("pairingCode"):
+            self._pairing_code = str(payload["pairingCode"])
+            self.code_label.setText(self._pairing_code)
+        if payload.get("expiresAt"):
+            self._expires_at = self._parse_datetime(str(payload["expiresAt"]))
+        if payload.get("discoveredMcpDevices") is not None:
+            self.mcp_label.setText(self._format_mcp_devices(payload.get("discoveredMcpDevices", [])))
+
+        if status == "APPROVED":
+            self.countdown_timer.stop()
+            if self.app.mqtt_client:
+                self.app.mqtt_client.stop_pairing_listen()
+            self.status_label.setText("Gh?p th?nh c?ng. ?ang c?u h?nh thi?t b?...")
+            try:
+                self.app.apply_pairing_result(payload)
+            except Exception as error:
+                print(f"[PAIRING SCREEN] apply_pairing_result warning: {error}")
+            self.navigate("/pairing-success", {"cabinetId": payload.get("cabinetId", "")}, replace=True)
+            return
+
+        if status in {"EXPIRED", "CANCELLED"}:
+            self.countdown_timer.stop()
+            if self.app.mqtt_client:
+                self.app.mqtt_client.stop_pairing_listen()
+            self.status_label.setText("Phi?n gh?p ?? b? hu? ho?c h?t h?n.")
+            self.retry_button.show()
+            return
 
     def _apply_network_status_display(self) -> None:
         status = self.network_status.upper()
@@ -79,101 +112,25 @@ class PairingController(BaseController):
 
     def _tick_countdown(self) -> None:
         if self._expires_at is None:
-            self.countdown_label.setText("Hết hạn sau: --:--")
+            self.countdown_label.setText("H?t h?n sau: --:--")
             return
 
         remaining = int((self._expires_at - datetime.now(timezone.utc)).total_seconds())
         if remaining <= 0:
-            self.countdown_label.setText("Mã đã hết hạn")
-            self.status_label.setText("Phiên ghép đã hết hạn.")
+            self.countdown_label.setText("M? ?? h?t h?n")
+            self.status_label.setText("Phi?n gh?p ?? h?t h?n.")
             self.retry_button.show()
-            self.poll_timer.stop()
+            if self.app.mqtt_client:
+                self.app.mqtt_client.stop_pairing_listen()
             return
 
         minutes, seconds = divmod(remaining, 60)
-        self.countdown_label.setText(f"Hết hạn sau: {minutes:02d}:{seconds:02d}")
-
-    def _poll_pairing(self) -> None:
-        if self._poll_in_flight or not self._session_id:
-            return
-
-        self._poll_in_flight = True
-        print(f"[PAIRING POLL] session_id={self._session_id}")
-        try:
-            result = self.api_client.get_pairing_session(self._session_id)
-            print(f"[PAIRING POLL] result status={result.get('status')}")
-        except ApiError as error:
-            print(f"[PAIRING POLL] ApiError: {error.message} (code={error.status_code})")
-            self._handle_poll_error(error.message or "Không thể kiểm tra trạng thái ghép.")
-            return
-        except Exception as error:
-            self._handle_poll_error(str(error) or "Không thể kiểm tra trạng thái ghép.")
-            return
-        finally:
-            self._poll_in_flight = False
-
-        status = str(result.get("status", "")).upper()
-        if result.get("pairingCode"):
-            self._pairing_code = str(result["pairingCode"])
-            self.code_label.setText(self._pairing_code)
-        if result.get("expiresAt"):
-            self._expires_at = self._parse_datetime(str(result["expiresAt"]))
-        if result.get("discoveredMcpDevices") is not None:
-            self.mcp_label.setText(self._format_mcp_devices(result.get("discoveredMcpDevices", [])))
-        self._persist_pending_state(result)
-
-        if status == "APPROVED":
-            self.countdown_timer.stop()
-            self.poll_timer.stop()
-            self.status_label.setText("Ghép thành công. Đang cấu hình thiết bị...")
-            try:
-                self.app.apply_pairing_result(result)
-            except Exception as error:
-                # Log but don't block — MQTT may fail, Pi still works via polling
-                print(f"[PAIRING SCREEN] apply_pairing_result warning: {error}")
-            self.navigate("/pairing-success", {"cabinetId": result.get("cabinetId", "")}, replace=True)
-            return
-
-        if status in {"EXPIRED", "CANCELLED"}:
-            self.countdown_timer.stop()
-            self.poll_timer.stop()
-            self.status_label.setText("Phiên ghép đã bị huỷ hoặc hết hạn.")
-            self.retry_button.show()
-            return
-
-        self.status_label.setText("Đang chờ admin phê duyệt...")
-        self.poll_timer.start(3000)
-
-    def _handle_poll_error(self, message: str) -> None:
-        self._failure_count += 1
-        if self._failure_count >= 3:
-            self.countdown_timer.stop()
-            self.poll_timer.stop()
-            self._show_error(message)
-            return
-
-        self.status_label.setText(message)
-        backoff_ms = min(3000 * (2 ** (self._failure_count - 1)), 12000)
-        self.poll_timer.start(backoff_ms)
-
-    def _persist_pending_state(self, result: dict) -> None:
-        self.app.config["pairing_session_id"] = self._session_id or ""
-        self.app.config["pairing_code"] = self._pairing_code
-        if self._expires_at is not None:
-            self.app.config["pairing_expires_at"] = self._expires_at.isoformat()
-        self.app.config["pairing_status"] = str(result.get("status", "PENDING")).upper()
-        if result.get("discoveredMcpDevices") is not None:
-            self.app.config["discovered_mcp_devices"] = result.get("discoveredMcpDevices", [])
-        self.app.state.pairing_session_id = self._session_id
-        self.app.state.pairing_code = self._pairing_code
-        self.app.state.pairing_expires_at = self._expires_at
-        self.app.state.discovered_mcp_devices = list(self.app.config.get("discovered_mcp_devices", []))
-        self.app.state.pairing_status = str(result.get("status", "PENDING")).upper()
-        save_config(self.app.config)
+        self.countdown_label.setText(f"H?t h?n sau: {minutes:02d}:{seconds:02d}")
 
     def _retry(self) -> None:
         self.countdown_timer.stop()
-        self.poll_timer.stop()
+        if self.app.mqtt_client:
+            self.app.mqtt_client.stop_pairing_listen()
         self.app.restart_pairing_flow()
 
     def _show_error(self, message: str) -> None:
@@ -190,11 +147,12 @@ class PairingController(BaseController):
 
     def _format_mcp_devices(self, devices: list[dict]) -> str:
         if not devices:
-            return "Chưa phát hiện MCP23017 nào."
+            return "Ch?a ph?t hi?n MCP23017 n?o."
 
-        lines = [f"Phát hiện {len(devices)} MCP23017:"]
+        lines = [f"Ph?t hi?n {len(devices)} MCP23017:"]
         for device in devices[:4]:
             bus = device.get("bus", "?")
             address = device.get("address", "?")
             lines.append(f"Bus {bus} @ 0x{int(address):02X}" if isinstance(address, int) else f"Bus {bus} @ {address}")
-        return "\n".join(lines)
+        return "
+".join(lines)

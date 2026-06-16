@@ -79,3 +79,6 @@ export function emitCabinetStatus(cabinetId: string, status: object): void {
 export function emitCompartmentStatus(cabinetId: string, compartmentId: string, status: object): void {
   io?.to(ADMIN_ROOM).to(`cabinet:${cabinetId}`).emit('compartment:status', { cabinetId, compartmentId, ...status });
 }
+export function emitPairingSession(sessionId: string, session: object): void {
+  io?.to(ADMIN_ROOM).emit('pairing:update', { sessionId, ...session });
+}

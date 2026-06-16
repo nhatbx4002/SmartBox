@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../../../src/components/ui/button";
 import Badge from "../../../src/components/ui/badge";
 import SpringPressable from "../../../src/components/ui/spring-pressable";
+import QrCodeDisplay from "../../../src/components/ui/qr-code-display";
 import { PaymentMethod, PricePlan } from "../../../src/types";
 import { useLocationStore } from "../../../src/store/locationStore";
 import { useRentalStore } from "../../../src/store/rentalStore";
@@ -259,13 +260,11 @@ export default function RentFlowScreen() {
                   </Text>
                 </View>
 
-                <View className="bg-surface border border-border rounded-panel px-six py-four w-full items-center">
-                  <Text className="text-small-bold text-text-secondary uppercase tracking-widest">Mã truy cập</Text>
-                  <Text className="text-otp-large text-brand font-bold mt-two font-mono">{currentRental.code}</Text>
-                  <Text className="text-caption text-text-muted mt-two text-center">
-                    QR token: {currentRental.qrToken.slice(0, 24)}...
-                  </Text>
-                </View>
+                <QrCodeDisplay
+                  value={currentRental.qrToken}
+                  code={currentRental.code}
+                  size={180}
+                />
 
                 <View className="bg-surface border border-border rounded-panel p-four w-full gap-two">
                   <View className="flex-row justify-between items-center">

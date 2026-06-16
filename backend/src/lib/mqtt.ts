@@ -57,13 +57,13 @@ export function getMqttClient(): MqttClient {
   return client;
 }
 
-export function publishMqtt(topic: string, payload: object): void {
+export function publishMqtt(topic: string, payload: object , options?: {retain?: boolean}): void {
   if (!client?.connected) {
     console.warn(`MQTT not connected, skipping publish: ${topic}`);
     return;
   }
 
-  client.publish(topic, JSON.stringify(payload), { qos: 1 });
+  client.publish(topic, JSON.stringify(payload), { qos: 1  , retain: options?.retain  ?? false });
 }
 
 export function subscribeMqtt(topic: string, handler: (topic: string, payload: unknown) => void): void {
@@ -89,3 +89,5 @@ export function subscribeMqtt(topic: string, handler: (topic: string, payload: u
     }
   });
 }
+
+

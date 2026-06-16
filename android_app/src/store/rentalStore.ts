@@ -10,7 +10,6 @@ interface RentalState {
   fetchRentals: (params?: { page?: number; limit?: number; status?: string }) => Promise<void>;
   fetchRentalDetail: (id: string) => Promise<RentalWithRelations>;
   createRental: (payload: CreateRentalPayload) => Promise<RentalWithRelations>;
-  unlockRental: (id: string) => Promise<RentalWithRelations>;
   completeRental: (id: string) => Promise<void>;
 }
 
@@ -55,24 +54,6 @@ export const useRentalStore = create<RentalState>((set) => ({
       return newRental;
     } catch (err: any) {
       set({ error: err.message || 'Failed to create rental', isLoading: false });
-      throw err;
-    }
-  },
-
-  unlockRental: async (id) => {
-    set({ isLoading: true, error: null });
-    try {
-      await rentalService.unlockRental(id);
-      const detailResponse = await rentalService.getRentalById(id);
-      const updatedRental = detailResponse.data;
-      set((state) => ({
-        rentals: state.rentals.map((r) => (r.id === id ? updatedRental : r)),
-        currentRental: state.currentRental?.id === id ? updatedRental : state.currentRental,
-        isLoading: false,
-      }));
-      return updatedRental;
-    } catch (err: any) {
-      set({ error: err.message || 'Failed to unlock locker', isLoading: false });
       throw err;
     }
   },

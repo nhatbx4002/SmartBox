@@ -22,7 +22,7 @@ class GpioController:
     _OLATA = 0x14
     _OLATB = 0x15
 
-    def __init__(self, mock: bool = True, bus: int | None = None, address: int | None = None):
+    def __init__(self, mock: bool = False, bus: int | None = None, address: int | None = None):
         self.mock = mock
         self.bus = bus
         self.address = address

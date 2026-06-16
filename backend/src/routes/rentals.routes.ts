@@ -87,6 +87,8 @@ router.get(
   }),
 );
 
+// Public unlock route retained for the admin web dashboard (RentalDetailPage).
+// The Android app no longer calls this; remote unlock from the user app was removed.
 router.post(
   '/:id/unlock',
   asyncHandler(async (req, res) => {

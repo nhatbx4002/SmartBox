@@ -19,7 +19,7 @@ class ApiError(Exception):
 class ApiClient:
     """REST client with a mock mode for kiosk UI development."""
 
-    def __init__(self, base_url: str = "http://localhost:3001", timeout: int = 10, mock: bool = True):
+    def __init__(self, base_url: str = "http://localhost:3001", timeout: int = 10, mock: bool = False):
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.mock = mock

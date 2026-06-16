@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Badge from "../../../src/components/ui/badge";
 import Button from "../../../src/components/ui/button";
 import { RentalDetailSkeleton } from "../../../src/components/ui/rental-skeleton";
+import QrCodeDisplay from "../../../src/components/ui/qr-code-display";
 import { useRentalStore } from "../../../src/store/rentalStore";
 
 function formatCountdown(expiresAt: string, nowMs: number) {
@@ -23,7 +24,6 @@ export default function RentalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const currentRental = useRentalStore((state) => state.currentRental);
   const fetchRentalDetail = useRentalStore((state) => state.fetchRentalDetail);
-  const unlockRental = useRentalStore((state) => state.unlockRental);
   const completeRental = useRentalStore((state) => state.completeRental);
   const isLoading = useRentalStore((state) => state.isLoading);
   const [now, setNow] = useState(Date.now());
@@ -38,16 +38,6 @@ export default function RentalDetailScreen() {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const handleUnlock = async () => {
-    if (!id) return;
-    try {
-      await unlockRental(String(id));
-      Alert.alert("Thành công", "Đã gửi lệnh mở tủ.");
-    } catch (error: any) {
-      Alert.alert("Không thể mở tủ", error?.message || "Có lỗi xảy ra.");
-    }
-  };
 
   const handleComplete = async () => {
     if (!id) return;
@@ -98,6 +88,18 @@ export default function RentalDetailScreen() {
               ) : null}
             </View>
 
+            {currentRental.status === "ACTIVE" ? (
+              <View className="bg-surface border border-border rounded-panel p-four items-center mb-four">
+                <Text className="text-small-bold text-text-secondary mb-three">Quét QR để mở tủ</Text>
+                <QrCodeDisplay
+                  value={currentRental.qrToken}
+                  code={currentRental.code}
+                  size={160}
+                  label=""
+                />
+              </View>
+            ) : null}
+
             <View className="bg-surface border border-border rounded-panel p-four mb-four gap-three">
               <View className="flex-row justify-between">
                 <Text className="text-small text-text-secondary">Mở tủ</Text>
@@ -109,15 +111,10 @@ export default function RentalDetailScreen() {
                 <Text className="text-small text-text-secondary">Thanh toán</Text>
                 <Text className="text-small-bold text-white">{currentRental.paymentStatus}</Text>
               </View>
-              <View className="flex-row justify-between">
-                <Text className="text-small text-text-secondary">QR token</Text>
-                <Text className="text-small-bold text-white">{currentRental.qrToken.slice(0, 16)}...</Text>
-              </View>
             </View>
 
             {currentRental.status === "ACTIVE" ? (
               <View className="gap-three mb-four">
-                <Button title="Mở tủ" onPress={handleUnlock} />
                 <Button title="Hoàn tất phiên thuê" variant="secondary" onPress={handleComplete} />
               </View>
             ) : null}

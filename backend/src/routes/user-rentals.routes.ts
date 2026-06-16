@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { RentalStatus } from '../generated/prisma';
-import { BadRequestError, NotFoundError } from '../lib/errors';
+import { NotFoundError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { requireUser } from '../middleware/requireUser';
-import { completeRental, handleUnlock } from '../services/rental.service';
+import { completeRental } from '../services/rental.service';
 
 const router = Router();
 
@@ -56,24 +56,6 @@ router.get(
     });
     if (!rental) throw NotFoundError('Rental not found');
     res.json({ data: rental });
-  }),
-);
-
-router.post(
-  '/:id/unlock',
-  requireUser,
-  asyncHandler(async (req, res) => {
-    const rental = await prisma.rental.findFirst({
-      where: { id: req.params.id, userId: req.user!.id },
-    });
-    if (!rental) throw NotFoundError('Rental not found');
-    if (rental.status !== RentalStatus.ACTIVE) {
-      throw BadRequestError(`Cannot unlock rental with status: ${rental.status}`);
-    }
-
-    const updated = await handleUnlock(req.params.id);
-    if (!updated) throw NotFoundError('Rental not found');
-    res.json({ data: updated });
   }),
 );
 

@@ -87,13 +87,12 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
             const refreshData = await refreshResponse.json();
             const result = refreshData.data;
             const newAccessToken = result?.accessToken;
-            const newRefreshToken = result?.refreshToken || refreshToken;
 
             if (!newAccessToken) {
               throw new Error('No access token in refresh response');
             }
 
-            await tokenStorage.saveTokens(newAccessToken, newRefreshToken);
+            await tokenStorage.saveTokens(newAccessToken, refreshToken);
             onRefreshed(newAccessToken);
             isRefreshing = false;
           } else {

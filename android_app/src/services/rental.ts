@@ -10,19 +10,15 @@ import {
 
 export const rentalService = {
   async createRental(payload: CreateRentalPayload): Promise<ApiResponse<CreateRentalResult>> {
-    return await api.post<ApiResponse<CreateRentalResult>>('/api/rentals', payload);
+    return await api.post<ApiResponse<CreateRentalResult>>('/api/users/me/rent', payload);
   },
 
   async getRentalByCode(code: string): Promise<ApiResponse<RentalWithRelations>> {
     return await api.get<ApiResponse<RentalWithRelations>>(`/api/rentals/${code}`);
   },
 
-  async unlockRental(rentalId: string): Promise<ApiResponse<RentalWithRelations>> {
-    return await api.post<ApiResponse<RentalWithRelations>>(`/api/users/me/rentals/${rentalId}/unlock`);
-  },
-
   async completeRental(rentalId: string): Promise<ApiResponse<OkResult>> {
-    return await api.post<ApiResponse<OkResult>>(`/api/users/me/rentals/${rentalId}/complete`);
+    return await api.post<ApiResponse<OkResult>>(`/api/rentals/${rentalId}/complete`);
   },
 
   async getUserRentals(params?: {

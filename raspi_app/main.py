@@ -95,9 +95,9 @@ class KioskApp(QWidget):
             self.startup_error = error
 
             if not hasattr(self, "api_client"):
-                self.api_client = ApiClient(mock=True)
+                self.api_client = ApiClient(mock=False)
             if not hasattr(self, "gpio_controller"):
-                self.gpio_controller = GpioController(mock=True)
+                self.gpio_controller = GpioController(mock=False)
             if not hasattr(self, "mqtt_client"):
                 self.mqtt_client = MqttClient(self.config, cabinet_id="demo")
             if not hasattr(self, "network_monitor"):
@@ -166,6 +166,16 @@ class KioskApp(QWidget):
         self.state.pairing_code = pairing_data["pairingCode"]
         self.state.pairing_expires_at = self._parse_datetime(pairing_data["expiresAt"])
         self.state.discovered_mcp_devices = list(pairing_data["mcpDevices"] or [])
+
+        # Start MQTT for pairing
+        if hasattr(self, "mqtt_client") and self.mqtt_client:
+            try:
+                self.mqtt_client.disconnect()
+            except Exception:
+                pass
+        self.mqtt_client = MqttClient(self.config, cabinet_id=pairing_data["sessionId"])
+        self.mqtt_client.connect()
+
         return pairing_data
 
     def _resume_pairing_flow(self) -> dict:
@@ -185,6 +195,16 @@ class KioskApp(QWidget):
         self.state.pairing_code = pairing_data["pairingCode"]
         self.state.pairing_expires_at = self._parse_datetime(pairing_data["expiresAt"])
         self.state.discovered_mcp_devices = list(pairing_data["mcpDevices"] or [])
+
+        # Start MQTT for pairing
+        if hasattr(self, "mqtt_client") and self.mqtt_client:
+            try:
+                self.mqtt_client.disconnect()
+            except Exception:
+                pass
+        self.mqtt_client = MqttClient(self.config, cabinet_id=session_id)
+        self.mqtt_client.connect()
+
         return pairing_data
 
     def apply_pairing_result(self, result: dict) -> None:
@@ -297,6 +317,12 @@ class KioskApp(QWidget):
         self.api_client.jwt_token = self.jwt_token
         self.gpio_controller._config = self.config
         self.gpio_controller.load_from_backend(self.api_client, self.cabinet_id)
+
+        if hasattr(self, "mqtt_client") and self.mqtt_client:
+            try:
+                self.mqtt_client.disconnect()
+            except Exception:
+                pass
 
         self.mqtt_client = MqttClient(self.config, cabinet_id=self.cabinet_id)
         self.mqtt_client.set_unlock_callback(self._handle_unlock_command)
