@@ -265,6 +265,7 @@ class KioskApp(QWidget):
         self.cabinet_id = cabinet_id
         self.jwt_token = jwt_token
         self.api_client.jwt_token = jwt_token
+        print(f"[PAIRING] jwt_token set: {jwt_token[:20]}...")
         self.gpio_controller._config = self.config
 
         # Start config polling even if MQTT is not ready yet (delay first poll by 5s to avoid firing before paired_runtime sets things up)
@@ -356,6 +357,7 @@ class KioskApp(QWidget):
 
     def _poll_config(self) -> None:
         """Poll backend for cabinet config version. Triggers reload if version changed."""
+        print(f"[CONFIG POLL] cabinet_id={self.cabinet_id} jwt={self.api_client.jwt_token[:20] if self.api_client.jwt_token else 'NONE'}...")
         try:
             result = self.api_client.get_cabinet_config(self.cabinet_id)
             version = int(result.get("configVersion", 0) or 0)

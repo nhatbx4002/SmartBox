@@ -123,10 +123,11 @@ class ApiClient:
         if version is not None:
             params["version"] = version
         url = f"{self.base_url}/api/cabinets/{cabinet_id}/config"
-        print(f"[API] GET {url} (version={version})")
+        headers = self._headers()
+        print(f"[API] GET {url} (version={version}) headers={headers}")
         response = requests.get(
             url,
-            headers=self._headers(),
+            headers=headers,
             params=params,
             timeout=self.timeout,
         )
