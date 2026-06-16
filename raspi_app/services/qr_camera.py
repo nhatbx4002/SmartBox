@@ -10,6 +10,8 @@ class QrScanFrame:
     image: QImage | None = None
     token: str | None = None
     error: str | None = None
+    detected: bool = False
+    frame_ok: bool = False
 
 
 class QrCameraScanner:
@@ -29,6 +31,7 @@ class QrCameraScanner:
             from picamera2 import Picamera2
         except ImportError as error:
             self._error = f"Không thể import picamera2: {error}"
+            print(f"[qr_camera] {self._error}")
             return False
 
         try:
@@ -44,9 +47,11 @@ class QrCameraScanner:
             self._camera.configure(config)
             self._camera.start()
             self._error = None
+            print(f"[qr_camera] camera ready size={self.size[0]}x{self.size[1]}")
             return True
         except Exception as error:
             self._error = f"Không thể khởi động Pi Camera: {error}"
+            print(f"[qr_camera] {self._error}")
             self.stop()
             return False
 
@@ -63,7 +68,8 @@ class QrCameraScanner:
                 return QrScanFrame(error=self._error)
 
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-            token, _points, _straight = self._detector.detectAndDecode(gray_frame)
+            token, points, _straight = self._detector.detectAndDecode(gray_frame)
+            detected = points is not None and len(points) > 0
 
             if getattr(frame, "flags", None) is not None and not getattr(frame.flags, "C_CONTIGUOUS", True):
                 frame = frame.copy()
@@ -72,7 +78,7 @@ class QrCameraScanner:
             bytes_per_line = channels * width
             image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888).copy()
 
-            return QrScanFrame(image=image, token=token.strip() if isinstance(token, str) else None)
+            return QrScanFrame(image=image, token=token.strip() if isinstance(token, str) else None, detected=detected, frame_ok=True)
         except Exception as error:
             self._error = f"Không thể đọc camera: {error}"
             return QrScanFrame(error=self._error)

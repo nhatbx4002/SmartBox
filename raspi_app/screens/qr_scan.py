@@ -51,6 +51,7 @@ class QRScanController(BaseController):
             self._show_camera_error("Không thể khởi động Pi Camera")
             return
 
+        print(f"[qr_scan] camera ready, scanning at {self.scan_interval_ms}ms")
         self.status_label.setText("Sẵn sàng quét QR")
         self.retry_button.hide()
         self.timer.start(self.scan_interval_ms)
@@ -73,6 +74,8 @@ class QRScanController(BaseController):
 
         if frame.image is not None:
             self.frame_count += 1
+            if self.frame_count % 30 == 0:
+                print(f"[qr_scan] streaming frames={self.frame_count}")
             pixmap = QPixmap.fromImage(frame.image).scaled(
                 self.preview_label.size(),
                 Qt.KeepAspectRatio,
@@ -81,7 +84,12 @@ class QRScanController(BaseController):
             self.preview_label.setPixmap(pixmap)
             self.preview_label.repaint()
 
+            if frame.detected and not frame.token:
+                print("[qr_scan] QR DETECTED but NOT DECODED (move closer / steady / lighting)")
+                self.hint_label.setText("Đưa gần hơn / đủ sáng để đọc mã")
+
         if frame.token:
+            print(f"[qr_scan] QR DECODED token='{frame.token}'")
             self._handle_scan(frame.token)
 
     def _handle_scan(self, token: str) -> None:
@@ -92,16 +100,20 @@ class QRScanController(BaseController):
         self.last_token = token
         self.timer.stop()
         self.status_label.setText("Đang xác minh mã QR...")
+        print(f"[qr_scan] verifying token len={len(token)}")
 
         try:
             rental, compartment = self.api_client.verify_qr(token)
         except ApiError as error:
+            print(f"[qr_scan] verify failed: {error.message}")
             self._show_scan_error(error.message)
             return
         except Exception as error:
+            print(f"[qr_scan] verify failed: {error}")
             self._show_scan_error(str(error) or "Không thể xác minh mã QR")
             return
 
+        print("[qr_scan] verified OK -> /locker-open")
         self.scanner.stop()
         self.state.mode = "pickup"
         self.state.rental_data = rental
