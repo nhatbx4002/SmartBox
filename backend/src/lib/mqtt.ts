@@ -59,11 +59,19 @@ export function getMqttClient(): MqttClient {
 
 export function publishMqtt(topic: string, payload: object , options?: {retain?: boolean}): void {
   if (!client?.connected) {
-    console.warn(`MQTT not connected, skipping publish: ${topic}`);
+    console.warn(`[MQTT] Not connected — skipping publish to: ${topic}`);
     return;
   }
 
-  client.publish(topic, JSON.stringify(payload), { qos: 1  , retain: options?.retain  ?? false });
+  const message = JSON.stringify(payload);
+  console.log(`[MQTT] Publishing to ${topic}: ${message}`);
+  client.publish(topic, message, { qos: 1, retain: options?.retain ?? false }, (err) => {
+    if (err) {
+      console.error(`[MQTT] Publish error on ${topic}:`, err.message);
+    } else {
+      console.log(`[MQTT] Published successfully to ${topic}`);
+    }
+  });
 }
 
 export function subscribeMqtt(topic: string, handler: (topic: string, payload: unknown) => void): void {

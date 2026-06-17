@@ -35,6 +35,9 @@ class QRPaymentController(BaseController):
         self.poll_timer.timeout.connect(self._poll_payment_status)
 
     def on_enter(self, data: dict | None = None) -> None:
+        print(f"[QRPayment] on_enter — orderCode={self.state.payment_order_code!r} "
+              f"qrString={'set' if self.state.payment_qr_string else 'MISSING'} "
+              f"expiresAt={self.state.payment_expires_at!r}")
         if self.state.payment_expires_at:
             try:
                 dt_str = self.state.payment_expires_at.replace("Z", "+00:00")
@@ -68,7 +71,8 @@ class QRPaymentController(BaseController):
     def _poll_payment_status(self) -> None:
         """Fallback: poll GET /api/payments/payment-status every 5 s."""
         order_code = self.state.payment_order_code
-        if not order_code:
+        if not isinstance(order_code, int) or order_code <= 0:
+            print(f"[QRPayment] Poll skipped — invalid orderCode: {order_code!r}")
             return
         try:
             result = self.api_client.get_payment_status(order_code)
