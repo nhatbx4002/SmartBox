@@ -330,11 +330,10 @@ class KioskApp(QWidget):
         self._poll_config()
 
     def _handle_payment_paid(self, order_code, payload) -> None:
-        def deliver():
-            controller = self.controllers.get(self.current_route)
-            if controller is not None and hasattr(controller, "on_payment_paid"):
-                controller.on_payment_paid(order_code, payload)
-        QTimer.singleShot(0, deliver)
+        # Already on the Qt main thread via queued Signal in MqttClient
+        controller = self.controllers.get(self.current_route)
+        if controller is not None and hasattr(controller, "on_payment_paid"):
+            controller.on_payment_paid(order_code, payload)
 
     def _poll_config(self) -> None:
         """Poll backend for cabinet config version as an MQTT fallback only.

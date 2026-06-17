@@ -10,6 +10,10 @@ from PySide6.QtWidgets import QLabel, QPushButton
 from screens.base import BaseController
 from services.formatters import format_currency
 
+# Poll the backend every 5 seconds as a fallback when the MQTT signal is
+# missed (e.g. broker offline, network blip, or race with the webhook).
+_POLL_INTERVAL_MS = 5000
+
 
 class QRPaymentController(BaseController):
     route = "/qr-payment"
@@ -20,9 +24,15 @@ class QRPaymentController(BaseController):
         self.amount_label = self.child("lblAmountValue", QLabel)
         self.qr_label = self.child("lblQrImage", QLabel)
         self.child("btnBack", QPushButton).clicked.connect(lambda: self.navigate("/payment"))
+
+        # Countdown timer (1-second ticks)
         self.timer = QTimer(self.widget)
         self.timer.timeout.connect(self._tick)
         self.remaining = 299
+
+        # Polling fallback timer
+        self.poll_timer = QTimer(self.widget)
+        self.poll_timer.timeout.connect(self._poll_payment_status)
 
     def on_enter(self, data: dict | None = None) -> None:
         if self.state.payment_expires_at:
@@ -41,22 +51,46 @@ class QRPaymentController(BaseController):
 
         amount = self.state.payment_amount or (self.state.selected_plan.price if self.state.selected_plan else 0)
         self.amount_label.setText(format_currency(amount))
-        
+
         self.timer.start(1000)
+        self.poll_timer.start(_POLL_INTERVAL_MS)
 
     def on_exit(self) -> None:
         self.timer.stop()
+        self.poll_timer.stop()
 
     def on_payment_paid(self, order_code, payload) -> None:
+        """Called from MQTT signal (already on Qt main thread)."""
         if order_code == self.state.payment_order_code:
-            self.timer.stop()
-            self.navigate("/rent-success", replace=True)
+            print(f"[QRPayment] MQTT payment confirmed: orderCode={order_code}")
+            self._confirm_paid()
+
+    def _poll_payment_status(self) -> None:
+        """Fallback: poll GET /api/payments/payment-status every 5 s."""
+        order_code = self.state.payment_order_code
+        if not order_code:
+            return
+        try:
+            result = self.api_client.get_payment_status(order_code)
+            if result.get("status") == "PAID":
+                print(f"[QRPayment] Poll confirmed PAID: orderCode={order_code}")
+                self._confirm_paid()
+        except Exception as exc:
+            # Silently ignore poll errors — MQTT is the primary channel
+            print(f"[QRPayment] Poll error (ignored): {exc}")
+
+    def _confirm_paid(self) -> None:
+        """Stop all timers and navigate to success screen."""
+        self.timer.stop()
+        self.poll_timer.stop()
+        self.navigate("/rent-success", replace=True)
 
     def _tick(self) -> None:
         self.remaining -= 1
         self._render()
         if self.remaining <= 0:
             self.timer.stop()
+            self.poll_timer.stop()
             self.show_error_dialog(
                 message="Thời gian thanh toán đã hết hạn. Vui lòng thử lại.",
                 title="GIAO DỊCH HẾT HẠN",
@@ -72,7 +106,7 @@ class QRPaymentController(BaseController):
         qr_string = self.state.payment_qr_string
         if not qr_string:
             return
-        
+
         img = qrcode.make(qr_string)
         buf = BytesIO()
         img.save(buf, format="PNG")

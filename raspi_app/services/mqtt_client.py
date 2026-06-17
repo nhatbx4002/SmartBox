@@ -3,12 +3,25 @@ from __future__ import annotations
 import json
 
 import paho.mqtt.client as mqtt
+from PySide6.QtCore import QObject, Signal
 
 
-class MqttClient:
-    """Simple MQTT client for kiosk."""
+class MqttClient(QObject):
+    """Simple MQTT client for kiosk.
+
+    Inherits QObject so that signals emitted from the paho background thread
+    are automatically queued and delivered on the Qt main thread.
+    """
+
+    # Signals — emitted from the paho thread, delivered on the Qt main thread
+    # via Qt's queued-connection mechanism.
+    payment_received = Signal(object, object)   # (order_code, payload)
+    unlock_requested = Signal(str)              # compartment_id
+    lock_requested = Signal(str)               # compartment_id
+    config_reload_requested = Signal(object, object, object)  # (version, compartments, mcp_devices)
 
     def __init__(self, config: dict, cabinet_id: str):
+        super().__init__()
         self.config = config
         self.cabinet_id = cabinet_id
         self.connected = False
@@ -17,6 +30,12 @@ class MqttClient:
         self._on_lock_callback = None
         self._on_config_reload_callback = None
         self._on_payment_callback = None
+
+        # Wire signals → stored callbacks (runs on Qt main thread)
+        self.payment_received.connect(self._dispatch_payment)
+        self.unlock_requested.connect(self._dispatch_unlock)
+        self.lock_requested.connect(self._dispatch_lock)
+        self.config_reload_requested.connect(self._dispatch_config_reload)
 
     def connect(self) -> None:
         self._client = mqtt.Client(
@@ -62,27 +81,27 @@ class MqttClient:
             payload = {}
 
         parts = topic.split("/")
-        if len(parts) >= 4:
-            if parts[2] == "lock":
-                compartment = parts[3]
-                if parts[4] == "unlock" and self._on_unlock_callback:
-                    self._on_unlock_callback(compartment)
-                elif parts[4] == "lock" and self._on_lock_callback:
-                    self._on_lock_callback(compartment)
+        if len(parts) >= 5 and parts[2] == "lock":
+            compartment = parts[3]
+            if parts[4] == "unlock":
+                self.unlock_requested.emit(compartment)
+            elif parts[4] == "lock":
+                self.lock_requested.emit(compartment)
 
-        if len(parts) >= 4 and parts[2] == "config" and parts[3] == "reload" and self._on_config_reload_callback:
-            self._on_config_reload_callback(
+        elif len(parts) >= 4 and parts[2] == "config" and parts[3] == "reload":
+            self.config_reload_requested.emit(
                 payload.get("configVersion"),
                 payload.get("compartments", []),
                 payload.get("mcpDevices", []),
             )
 
-        if len(parts) >= 4 and parts[2] == "payment" and self._on_payment_callback:
+        elif len(parts) >= 4 and parts[2] == "payment":
             try:
                 order_code = int(parts[3])
-            except ValueError:
+            except (ValueError, IndexError):
                 order_code = payload.get("orderCode")
-            self._on_payment_callback(order_code, payload)
+            print(f"[MQTT] Payment signal received: orderCode={order_code} status={payload.get('status')}")
+            self.payment_received.emit(order_code, payload)
 
     def _subscribe_all(self) -> None:
         self._client.subscribe(f"smartbox/{self.cabinet_id}/lock/+/unlock")
@@ -101,6 +120,26 @@ class MqttClient:
 
     def set_payment_callback(self, cb) -> None:
         self._on_payment_callback = cb
+
+    # ------------------------------------------------------------------
+    # Slot dispatch — these run on the Qt main thread via queued signal
+    # ------------------------------------------------------------------
+
+    def _dispatch_payment(self, order_code, payload) -> None:
+        if self._on_payment_callback:
+            self._on_payment_callback(order_code, payload)
+
+    def _dispatch_unlock(self, compartment_id: str) -> None:
+        if self._on_unlock_callback:
+            self._on_unlock_callback(compartment_id)
+
+    def _dispatch_lock(self, compartment_id: str) -> None:
+        if self._on_lock_callback:
+            self._on_lock_callback(compartment_id)
+
+    def _dispatch_config_reload(self, version, compartments, mcp_devices) -> None:
+        if self._on_config_reload_callback:
+            self._on_config_reload_callback(version, compartments, mcp_devices)
 
     def publish_unlock(self, compartment_id: str, duration: int = 3) -> None:
         if self.connected:
