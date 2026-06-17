@@ -306,6 +306,23 @@ exports.Prisma.UserSessionScalarFieldEnum = {
   isActive: 'isActive'
 };
 
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  rentalId: 'rentalId',
+  orderCode: 'orderCode',
+  amount: 'amount',
+  status: 'status',
+  paymentLinkId: 'paymentLinkId',
+  checkoutUrl: 'checkoutUrl',
+  qrCode: 'qrCode',
+  method: 'method',
+  source: 'source',
+  paidAt: 'paidAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -400,6 +417,7 @@ exports.PaymentStatus = exports.$Enums.PaymentStatus = {
 };
 
 exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  PAYOS: 'PAYOS',
   MOMO: 'MOMO',
   ZALOPAY: 'ZALOPAY',
   VIETQR: 'VIETQR',
@@ -459,6 +477,11 @@ exports.DeviceType = exports.$Enums.DeviceType = {
   KIOSK: 'KIOSK'
 };
 
+exports.PaymentSource = exports.$Enums.PaymentSource = {
+  KIOSK: 'KIOSK',
+  APP: 'APP'
+};
+
 exports.Prisma.ModelName = {
   Admin: 'Admin',
   User: 'User',
@@ -474,7 +497,8 @@ exports.Prisma.ModelName = {
   LockerLog: 'LockerLog',
   AuditLog: 'AuditLog',
   Notification: 'Notification',
-  UserSession: 'UserSession'
+  UserSession: 'UserSession',
+  Payment: 'Payment'
 };
 
 /**

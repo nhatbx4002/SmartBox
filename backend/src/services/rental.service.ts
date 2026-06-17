@@ -66,8 +66,7 @@ export async function createRental(input: {
   const code = await generateUniqueCode();
   const codeHash = await bcrypt.hash(code, 10);
   const expiresAt = new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000);
-  const qrToken = signQrToken(`pending-${crypto.randomUUID()}`, expiresAt);
-  const paymentMockEnabled = process.env.PAYMENT_MOCK_ENABLED !== 'false';
+  const qrToken = signQrToken(`pending-${crypto.randomUUID()}`);
 
   const rental = await prisma.$transaction(async (tx) => {
     const user = await tx.user.upsert({
@@ -86,9 +85,9 @@ export async function createRental(input: {
         qrToken,
         maxOpens: plan.maxOpens ?? 999,
         expiresAt,
-        paymentMethod: input.paymentMethod ?? PaymentMethod.NONE,
-        paymentStatus: paymentMockEnabled ? PaymentStatus.PAID : PaymentStatus.PENDING,
-        paidAt: paymentMockEnabled ? new Date() : null,
+        paymentMethod: PaymentMethod.VIETQR,
+        paymentStatus: PaymentStatus.PENDING,
+        paidAt: null,
       },
       include: { compartment: { include: { cabinet: true } }, pricePlan: true, user: true },
     });
@@ -114,18 +113,10 @@ export async function createRental(input: {
 
   await prisma.rental.update({
     where: { id: rental.id },
-    data: { qrToken: signQrToken(rental.id, expiresAt) },
+    data: { qrToken: signQrToken(rental.id) },
   });
 
-  await createNotification({
-    userId: rental.userId,
-    type: NotificationType.RENTAL_STARTED,
-    title: 'Rental started',
-    body: `Your rental code is ${code}.`,
-    data: { rentalId: rental.id, compartmentId: rental.compartmentId },
-  });
-
-  return { rental: { ...rental, qrToken: signQrToken(rental.id, expiresAt) }, code, compartment: rental.compartment };
+  return { rental: { ...rental, qrToken: signQrToken(rental.id) }, code, compartment: rental.compartment };
 }
 
 export async function getByCode(code: string) {

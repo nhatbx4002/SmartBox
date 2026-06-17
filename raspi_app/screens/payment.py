@@ -92,7 +92,19 @@ class PaymentController(BaseController):
 
         self.state.rental_data = rental
         self.state.compartment_data = compartment
-        self.navigate("/rent-success")
+
+        # NEW: create PayOS payment link
+        try:
+            payment = self.api_client.create_payment(rental.id, source="KIOSK")
+            self.state.payment_order_code = payment["orderCode"]
+            self.state.payment_qr_string = payment["qrCode"]
+            self.state.payment_amount = payment.get("amount")
+            self.state.payment_expires_at = payment.get("expiresAt")
+            self.navigate("/qr-payment")
+        except ApiError as error:
+            self._show_payment_error_dialog(error.message or "Không thể tạo thanh toán.")
+        except Exception as error:
+            self._show_payment_error_dialog(str(error) or "Lỗi kết nối khi tạo thanh toán.")
 
     def _show_payment_error(self, message: str) -> None:
         self.error_banner.show_error(message)

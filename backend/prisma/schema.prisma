@@ -80,6 +80,7 @@ enum PaymentStatus {
 }
 
 enum PaymentMethod {
+  PAYOS
   MOMO
   ZALOPAY
   VIETQR
@@ -130,6 +131,11 @@ enum DeviceType {
   ANDROID
   WEB
   KIOSK
+}
+
+enum PaymentSource{
+   KIOSK
+   APP
 }
 
 model Admin {
@@ -310,6 +316,7 @@ model Rental {
   openCount     Int           @default(0)
   maxOpens      Int
   expiresAt     DateTime
+  payment       Payment?
   paymentStatus PaymentStatus @default(PENDING)
   paymentMethod PaymentMethod @default(NONE)
   paidAt        DateTime?
@@ -398,4 +405,24 @@ model UserSession {
 
   @@index([userId, isActive])
   @@index([socketId])
+}
+
+model Payment {
+   id             String        @id @default(cuid())
+   rentalId       String        @unique
+   orderCode      Int           @unique
+   amount         Int
+   status         PaymentStatus @default(PENDING)
+   paymentLinkId  String?
+   checkoutUrl    String?
+   qrCode         String?
+   method         PaymentMethod @default(PAYOS)
+   source         PaymentSource @default(KIOSK)
+   paidAt         DateTime?
+   expiresAt      DateTime?
+   createdAt      DateTime      @default(now())
+   updatedAt      DateTime      @updatedAt
+   rental         Rental        @relation(fields: [rentalId], references: [id])
+   @@index([orderCode])
+   @@index([status])
 }

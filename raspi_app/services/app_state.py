@@ -46,6 +46,10 @@ class AppState:
     pairing_expires_at: Optional[datetime] = None
     discovered_mcp_devices: list[dict] = field(default_factory=list)
     pairing_status: str = "IDLE"
+    payment_order_code: Optional[int] = None
+    payment_qr_string: Optional[str] = None
+    payment_amount: Optional[int] = None
+    payment_expires_at: Optional[str] = None   # ISO string or timestamp
 
     def reset_rent_flow(self) -> None:
         self.selected_size = None
@@ -54,6 +58,10 @@ class AppState:
         self.payment_method = None
         self.rental_data = None
         self.compartment_data = None
+        self.payment_order_code = None
+        self.payment_qr_string = None
+        self.payment_amount = None
+        self.payment_expires_at = None
 
     def reset_pairing_flow(self) -> None:
         self.pairing_session_id = None

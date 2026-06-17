@@ -8,7 +8,7 @@ import { verifyQrRental } from '../src/services/rental.service';
 test('verifyQrRental returns active rental data for a valid QR token', async (t) => {
   process.env.QR_SECRET = 'test-secret';
   const expiresAt = new Date(Date.now() + 60_000);
-  const token = signQrToken('rental-qr-1', expiresAt);
+  const token = signQrToken('rental-qr-1');
   const rental = {
     id: 'rental-qr-1',
     status: RentalStatus.ACTIVE,

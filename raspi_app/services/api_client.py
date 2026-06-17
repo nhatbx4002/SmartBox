@@ -197,6 +197,51 @@ class ApiClient:
         data = self._parse_response(response)
         return self._rental_from_response(data), self._compartment_from_response(data)
 
+    def create_payment(self, rental_id: str, source: str = "KIOSK") -> dict:
+        if self.mock:
+            return {
+                "orderCode": 17503008000001,
+                "qrCode": "00020101021238570010A00000072701270006970422011311336...",
+                "checkoutUrl": "https://pay.payos.vn/web/mock",
+                "amount": 15000,
+                "expiresAt": self._mock_expiry(days=0),
+            }
+        response = requests.post(
+            f"{self.base_url}/api/payments",
+            json={"rentalId": rental_id, "source": source},
+            headers=self._headers(),
+            timeout=self.timeout,
+        )
+        return self._parse_response(response)
+
+    def get_payment_status(self, order_code: int) -> dict:
+        if self.mock:
+            return {"orderCode": order_code, "status": "PAID"}
+        response = requests.get(
+            f"{self.base_url}/api/payments/payment-status",
+            params={"orderCode": order_code},
+            headers=self._headers(),
+            timeout=self.timeout,
+        )
+        return self._parse_response(response)
+
+    def get_payment_result(self, order_code: int) -> dict:
+        if self.mock:
+            return {
+                "rentalId": "mock-rental-id",
+                "pin": "847291",
+                "compartmentId": "A1",
+                "compartmentName": "A1",
+                "expiresAt": self._mock_expiry(days=7),
+                "qrData": "mock-qr-data",
+            }
+        response = requests.get(
+            f"{self.base_url}/api/payments/result/{order_code}",
+            headers=self._headers(),
+            timeout=self.timeout,
+        )
+        return self._parse_response(response)
+
     def complete_rental(self, rental_id: str) -> None:
         if self.mock:
             return

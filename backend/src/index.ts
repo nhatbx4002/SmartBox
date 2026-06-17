@@ -20,8 +20,10 @@ import userRentalsRoutes from './routes/user-rentals.routes';
 import userLocationsRoutes from './routes/user-locations.routes';
 import usersRoutes from './routes/users.routes';
 import systemRoutes from './routes/system.routes';
+import paymentsRoutes from './routes/payments.routes';
 import { startExpiryChecker } from './jobs/expiryChecker';
 import { startHeartbeatMonitor } from './jobs/heartbeatMonitor';
+import { startPaymentExpiry } from './jobs/paymentExpiry';
 import { connectMqtt } from './lib/mqtt';
 import { prisma } from './lib/prisma';
 import { initSocket } from './lib/socket';
@@ -76,6 +78,7 @@ async function bootstrap() {
   app.use('/api/dashboard', dashboardRoutes);
   app.use('/api/notifications', notificationsRoutes);
   app.use('/api/system', systemRoutes);
+  app.use('/api/payments', paymentsRoutes);
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -85,6 +88,7 @@ async function bootstrap() {
 
   startExpiryChecker();
   startHeartbeatMonitor();
+  startPaymentExpiry();
   setupMqttHandlers();
 
   const port = Number(process.env.PORT) || 3000;

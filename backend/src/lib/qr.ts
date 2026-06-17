@@ -1,9 +1,7 @@
 import crypto from 'crypto';
 
-type QrPayload = {
-  rentalId: string;
-  expiresAt: string;
-};
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const PENDING_UUID_REGEX = /^pending-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 
 function getQrSecret(): string {
   const secret = process.env.QR_SECRET;
@@ -13,19 +11,63 @@ function getQrSecret(): string {
   return secret;
 }
 
-function signPayload(payload: string): string {
-  return crypto.createHmac('sha256', getQrSecret()).update(payload).digest('hex');
+function packId(id: string): string {
+  if (UUID_REGEX.test(id)) {
+    const cleanHex = id.replace(/-/g, '');
+    return 'u:' + Buffer.from(cleanHex, 'hex').toString('base64url');
+  }
+  const pendingMatch = id.match(PENDING_UUID_REGEX);
+  if (pendingMatch) {
+    const cleanHex = pendingMatch[1].replace(/-/g, '');
+    return 'p:' + Buffer.from(cleanHex, 'hex').toString('base64url');
+  }
+  return id;
 }
 
-export function signQrToken(rentalId: string, expiresAt: Date): string {
-  const payload = Buffer.from(
-    JSON.stringify({ rentalId, expiresAt: expiresAt.toISOString() } satisfies QrPayload),
-  ).toString('base64url');
+function unpackId(packed: string): string {
+  if (packed.startsWith('u:')) {
+    const base64 = packed.slice(2);
+    const buf = Buffer.from(base64, 'base64url');
+    if (buf.length === 16) {
+      const hex = buf.toString('hex');
+      return [
+        hex.slice(0, 8),
+        hex.slice(8, 12),
+        hex.slice(12, 16),
+        hex.slice(16, 20),
+        hex.slice(20),
+      ].join('-');
+    }
+  }
+  if (packed.startsWith('p:')) {
+    const base64 = packed.slice(2);
+    const buf = Buffer.from(base64, 'base64url');
+    if (buf.length === 16) {
+      const hex = buf.toString('hex');
+      const uuid = [
+        hex.slice(0, 8),
+        hex.slice(8, 12),
+        hex.slice(12, 16),
+        hex.slice(16, 20),
+        hex.slice(20),
+      ].join('-');
+      return `pending-${uuid}`;
+    }
+  }
+  return packed;
+}
+
+function signPayload(payload: string): string {
+  return crypto.createHmac('sha256', getQrSecret()).update(payload).digest('hex').substring(0, 10);
+}
+
+export function signQrToken(rentalId: string): string {
+  const payload = packId(rentalId);
   const sig = signPayload(payload);
   return `${payload}.${sig}`;
 }
 
-export function verifyQrToken(token: string): { rentalId: string; expiresAt: Date } | null {
+export function verifyQrToken(token: string): { rentalId: string } | null {
   try {
     const [payload, sig] = token.split('.');
     if (!payload || !sig) return null;
@@ -37,13 +79,10 @@ export function verifyQrToken(token: string): { rentalId: string; expiresAt: Dat
       return null;
     }
 
-    const parsed = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as QrPayload;
-    if (!parsed.rentalId || !parsed.expiresAt) return null;
+    const rentalId = unpackId(payload);
+    if (!rentalId) return null;
 
-    const expiresAt = new Date(parsed.expiresAt);
-    if (Number.isNaN(expiresAt.getTime()) || expiresAt < new Date()) return null;
-
-    return { rentalId: parsed.rentalId, expiresAt };
+    return { rentalId };
   } catch {
     return null;
   }

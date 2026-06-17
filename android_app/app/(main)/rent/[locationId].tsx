@@ -7,9 +7,10 @@ import Button from "../../../src/components/ui/button";
 import Badge from "../../../src/components/ui/badge";
 import SpringPressable from "../../../src/components/ui/spring-pressable";
 import QrCodeDisplay from "../../../src/components/ui/qr-code-display";
-import { PaymentMethod, PricePlan } from "../../../src/types";
+import { PaymentMethod, PricePlan, CreatePaymentResult } from "../../../src/types";
 import { useLocationStore } from "../../../src/store/locationStore";
 import { useRentalStore } from "../../../src/store/rentalStore";
+import { paymentService } from "../../../src/services/payment";
 
 export default function RentFlowScreen() {
   const router = useRouter();
@@ -21,6 +22,8 @@ export default function RentFlowScreen() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("VIETQR");
   const [createdRentalId, setCreatedRentalId] = useState<string | null>(null);
   const [plansLoading, setPlansLoading] = useState(false);
+  const [payment, setPayment] = useState<CreatePaymentResult | null>(null);
+  const [countdownText, setCountdownText] = useState("");
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const fetchLocationDetail = useLocationStore((state) => state.fetchLocationDetail);
@@ -85,18 +88,70 @@ export default function RentFlowScreen() {
         cabinetId: activeCabinetId,
       });
       setCreatedRentalId(rental.id);
+      
+      const res = await paymentService.createPayment({
+        rentalId: rental.id,
+        source: 'APP',
+      });
+      setPayment(res.data);
       setStep(4);
     } catch (error: any) {
-      Alert.alert("Không thể tạo phiên thuê", error?.message || "Có lỗi xảy ra.");
+      Alert.alert("Không thể tạo thanh toán", error?.message || "Có lỗi xảy ra.");
     }
   };
+
+  // Countdown timer for payment expiry
+  useEffect(() => {
+    if (step !== 4 || !payment) return;
+
+    const expiryTime = new Date(payment.expiresAt).getTime();
+    const updateCountdown = () => {
+      const now = Date.now();
+      const diff = expiryTime - now;
+      if (diff <= 0) {
+        setCountdownText("Đã hết hạn");
+        clearInterval(timerInterval);
+        return;
+      }
+      const minutes = Math.floor(diff / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      setCountdownText(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+    };
+
+    updateCountdown();
+    const timerInterval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(timerInterval);
+  }, [step, payment]);
+
+  // Polling effect
+  useEffect(() => {
+    if (step !== 4 || !payment) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await paymentService.getPaymentStatus(payment.orderCode);
+        if (res.data.status === 'PAID') {
+          clearInterval(interval);
+          setStep(5);
+        } else if (res.data.status === 'FAILED') {
+          clearInterval(interval);
+          Alert.alert('Thanh toán hết hạn', 'Phiên thanh toán đã hết hạn, vui lòng thử lại.');
+          setStep(3);
+        }
+      } catch {
+        // keep polling
+      }
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [step, payment]);
 
   const loading = isLocationLoading || isRentalLoading;
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
       <View className="flex-row items-center px-four py-three border-b border-border/40 bg-surface/50">
-        {step < 4 && (
+        {step < 5 && (
           <Pressable
             onPress={step === 1 ? () => router.back() : () => setStep((prev) => prev - 1)}
             className="w-10 h-10 rounded-full items-center justify-center bg-surface border border-border"
@@ -105,7 +160,7 @@ export default function RentFlowScreen() {
           </Pressable>
         )}
         <Text className="text-h3 text-white font-bold ml-three">
-          {step === 4 ? "Thuê thành công" : selectedLocation?.name || "Thuê tủ"}
+          {step === 5 ? "Thuê thành công" : selectedLocation?.name || "Thuê tủ"}
         </Text>
       </View>
 
@@ -114,17 +169,17 @@ export default function RentFlowScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 24, paddingTop: 16 }}
         showsVerticalScrollIndicator={false}
       >
-        {loading && step !== 4 ? (
+        {loading && step !== 5 ? (
           <ActivityIndicator color="#FF6600" />
         ) : (
           <>
-            {step < 4 && (
+            {step < 5 && (
               <View className="px-four py-four bg-surface/30 border border-border/40 rounded-panel items-center mb-four">
                 <Text className="text-small text-text-secondary mb-three">
-                  Bước {step}/3
+                  Bước {step}/4
                 </Text>
                 <Text className="text-caption text-text-secondary">
-                  {step === 1 ? "Chọn kích thước" : step === 2 ? "Chọn gói thuê" : "Xác nhận thanh toán mock"}
+                  {step === 1 ? "Chọn kích thước" : step === 2 ? "Chọn gói thuê" : step === 3 ? "Xác nhận thanh toán" : "Quét mã thanh toán"}
                 </Text>
               </View>
             )}
@@ -214,7 +269,7 @@ export default function RentFlowScreen() {
                   </View>
                   <View className="flex-row justify-between">
                     <Text className="text-small text-text-secondary">Thanh toán</Text>
-                    <Text className="text-small-bold text-white">Mock payment</Text>
+                    <Text className="text-small-bold text-white">{paymentMethod === "VIETQR" ? "VietQR (PayOS)" : paymentMethod}</Text>
                   </View>
                   <View className="flex-row justify-between pt-one">
                     <Text className="text-body-bold text-white">Tổng tiền</Text>
@@ -248,7 +303,30 @@ export default function RentFlowScreen() {
               </View>
             )}
 
-            {step === 4 && currentRental && (
+            {step === 4 && payment && (
+              <View className="gap-five items-center pt-four">
+                <Text className="text-h3 text-white font-bold text-center">Quét mã VietQR để thanh toán</Text>
+                
+                <QrCodeDisplay
+                  value={payment.qrCode}
+                  code={String(payment.orderCode)}
+                  size={220}
+                />
+
+                <Text className="text-h3 text-brand font-bold">{formatCurrency(payment.amount)}</Text>
+                <Text className="text-small text-text-secondary">Thời gian còn lại: {countdownText}</Text>
+                
+                <View className="w-full mt-four">
+                  <Button
+                    title="Hủy thanh toán"
+                    variant="secondary"
+                    onPress={() => setStep(3)}
+                  />
+                </View>
+              </View>
+            )}
+
+            {step === 5 && currentRental && (
               <View className="gap-five items-center pt-four">
                 <View className="w-16 h-16 rounded-full bg-success-bg border border-success items-center justify-center mb-two">
                   <Ionicons name="checkmark-circle" size={40} color="#00C853" />
@@ -256,7 +334,7 @@ export default function RentFlowScreen() {
                 <View className="items-center">
                   <Text className="text-h2 text-white font-bold text-center">Thuê tủ thành công</Text>
                   <Text className="text-body text-text-secondary text-center mt-one px-four">
-                    Thanh toán được mock, backend đã tạo phiên thuê thật cho bạn.
+                    Thanh toán thành công, hệ thống đã ghi nhận phiên thuê của bạn.
                   </Text>
                 </View>
 

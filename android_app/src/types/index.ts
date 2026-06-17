@@ -20,7 +20,7 @@ export type DoorStatus = "CLOSED" | "OPEN" | "UNKNOWN";
 export type RentalType = "ONCE" | "DAILY" | "MONTHLY";
 export type RentalStatus = "ACTIVE" | "COMPLETED" | "CANCELLED" | "EXPIRED";
 export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
-export type PaymentMethod = "MOMO" | "ZALOPAY" | "VIETQR" | "CASH" | "NONE";
+export type PaymentMethod = "MOMO" | "ZALOPAY" | "VIETQR" | "CASH" | "NONE" | "PAYOS";
 export type LockerAction =
   | "OPENED"
   | "CLOSED"
@@ -275,4 +275,22 @@ export interface VerifyOtpPayload {
 export interface ResetPasswordPayload {
   token: string;
   newPassword: string;
+}
+
+export interface CreatePaymentPayload {
+  rentalId: string;
+  source?: 'APP' | 'KIOSK';
+}
+
+export interface CreatePaymentResult {
+  orderCode: number;
+  qrCode: string;
+  checkoutUrl: string;
+  amount: number;
+  expiresAt: string;
+}
+
+export interface PaymentStatusResult {
+  orderCode: number;
+  status: 'PENDING' | 'PAID' | 'FAILED';
 }

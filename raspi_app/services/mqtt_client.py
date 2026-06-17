@@ -16,6 +16,7 @@ class MqttClient:
         self._on_unlock_callback = None
         self._on_lock_callback = None
         self._on_config_reload_callback = None
+        self._on_payment_callback = None
 
     def connect(self) -> None:
         self._client = mqtt.Client(
@@ -76,10 +77,18 @@ class MqttClient:
                 payload.get("mcpDevices", []),
             )
 
+        if len(parts) >= 4 and parts[2] == "payment" and self._on_payment_callback:
+            try:
+                order_code = int(parts[3])
+            except ValueError:
+                order_code = payload.get("orderCode")
+            self._on_payment_callback(order_code, payload)
+
     def _subscribe_all(self) -> None:
         self._client.subscribe(f"smartbox/{self.cabinet_id}/lock/+/unlock")
         self._client.subscribe(f"smartbox/{self.cabinet_id}/lock/+/lock")
         self._client.subscribe(f"smartbox/{self.cabinet_id}/config/reload")
+        self._client.subscribe(f"smartbox/{self.cabinet_id}/payment/+")
 
     def set_unlock_callback(self, cb) -> None:
         self._on_unlock_callback = cb
@@ -89,6 +98,9 @@ class MqttClient:
 
     def set_config_reload_callback(self, cb) -> None:
         self._on_config_reload_callback = cb
+
+    def set_payment_callback(self, cb) -> None:
+        self._on_payment_callback = cb
 
     def publish_unlock(self, compartment_id: str, duration: int = 3) -> None:
         if self.connected:

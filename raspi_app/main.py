@@ -243,21 +243,12 @@ class KioskApp(QWidget):
         self.state.reset_pairing_flow()
         self._load_normal_config()
 
-        # Set up API client and GPIO before MQTT (so polling works even if MQTT fails)
+        # Set up API client and GPIO before starting MQTT
         self.cabinet_id = cabinet_id
         self.jwt_token = jwt_token
         self.api_client.jwt_token = jwt_token
         print(f"[PAIRING] jwt_token set: {jwt_token[:20]}...")
         self.gpio_controller._config = self.config
-
-        # Start config polling even if MQTT is not ready yet (delay first poll by 5s to avoid firing before paired_runtime sets things up)
-        if not hasattr(self, "config_poll_timer"):
-            self.config_poll_timer = QTimer(self)
-            self.config_poll_timer.timeout.connect(self._poll_config)
-        self.config_poll_timer.start(30000)
-        # Only poll if cabinet_id is available; otherwise wait for paired_runtime
-        if cabinet_id:
-            self._poll_config()
 
         try:
             self._start_paired_runtime()
@@ -322,6 +313,7 @@ class KioskApp(QWidget):
         self.mqtt_client.set_unlock_callback(self._handle_unlock_command)
         self.mqtt_client.set_lock_callback(self._handle_lock_command)
         self.mqtt_client.set_config_reload_callback(self._on_config_reload)
+        self.mqtt_client.set_payment_callback(self._handle_payment_paid)
         self.mqtt_client.connect()
 
         if not hasattr(self, "heartbeat_timer"):
@@ -337,8 +329,21 @@ class KioskApp(QWidget):
         self.config_poll_timer.start(30000)
         self._poll_config()
 
+    def _handle_payment_paid(self, order_code, payload) -> None:
+        def deliver():
+            controller = self.controllers.get(self.current_route)
+            if controller is not None and hasattr(controller, "on_payment_paid"):
+                controller.on_payment_paid(order_code, payload)
+        QTimer.singleShot(0, deliver)
+
     def _poll_config(self) -> None:
-        """Poll backend for cabinet config version. Triggers reload if version changed."""
+        """Poll backend for cabinet config version as an MQTT fallback only.
+        Skipped when MQTT is connected — config reloads arrive via the
+        smartbox/{id}/config/reload push topic in that case."""
+        if hasattr(self, "mqtt_client") and self.mqtt_client.connected:
+            print("[CONFIG POLL] skipped — MQTT is connected, relying on push")
+            return
+
         print(f"[CONFIG POLL] cabinet_id={self.cabinet_id} jwt={self.api_client.jwt_token[:20] if self.api_client.jwt_token else 'NONE'}...")
         try:
             result = self.api_client.get_cabinet_config(self.cabinet_id)
