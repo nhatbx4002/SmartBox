@@ -18,7 +18,7 @@ class PaymentController(BaseController):
         self.pay_button = self.child("btnPayNow", QPushButton)
         self.pay_button_text = self.pay_button.text()
         self.method_buttons: dict[str, QPushButton] = {
-            "MOMO": self.child("btnPaymentMomo", QPushButton),
+            "PAYOS": self.child("btnPaymentPayOS", QPushButton),
             "ZALOPAY": self.child("btnPaymentZalo", QPushButton),
             "VIETQR": self.child("btnPaymentVietQR", QPushButton),
         }

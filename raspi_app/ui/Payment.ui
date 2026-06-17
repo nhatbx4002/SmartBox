@@ -74,7 +74,7 @@ QLabel#lblPaymentMethodTitle {
     background-color: transparent;
 }
 
-QPushButton#btnPaymentMomo,
+QPushButton#btnPaymentPayOS,
 QPushButton#btnPaymentZalo,
 QPushButton#btnPaymentVietQR {
     background-color: #101010;
@@ -82,7 +82,7 @@ QPushButton#btnPaymentVietQR {
     border-radius: 14px;
 }
 
-QPushButton#btnPaymentMomo[selected=&quot;true&quot;],
+QPushButton#btnPaymentPayOS[selected=&quot;true&quot;],
 QPushButton#btnPaymentZalo[selected=&quot;true&quot;],
 QPushButton#btnPaymentVietQR[selected=&quot;true&quot;] {
     background-color: #1C1C1C;
@@ -90,7 +90,7 @@ QPushButton#btnPaymentVietQR[selected=&quot;true&quot;] {
     border-radius: 14px;
 }
 
-QLabel#lblMomoText,
+QLabel#lblPayOSText,
 QLabel#lblZaloText,
 QLabel#lblVietQrText {
     color: #FFFFFF;
@@ -209,7 +209,7 @@ QPushButton#btnPayNow:disabled {
     <string>PHƯƠNG THỨC THANH TOÁN</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnPaymentMomo">
+  <widget class="QPushButton" name="btnPaymentPayOS">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -225,7 +225,7 @@ QPushButton#btnPayNow:disabled {
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="lblMomoIcon">
+  <widget class="QLabel" name="lblPayOSIcon">
    <property name="geometry">
     <rect>
      <x>42</x>
@@ -235,19 +235,13 @@ QPushButton#btnPayNow:disabled {
     </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap resource="../resources.qrc">:/assets/[MOMO]_Logo_Primary_Colored.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
+    <string>💳</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="lblMomoText">
+  <widget class="QLabel" name="lblPayOSText">
    <property name="geometry">
     <rect>
      <x>105</x>
@@ -257,7 +251,7 @@ QPushButton#btnPayNow:disabled {
     </rect>
    </property>
    <property name="text">
-    <string>Ví MoMo</string>
+    <string>PayOS</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignCenter</set>

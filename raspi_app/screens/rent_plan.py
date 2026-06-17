@@ -58,6 +58,7 @@ class RentPlanController(BaseController):
                 plan = self.plans_by_id.get(plan_id)
                 if plan is None:
                     button.setEnabled(False)
+                    button.setText("")
                     continue
                 button.setEnabled(True)
                 button.setText(f"{plan.name}\n{format_currency(plan.price)}")
