@@ -10,7 +10,7 @@ import { BadRequestError, NotFoundError } from '../lib/errors';
 // ---------------------------------------------------------------------------
 
 function generateOrderCode(): number {
-  return Math.floor(Date.now() / 1000) * 10000 + Math.floor(Math.random() * 10000);
+  return Math.floor(100000000 + Math.random() * 900000000);
 }
 
 async function ensureUniqueOrderCode(): Promise<number> {
@@ -30,6 +30,8 @@ export async function startPaymentForRental(
   rentalId: string,
   source: 'KIOSK' | 'APP' = 'KIOSK'
 ) {
+  console.log(`[Payment] startPaymentForRental rentalId=${rentalId} source=${source}`);
+
   const rental = await prisma.rental.findUnique({
     where: { id: rentalId },
     include: {
@@ -50,6 +52,7 @@ export async function startPaymentForRental(
   const ttlMin = Number(process.env.PAYMENT_PENDING_TTL_MIN ?? 5);
   const expiresAt = new Date(Date.now() + ttlMin * 60 * 1000);
   const orderCode = await ensureUniqueOrderCode();
+  console.log(`[Payment] Generated orderCode=${orderCode} amount=${amount} cabinetId=${rental.compartment.cabinet.id}`);
 
   const baseUrl = process.env.PUBLIC_BASE_URL ?? 'http://localhost:3001';
   const payosResult = await payos.paymentRequests.create({
@@ -60,9 +63,11 @@ export async function startPaymentForRental(
     cancelUrl: `${baseUrl}/api/payments/payos/cancel`,
     expiredAt: Math.floor(expiresAt.getTime() / 1000),
   });
+  console.log(`[Payment] PayOS link created: paymentLinkId=${payosResult.paymentLinkId}`);
 
   if (existingPayment) {
     await prisma.payment.delete({ where: { rentalId: rental.id } });
+    console.log(`[Payment] Deleted stale pending payment for rentalId=${rentalId}`);
   }
 
   const payment = await prisma.payment.create({
@@ -79,6 +84,7 @@ export async function startPaymentForRental(
       expiresAt,
     },
   });
+  console.log(`[Payment] Payment row created id=${payment.id} orderCode=${payment.orderCode} source=${payment.source}`);
 
   return {
     orderCode: payment.orderCode,
@@ -94,12 +100,21 @@ export async function startPaymentForRental(
 // ---------------------------------------------------------------------------
 
 export async function handlePayosWebhook(body: any) {
+  console.log(`[PayOS Webhook] Received body: code=${body?.code} orderCode=${body?.data?.orderCode ?? 'n/a'}`);
+
   if (body?.code !== '00') {
     console.log(`[PayOS Webhook] Non-success code: ${body?.code} — ignoring`);
     return;
   }
 
-  const data = await payos.webhooks.verify(body);
+  let data: any;
+  try {
+    data = await payos.webhooks.verify(body);
+    console.log(`[PayOS Webhook] Verified orderCode=${data.orderCode}`);
+  } catch (err) {
+    console.error(`[PayOS Webhook] Signature verification failed:`, err);
+    return;
+  }
 
   const payment = await prisma.payment.findUnique({
     where: { orderCode: data.orderCode },
@@ -113,25 +128,22 @@ export async function handlePayosWebhook(body: any) {
     },
   });
   if (!payment) {
-    console.warn(`[PayOS Webhook] orderCode ${data.orderCode} not found`);
+    console.warn(`[PayOS Webhook] orderCode ${data.orderCode} not found in DB`);
     return;
   }
+
+  console.log(`[PayOS Webhook] Found payment id=${payment.id} status=${payment.status} source=${payment.source} rentalId=${payment.rentalId}`);
 
   if (payment.status === PaymentStatus.PAID) {
     console.log(`[PayOS Webhook] orderCode ${data.orderCode} already PAID — ignoring duplicate`);
     return;
   }
 
-  await prisma.$transaction(async (tx) => {
-    await tx.payment.update({
-      where: { id: payment.id },
-      data: { status: PaymentStatus.PAID, paidAt: new Date() },
-    });
-    await tx.rental.update({
-      where: { id: payment.rentalId },
-      data: { paymentStatus: PaymentStatus.PAID, paidAt: new Date() },
-    });
+  await prisma.payment.update({
+    where: { id: payment.id },
+    data: { status: PaymentStatus.PAID, paidAt: new Date() },
   });
+  console.log(`[PayOS Webhook] Payment ${payment.id} marked PAID`);
 
   if (payment.rental.userId) {
     await createNotification({
@@ -152,12 +164,18 @@ export async function handlePayosWebhook(body: any) {
 
   if (payment.source === PaymentSource.KIOSK) {
     const cabinetId = payment.rental.compartment.cabinet.id;
-    publishMqtt(`smartbox/${cabinetId}/payment/${payment.orderCode}`, {
+    const mqttTopic = `smartbox/${cabinetId}/payment/${payment.orderCode}`;
+    const mqttPayload = {
       orderCode: payment.orderCode,
       status: 'PAID',
       rentalId: payment.rentalId,
       code: payment.rental.code,
-    });
+    };
+    console.log(`[PayOS Webhook] Publishing MQTT → ${mqttTopic}`, mqttPayload);
+    publishMqtt(mqttTopic, mqttPayload);
+    console.log(`[PayOS Webhook] MQTT publish done`);
+  } else {
+    console.log(`[PayOS Webhook] source=${payment.source} — skipping MQTT publish`);
   }
 }
 
@@ -228,11 +246,68 @@ export async function cancelPendingPayment(paymentId: string) {
     });
     await tx.rental.update({
       where: { id: payment.rentalId },
-      data: { status: 'CANCELLED', paymentStatus: PaymentStatus.FAILED },
+      data: { status: 'CANCELLED' },
     });
     await tx.compartment.update({
       where: { id: payment.rental.compartmentId },
       data: { status: 'AVAILABLE' },
     });
   });
+}
+
+// ---------------------------------------------------------------------------
+// confirmPaymentForTesting  — DEV ONLY
+// Simulates a successful PayOS webhook without signature verification.
+// Call POST /api/payments/test/confirm-paid { orderCode } from Postman/curl.
+// ---------------------------------------------------------------------------
+
+export async function confirmPaymentForTesting(orderCode: number) {
+  console.log(`[TEST] confirmPaymentForTesting orderCode=${orderCode}`);
+
+  const payment = await prisma.payment.findUnique({
+    where: { orderCode },
+    include: {
+      rental: {
+        include: {
+          compartment: { include: { cabinet: true } },
+          user: true,
+        },
+      },
+    },
+  });
+
+  if (!payment) {
+    throw NotFoundError(`Payment with orderCode ${orderCode} not found`);
+  }
+
+  console.log(`[TEST] Found payment id=${payment.id} status=${payment.status} source=${payment.source}`);
+
+  if (payment.status === PaymentStatus.PAID) {
+    console.log(`[TEST] Already PAID — re-publishing MQTT`);
+  } else {
+    await prisma.payment.update({
+      where: { id: payment.id },
+      data: { status: PaymentStatus.PAID, paidAt: new Date() },
+    });
+    console.log(`[TEST] Payment marked PAID`);
+  }
+
+  const cabinetId = payment.rental.compartment.cabinet.id;
+  const mqttTopic = `smartbox/${cabinetId}/payment/${payment.orderCode}`;
+  const mqttPayload = {
+    orderCode: payment.orderCode,
+    status: 'PAID',
+    rentalId: payment.rentalId,
+    code: payment.rental.code,
+  };
+  console.log(`[TEST] Publishing MQTT → ${mqttTopic}`, mqttPayload);
+  publishMqtt(mqttTopic, mqttPayload);
+
+  return {
+    orderCode: payment.orderCode,
+    status: 'PAID',
+    cabinetId,
+    rentalId: payment.rentalId,
+    mqttTopic,
+  };
 }

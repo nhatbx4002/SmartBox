@@ -14,7 +14,7 @@ export async function getDashboardStats() {
     availableCompartments,
     activeRentals,
     rentalsByStatusRaw,
-    paidRentals,
+    paidPayments,
   ] = await Promise.all([
     prisma.cabinet.count(),
     prisma.cabinet.count({ where: { status: CabinetStatus.ACTIVE } }),
@@ -25,21 +25,23 @@ export async function getDashboardStats() {
       by: ['status'],
       _count: { _all: true },
     }),
-    prisma.rental.findMany({
+    prisma.payment.findMany({
       where: {
-        paymentStatus: PaymentStatus.PAID,
-        OR: [
-          { paidAt: { gte: sevenDayStart } },
-          { paidAt: null, createdAt: { gte: sevenDayStart } },
-        ],
+        status: PaymentStatus.PAID,
+        paidAt: { gte: sevenDayStart },
       },
       select: {
         paidAt: true,
-        createdAt: true,
-        pricePlan: { select: { price: true } },
+        rental: { select: { pricePlan: { select: { price: true } }, createdAt: true } },
       },
     }),
   ]);
+
+  const paidRentals = paidPayments.map((p) => ({
+    paidAt: p.paidAt,
+    createdAt: p.rental.createdAt,
+    pricePlan: p.rental.pricePlan,
+  }));
 
   const revenueByDay = buildRevenueByDay(sevenDayStart, paidRentals);
   const todayKey = formatDateKey(todayStart);

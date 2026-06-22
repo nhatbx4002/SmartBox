@@ -68,7 +68,7 @@ export function Sidebar() {
           </div>
           {!sidebarCollapsed && (
             <div className="flex flex-col leading-none">
-              <span className="font-bold text-brand text-[15px] tracking-tight">SmartBox</span>
+              <span className="font-bold text-brand text-[15px] tracking-tight">OmniBox</span>
               <span className="text-label-xs text-text-muted mt-0.5">Admin Panel</span>
             </div>
           )}

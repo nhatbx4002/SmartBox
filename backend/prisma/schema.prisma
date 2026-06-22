@@ -317,9 +317,6 @@ model Rental {
   maxOpens      Int
   expiresAt     DateTime
   payment       Payment?
-  paymentStatus PaymentStatus @default(PENDING)
-  paymentMethod PaymentMethod @default(NONE)
-  paidAt        DateTime?
   status        RentalStatus  @default(ACTIVE)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt

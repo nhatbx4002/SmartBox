@@ -63,7 +63,7 @@ export default function LoginPage() {
             </div>
             <div className="absolute -inset-1 rounded-2xl bg-brand/20 blur-xl -z-10" />
           </div>
-          <h1 className="text-2xl font-bold text-text-primary tracking-tight">SmartBox</h1>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">OmniBox</h1>
           <p className="text-text-muted text-sm mt-1.5">Admin Dashboard</p>
         </div>
 

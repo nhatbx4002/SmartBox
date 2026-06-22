@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { CompartmentSize, PaymentMethod } from '../generated/prisma';
+import { CompartmentSize } from '../generated/prisma';
 import { BadRequestError } from '../lib/errors';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { requireUser } from '../middleware/requireUser';
@@ -48,7 +48,6 @@ const fcmSchema = z.object({
 const rentSchema = z.object({
   size: z.nativeEnum(CompartmentSize),
   planId: z.string().min(1),
-  paymentMethod: z.nativeEnum(PaymentMethod).optional(),
   cabinetId: z.string().min(1).optional(),
 });
 
@@ -135,7 +134,6 @@ router.post(
       phone: req.user!.phone,
       size: req.body.size,
       planId: req.body.planId,
-      paymentMethod: req.body.paymentMethod,
       cabinetId: req.body.cabinetId,
     });
     res.status(201).json({ data: result });

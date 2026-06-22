@@ -306,26 +306,23 @@ model PricePlan {
 }
 
 model Rental {
-  id            String        @id @default(cuid())
+  id            String       @id @default(cuid())
   userId        String?
   compartmentId String
   pricePlanId   String
-  code          String        @unique
+  code          String       @unique
   codeHash      String
-  qrToken       String        @unique
-  openCount     Int           @default(0)
+  qrToken       String       @unique
+  openCount     Int          @default(0)
   maxOpens      Int
   expiresAt     DateTime
   payment       Payment?
-  paymentStatus PaymentStatus @default(PENDING)
-  paymentMethod PaymentMethod @default(NONE)
-  paidAt        DateTime?
-  status        RentalStatus  @default(ACTIVE)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  user          User?         @relation(fields: [userId], references: [id])
-  compartment   Compartment   @relation(fields: [compartmentId], references: [id])
-  pricePlan     PricePlan     @relation(fields: [pricePlanId], references: [id])
+  status        RentalStatus @default(ACTIVE)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  user          User?        @relation(fields: [userId], references: [id])
+  compartment   Compartment  @relation(fields: [compartmentId], references: [id])
+  pricePlan     PricePlan    @relation(fields: [pricePlanId], references: [id])
   logs          LockerLog[]
 
   @@index([code])

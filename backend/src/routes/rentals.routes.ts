@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { CompartmentSize, PaymentMethod } from '../generated/prisma';
+import { CompartmentSize } from '../generated/prisma';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate } from '../middleware/validate';
 import { verifyPin } from '../services/auth.service';
@@ -12,7 +12,6 @@ const createRentalSchema = z.object({
   phone: z.string().regex(/^\+?[0-9]{10,11}$/),
   size: z.nativeEnum(CompartmentSize),
   planId: z.string().min(1),
-  paymentMethod: z.nativeEnum(PaymentMethod).optional(),
   cabinetId: z.string().min(1).optional(),
 });
 

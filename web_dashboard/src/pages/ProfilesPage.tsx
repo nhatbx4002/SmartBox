@@ -455,7 +455,7 @@ export default function ProfilesPage() {
               label="Name *"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="VD: SmartBox-24-v1"
+              placeholder="VD: OmniBox-24-v1"
             />
             <div className="grid grid-cols-2 gap-3">
               <Input

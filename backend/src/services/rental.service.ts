@@ -5,8 +5,6 @@ import {
   CompartmentAvailability,
   CompartmentSize,
   LockerAction,
-  PaymentMethod,
-  PaymentStatus,
   RentalStatus,
 } from '../generated/prisma';
 import { BadRequestError, NotFoundError } from '../lib/errors';
@@ -19,7 +17,6 @@ export async function createRental(input: {
   phone: string;
   size: CompartmentSize;
   planId: string;
-  paymentMethod?: PaymentMethod;
   cabinetId?: string;
 }) {
   const plan = await prisma.pricePlan.findFirst({
@@ -85,9 +82,6 @@ export async function createRental(input: {
         qrToken,
         maxOpens: plan.maxOpens ?? 999,
         expiresAt,
-        paymentMethod: PaymentMethod.VIETQR,
-        paymentStatus: PaymentStatus.PENDING,
-        paidAt: null,
       },
       include: { compartment: { include: { cabinet: true } }, pricePlan: true, user: true },
     });

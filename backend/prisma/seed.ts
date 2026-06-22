@@ -4,8 +4,6 @@ import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import {
   AdminRole,
-  CabinetStatus,
-  CompartmentAvailability,
   CompartmentSize,
   PrismaClient,
   RentalType,
@@ -43,105 +41,6 @@ async function seedPlans() {
   }
 }
 
-async function resetDemoCabinetData() {
-  await prisma.lockerLog.deleteMany({});
-  await prisma.rental.deleteMany({});
-  await prisma.compartmentStatus.deleteMany({});
-  await prisma.compartment.deleteMany({});
-  await prisma.mcpDevice.deleteMany({});
-  await prisma.cabinet.deleteMany({});
-}
-
-async function seedLocationsAndCabinets() {
-  const bachKhoa = await prisma.location.upsert({
-    where: { id: 'loc-bach-khoa' },
-    update: {},
-    create: {
-      id: 'loc-bach-khoa',
-      name: 'SmartBox Truong DH Bach Khoa',
-      address: '268 Ly Thuong Kiet, P.14, Q.10, TP.HCM',
-      latitude: 10.7795,
-      longitude: 106.6989,
-    },
-  });
-
-  await prisma.location.upsert({
-    where: { id: 'loc-dormitory' },
-    update: {},
-    create: {
-      id: 'loc-dormitory',
-      name: 'SmartBox Ky Tuc Xa',
-      address: 'Khu A, DHQG TP.HCM',
-      latitude: 10.8781,
-      longitude: 106.8067,
-    },
-  });
-
-  const cabinetA = await prisma.cabinet.upsert({
-    where: { id: 'cabinet-a' },
-    update: {
-      locationId: bachKhoa.id,
-      name: 'Tu A',
-      status: CabinetStatus.ACTIVE,
-    },
-    create: {
-      id: 'cabinet-a',
-      locationId: bachKhoa.id,
-      name: 'Tu A',
-      status: CabinetStatus.ACTIVE,
-    },
-  });
-
-  const mcpDevice = await prisma.mcpDevice.upsert({
-    where: { id: 'mcp-cabinet-a-0x20' },
-    update: {
-      cabinetId: cabinetA.id,
-      bus: 1,
-      address: 32,
-      name: 'MCP Demo 0x20',
-    },
-    create: {
-      id: 'mcp-cabinet-a-0x20',
-      cabinetId: cabinetA.id,
-      bus: 1,
-      address: 32,
-      name: 'MCP Demo 0x20',
-    },
-  });
-
-  await seedCompartments(cabinetA.id, mcpDevice.id);
-}
-
-async function seedCompartments(cabinetId: string, mcpDeviceId: string) {
-  const compartment = await prisma.compartment.upsert({
-    where: { cabinetId_name: { cabinetId, name: 'A1' } },
-    update: {
-      size: CompartmentSize.SMALL,
-      mcp23017PinLock: 0,
-      mcp23017PinSensor: 12,
-      lockMcpDeviceId: mcpDeviceId,
-      sensorMcpDeviceId: mcpDeviceId,
-      status: CompartmentAvailability.AVAILABLE,
-    },
-    create: {
-      name: 'A1',
-      cabinetId,
-      size: CompartmentSize.SMALL,
-      mcp23017PinLock: 0,
-      mcp23017PinSensor: 12,
-      lockMcpDeviceId: mcpDeviceId,
-      sensorMcpDeviceId: mcpDeviceId,
-      status: CompartmentAvailability.AVAILABLE,
-    },
-  });
-
-  await prisma.compartmentStatus.upsert({
-    where: { compartmentId: compartment.id },
-    update: {},
-    create: { compartmentId: compartment.id },
-  });
-}
-
 async function seedAdmin() {
   const email = process.env.ADMIN_EMAIL || 'admin@smartbox.io';
   const password = process.env.ADMIN_PASSWORD || 'SmartBox@2026';
@@ -155,11 +54,24 @@ async function seedAdmin() {
   });
 }
 
+async function seedLocation() {
+  await prisma.location.upsert({
+    where: { id: 'loc-bach-khoa' },
+    update: {},
+    create: {
+      id: 'loc-bach-khoa',
+      name: 'SmartBox Truong DH Bach Khoa',
+      address: '268 Ly Thuong Kiet, P.14, Q.10, TP.HCM',
+      latitude: 10.7795,
+      longitude: 106.6989,
+    },
+  });
+}
+
 async function main() {
   await seedPlans();
-  await resetDemoCabinetData();
-  await seedLocationsAndCabinets();
   await seedAdmin();
+  await seedLocation();
   console.log('Seed completed');
 }
 

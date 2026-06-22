@@ -182,28 +182,6 @@ export const RentalType: {
 export type RentalType = (typeof RentalType)[keyof typeof RentalType]
 
 
-export const PaymentStatus: {
-  PENDING: 'PENDING',
-  PAID: 'PAID',
-  REFUNDED: 'REFUNDED',
-  FAILED: 'FAILED'
-};
-
-export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
-
-
-export const PaymentMethod: {
-  PAYOS: 'PAYOS',
-  MOMO: 'MOMO',
-  ZALOPAY: 'ZALOPAY',
-  VIETQR: 'VIETQR',
-  CASH: 'CASH',
-  NONE: 'NONE'
-};
-
-export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
-
-
 export const RentalStatus: {
   ACTIVE: 'ACTIVE',
   COMPLETED: 'COMPLETED',
@@ -271,6 +249,28 @@ export const DeviceType: {
 export type DeviceType = (typeof DeviceType)[keyof typeof DeviceType]
 
 
+export const PaymentStatus: {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  REFUNDED: 'REFUNDED',
+  FAILED: 'FAILED'
+};
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const PaymentMethod: {
+  PAYOS: 'PAYOS',
+  MOMO: 'MOMO',
+  ZALOPAY: 'ZALOPAY',
+  VIETQR: 'VIETQR',
+  CASH: 'CASH',
+  NONE: 'NONE'
+};
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
 export const PaymentSource: {
   KIOSK: 'KIOSK',
   APP: 'APP'
@@ -316,14 +316,6 @@ export type RentalType = $Enums.RentalType
 
 export const RentalType: typeof $Enums.RentalType
 
-export type PaymentStatus = $Enums.PaymentStatus
-
-export const PaymentStatus: typeof $Enums.PaymentStatus
-
-export type PaymentMethod = $Enums.PaymentMethod
-
-export const PaymentMethod: typeof $Enums.PaymentMethod
-
 export type RentalStatus = $Enums.RentalStatus
 
 export const RentalStatus: typeof $Enums.RentalStatus
@@ -343,6 +335,14 @@ export const NotificationType: typeof $Enums.NotificationType
 export type DeviceType = $Enums.DeviceType
 
 export const DeviceType: typeof $Enums.DeviceType
+
+export type PaymentStatus = $Enums.PaymentStatus
+
+export const PaymentStatus: typeof $Enums.PaymentStatus
+
+export type PaymentMethod = $Enums.PaymentMethod
+
+export const PaymentMethod: typeof $Enums.PaymentMethod
 
 export type PaymentSource = $Enums.PaymentSource
 
@@ -12996,9 +12996,6 @@ export namespace Prisma {
     openCount: number | null
     maxOpens: number | null
     expiresAt: Date | null
-    paymentStatus: $Enums.PaymentStatus | null
-    paymentMethod: $Enums.PaymentMethod | null
-    paidAt: Date | null
     status: $Enums.RentalStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13015,9 +13012,6 @@ export namespace Prisma {
     openCount: number | null
     maxOpens: number | null
     expiresAt: Date | null
-    paymentStatus: $Enums.PaymentStatus | null
-    paymentMethod: $Enums.PaymentMethod | null
-    paidAt: Date | null
     status: $Enums.RentalStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13034,9 +13028,6 @@ export namespace Prisma {
     openCount: number
     maxOpens: number
     expiresAt: number
-    paymentStatus: number
-    paymentMethod: number
-    paidAt: number
     status: number
     createdAt: number
     updatedAt: number
@@ -13065,9 +13056,6 @@ export namespace Prisma {
     openCount?: true
     maxOpens?: true
     expiresAt?: true
-    paymentStatus?: true
-    paymentMethod?: true
-    paidAt?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -13084,9 +13072,6 @@ export namespace Prisma {
     openCount?: true
     maxOpens?: true
     expiresAt?: true
-    paymentStatus?: true
-    paymentMethod?: true
-    paidAt?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -13103,9 +13088,6 @@ export namespace Prisma {
     openCount?: true
     maxOpens?: true
     expiresAt?: true
-    paymentStatus?: true
-    paymentMethod?: true
-    paidAt?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -13209,9 +13191,6 @@ export namespace Prisma {
     openCount: number
     maxOpens: number
     expiresAt: Date
-    paymentStatus: $Enums.PaymentStatus
-    paymentMethod: $Enums.PaymentMethod
-    paidAt: Date | null
     status: $Enums.RentalStatus
     createdAt: Date
     updatedAt: Date
@@ -13247,9 +13226,6 @@ export namespace Prisma {
     openCount?: boolean
     maxOpens?: boolean
     expiresAt?: boolean
-    paymentStatus?: boolean
-    paymentMethod?: boolean
-    paidAt?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13272,9 +13248,6 @@ export namespace Prisma {
     openCount?: boolean
     maxOpens?: boolean
     expiresAt?: boolean
-    paymentStatus?: boolean
-    paymentMethod?: boolean
-    paidAt?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13294,9 +13267,6 @@ export namespace Prisma {
     openCount?: boolean
     maxOpens?: boolean
     expiresAt?: boolean
-    paymentStatus?: boolean
-    paymentMethod?: boolean
-    paidAt?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13336,9 +13306,6 @@ export namespace Prisma {
       openCount: number
       maxOpens: number
       expiresAt: Date
-      paymentStatus: $Enums.PaymentStatus
-      paymentMethod: $Enums.PaymentMethod
-      paidAt: Date | null
       status: $Enums.RentalStatus
       createdAt: Date
       updatedAt: Date
@@ -13750,9 +13717,6 @@ export namespace Prisma {
     readonly openCount: FieldRef<"Rental", 'Int'>
     readonly maxOpens: FieldRef<"Rental", 'Int'>
     readonly expiresAt: FieldRef<"Rental", 'DateTime'>
-    readonly paymentStatus: FieldRef<"Rental", 'PaymentStatus'>
-    readonly paymentMethod: FieldRef<"Rental", 'PaymentMethod'>
-    readonly paidAt: FieldRef<"Rental", 'DateTime'>
     readonly status: FieldRef<"Rental", 'RentalStatus'>
     readonly createdAt: FieldRef<"Rental", 'DateTime'>
     readonly updatedAt: FieldRef<"Rental", 'DateTime'>
@@ -19411,9 +19375,6 @@ export namespace Prisma {
     openCount: 'openCount',
     maxOpens: 'maxOpens',
     expiresAt: 'expiresAt',
-    paymentStatus: 'paymentStatus',
-    paymentMethod: 'paymentMethod',
-    paidAt: 'paidAt',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -19752,34 +19713,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'PaymentStatus'
-   */
-  export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'PaymentStatus[]'
-   */
-  export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'PaymentMethod'
-   */
-  export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
-    
-
-
-  /**
-   * Reference to a field of type 'PaymentMethod[]'
-   */
-  export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
-    
-
-
-  /**
    * Reference to a field of type 'RentalStatus'
    */
   export type EnumRentalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RentalStatus'>
@@ -19846,6 +19779,34 @@ export namespace Prisma {
    * Reference to a field of type 'DeviceType[]'
    */
   export type ListEnumDeviceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DeviceType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus'
+   */
+  export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus[]'
+   */
+  export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentMethod'
+   */
+  export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentMethod[]'
+   */
+  export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
     
 
 
@@ -20663,9 +20624,6 @@ export namespace Prisma {
     openCount?: IntFilter<"Rental"> | number
     maxOpens?: IntFilter<"Rental"> | number
     expiresAt?: DateTimeFilter<"Rental"> | Date | string
-    paymentStatus?: EnumPaymentStatusFilter<"Rental"> | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFilter<"Rental"> | $Enums.PaymentMethod
-    paidAt?: DateTimeNullableFilter<"Rental"> | Date | string | null
     status?: EnumRentalStatusFilter<"Rental"> | $Enums.RentalStatus
     createdAt?: DateTimeFilter<"Rental"> | Date | string
     updatedAt?: DateTimeFilter<"Rental"> | Date | string
@@ -20687,9 +20645,6 @@ export namespace Prisma {
     openCount?: SortOrder
     maxOpens?: SortOrder
     expiresAt?: SortOrder
-    paymentStatus?: SortOrder
-    paymentMethod?: SortOrder
-    paidAt?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -20714,9 +20669,6 @@ export namespace Prisma {
     openCount?: IntFilter<"Rental"> | number
     maxOpens?: IntFilter<"Rental"> | number
     expiresAt?: DateTimeFilter<"Rental"> | Date | string
-    paymentStatus?: EnumPaymentStatusFilter<"Rental"> | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFilter<"Rental"> | $Enums.PaymentMethod
-    paidAt?: DateTimeNullableFilter<"Rental"> | Date | string | null
     status?: EnumRentalStatusFilter<"Rental"> | $Enums.RentalStatus
     createdAt?: DateTimeFilter<"Rental"> | Date | string
     updatedAt?: DateTimeFilter<"Rental"> | Date | string
@@ -20738,9 +20690,6 @@ export namespace Prisma {
     openCount?: SortOrder
     maxOpens?: SortOrder
     expiresAt?: SortOrder
-    paymentStatus?: SortOrder
-    paymentMethod?: SortOrder
-    paidAt?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -20765,9 +20714,6 @@ export namespace Prisma {
     openCount?: IntWithAggregatesFilter<"Rental"> | number
     maxOpens?: IntWithAggregatesFilter<"Rental"> | number
     expiresAt?: DateTimeWithAggregatesFilter<"Rental"> | Date | string
-    paymentStatus?: EnumPaymentStatusWithAggregatesFilter<"Rental"> | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodWithAggregatesFilter<"Rental"> | $Enums.PaymentMethod
-    paidAt?: DateTimeNullableWithAggregatesFilter<"Rental"> | Date | string | null
     status?: EnumRentalStatusWithAggregatesFilter<"Rental"> | $Enums.RentalStatus
     createdAt?: DateTimeWithAggregatesFilter<"Rental"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Rental"> | Date | string
@@ -22063,9 +22009,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22087,9 +22030,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22105,9 +22045,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22129,9 +22066,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22150,9 +22084,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22166,9 +22097,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22185,9 +22113,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23580,20 +23505,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type EnumPaymentStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
-  }
-
-  export type EnumPaymentMethodFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
-  }
-
   export type EnumRentalStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.RentalStatus | EnumRentalStatusFieldRefInput<$PrismaModel>
     in?: $Enums.RentalStatus[] | ListEnumRentalStatusFieldRefInput<$PrismaModel>
@@ -23627,9 +23538,6 @@ export namespace Prisma {
     openCount?: SortOrder
     maxOpens?: SortOrder
     expiresAt?: SortOrder
-    paymentStatus?: SortOrder
-    paymentMethod?: SortOrder
-    paidAt?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23651,9 +23559,6 @@ export namespace Prisma {
     openCount?: SortOrder
     maxOpens?: SortOrder
     expiresAt?: SortOrder
-    paymentStatus?: SortOrder
-    paymentMethod?: SortOrder
-    paidAt?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23670,9 +23575,6 @@ export namespace Prisma {
     openCount?: SortOrder
     maxOpens?: SortOrder
     expiresAt?: SortOrder
-    paymentStatus?: SortOrder
-    paymentMethod?: SortOrder
-    paidAt?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -23681,26 +23583,6 @@ export namespace Prisma {
   export type RentalSumOrderByAggregateInput = {
     openCount?: SortOrder
     maxOpens?: SortOrder
-  }
-
-  export type EnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
-    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
-  }
-
-  export type EnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
-    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
   }
 
   export type EnumRentalStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -24001,6 +23883,20 @@ export namespace Prisma {
     _max?: NestedEnumDeviceTypeFilter<$PrismaModel>
   }
 
+  export type EnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type EnumPaymentMethodFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
+  }
+
   export type EnumPaymentSourceFilter<$PrismaModel = never> = {
     equals?: $Enums.PaymentSource | EnumPaymentSourceFieldRefInput<$PrismaModel>
     in?: $Enums.PaymentSource[] | ListEnumPaymentSourceFieldRefInput<$PrismaModel>
@@ -24072,6 +23968,26 @@ export namespace Prisma {
   export type PaymentSumOrderByAggregateInput = {
     orderCode?: SortOrder
     amount?: SortOrder
+  }
+
+  export type EnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
+    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
   }
 
   export type EnumPaymentSourceWithAggregatesFilter<$PrismaModel = never> = {
@@ -24920,14 +24836,6 @@ export namespace Prisma {
     connect?: LockerLogWhereUniqueInput | LockerLogWhereUniqueInput[]
   }
 
-  export type EnumPaymentStatusFieldUpdateOperationsInput = {
-    set?: $Enums.PaymentStatus
-  }
-
-  export type EnumPaymentMethodFieldUpdateOperationsInput = {
-    set?: $Enums.PaymentMethod
-  }
-
   export type EnumRentalStatusFieldUpdateOperationsInput = {
     set?: $Enums.RentalStatus
   }
@@ -25118,6 +25026,14 @@ export namespace Prisma {
     create?: XOR<RentalCreateWithoutPaymentInput, RentalUncheckedCreateWithoutPaymentInput>
     connectOrCreate?: RentalCreateOrConnectWithoutPaymentInput
     connect?: RentalWhereUniqueInput
+  }
+
+  export type EnumPaymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentStatus
+  }
+
+  export type EnumPaymentMethodFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentMethod
   }
 
   export type EnumPaymentSourceFieldUpdateOperationsInput = {
@@ -25524,45 +25440,11 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
-  }
-
-  export type NestedEnumPaymentMethodFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
-  }
-
   export type NestedEnumRentalStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.RentalStatus | EnumRentalStatusFieldRefInput<$PrismaModel>
     in?: $Enums.RentalStatus[] | ListEnumRentalStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.RentalStatus[] | ListEnumRentalStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumRentalStatusFilter<$PrismaModel> | $Enums.RentalStatus
-  }
-
-  export type NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
-    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
-  }
-
-  export type NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
-    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
-    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
-    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
   }
 
   export type NestedEnumRentalStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -25665,11 +25547,45 @@ export namespace Prisma {
     _max?: NestedEnumDeviceTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type NestedEnumPaymentMethodFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
+  }
+
   export type NestedEnumPaymentSourceFilter<$PrismaModel = never> = {
     equals?: $Enums.PaymentSource | EnumPaymentSourceFieldRefInput<$PrismaModel>
     in?: $Enums.PaymentSource[] | ListEnumPaymentSourceFieldRefInput<$PrismaModel>
     notIn?: $Enums.PaymentSource[] | ListEnumPaymentSourceFieldRefInput<$PrismaModel>
     not?: NestedEnumPaymentSourceFilter<$PrismaModel> | $Enums.PaymentSource
+  }
+
+  export type NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
+    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
   }
 
   export type NestedEnumPaymentSourceWithAggregatesFilter<$PrismaModel = never> = {
@@ -25750,9 +25666,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -25772,9 +25685,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -25884,9 +25794,6 @@ export namespace Prisma {
     openCount?: IntFilter<"Rental"> | number
     maxOpens?: IntFilter<"Rental"> | number
     expiresAt?: DateTimeFilter<"Rental"> | Date | string
-    paymentStatus?: EnumPaymentStatusFilter<"Rental"> | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFilter<"Rental"> | $Enums.PaymentMethod
-    paidAt?: DateTimeNullableFilter<"Rental"> | Date | string | null
     status?: EnumRentalStatusFilter<"Rental"> | $Enums.RentalStatus
     createdAt?: DateTimeFilter<"Rental"> | Date | string
     updatedAt?: DateTimeFilter<"Rental"> | Date | string
@@ -26657,9 +26564,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -26679,9 +26583,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27096,9 +26997,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27118,9 +27016,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27604,9 +27499,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27627,9 +27519,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27750,9 +27639,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27773,9 +27659,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27990,9 +27873,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28013,9 +27893,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28046,9 +27923,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28069,9 +27943,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28128,9 +27999,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28165,9 +28033,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28187,9 +28052,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28207,9 +28069,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28634,9 +28493,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28663,9 +28519,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28685,9 +28538,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28705,9 +28555,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28762,9 +28609,6 @@ export namespace Prisma {
     openCount?: number
     maxOpens: number
     expiresAt: Date | string
-    paymentStatus?: $Enums.PaymentStatus
-    paymentMethod?: $Enums.PaymentMethod
-    paidAt?: Date | string | null
     status?: $Enums.RentalStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28778,9 +28622,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28800,9 +28641,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28820,9 +28658,6 @@ export namespace Prisma {
     openCount?: IntFieldUpdateOperationsInput | number
     maxOpens?: IntFieldUpdateOperationsInput | number
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumRentalStatusFieldUpdateOperationsInput | $Enums.RentalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

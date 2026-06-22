@@ -250,9 +250,6 @@ exports.Prisma.RentalScalarFieldEnum = {
   openCount: 'openCount',
   maxOpens: 'maxOpens',
   expiresAt: 'expiresAt',
-  paymentStatus: 'paymentStatus',
-  paymentMethod: 'paymentMethod',
-  paidAt: 'paidAt',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -409,22 +406,6 @@ exports.RentalType = exports.$Enums.RentalType = {
   MONTHLY: 'MONTHLY'
 };
 
-exports.PaymentStatus = exports.$Enums.PaymentStatus = {
-  PENDING: 'PENDING',
-  PAID: 'PAID',
-  REFUNDED: 'REFUNDED',
-  FAILED: 'FAILED'
-};
-
-exports.PaymentMethod = exports.$Enums.PaymentMethod = {
-  PAYOS: 'PAYOS',
-  MOMO: 'MOMO',
-  ZALOPAY: 'ZALOPAY',
-  VIETQR: 'VIETQR',
-  CASH: 'CASH',
-  NONE: 'NONE'
-};
-
 exports.RentalStatus = exports.$Enums.RentalStatus = {
   ACTIVE: 'ACTIVE',
   COMPLETED: 'COMPLETED',
@@ -475,6 +456,22 @@ exports.DeviceType = exports.$Enums.DeviceType = {
   ANDROID: 'ANDROID',
   WEB: 'WEB',
   KIOSK: 'KIOSK'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  REFUNDED: 'REFUNDED',
+  FAILED: 'FAILED'
+};
+
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  PAYOS: 'PAYOS',
+  MOMO: 'MOMO',
+  ZALOPAY: 'ZALOPAY',
+  VIETQR: 'VIETQR',
+  CASH: 'CASH',
+  NONE: 'NONE'
 };
 
 exports.PaymentSource = exports.$Enums.PaymentSource = {

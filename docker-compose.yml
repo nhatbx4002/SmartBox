@@ -18,7 +18,7 @@ services:
       retries: 5
 
   backend:
-    image: nhatbx2004/smartbox-backend:latest
+    image: nhatbx2004/smartbox-backend:add-payment
     container_name: omnibox_backend
     restart: unless-stopped
     ports:
