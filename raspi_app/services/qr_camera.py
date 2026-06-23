@@ -28,10 +28,16 @@ class QrCameraScanner:
         size: tuple[int, int] = (640, 480),
         fps: int = 30,
         qr_every_n_frames: int = 3,
+        stream_url: str | None = None,
+        **kwargs,
     ):
         self.size = size
         self.fps = fps
         self.qr_every_n_frames = max(1, qr_every_n_frames)
+
+        # Giữ để tương thích với code cũ.
+        # Pi Camera thật không dùng stream_url.
+        self.stream_url = stream_url
 
         self._camera = None
         self._detector = cv2.QRCodeDetector()
@@ -97,8 +103,7 @@ class QrCameraScanner:
 
             self._frame_count += 1
 
-            should_scan_qr = self._frame_count % self.qr_every_n_frames == 0
-            if not should_scan_qr:
+            if self._frame_count % self.qr_every_n_frames != 0:
                 return QrScanFrame(image=image, frame_ok=True)
 
             token, detected = self._scan_qr(frame)
@@ -127,10 +132,7 @@ class QrCameraScanner:
         self._camera = None
 
     def _scan_qr(self, frame) -> tuple[str | None, bool]:
-        """
-        Quét QR trên ảnh nhỏ hơn để giảm tải CPU.
-        Live preview vẫn dùng frame gốc nên không bị xấu hình.
-        """
+        # Resize ảnh để giảm tải CPU khi quét QR.
         small = cv2.resize(frame, None, fx=0.5, fy=0.5)
         gray = cv2.cvtColor(small, cv2.COLOR_RGB2GRAY)
 
@@ -142,9 +144,7 @@ class QrCameraScanner:
         return clean_token, detected
 
     def _normalize_frame(self, frame):
-        """
-        Đưa frame về RGB 3 kênh, tránh lỗi sọc khi convert sang QImage.
-        """
+        # Đảm bảo frame là RGB 3 kênh để QImage không bị sọc.
         if len(frame.shape) == 2:
             frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
 
