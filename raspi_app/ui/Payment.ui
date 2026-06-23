@@ -82,14 +82,6 @@ QPushButton#btnPaymentVietQR {
     border-radius: 14px;
 }
 
-QPushButton#btnPaymentPayOS[selected=&quot;true&quot;],
-QPushButton#btnPaymentZalo[selected=&quot;true&quot;],
-QPushButton#btnPaymentVietQR[selected=&quot;true&quot;] {
-    background-color: #1C1C1C;
-    border: 2px solid #FF6600;
-    border-radius: 14px;
-}
-
 QLabel#lblPayOSText,
 QLabel#lblZaloText,
 QLabel#lblVietQrText {

@@ -346,11 +346,11 @@ class KioskApp(QWidget):
         print(f"[CONFIG POLL] cabinet_id={self.cabinet_id} jwt={self.api_client.jwt_token[:20] if self.api_client.jwt_token else 'NONE'}...")
         try:
             result = self.api_client.get_cabinet_config(self.cabinet_id)
-            version = int(result.get("configVersion", 0) or 0)
-            current_version = int(self.config.get("config_version", 0) or 0)
-            if version > current_version:
-                print(f"[CONFIG POLL] detected version change: v{current_version} -> v{version}")
-                self._on_config_reload(version, result.get("compartments", []), cabinet_status=result.get("status"))
+            self._on_config_reload(
+                result.get("configVersion"),
+                result.get("compartments", []),
+                cabinet_status=result.get("status"),
+            )
         except Exception as error:
             print(f"[CONFIG POLL] failed: {error}")
 

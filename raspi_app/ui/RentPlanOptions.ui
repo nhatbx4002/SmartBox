@@ -120,7 +120,7 @@
 }</string>
     </property>
     <layout class="QVBoxLayout" name="planOptionsLayout">
-     <property name="spacing">12</property>
+     <property name="spacing">20</property>
      <property name="leftMargin">0</property>
      <property name="topMargin">0</property>
      <property name="rightMargin">0</property>

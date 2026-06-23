@@ -87,9 +87,9 @@ QLabel#footerHint {
       <height>62</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Quay lại</string>
-   </property>
+    <property name="text">
+     <string>←  Quay lại</string>
+    </property>
   </widget>
   <widget class="QLabel" name="titleLabel">
    <property name="geometry">
