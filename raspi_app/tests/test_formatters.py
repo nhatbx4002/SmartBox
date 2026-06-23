@@ -26,8 +26,8 @@ class FormatterTests(unittest.TestCase):
         self.assertFalse(is_valid_local_phone("9876543210"))
         self.assertFalse(is_valid_local_phone("98765abcd"))
 
-    def test_normalize_vn_phone_prefixes_plus_84(self):
-        self.assertEqual(normalize_vn_phone("987654321"), "+84987654321")
+    def test_normalize_vn_phone_prefixes_0(self):
+        self.assertEqual(normalize_vn_phone("987654321"), "0987654321")
 
 
 if __name__ == "__main__":

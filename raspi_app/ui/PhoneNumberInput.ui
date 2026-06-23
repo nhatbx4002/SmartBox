@@ -123,44 +123,47 @@ QLineEdit#lineEdit {
    <property name="frameShadow">
     <enum>QFrame::Shadow::Raised</enum>
    </property>
-   <widget class="QLabel" name="lblPrefix">
-    <property name="geometry">
-     <rect>
-      <x>28</x>
-      <y>16</y>
-      <width>108</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>+84 |</string>
-    </property>
+    <widget class="QLabel" name="lblPrefix">
+     <property name="geometry">
+      <rect>
+       <x>28</x>
+       <y>16</y>
+       <width>50</width>
+       <height>50</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>154</x>
-      <y>10</y>
-      <width>278</width>
-      <height>62</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="maxLength">
-     <number>11</number>
-    </property>
-    <property name="frame">
-     <bool>false</bool>
-    </property>
-    <property name="placeholderText">
-     <string>098 765 432</string>
-    </property>
-   </widget>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>10</y>
+       <width>350</width>
+       <height>62</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="maxLength">
+      <number>11</number>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>098 765 432</string>
+     </property>
+    </widget>
   </widget>
   <widget class="QPushButton" name="btnNum1">
    <property name="geometry">

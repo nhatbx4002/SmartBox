@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit, QPushButton
 
 from screens.base import BaseController
@@ -13,6 +14,7 @@ class RentPhoneController(BaseController):
     def __init__(self, app):
         super().__init__(app, self.route, "PhoneNumberInput.ui")
         self.input = self.child("lineEdit", QLineEdit)
+        self.input.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.confirm_button = self.child("btnConfirm", QPushButton)
 
         # Embedded inline error banner placed below the phoneInputFrame

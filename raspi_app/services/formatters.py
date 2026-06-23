@@ -20,7 +20,7 @@ def is_valid_local_phone(text: str) -> bool:
 
 
 def normalize_vn_phone(text: str) -> str:
-    return "+84" + text
+    return "0" + text
 
 
 def format_plan_subtitle(rental_type: str, duration_days: int, max_opens: int | None = None) -> str:

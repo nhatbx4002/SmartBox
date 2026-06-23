@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QLineEdit, QPushButton
 
 from screens.base import BaseController
@@ -13,6 +14,8 @@ class OtpController(BaseController):
     def __init__(self, app):
         super().__init__(app, self.route, "OTPInput.ui")
         self.lines: list[QLineEdit] = [self.child(f"lineOtp{i}", QLineEdit) for i in range(1, 7)]
+        for line in self.lines:
+            line.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.title = self.child("labelOtpTitle", QLabel)
         self.confirm_button = self.child("btnConfirm", QPushButton)
 
