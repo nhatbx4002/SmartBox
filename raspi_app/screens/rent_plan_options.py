@@ -43,9 +43,16 @@ class RentPlanOptionsController(BaseController):
         plans = [p for p in self.state.available_plans if p.rental_type.upper() == self.state.selected_plan_group]
 
         if not plans:
-            plans = self.api_client.get_plans(self.state.selected_size)
-            self.state.available_plans = plans
-            plans = [p for p in plans if p.rental_type.upper() == self.state.selected_plan_group]
+            try:
+                self.state.available_plans = self.api_client.get_plans(self.state.selected_size)
+                plans = [p for p in self.state.available_plans if p.rental_type.upper() == self.state.selected_plan_group]
+            except Exception as error:
+                self.show_error_dialog(
+                    message=str(error) or "Kh\u00f4ng th\u1ec3 t\u1ea3i danh s\u00e1ch g\u00f3i thu\u00ea.",
+                    title="L\u1ed6I T\u1ea2I G\u00d3I THU\u00ca",
+                    on_retry=lambda: self.on_enter(data),
+                )
+                return
 
         self._render_plan_options(plans)
 
@@ -53,9 +60,9 @@ class RentPlanOptionsController(BaseController):
         self._clear_layout(self.options_layout)
 
         if not plans:
-            label = QLabel("Không có gói nào trong nhóm này")
+            label = QLabel("Kh\u00f4ng c\u00f3 g\u00f3i n\u00e0o trong nh\u00f3m n\u00e0y")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            label.setStyleSheet("color: #888888; font-size: 18px; font-weight: 600; padding: 40px 0;")
+            label.setStyleSheet("color: #888888; font-size: 20px; font-weight: 600; padding: 60px 0;")
             self.options_layout.addWidget(label)
             return
 
@@ -72,37 +79,38 @@ class RentPlanOptionsController(BaseController):
         card.setStyleSheet("""
             QFrame {
                 background-color: #111111;
-                border: 1.5px solid #2A2A2A;
-                border-radius: 16px;
+                border: 3px solid #2A2A2A;
+                border-radius: 18px;
             }
             QFrame:hover {
-                border-color: #555555;
+                border: 3px solid #FF6600;
+                background-color: #1A1A1A;
             }
             QLabel {
                 background-color: transparent;
             }
         """)
-        card.setMinimumHeight(110)
+        card.setMinimumHeight(150)
 
         layout = QHBoxLayout(card)
-        layout.setContentsMargins(24, 18, 24, 18)
+        layout.setContentsMargins(30, 22, 30, 22)
 
         info_layout = QVBoxLayout()
-        info_layout.setSpacing(6)
+        info_layout.setSpacing(8)
 
         name_label = QLabel(plan.name)
-        name_label.setStyleSheet("color: #E8E8E8; font-size: 22px; font-weight: 700; border: none;")
+        name_label.setStyleSheet("color: #E8E8E8; font-size: 26px; font-weight: 700; border: none;")
 
         subtitle_text = format_plan_subtitle(plan.rental_type, plan.duration_days, plan.max_opens)
         subtitle_label = QLabel(subtitle_text)
-        subtitle_label.setStyleSheet("color: #888888; font-size: 17px; font-weight: 500; border: none;")
+        subtitle_label.setStyleSheet("color: #888888; font-size: 19px; font-weight: 500; border: none;")
 
         info_layout.addWidget(name_label)
         info_layout.addWidget(subtitle_label)
 
         price_label = QLabel(format_currency(plan.price))
         price_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        price_label.setStyleSheet("color: #FF6600; font-size: 28px; font-weight: 900; border: none;")
+        price_label.setStyleSheet("color: #FF6600; font-size: 32px; font-weight: 900; border: none;")
 
         layout.addLayout(info_layout)
         layout.addStretch()
@@ -119,8 +127,8 @@ class RentPlanOptionsController(BaseController):
             self.selected_card.setStyleSheet("""
                 QFrame {
                     background-color: #111111;
-                    border: 1.5px solid #2A2A2A;
-                    border-radius: 16px;
+                    border: 3px solid #2A2A2A;
+                    border-radius: 18px;
                 }
                 QLabel {
                     background-color: transparent;
@@ -130,8 +138,8 @@ class RentPlanOptionsController(BaseController):
         card.setStyleSheet("""
             QFrame {
                 background-color: #1A3A1A;
-                border: 2px solid #2E7D32;
-                border-radius: 16px;
+                border: 3px solid #2E7D32;
+                border-radius: 18px;
             }
             QLabel {
                 background-color: transparent;

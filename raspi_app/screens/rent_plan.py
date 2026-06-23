@@ -27,8 +27,8 @@ class RentPlanController(BaseController):
 
         self.state.selected_plan_group = None
         self.state.selected_plan = None
-        size_text = "Size 1 (Nhỏ)" if self.state.selected_size == "SMALL" else "Size 2 (Lớn)"
-        self.selected_size_label.setText(f"Bạn đã chọn {size_text}")
+        size_text = "Size 1 (Nh\u1ecf)" if self.state.selected_size == "SMALL" else "Size 2 (L\u1edbn)"
+        self.selected_size_label.setText(f"B\u1ea1n \u0111\u00e3 ch\u1ecdn {size_text}")
         self._load_plans()
 
     def _load_plans(self) -> None:
@@ -40,8 +40,8 @@ class RentPlanController(BaseController):
             self.hide_error_dialog()
         except Exception as error:
             self.show_error_dialog(
-                message=str(error) or "Không thể tải danh sách gói thuê. Vui lòng thử lại.",
-                title="LỖI TẢI GÓI THUÊ",
+                message=str(error) or "Kh\u00f4ng th\u1ec3 t\u1ea3i danh s\u00e1ch g\u00f3i thu\u00ea. Vui l\u00f2ng th\u1eed l\u1ea1i.",
+                title="L\u1ed6I T\u1ea2I G\u00d3I THU\u00ca",
                 on_retry=self._load_plans,
             )
 
@@ -58,9 +58,9 @@ class RentPlanController(BaseController):
         self._clear_layout(self.plans_layout)
 
         if not grouped:
-            label = QLabel("Không có gói thuê cho kích thước này")
+            label = QLabel("Kh\u00f4ng c\u00f3 g\u00f3i thu\u00ea cho k\u00edch th\u01b0\u1edbc n\u00e0y")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            label.setStyleSheet("color: #888888; font-size: 18px; font-weight: 600; padding: 40px 0;")
+            label.setStyleSheet("color: #888888; font-size: 20px; font-weight: 600; padding: 60px 0;")
             self.plans_layout.addWidget(label)
             return
 
@@ -77,33 +77,34 @@ class RentPlanController(BaseController):
         card = QFrame()
         card.setObjectName(f"groupCard_{rental_type}")
         card.setCursor(Qt.CursorShape.PointingHandCursor)
-        card.setStyleSheet("""
-            QFrame#groupCard_{%s} {
+        card.setStyleSheet(f"""
+            QFrame#groupCard_{rental_type} {{
                 background-color: #111111;
-                border: 1.5px solid #2A2A2A;
-                border-radius: 18px;
-            }
-            QFrame#groupCard_{%s}:hover {
-                border-color: #FF6600;
-            }
-            QLabel {
+                border: 3px solid #2A2A2A;
+                border-radius: 20px;
+            }}
+            QFrame#groupCard_{rental_type}:hover {{
+                border: 3px solid #FF6600;
+                background-color: #1A1A1A;
+            }}
+            QLabel {{
                 background-color: transparent;
-            }
-        """ % (rental_type, rental_type))
-        card.setMinimumHeight(150)
+            }}
+        """)
+        card.setMinimumHeight(190)
 
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(28, 22, 28, 22)
-        layout.setSpacing(8)
+        layout.setContentsMargins(32, 28, 32, 28)
+        layout.setSpacing(12)
 
         title_label = QLabel(group_info["title"])
-        title_label.setStyleSheet("color: #E8E8E8; font-size: 26px; font-weight: bold; border: none;")
+        title_label.setStyleSheet("color: #E8E8E8; font-size: 30px; font-weight: bold; border: none;")
 
         subtitle_label = QLabel(group_info["subtitle"])
-        subtitle_label.setStyleSheet("color: #888888; font-size: 18px; font-weight: 500; border: none;")
+        subtitle_label.setStyleSheet("color: #888888; font-size: 20px; font-weight: 500; border: none;")
 
-        price_label = QLabel(f"Từ {format_currency(min_price)}")
-        price_label.setStyleSheet("color: #FF6600; font-size: 24px; font-weight: 800; border: none;")
+        price_label = QLabel(f"T\u1eeb {format_currency(min_price)}")
+        price_label.setStyleSheet("color: #FF6600; font-size: 28px; font-weight: 800; border: none;")
 
         layout.addWidget(title_label)
         layout.addWidget(subtitle_label)

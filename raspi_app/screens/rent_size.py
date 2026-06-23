@@ -73,5 +73,5 @@ class RentSizeController(BaseController):
     def _style_card(self, card: QWidget, key: str, selected: bool) -> None:
         style = self._base_styles[key]
         if selected:
-            style += "\nborder: 4px solid #FF6600;"
+            style += "\nborder: 4px solid #FF6600; background-color: #1C1400;"
         card.setStyleSheet(style)
