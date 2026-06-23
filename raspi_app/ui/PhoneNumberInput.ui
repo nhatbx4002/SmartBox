@@ -136,7 +136,7 @@ QLineEdit#lineEdit {
       <string/>
      </property>
      <property name="maxLength">
-      <number>11</number>
+      <number>10</number>
      </property>
      <property name="frame">
       <bool>false</bool>
