@@ -101,10 +101,10 @@ QLabel#lblHotline {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblDialogIcon">
     <property name="geometry">
@@ -125,7 +125,7 @@ QLabel#lblHotline {
      <bool>true</bool>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblDialogTitle">
@@ -141,7 +141,7 @@ QLabel#lblHotline {
      <string>Đã xảy ra lỗi</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QFrame" name="lineSeparator">
@@ -154,10 +154,10 @@ QLabel#lblHotline {
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::HLine</enum>
+     <enum>QFrame::HLine</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Shadow::Sunken</enum>
+     <enum>QFrame::Sunken</enum>
     </property>
    </widget>
    <widget class="QLabel" name="lblDialogMessage">
@@ -173,7 +173,7 @@ QLabel#lblHotline {
      <string>Vui lòng thử lại sau.</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -218,7 +218,7 @@ QLabel#lblHotline {
      <string>Hotline: 1900 1234</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

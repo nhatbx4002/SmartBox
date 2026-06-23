@@ -86,7 +86,7 @@ QPushButton#btnBack:pressed {
     <string>Chọn kích thước tủ bạn muốn thuê</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QFrame" name="cardSize1">
@@ -115,10 +115,10 @@ QLabel#lblSize1Desc {
 }</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QFrame" name="iconBoxSize1">
     <property name="geometry">
@@ -130,10 +130,10 @@ QLabel#lblSize1Desc {
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
+     <enum>QFrame::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::Raised</enum>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -145,7 +145,7 @@ QLabel#lblSize1Desc {
         <pixmap resource="../resources.qrc">:/assets/iconSize1.png</pixmap>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -164,7 +164,7 @@ QLabel#lblSize1Desc {
      <string>SIZE 1</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblSize1Desc">
@@ -180,7 +180,7 @@ QLabel#lblSize1Desc {
      <string>(NHỎ)</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -222,10 +222,10 @@ QPushButton#btnSelectSize2 {
 </string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QFrame" name="iconBoxSize2">
     <property name="geometry">
@@ -240,10 +240,10 @@ QPushButton#btnSelectSize2 {
      <string notr="true"/>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
+     <enum>QFrame::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::Raised</enum>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -255,7 +255,7 @@ QPushButton#btnSelectSize2 {
         <pixmap resource="../resources.qrc">:/assets/iconSize2.png</pixmap>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -274,7 +274,7 @@ QPushButton#btnSelectSize2 {
      <string>SIZE 2</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblSize2Desc">
@@ -290,7 +290,7 @@ QPushButton#btnSelectSize2 {
      <string>(LỚN)</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

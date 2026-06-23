@@ -104,7 +104,7 @@ QLabel#footerHint {
     <string>NHẬN ĐỒ</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="subtitleLabel">
@@ -120,7 +120,7 @@ QLabel#footerHint {
     <string>Chọn cách xác thực để mở ngăn tủ của bạn</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -136,7 +136,7 @@ QLabel#footerHint {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <widget class="QLabel" name="pinIcon">
     <property name="geometry">
@@ -151,7 +151,7 @@ QLabel#footerHint {
      <string>#</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="pinTitle">
@@ -194,7 +194,7 @@ QLabel#footerHint {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <widget class="QLabel" name="qrIcon">
     <property name="geometry">
@@ -209,7 +209,7 @@ QLabel#footerHint {
      <string>QR</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="qrTitle">
@@ -255,7 +255,7 @@ QLabel#footerHint {
     <string>SmartBox v1.0 | Không để đồ quý giá trong tủ</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

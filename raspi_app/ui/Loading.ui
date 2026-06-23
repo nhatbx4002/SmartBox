@@ -62,10 +62,10 @@ QLabel#lblProgressPercent {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblProcessingIcon">
     <property name="geometry">
@@ -83,7 +83,7 @@ QLabel#lblProgressPercent {
      <pixmap resource="../resources.qrc">:/assets/LoadingIconBox.png</pixmap>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblProcessingText">
@@ -99,7 +99,7 @@ QLabel#lblProgressPercent {
      <string>Đang xác minh...</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QProgressBar" name="progressVerify">
@@ -115,7 +115,7 @@ QLabel#lblProgressPercent {
      <number>72</number>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
     <property name="orientation">
      <enum>Qt::Orientation::Horizontal</enum>

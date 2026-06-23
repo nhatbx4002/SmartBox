@@ -178,19 +178,19 @@
       </size>
      </property>
      <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
+      <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QFrame" name="SendCard">
         <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
+         <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
+         <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -208,7 +208,7 @@
             <pixmap resource="../resources.qrc">:/assets/sendIcon.png</pixmap>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -224,7 +224,7 @@
             <string>GỬI ĐỒ</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -234,10 +234,10 @@
       <item row="0" column="1">
        <widget class="QFrame" name="ReceiveCard">
         <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
+         <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
+         <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -255,7 +255,7 @@
             <pixmap resource="../resources.qrc">:/assets/receiveIcon.png</pixmap>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -271,7 +271,7 @@
             <string>LẤY ĐỒ</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -281,10 +281,10 @@
       <item row="1" column="0">
        <widget class="QFrame" name="RentCard">
         <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
+         <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
+         <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
@@ -302,7 +302,7 @@
             <pixmap resource="../resources.qrc">:/assets/rentIcon.png</pixmap>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -324,7 +324,7 @@
             <string>THUÊ TỦ</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -334,10 +334,10 @@
       <item row="1" column="1">
        <widget class="QFrame" name="SupportCard">
         <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
+         <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
+         <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
@@ -355,7 +355,7 @@
             <pixmap resource="../resources.qrc">:/assets/supportIcon.png</pixmap>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -387,10 +387,10 @@
    <item>
     <widget class="QFrame" name="DashboardPromoFrame">
      <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
+      <enum>QFrame::Raised</enum>
      </property>
      <widget class="QFrame" name="DashboardPromoCard">
       <property name="geometry">
@@ -420,10 +420,10 @@
        </size>
       </property>
       <property name="frameShape">
-       <enum>QFrame::Shape::StyledPanel</enum>
+       <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Shadow::Raised</enum>
+       <enum>QFrame::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
@@ -435,10 +435,10 @@
           </sizepolicy>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Shape::StyledPanel</enum>
+          <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
+          <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <property name="spacing">
@@ -467,10 +467,10 @@
        <item>
         <widget class="QFrame" name="PromoImageArea">
          <property name="frameShape">
-          <enum>QFrame::Shape::StyledPanel</enum>
+          <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
+          <enum>QFrame::Raised</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="spacing">
@@ -512,7 +512,7 @@
              <bool>true</bool>
             </property>
             <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignCenter</set>
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>

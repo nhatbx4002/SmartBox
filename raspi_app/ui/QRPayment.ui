@@ -112,7 +112,7 @@ QLabel#lblPaymentCountdown {
     <string>Thanh toán qua Ví MoMo</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="lblPaymentQrSubtitle">
@@ -128,7 +128,7 @@ QLabel#lblPaymentCountdown {
     <string>Vui lòng quét mã bên dưới để thanh toán</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -144,10 +144,10 @@ QLabel#lblPaymentCountdown {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
@@ -175,10 +175,10 @@ QLabel#lblPaymentCountdown {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblAmountLabel">
     <property name="geometry">
@@ -193,7 +193,7 @@ QLabel#lblPaymentCountdown {
      <string>TỔNG TIỀN</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblAmountValue">
@@ -209,7 +209,7 @@ QLabel#lblPaymentCountdown {
      <string>15.000đ</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
   </widget>
@@ -226,7 +226,7 @@ QLabel#lblPaymentCountdown {
     <string>↺  Đang chờ thanh toán...</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="lblPaymentCountdown">
@@ -242,7 +242,7 @@ QLabel#lblPaymentCountdown {
     <string>04:59</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

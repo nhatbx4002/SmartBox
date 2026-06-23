@@ -82,7 +82,7 @@ QPushButton:pressed {
     <string>NHẬP SỐ ĐIỆN THOẠI CỦA BẠN</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QFrame" name="phoneInputFrame">
@@ -118,10 +118,10 @@ QLineEdit#lineEdit {
 }</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
     <widget class="QLineEdit" name="lineEdit">
      <property name="geometry">
@@ -142,7 +142,7 @@ QLineEdit#lineEdit {
       <bool>false</bool>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="placeholderText">
       <string>0 987 654 321</string>

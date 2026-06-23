@@ -95,7 +95,7 @@ QFrame#scanCornerBottomRight {
     <string>QUÉT MÃ QR</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QFrame" name="cameraCard">
@@ -108,7 +108,7 @@ QFrame#scanCornerBottomRight {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <widget class="QLabel" name="cameraPreview">
     <property name="geometry">
@@ -123,7 +123,7 @@ QFrame#scanCornerBottomRight {
      <string>Camera preview</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QFrame" name="scanCornerTopLeft">
@@ -192,7 +192,7 @@ QFrame#scanCornerBottomRight {
     <string>Sẵn sàng quét QR</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="hintLabel">
@@ -208,7 +208,7 @@ QFrame#scanCornerBottomRight {
     <string>Đưa mã QR vào giữa khung quét</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="wordWrap">
     <bool>true</bool>

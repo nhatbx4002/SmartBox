@@ -59,10 +59,10 @@ QLabel#lblSuccessCheck {
 }</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblSuccessCheck">
     <property name="geometry">
@@ -80,7 +80,7 @@ QLabel#lblSuccessCheck {
      <pixmap resource="../resources.qrc">:/assets/checkBoxIcon.png</pixmap>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -97,7 +97,7 @@ QLabel#lblSuccessCheck {
     <string>THUÊ TỦ THÀNH CÔNG</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="lblLockerInfo">
@@ -113,7 +113,7 @@ QLabel#lblSuccessCheck {
     <string>Tủ A - Ngăn A1 (Size Nhỏ)</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QFrame" name="pinBox">
@@ -142,10 +142,10 @@ QLabel#lblPinCode {
 </string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblPinLabel">
     <property name="geometry">
@@ -160,7 +160,7 @@ QLabel#lblPinCode {
      <string>Mã mở tủ của bạn:</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblPinCode">
@@ -176,7 +176,7 @@ QLabel#lblPinCode {
      <string>847 291</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -214,10 +214,10 @@ QLabel#lblOpenNowDesc {
 </string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblOpenNowTitle">
     <property name="geometry">
@@ -232,7 +232,7 @@ QLabel#lblOpenNowDesc {
      <string>MỞ TỦ NGAY</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblOpenNowDesc">
@@ -248,7 +248,7 @@ QLabel#lblOpenNowDesc {
      <string>Để cất đồ vào tủ ngay bây giờ</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -283,10 +283,10 @@ QLabel#lblUseLaterDesc {
 </string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblUseLaterTitle">
     <property name="geometry">
@@ -301,7 +301,7 @@ QLabel#lblUseLaterDesc {
      <string>DÙNG SAU</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblUseLaterDesc">
@@ -317,7 +317,7 @@ QLabel#lblUseLaterDesc {
      <string>Lưu lại mã và quay lại sau</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -343,7 +343,7 @@ QLabel#lblUseLaterDesc {
     <string> Lưu ý: Mã này chỉ có hiệu lực trong thời gian gói thuê.</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="wordWrap">
     <bool>true</bool>

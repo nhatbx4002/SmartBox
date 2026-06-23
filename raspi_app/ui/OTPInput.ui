@@ -121,10 +121,10 @@ QPushButton#btnBack:pressed {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="labelOtpTitle">
     <property name="geometry">
@@ -139,7 +139,7 @@ QPushButton#btnBack:pressed {
      <string>NHẬP MÃ MỞ TỦ CỦA BẠN</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
     <widget class="QLineEdit" name="lineOtp1">
@@ -155,7 +155,7 @@ QPushButton#btnBack:pressed {
       <number>1</number>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineOtp2">
@@ -171,7 +171,7 @@ QPushButton#btnBack:pressed {
       <number>1</number>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineOtp3">
@@ -187,7 +187,7 @@ QPushButton#btnBack:pressed {
       <number>1</number>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineOtp4">
@@ -203,7 +203,7 @@ QPushButton#btnBack:pressed {
       <number>1</number>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineOtp5">
@@ -219,7 +219,7 @@ QPushButton#btnBack:pressed {
       <number>1</number>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineOtp6">
@@ -235,7 +235,7 @@ QPushButton#btnBack:pressed {
       <number>1</number>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
   </widget>
@@ -447,10 +447,10 @@ QLabel#labelQR {
 }</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="labelSupportTitle">
     <property name="geometry">
@@ -491,10 +491,10 @@ QLabel#labelQR {
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
+     <enum>QFrame::StyledPanel</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::Raised</enum>
     </property>
     <widget class="QLabel" name="labelQR">
      <property name="geometry">
@@ -515,7 +515,7 @@ QLabel#labelQR {
       <bool>true</bool>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

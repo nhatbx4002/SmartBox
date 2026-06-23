@@ -224,7 +224,7 @@
       <item>
        <widget class="QLabel" name="lblTitle">
         <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
+         <set>Qt::AlignCenter</set>
         </property>
         <property name="text">
          <string>ĐANG CHỜ DUYỆT</string>
@@ -265,7 +265,7 @@
       <item>
        <widget class="QLabel" name="lblCountdown">
         <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
+         <set>Qt::AlignCenter</set>
         </property>
         <property name="text">
          <string>Hết hạn sau: --:--</string>

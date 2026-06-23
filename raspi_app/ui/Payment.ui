@@ -134,10 +134,10 @@ QPushButton#btnPayNow:disabled {
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QLabel" name="lblTotalTitle">
     <property name="geometry">
@@ -152,7 +152,7 @@ QPushButton#btnPayNow:disabled {
      <string>TỔNG THANH TOÁN</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblAmount">
@@ -168,7 +168,7 @@ QPushButton#btnPayNow:disabled {
      <string>15.000đ</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="lblPlanInfo">
@@ -184,7 +184,7 @@ QPushButton#btnPayNow:disabled {
      <string>Size 1 - Thuê 1 lượt (7 ngày)</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignmentFlag::AlignCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -230,7 +230,7 @@ QPushButton#btnPayNow:disabled {
     <string>💳</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="lblPayOSText">
@@ -246,7 +246,7 @@ QPushButton#btnPayNow:disabled {
     <string>PayOS</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPaymentZalo">
@@ -297,7 +297,7 @@ QPushButton#btnPayNow:disabled {
     <string>Ví ZaloPay</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPaymentVietQR">
@@ -335,7 +335,7 @@ QPushButton#btnPayNow:disabled {
     <bool>true</bool>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="lblVietQrText">
@@ -351,7 +351,7 @@ QPushButton#btnPayNow:disabled {
     <string> VietQR - Ngân hàng</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="btnPayNow">
