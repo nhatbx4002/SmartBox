@@ -43,7 +43,7 @@ class RentPhoneController(BaseController):
     def _append_digit(self, digit: str) -> None:
         self.error_banner.clear()
         text = self.input.text()
-        if len(text) < 9:
+        if len(text) < 10:
             self.input.setText(text + digit)
 
     def _backspace(self) -> None:

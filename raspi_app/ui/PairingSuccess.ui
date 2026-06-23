@@ -48,7 +48,6 @@
     font-family: "Segoe UI Symbol", "Arial", sans-serif;
     font-size: 160px;
     font-weight: 700;
-    qproperty-alignment: AlignCenter;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
