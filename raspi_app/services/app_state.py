@@ -37,6 +37,8 @@ class AppState:
     mode: Optional[str] = None
     selected_size: Optional[str] = None
     selected_plan: Optional[Plan] = None
+    selected_plan_group: Optional[str] = None
+    available_plans: list[Plan] = field(default_factory=list)
     phone: Optional[str] = None
     payment_method: Optional[str] = None
     rental_data: Optional[RentalData] = None
@@ -54,6 +56,8 @@ class AppState:
     def reset_rent_flow(self) -> None:
         self.selected_size = None
         self.selected_plan = None
+        self.selected_plan_group = None
+        self.available_plans = []
         self.phone = None
         self.payment_method = None
         self.rental_data = None

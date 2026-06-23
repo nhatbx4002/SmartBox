@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import cv2
 from dataclasses import dataclass
+
+import cv2
 from PySide6.QtGui import QImage
 
 
@@ -15,13 +16,27 @@ class QrScanFrame:
 
 
 class QrCameraScanner:
-    """QR scanner specifically for Raspberry Pi Camera Module using picamera2."""
+    """
+    Pi Camera live preview + QR scanner.
 
-    def __init__(self, size: tuple[int, int] = (640, 480), **kwargs):
+    Live cam chạy 30fps.
+    QR không quét mọi frame để tránh giật preview.
+    """
+
+    def __init__(
+        self,
+        size: tuple[int, int] = (640, 480),
+        fps: int = 30,
+        qr_every_n_frames: int = 3,
+    ):
         self.size = size
+        self.fps = fps
+        self.qr_every_n_frames = max(1, qr_every_n_frames)
+
         self._camera = None
-        self._detector = None
+        self._detector = cv2.QRCodeDetector()
         self._error: str | None = None
+        self._frame_count = 0
 
     def start(self) -> bool:
         if self._camera is not None:
@@ -29,25 +44,34 @@ class QrCameraScanner:
 
         try:
             from picamera2 import Picamera2
-        except ImportError as error:
-            self._error = f"Không thể import picamera2: {error}"
-            print(f"[qr_camera] {self._error}")
-            return False
 
-        try:
-            self._detector = cv2.QRCodeDetector()
             self._camera = Picamera2()
+
             config = self._camera.create_preview_configuration(
                 main={
                     "size": self.size,
-                }
+                    "format": "RGB888",
+                },
+                controls={
+                    "FrameRate": self.fps,
+                },
+                buffer_count=4,
             )
-            config["controls"] = {"FrameRate": 30}
+
             self._camera.configure(config)
             self._camera.start()
+
             self._error = None
-            print(f"[qr_camera] camera ready size={self.size[0]}x{self.size[1]}")
+            self._frame_count = 0
+
+            print(
+                f"[qr_camera] ready "
+                f"size={self.size[0]}x{self.size[1]} "
+                f"fps={self.fps} "
+                f"qr_every={self.qr_every_n_frames}"
+            )
             return True
+
         except Exception as error:
             self._error = f"Không thể khởi động Pi Camera: {error}"
             print(f"[qr_camera] {self._error}")
@@ -57,37 +81,89 @@ class QrCameraScanner:
     def capture(self) -> QrScanFrame:
         if self._error:
             return QrScanFrame(error=self._error)
-        if self._camera is None or self._detector is None:
+
+        if self._camera is None:
             return QrScanFrame(error="Camera chưa sẵn sàng")
 
         try:
             frame = self._camera.capture_array()
+
             if frame is None:
                 self._error = "Mất kết nối camera"
                 return QrScanFrame(error=self._error)
 
-            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            token, points, _straight = self._detector.detectAndDecode(gray_frame)
-            detected = points is not None and len(points) > 0
+            frame = self._normalize_frame(frame)
+            image = self._to_qimage(frame)
 
-            if getattr(frame, "flags", None) is not None and not getattr(frame.flags, "C_CONTIGUOUS", True):
-                frame = frame.copy()
+            self._frame_count += 1
 
-            height, width, channels = frame.shape
-            bytes_per_line = channels * width
-            image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_BGR888).copy()
+            should_scan_qr = self._frame_count % self.qr_every_n_frames == 0
+            if not should_scan_qr:
+                return QrScanFrame(image=image, frame_ok=True)
 
-            return QrScanFrame(image=image, token=token.strip() if isinstance(token, str) else None, detected=detected, frame_ok=True)
+            token, detected = self._scan_qr(frame)
+
+            return QrScanFrame(
+                image=image,
+                token=token,
+                detected=detected,
+                frame_ok=True,
+            )
+
         except Exception as error:
             self._error = f"Không thể đọc camera: {error}"
             return QrScanFrame(error=self._error)
 
     def stop(self) -> None:
-        if self._camera is not None:
-            try:
-                self._camera.stop()
-                self._camera.close()
-            except Exception:
-                pass
+        if self._camera is None:
+            return
+
+        try:
+            self._camera.stop()
+            self._camera.close()
+        except Exception:
+            pass
+
         self._camera = None
-        self._detector = None
+
+    def _scan_qr(self, frame) -> tuple[str | None, bool]:
+        """
+        Quét QR trên ảnh nhỏ hơn để giảm tải CPU.
+        Live preview vẫn dùng frame gốc nên không bị xấu hình.
+        """
+        small = cv2.resize(frame, None, fx=0.5, fy=0.5)
+        gray = cv2.cvtColor(small, cv2.COLOR_RGB2GRAY)
+
+        token, points, _ = self._detector.detectAndDecode(gray)
+
+        clean_token = token.strip() if token and token.strip() else None
+        detected = points is not None
+
+        return clean_token, detected
+
+    def _normalize_frame(self, frame):
+        """
+        Đưa frame về RGB 3 kênh, tránh lỗi sọc khi convert sang QImage.
+        """
+        if len(frame.shape) == 2:
+            frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
+
+        elif frame.shape[2] == 4:
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2RGB)
+
+        if not frame.flags["C_CONTIGUOUS"]:
+            frame = frame.copy()
+
+        return frame
+
+    def _to_qimage(self, frame) -> QImage:
+        height, width, channels = frame.shape
+        bytes_per_line = channels * width
+
+        return QImage(
+            frame.data,
+            width,
+            height,
+            bytes_per_line,
+            QImage.Format_RGB888,
+        ).copy()

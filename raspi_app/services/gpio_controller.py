@@ -43,7 +43,8 @@ class GpioController:
             api_config = api_client.get_cabinet_config(cabinet_id)
             compartments = api_config.get("compartments", [])
             mcp_devices = api_config.get("mcpDevices", [])
-            print(f"[GPIO] loaded config from API: {len(compartments)} compartments")
+            self._config["cabinet_status"] = api_config.get("status")
+            print(f"[GPIO] loaded config from API: {len(compartments)} compartments, status={self._config.get('cabinet_status')}")
         except Exception as api_error:
             if hasattr(api_client, "get_cabinets_provisioning"):
                 try:

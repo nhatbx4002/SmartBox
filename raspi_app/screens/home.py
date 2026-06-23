@@ -26,10 +26,13 @@ class HomeController(BaseController):
     def on_config_updated(self) -> None:
         self._check_not_configured()
 
-    def _check_not_configured(self) -> None:
-        """Show overlay if no compartments configured, hide otherwise."""
+    def _is_ready(self) -> bool:
         has_compartments = len(self.gpio_controller.pin_target_map) > 0
-        if has_compartments:
+        cabinet_status = self.config.get("cabinet_status")
+        return has_compartments and cabinet_status == "ACTIVE"
+
+    def _check_not_configured(self) -> None:
+        if self._is_ready():
             self._hide_overlay()
         else:
             self._show_not_configured_overlay()
@@ -127,19 +130,19 @@ class HomeController(BaseController):
             self._overlay = None
 
     def _deposit(self) -> None:
-        if not self.gpio_controller.pin_target_map:
+        if not self._is_ready():
             return
         self.state.mode = "deposit"
         self.navigate("/otp")
 
     def _pickup(self) -> None:
-        if not self.gpio_controller.pin_target_map:
+        if not self._is_ready():
             return
         self.state.mode = "pickup"
         self.navigate("/pickup-method")
 
     def _rent(self) -> None:
-        if not self.gpio_controller.pin_target_map:
+        if not self._is_ready():
             return
         self.state.mode = "rent"
         self.state.reset_rent_flow()

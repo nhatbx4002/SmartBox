@@ -109,24 +109,6 @@ class BaseController:
             raise RuntimeError(f"Could not load UI file: {path}")
         widget.setFixedSize(720, 1280)
         self._restore_file_pixmaps(widget, path)
-
-        # Scale stylesheets to increase font sizes for buttons and cards (1.25 factor)
-        import re
-        def scale_stylesheet_fonts(stylesheet: str, factor: float = 1.25) -> str:
-            if not stylesheet:
-                return stylesheet
-            def repl(match):
-                size = int(match.group(1))
-                scaled = int(round(size * factor))
-                return f"font-size: {scaled}px"
-            return re.sub(r"font-size:\s*(\d+)\s*px", repl, stylesheet)
-
-        widgets = [widget] + widget.findChildren(QWidget)
-        for w in widgets:
-            ss = w.styleSheet()
-            if ss:
-                w.setStyleSheet(scale_stylesheet_fonts(ss, 1.25))
-
         return widget
 
     def _attach_footer(self) -> None:

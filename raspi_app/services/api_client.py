@@ -61,9 +61,9 @@ class ApiClient:
         data = self._parse_response(response)
         return [
             Plan(
-                id=self._ui_plan_id(item),
+                id=str(item["id"]),
                 name=str(item["name"]),
-                rental_type=str(item.get("rentalType", item.get("rental_type", "single"))),
+                rental_type=str(item.get("rentalType", item.get("rental_type", "ONCE"))).upper(),
                 price=int(item["price"]),
                 duration_days=int(item.get("durationDays", item.get("duration_days", 1))),
                 max_opens=int(item.get("maxOpens") or item.get("max_opens") or 999),
@@ -188,7 +188,7 @@ class ApiClient:
             json={
                 "phone": phone,
                 "size": size,
-                "planId": self._backend_plan_id(size, plan_id),
+                "planId": plan_id,
                 "paymentMethod": payment_method,
                 "cabinetId": cabinet_id,
             },
@@ -315,13 +315,13 @@ class ApiClient:
     def _mock_plans(self, size: str | None) -> list[Plan]:
         multiplier = 1 if size == "SMALL" else 2
         return [
-            Plan("single-1-day", "1 ngày", "single", 15000 * multiplier, 1, 1),
-            Plan("single-7-days", "7 ngày", "single", 50000 * multiplier, 7, 1),
-            Plan("multi-5-30", "5 lượt / 30 ngày", "multi", 90000 * multiplier, 30, 5),
-            Plan("multi-10-90", "10 lượt / 90 ngày", "multi", 150000 * multiplier, 90, 10),
-            Plan("month-1", "1 tháng", "monthly", 120000 * multiplier, 30, 999),
-            Plan("month-3", "3 tháng", "monthly", 300000 * multiplier, 90, 999),
-            Plan("month-6", "6 tháng", "monthly", 600000 * multiplier, 180, 999),
+            Plan("plan-once-1", "1 ngày", "ONCE", 15000 * multiplier, 1, 1),
+            Plan("plan-once-7", "7 ngày", "ONCE", 50000 * multiplier, 7, 1),
+            Plan("plan-daily-5", "5 lượt / 30 ngày", "DAILY", 90000 * multiplier, 30, 5),
+            Plan("plan-daily-10", "10 lượt / 90 ngày", "DAILY", 150000 * multiplier, 90, 10),
+            Plan("plan-monthly-1", "1 tháng", "MONTHLY", 120000 * multiplier, 30, 999),
+            Plan("plan-monthly-3", "3 tháng", "MONTHLY", 300000 * multiplier, 90, 999),
+            Plan("plan-monthly-6", "6 tháng", "MONTHLY", 600000 * multiplier, 180, 999),
         ]
 
     def _mock_create_rental(
@@ -379,38 +379,4 @@ class ApiClient:
         alphabet = string.ascii_uppercase + string.digits
         return "".join(choice(alphabet) for _ in range(6))
 
-    def _ui_plan_id(self, item: dict) -> str:
-        rental_type = str(item.get("rentalType", "")).upper()
-        duration_days = int(item.get("durationDays", item.get("duration_days", 1)))
-        max_opens = item.get("maxOpens", item.get("max_opens"))
 
-        if rental_type == "ONCE" and duration_days == 1:
-            return "single-1-day"
-        if rental_type == "ONCE" and duration_days == 7:
-            return "single-7-days"
-        if rental_type == "DAILY" and int(max_opens or 0) == 5:
-            return "multi-5-30"
-        if rental_type == "DAILY" and int(max_opens or 0) == 10:
-            return "multi-10-90"
-        if rental_type == "MONTHLY" and duration_days == 30:
-            return "month-1"
-        if rental_type == "MONTHLY" and duration_days == 90:
-            return "month-3"
-        if rental_type == "MONTHLY" and duration_days == 180:
-            return "month-6"
-        return str(item["id"])
-
-    def _backend_plan_id(self, size: str | None, plan_id: str | None) -> str | None:
-        if not size or not plan_id:
-            return plan_id
-        prefix = "small" if size == "SMALL" else "large"
-        mapping = {
-            "single-1-day": f"{prefix}-1-day",
-            "single-7-days": f"{prefix}-7-days",
-            "multi-5-30": f"{prefix}-5-opens-30-days",
-            "multi-10-90": f"{prefix}-10-opens-90-days",
-            "month-1": f"{prefix}-1-month",
-            "month-3": f"{prefix}-3-months",
-            "month-6": f"{prefix}-6-months",
-        }
-        return mapping.get(plan_id, plan_id)

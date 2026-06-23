@@ -18,7 +18,7 @@ class MqttClient(QObject):
     payment_received = Signal(object, object)   # (order_code, payload)
     unlock_requested = Signal(str)              # compartment_id
     lock_requested = Signal(str)               # compartment_id
-    config_reload_requested = Signal(object, object, object)  # (version, compartments, mcp_devices)
+    config_reload_requested = Signal(object, object, object, object)  # (version, compartments, mcp_devices, status)
 
     def __init__(self, config: dict, cabinet_id: str):
         super().__init__()
@@ -93,6 +93,7 @@ class MqttClient(QObject):
                 payload.get("configVersion"),
                 payload.get("compartments", []),
                 payload.get("mcpDevices", []),
+                payload.get("status"),
             )
 
         elif len(parts) >= 4 and parts[2] == "payment":
@@ -137,9 +138,9 @@ class MqttClient(QObject):
         if self._on_lock_callback:
             self._on_lock_callback(compartment_id)
 
-    def _dispatch_config_reload(self, version, compartments, mcp_devices) -> None:
+    def _dispatch_config_reload(self, version, compartments, mcp_devices, status=None) -> None:
         if self._on_config_reload_callback:
-            self._on_config_reload_callback(version, compartments, mcp_devices)
+            self._on_config_reload_callback(version, compartments, mcp_devices, status)
 
     def publish_unlock(self, compartment_id: str, duration: int = 3) -> None:
         if self.connected:

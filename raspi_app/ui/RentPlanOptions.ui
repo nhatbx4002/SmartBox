@@ -18,7 +18,7 @@
     background-color: #0A0A0A;
 }</string>
   </property>
-  <widget class="QPushButton" name="btnBackMain">
+  <widget class="QPushButton" name="btnBack">
    <property name="geometry">
     <rect>
      <x>32</x>
@@ -31,7 +31,7 @@
     <cursorShape>PointingHandCursor</cursorShape>
    </property>
    <property name="styleSheet">
-    <string notr="true">#btnBackMain {
+    <string notr="true">#btnBack {
     background-color: #1C1C1C;
     border: 2px solid #333333;
     border-radius: 14px;
@@ -41,7 +41,7 @@
     padding-left: 14px;
     padding-right: 14px;
 }
-#btnBackMain:pressed {
+#btnBack:pressed {
     background-color: #2A2A2A;
     border-color: #FF6600;
 }</string>
@@ -50,33 +50,12 @@
     <string>←  Quay lại</string>
    </property>
   </widget>
-  <widget class="QLabel" name="lblSelectedSize">
+  <widget class="QLabel" name="lblTitle">
    <property name="geometry">
     <rect>
      <x>32</x>
      <y>118</y>
      <width>656</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel#lblSelectedSize {
-    color: #888888;
-    font-size: 16px;
-    font-weight: 600;
-    background-color: transparent;
-}</string>
-   </property>
-   <property name="text">
-    <string>Bạn đã chọn Size 1 (Nhỏ)</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lblTitle">
-   <property name="geometry">
-    <rect>
-     <x>32</x>
-     <y>150</y>
-     <width>636</width>
      <height>38</height>
     </rect>
    </property>
@@ -89,16 +68,37 @@
 }</string>
    </property>
    <property name="text">
-    <string> Chọn gói thuê phù hợp với bạn</string>
+    <string> Chọn gói cụ thể</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblSelectedGroup">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>155</y>
+     <width>656</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel#lblSelectedGroup {
+    color: #FF6600;
+    font-size: 17px;
+    font-weight: 700;
+    background-color: transparent;
+}</string>
+   </property>
+   <property name="text">
+    <string>Gói nhiều lượt mở</string>
    </property>
   </widget>
   <widget class="QScrollArea" name="scrollArea">
    <property name="geometry">
     <rect>
      <x>32</x>
-     <y>210</y>
+     <y>200</y>
      <width>656</width>
-     <height>780</height>
+     <height>790</height>
     </rect>
    </property>
    <property name="widgetResizable">
@@ -113,14 +113,14 @@
     border: none;
 }</string>
    </property>
-   <widget class="QWidget" name="plansContainer">
+   <widget class="QWidget" name="planOptionsContainer">
     <property name="styleSheet">
-     <string notr="true">#plansContainer {
+     <string notr="true">#planOptionsContainer {
     background-color: transparent;
 }</string>
     </property>
-    <layout class="QVBoxLayout" name="plansLayout">
-     <property name="spacing">16</property>
+    <layout class="QVBoxLayout" name="planOptionsLayout">
+     <property name="spacing">12</property>
      <property name="leftMargin">0</property>
      <property name="topMargin">0</property>
      <property name="rightMargin">0</property>
@@ -132,6 +132,9 @@
    </widget>
   </widget>
   <widget class="QPushButton" name="btnContinue">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>60</x>

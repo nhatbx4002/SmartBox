@@ -22,6 +22,7 @@ from screens.qr_payment import QRPaymentController
 from screens.qr_scan import QRScanController
 from screens.rent_phone import RentPhoneController
 from screens.rent_plan import RentPlanController
+from screens.rent_plan_options import RentPlanOptionsController
 from screens.rent_size import RentSizeController
 from screens.rent_success import RentSuccessController
 from screens.support import SupportController
@@ -350,7 +351,7 @@ class KioskApp(QWidget):
             current_version = int(self.config.get("config_version", 0) or 0)
             if version > current_version:
                 print(f"[CONFIG POLL] detected version change: v{current_version} -> v{version}")
-                self._on_config_reload(version, result.get("compartments", []))
+                self._on_config_reload(version, result.get("compartments", []), cabinet_status=result.get("status"))
         except Exception as error:
             print(f"[CONFIG POLL] failed: {error}")
 
@@ -358,13 +359,13 @@ class KioskApp(QWidget):
         try:
             result = self.api_client.get_cabinet_config(self.cabinet_id)
             version = int(result.get("configVersion", self.config.get("config_version", 0)) or 0)
-            self._apply_config_snapshot(version, result.get("compartments", []), result.get("mcpDevices", []))
+            self._apply_config_snapshot(version, result.get("compartments", []), result.get("mcpDevices", []), cabinet_status=result.get("status"))
             return True
         except Exception as error:
             print(f"[CONFIG] backend reload failed: {error}")
             return False
 
-    def _on_config_reload(self, config_version: int | None, compartments: list, mcp_devices: list | None = None) -> None:
+    def _on_config_reload(self, config_version: int | None, compartments: list, mcp_devices: list | None = None, cabinet_status: str | None = None) -> None:
         if config_version is None:
             return
 
@@ -372,15 +373,18 @@ class KioskApp(QWidget):
         if int(config_version) <= current_version:
             return
 
-        self._apply_config_snapshot(int(config_version), compartments, mcp_devices)
+        self._apply_config_snapshot(int(config_version), compartments, mcp_devices, cabinet_status)
 
-    def _apply_config_snapshot(self, config_version: int, compartments: list, mcp_devices: list | None = None) -> None:
+    def _apply_config_snapshot(self, config_version: int, compartments: list, mcp_devices: list | None = None, cabinet_status: str | None = None) -> None:
         current_version = int(self.config.get("config_version", 0) or 0)
         print(f"[CONFIG] Reloading v{config_version} (from v{current_version})")
         if mcp_devices is not None:
             self.gpio_controller._cache_mcp_devices(mcp_devices)
             self.config["mcpDevices"] = mcp_devices
             self.config["mcp_devices"] = mcp_devices
+        if cabinet_status is not None:
+            self.config["cabinet_status"] = cabinet_status
+            self.gpio_controller._config["cabinet_status"] = cabinet_status
         self.gpio_controller.reload_config(compartments)
         self.config["config_version"] = int(config_version)
         self.config["compartments"] = compartments
@@ -412,6 +416,7 @@ class KioskApp(QWidget):
             OtpPickupController,
             RentSizeController,
             RentPlanController,
+            RentPlanOptionsController,
             RentPhoneController,
             PaymentController,
             QRPaymentController,
