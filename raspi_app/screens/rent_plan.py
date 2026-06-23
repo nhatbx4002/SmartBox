@@ -90,20 +90,20 @@ class RentPlanController(BaseController):
                 background-color: transparent;
             }
         """ % (rental_type, rental_type))
-        card.setMinimumHeight(120)
+        card.setMinimumHeight(150)
 
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(6)
+        layout.setContentsMargins(28, 22, 28, 22)
+        layout.setSpacing(8)
 
         title_label = QLabel(group_info["title"])
-        title_label.setStyleSheet("color: #E8E8E8; font-size: 20px; font-weight: bold; border: none;")
+        title_label.setStyleSheet("color: #E8E8E8; font-size: 26px; font-weight: bold; border: none;")
 
         subtitle_label = QLabel(group_info["subtitle"])
-        subtitle_label.setStyleSheet("color: #888888; font-size: 15px; font-weight: 500; border: none;")
+        subtitle_label.setStyleSheet("color: #888888; font-size: 18px; font-weight: 500; border: none;")
 
         price_label = QLabel(f"Từ {format_currency(min_price)}")
-        price_label.setStyleSheet("color: #FF6600; font-size: 18px; font-weight: 800; border: none;")
+        price_label.setStyleSheet("color: #FF6600; font-size: 24px; font-weight: 800; border: none;")
 
         layout.addWidget(title_label)
         layout.addWidget(subtitle_label)

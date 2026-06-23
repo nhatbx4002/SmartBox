@@ -341,7 +341,6 @@ class KioskApp(QWidget):
         Skipped when MQTT is connected — config reloads arrive via the
         smartbox/{id}/config/reload push topic in that case."""
         if hasattr(self, "mqtt_client") and self.mqtt_client.connected:
-            print("[CONFIG POLL] skipped — MQTT is connected, relying on push")
             return
 
         print(f"[CONFIG POLL] cabinet_id={self.cabinet_id} jwt={self.api_client.jwt_token[:20] if self.api_client.jwt_token else 'NONE'}...")
@@ -370,10 +369,17 @@ class KioskApp(QWidget):
             return
 
         current_version = int(self.config.get("config_version", 0) or 0)
-        if int(config_version) <= current_version:
-            return
-
-        self._apply_config_snapshot(int(config_version), compartments, mcp_devices, cabinet_status)
+        if int(config_version) > current_version:
+            self._apply_config_snapshot(int(config_version), compartments, mcp_devices, cabinet_status)
+        elif cabinet_status is not None and cabinet_status != self.config.get("cabinet_status"):
+            # Status-only change (activate/deactivate) doesn't bump configVersion,
+            # so it must bypass the version gate or it gets silently dropped.
+            self.config["cabinet_status"] = cabinet_status
+            self.gpio_controller._config["cabinet_status"] = cabinet_status
+            save_config(self.config)
+            controller = self.controllers.get(self.current_route)
+            if controller is not None:
+                controller.on_config_updated()
 
     def _apply_config_snapshot(self, config_version: int, compartments: list, mcp_devices: list | None = None, cabinet_status: str | None = None) -> None:
         current_version = int(self.config.get("config_version", 0) or 0)

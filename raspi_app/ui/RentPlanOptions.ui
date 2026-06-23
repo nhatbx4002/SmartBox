@@ -83,7 +83,7 @@
    <property name="styleSheet">
     <string notr="true">QLabel#lblSelectedGroup {
     color: #FF6600;
-    font-size: 17px;
+    font-size: 21px;
     font-weight: 700;
     background-color: transparent;
 }</string>

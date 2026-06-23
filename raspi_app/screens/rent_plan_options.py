@@ -82,27 +82,27 @@ class RentPlanOptionsController(BaseController):
                 background-color: transparent;
             }
         """)
-        card.setMinimumHeight(90)
+        card.setMinimumHeight(110)
 
         layout = QHBoxLayout(card)
-        layout.setContentsMargins(20, 16, 20, 16)
+        layout.setContentsMargins(24, 18, 24, 18)
 
         info_layout = QVBoxLayout()
-        info_layout.setSpacing(4)
+        info_layout.setSpacing(6)
 
         name_label = QLabel(plan.name)
-        name_label.setStyleSheet("color: #E8E8E8; font-size: 18px; font-weight: 700; border: none;")
+        name_label.setStyleSheet("color: #E8E8E8; font-size: 22px; font-weight: 700; border: none;")
 
         subtitle_text = format_plan_subtitle(plan.rental_type, plan.duration_days, plan.max_opens)
         subtitle_label = QLabel(subtitle_text)
-        subtitle_label.setStyleSheet("color: #888888; font-size: 14px; font-weight: 500; border: none;")
+        subtitle_label.setStyleSheet("color: #888888; font-size: 17px; font-weight: 500; border: none;")
 
         info_layout.addWidget(name_label)
         info_layout.addWidget(subtitle_label)
 
         price_label = QLabel(format_currency(plan.price))
         price_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        price_label.setStyleSheet("color: #FF6600; font-size: 22px; font-weight: 900; border: none;")
+        price_label.setStyleSheet("color: #FF6600; font-size: 28px; font-weight: 900; border: none;")
 
         layout.addLayout(info_layout)
         layout.addStretch()
