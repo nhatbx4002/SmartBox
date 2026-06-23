@@ -23,8 +23,7 @@
     <rect>
      <x>32</x>
      <y>32</y>
-     <width>170</width>
-     <height>62</height>
+     <width>170</height>62
     </rect>
    </property>
    <property name="cursor">
@@ -36,7 +35,7 @@
     border: 2px solid #333333;
     border-radius: 14px;
     color: #E8E8E8;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     padding-left: 14px;
     padding-right: 14px;

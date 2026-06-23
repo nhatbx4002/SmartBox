@@ -28,7 +28,7 @@ QPushButton#btnBack {
     border-radius: 12px;
     color: #FFFFFF;
     font-family: &quot;Be Vietnam Pro&quot;, &quot;Segoe UI&quot;;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     text-align: center;
     padding: 0px;
@@ -123,9 +123,8 @@ QPushButton#btnPayNow:disabled {
    <property name="geometry">
     <rect>
      <x>32</x>
-     <y>24</y>
-     <width>160</width>
-     <height>56</height>
+     <y>32</y>
+     <width>170</height>62
     </rect>
    </property>
    <property name="text">

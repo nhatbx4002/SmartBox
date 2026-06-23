@@ -88,9 +88,8 @@ QPushButton#btnConfirm:pressed {
    <property name="geometry">
     <rect>
      <x>32</x>
-     <y>40</y>
-     <width>162</width>
-     <height>64</height>
+     <y>32</y>
+     <width>170</height>62
     </rect>
    </property>
    <property name="styleSheet">
@@ -99,7 +98,7 @@ QPushButton#btnConfirm:pressed {
     border: 2px solid #333333;
     border-radius: 12px;
     color: #FFFFFF;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
 }
 
@@ -242,10 +241,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey1">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>465</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -255,10 +253,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey2">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>465</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -268,10 +265,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey3">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>465</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -281,10 +277,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey4">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>560</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -294,10 +289,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey5">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>560</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -307,10 +301,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey6">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>560</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -320,10 +313,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey7">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>655</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -333,10 +325,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey8">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>655</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -346,10 +337,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey9">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>655</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -359,10 +349,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnKey0">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>750</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -372,10 +361,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnBackspace">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>750</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -385,10 +373,9 @@ QPushButton#btnBack:pressed {
   <widget class="QPushButton" name="btnClear">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>750</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">

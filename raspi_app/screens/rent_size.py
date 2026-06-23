@@ -71,7 +71,5 @@ class RentSizeController(BaseController):
         self.continue_button.setEnabled(size in {"SMALL", "LARGE"})
 
     def _style_card(self, card: QWidget, key: str, selected: bool) -> None:
-        style = self._base_styles[key]
-        if selected:
-            style += "\nborder: 4px solid #FF6600; background-color: #1C1400;"
-        card.setStyleSheet(style)
+        card.setStyleSheet(self._base_styles[key])
+        self.set_selected_style(card, selected)

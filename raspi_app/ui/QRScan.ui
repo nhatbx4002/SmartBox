@@ -23,7 +23,7 @@ QPushButton#btnRetry {
     border: 2px solid #333333;
     border-radius: 14px;
     color: #FFFFFF;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
 }
 QPushButton#btnRetry {
@@ -73,9 +73,8 @@ QFrame#scanCornerBottomRight {
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>34</y>
-     <width>150</width>
-     <height>58</height>
+     <y>32</y>
+     <width>170</height>62
     </rect>
    </property>
    <property name="text">

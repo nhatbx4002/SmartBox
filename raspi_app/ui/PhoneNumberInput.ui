@@ -43,9 +43,8 @@ QPushButton:pressed {
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>24</y>
-     <width>170</width>
-     <height>48</height>
+     <y>32</y>
+     <width>170</height>62
     </rect>
    </property>
    <property name="styleSheet">
@@ -54,7 +53,7 @@ QPushButton:pressed {
     border: 2px solid #333333;
     border-radius: 14px;
     color: #E8E8E8;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     padding-left: 14px;
     padding-right: 14px;
@@ -152,10 +151,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnNum1">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>470</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -165,10 +163,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey0">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>755</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -178,10 +175,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey6">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>565</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -191,10 +187,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey2">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>470</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -228,10 +223,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey3">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>470</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -241,10 +235,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey8">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>660</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -254,10 +247,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey5">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>305</x>
      <y>565</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -267,10 +259,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey4">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>565</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -280,10 +271,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey7">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>660</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -293,10 +283,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnKey9">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>660</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -306,10 +295,9 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnClear">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>455</x>
      <y>755</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="text">
@@ -319,16 +307,15 @@ QLineEdit#lineEdit {
   <widget class="QPushButton" name="btnBackspace">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>155</x>
      <y>755</y>
-     <width>100</width>
-     <height>80</height>
+     <width>110</height>88
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">QPushButton#btnBackspace {
     color: #FF6A00;
-    font-size: 21px;
+    font-size: 20px;
     font-weight: 800;
 }</string>
    </property>

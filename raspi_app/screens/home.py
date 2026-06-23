@@ -133,7 +133,7 @@ class HomeController(BaseController):
         if not self._is_ready():
             return
         self.state.mode = "deposit"
-        self.navigate("/otp")
+        self.navigate("/pickup-method")
 
     def _pickup(self) -> None:
         if not self._is_ready():

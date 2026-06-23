@@ -35,6 +35,15 @@ QFrame#iconBoxSize2 {
     border: 2px solid #333333;
     border-radius: 24px;
 }
+QFrame#cardSize1[selected=&quot;true&quot;],
+QFrame#cardSize2[selected=&quot;true&quot;] {
+    border: 4px solid #FF6A00;
+    background-color: #1C1400;
+}
+QFrame#iconBoxSize1[selected=&quot;true&quot;],
+QFrame#iconBoxSize2[selected=&quot;true&quot;] {
+    border: 2px solid #FF6A00;
+}
 QLabel#lblSize1Check,
 QLabel#lblSize2Check {
     color: #FF6A00;
@@ -48,9 +57,8 @@ QLabel#lblSize2Check {
    <property name="geometry">
     <rect>
      <x>32</x>
-     <y>24</y>
-     <width>180</width>
-     <height>48</height>
+     <y>32</y>
+     <width>170</height>62
     </rect>
    </property>
    <property name="styleSheet">
@@ -58,7 +66,7 @@ QLabel#lblSize2Check {
     background-color: transparent;
     border: none;
     color: #D8D8D8;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     text-align: left;
     padding: 0px;
