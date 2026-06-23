@@ -89,7 +89,8 @@ QPushButton#btnConfirm:pressed {
     <rect>
      <x>32</x>
      <y>32</y>
-     <width>170</height>62
+     <width>170</width>
+      <height>62</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -243,7 +244,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>155</x>
      <y>465</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -255,7 +257,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>305</x>
      <y>465</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -267,7 +270,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>455</x>
      <y>465</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -279,7 +283,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>155</x>
      <y>560</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -291,7 +296,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>305</x>
      <y>560</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -303,7 +309,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>455</x>
      <y>560</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -315,7 +322,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>155</x>
      <y>655</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -327,7 +335,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>305</x>
      <y>655</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -339,7 +348,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>455</x>
      <y>655</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -351,7 +361,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>305</x>
      <y>750</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -363,7 +374,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>155</x>
      <y>750</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -375,7 +387,8 @@ QPushButton#btnBack:pressed {
     <rect>
      <x>455</x>
      <y>750</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">

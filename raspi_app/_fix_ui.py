@@ -1,75 +1,61 @@
-import re, os
+import os
 
-def fix_keypad(ui_path, key_width=110, key_height=88):
+def fix_keypad_block(content, prefix):
+    idx = 0
+    while True:
+        start = content.find(f'name="{prefix}', idx)
+        if start == -1:
+            break
+        geom_start = content.find('<rect>', start)
+        geom_end = content.find('</rect>', geom_start) + len('</rect>')
+        block = content[geom_start:geom_end]
+        
+        if '<width>100</width>' in block and '<height>80</height>' in block:
+            new_block = block.replace('<width>100</width>', '<width>110</width>')
+            new_block = new_block.replace('<height>80</height>', '<height>88</height>')
+            content = content[:geom_start] + new_block + content[geom_end:]
+            idx = geom_start + len(new_block)
+        else:
+            idx = start + 1
+    return content
+
+def fix_ui(ui_path):
     with open(ui_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
     original = content
     
-    for name in ['btnKey0','btnKey1','btnKey2','btnKey3','btnKey4','btnKey5',
-                 'btnKey6','btnKey7','btnKey8','btnKey9','btnNum1']:
-        pattern = re.compile(
-            r'(name="' + name + r'".*?<rect>\s*<x>)(\d+)(</x>\s*<y>)(\d+)(</y>\s*<width>)\d+(</width>\s*<height>)\d+(</height>)',
-            re.DOTALL
-        )
-        m = pattern.search(content)
-        if m:
-            x, y = int(m.group(2)), int(m.group(4))
-            new_x = x - 5
-            content = pattern.sub(
-                r'\g<1>' + str(new_x) + r'\g<3>' + str(y) + r'\g<5>' + str(key_width) + r'\g<7>' + str(key_height),
-                content
-            )
+    for prefix in ['btnKey','btnNum','btnBackspace','btnClear']:
+        content = fix_keypad_block(content, prefix)
     
-    for name in ['btnBackspace', 'btnClear']:
-        pattern = re.compile(
-            r'(name="' + name + r'".*?<rect>\s*<x>)(\d+)(</x>\s*<y>)(\d+)(</y>\s*<width>)\d+(</width>\s*<height>)\d+(</height>)',
-            re.DOTALL
-        )
-        m = pattern.search(content)
-        if m:
-            x, y = int(m.group(2)), int(m.group(4))
-            new_x = x - 5
-            content = pattern.sub(
-                r'\g<1>' + str(new_x) + r'\g<3>' + str(y) + r'\g<5>' + str(key_width) + r'\g<7>' + str(key_height),
-                content
-            )
-    
-    if content != original:
-        with open(ui_path, 'w', encoding='utf-8') as f:
-            f.write(content)
-        return True
-    return False
-
-def fix_back_button(ui_path, width=170, height=62, font_size=20):
-    with open(ui_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    original = content
-    
-    for name in ['btnBack', 'btnBackMain']:
-        pattern = re.compile(
-            r'(name="' + name + r'".*?<rect>\s*<x>)(\d+)(</x>\s*<y>)(\d+)(</y>\s*<width>)\d+(</width>\s*<height>)\d+(</height>)',
-            re.DOTALL
-        )
-        m = pattern.search(content)
-        if m:
-            x, y = int(m.group(2)), int(m.group(4))
-            content = pattern.sub(
-                r'\g<1>' + str(x) + r'\g<3>32\g<5>' + str(width) + r'\g<7>' + str(height),
-                content
-            )
-    
-    content = re.sub(
-        r'(QPushButton#btnBack[^{]*\{[^}]*font-size: )\d+(px;)',
-        r'\g<1>' + str(font_size) + r'\g<2>',
-        content
-    )
-    content = re.sub(
-        r'(#btnBackMain[^{]*\{[^}]*font-size: )\d+(px;)',
-        r'\g<1>' + str(font_size) + r'\g<2>',
-        content
-    )
+    for old_btn in ['btnBack','btnBackMain']:
+        idx = content.find(f'name="{old_btn}"')
+        if idx == -1:
+            continue
+        
+        geom_start = content.find('<rect>', idx)
+        geom_end = content.find('</rect>', geom_start) + len('</rect>')
+        block = content[geom_start:geom_end]
+        
+        lines = block.split('\n')
+        x_val = '32'
+        for line in lines:
+            s = line.strip()
+            if s.startswith('<x>'):
+                x_val = s[3:-4]
+                break
+        
+        new_block = f'    <rect>\n      <x>{x_val}</x>\n      <y>32</y>\n      <width>170</width>\n      <height>62</height>\n     </rect>'
+        content = content[:geom_start] + new_block + content[geom_end:]
+        
+        style_start = content.find('font-size:', idx)
+        if style_start != -1 and style_start < content.find('</property>', idx):
+            style_end = content.find(';', style_start)
+            old_fs = content[style_start:style_end]
+            for size in ['14px','15px','16px','17px','18px','19px']:
+                if size in old_fs and size != '20px':
+                    content = content[:style_start] + 'font-size: 20px' + content[style_end:]
+                    break
     
     if content != original:
         with open(ui_path, 'w', encoding='utf-8') as f:
@@ -78,30 +64,16 @@ def fix_back_button(ui_path, width=170, height=62, font_size=20):
     return False
 
 files = [
-    ('OTPInput.ui', True, True),
-    ('PhoneNumberInput.ui', True, True),
-    ('RentSizeSelection.ui', False, True),
-    ('RentPlan.ui', False, True),
-    ('RentPlanOptions.ui', False, True),
-    ('Payment.ui', False, True),
-    ('PickupMethod.ui', False, True),
-    ('QRScan.ui', False, True),
-    ('Support.ui', False, True),
+    'OTPInput.ui', 'PhoneNumberInput.ui', 'RentSizeSelection.ui',
+    'RentPlan.ui', 'RentPlanOptions.ui', 'Payment.ui',
+    'PickupMethod.ui', 'QRScan.ui', 'Support.ui',
 ]
 
-for ui_name, fix_key, fix_back in files:
-    ui_path = os.path.join('ui', ui_name)
-    if not os.path.exists(ui_path):
-        print(f'{ui_name}: NOT FOUND')
-        continue
-    changes = []
-    if fix_key and fix_keypad(ui_path):
-        changes.append('keypad 110x88')
-    if fix_back and fix_back_button(ui_path):
-        changes.append('back 170x62 f20')
-    if changes:
-        print(f'{ui_name}: {" + ".join(changes)}')
+for f in files:
+    path = os.path.join('ui', f)
+    if fix_ui(path):
+        print(f'{f}: fixed')
     else:
-        print(f'{ui_name}: no changes')
+        print(f'{f}: no changes')
 
 print('Done')

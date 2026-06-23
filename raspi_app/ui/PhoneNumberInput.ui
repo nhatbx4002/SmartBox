@@ -44,7 +44,8 @@ QPushButton:pressed {
     <rect>
      <x>40</x>
      <y>32</y>
-     <width>170</height>62
+     <width>170</width>
+      <height>62</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -153,7 +154,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>155</x>
      <y>470</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -165,7 +167,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>305</x>
      <y>755</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -177,7 +180,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>455</x>
      <y>565</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -189,7 +193,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>305</x>
      <y>470</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -225,7 +230,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>455</x>
      <y>470</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -237,7 +243,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>305</x>
      <y>660</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -249,7 +256,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>305</x>
      <y>565</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -261,7 +269,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>155</x>
      <y>565</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -273,7 +282,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>155</x>
      <y>660</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -285,7 +295,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>455</x>
      <y>660</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -297,7 +308,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>455</x>
      <y>755</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="text">
@@ -309,7 +321,8 @@ QLineEdit#lineEdit {
     <rect>
      <x>155</x>
      <y>755</y>
-     <width>110</height>88
+     <width>110</width>
+      <height>88</height>
     </rect>
    </property>
    <property name="styleSheet">

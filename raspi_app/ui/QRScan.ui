@@ -74,7 +74,8 @@ QFrame#scanCornerBottomRight {
     <rect>
      <x>30</x>
      <y>32</y>
-     <width>170</height>62
+     <width>170</width>
+      <height>62</height>
     </rect>
    </property>
    <property name="text">
