@@ -138,9 +138,9 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>1045</y>
+     <y>1030</y>
      <width>600</width>
-     <height>70</height>
+     <height>80</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -149,7 +149,7 @@
     border: none;
     border-radius: 14px;
     color: #1A1A1A;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
 }
 QPushButton#btnContinue:disabled {

@@ -16,11 +16,11 @@ def format_pin(pin: str) -> str:
 
 
 def is_valid_local_phone(text: str) -> bool:
-    return len(text) == 9 and text.isdigit()
+    return len(text) == 10 and text.isdigit() and text.startswith("0")
 
 
 def normalize_vn_phone(text: str) -> str:
-    return "0" + text
+    return text.strip()
 
 
 def format_plan_subtitle(rental_type: str, duration_days: int, max_opens: int | None = None) -> str:

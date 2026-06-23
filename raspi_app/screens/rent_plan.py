@@ -18,7 +18,18 @@ class RentPlanController(BaseController):
         self.plans_container = self.child("plansContainer", QWidget)
         self.plans_layout = self.child("plansLayout", QVBoxLayout)
         self.continue_button = self.child("btnContinue", QPushButton)
+        self.continue_button.setEnabled(False)
+        self.selected_card: QFrame | None = None
+        self.selected_group_type: str | None = None
+        self.group_cards: dict[str, QFrame] = {}
+
         self.child("btnBackMain", QPushButton).clicked.connect(lambda: self.navigate("/rent-size"))
+        self.continue_button.clicked.connect(self._on_continue)
+
+    def _on_continue(self) -> None:
+        if self.selected_group_type:
+            self.state.selected_plan_group = self.selected_group_type
+            self.navigate("/rent-plan-options")
 
     def on_enter(self, data: dict | None = None) -> None:
         if not self.state.selected_size:
@@ -27,6 +38,10 @@ class RentPlanController(BaseController):
 
         self.state.selected_plan_group = None
         self.state.selected_plan = None
+        self.selected_card = None
+        self.selected_group_type = None
+        self.group_cards = {}
+        self.continue_button.setEnabled(False)
         size_text = "Size 1 (Nh\u1ecf)" if self.state.selected_size == "SMALL" else "Size 2 (L\u1edbn)"
         self.selected_size_label.setText(f"B\u1ea1n \u0111\u00e3 ch\u1ecdn {size_text}")
         self._load_plans()
@@ -66,6 +81,7 @@ class RentPlanController(BaseController):
 
         for rental_type, plans in grouped.items():
             card = self._build_group_card(rental_type, plans)
+            self.group_cards[rental_type] = card
             self.plans_layout.addWidget(card)
 
         self.plans_layout.addStretch()
@@ -91,7 +107,7 @@ class RentPlanController(BaseController):
                 background-color: transparent;
             }}
         """)
-        card.setMinimumHeight(190)
+        card.setMinimumHeight(220)
 
         layout = QVBoxLayout(card)
         layout.setContentsMargins(32, 28, 32, 28)
@@ -115,8 +131,44 @@ class RentPlanController(BaseController):
         return card
 
     def _select_group(self, rental_type: str) -> None:
-        self.state.selected_plan_group = rental_type
-        self.navigate("/rent-plan-options")
+        if self.selected_card:
+            rt = self.selected_group_type
+            self.selected_card.setStyleSheet(f"""
+                QFrame#groupCard_{rt} {{
+                    background-color: #111111;
+                    border: 3px solid #2A2A2A;
+                    border-radius: 20px;
+                }}
+                QFrame#groupCard_{rt}:hover {{
+                    border: 3px solid #FF6600;
+                    background-color: #1A1A1A;
+                }}
+                QLabel {{
+                    background-color: transparent;
+                }}
+            """)
+
+        card = self.group_cards.get(rental_type)
+        if not card:
+            return
+
+        card.setStyleSheet(f"""
+            QFrame#groupCard_{rental_type} {{
+                background-color: #1C1400;
+                border: 3px solid #FF6600;
+                border-radius: 20px;
+            }}
+            QFrame#groupCard_{rental_type}:hover {{
+                border: 3px solid #FF6600;
+                background-color: #1C1400;
+            }}
+            QLabel {{
+                background-color: transparent;
+            }}
+        """)
+        self.selected_card = card
+        self.selected_group_type = rental_type
+        self.continue_button.setEnabled(True)
 
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
