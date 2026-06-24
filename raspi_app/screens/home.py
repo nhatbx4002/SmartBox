@@ -29,7 +29,8 @@ class HomeController(BaseController):
     def _is_ready(self) -> bool:
         has_compartments = len(self.gpio_controller.pin_target_map) > 0
         cabinet_status = self.config.get("cabinet_status")
-        return has_compartments and cabinet_status == "ACTIVE"
+        # ponytail: OFFLINE is transient at boot (self-heals to ACTIVE on first heartbeat)
+        return has_compartments and cabinet_status in ("ACTIVE", "OFFLINE")
 
     def _check_not_configured(self) -> None:
         if self._is_ready():
@@ -40,6 +41,16 @@ class HomeController(BaseController):
     def _show_not_configured_overlay(self) -> None:
         if self._overlay is not None:
             return
+
+        cabinet_status = self.config.get("cabinet_status")
+        if cabinet_status == "INACTIVE":
+            overlay_title = "TỦ TẠM NGƯNG"
+            overlay_msg = "Tủ đang tạm ngưng hoạt động.\nVui lòng liên hệ quản trị viên."
+            overlay_status = "Đang chờ kích hoạt lại..."
+        else:
+            overlay_title = "CHƯA CẤU HÌNH NGĂN"
+            overlay_msg = "Tủ đang trong giai đoạn cấu hình.\nVui lòng liên hệ quản trị viên để thiết lập ngăn tủ."
+            overlay_status = "Đang đợi cấu hình từ quản trị viên..."
 
         overlay = QWidget(self.widget)
         overlay.setFixedSize(720, 1280)
@@ -73,7 +84,7 @@ class HomeController(BaseController):
         )
         layout.addWidget(icon_label)
 
-        title = QLabel("CHƯA CẤU HÌNH NGĂN", card)
+        title = QLabel(overlay_title, card)
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(
             "background-color: transparent; border: none;"
@@ -83,11 +94,7 @@ class HomeController(BaseController):
         )
         layout.addWidget(title)
 
-        msg = QLabel(
-            "Tủ đang trong giai đoạn cấu hình.\n"
-            "Vui lòng liên hệ quản trị viên để thiết lập ngăn tủ.",
-            card,
-        )
+        msg = QLabel(overlay_msg, card)
         msg.setAlignment(Qt.AlignCenter)
         msg.setWordWrap(True)
         msg.setStyleSheet(
@@ -110,7 +117,7 @@ class HomeController(BaseController):
         )
         layout.addWidget(hotline_label)
 
-        status_label = QLabel("Đang đợi cấu hình từ quản trị viên...", card)
+        status_label = QLabel(overlay_status, card)
         status_label.setAlignment(Qt.AlignCenter)
         status_label.setStyleSheet(
             "background-color: transparent; border: none;"
