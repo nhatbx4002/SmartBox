@@ -3,7 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QLineEdit, QPushButton
 
-from screens.base import BaseController
+from screens.base import BaseController, process_events
 from screens.inline_error import InlineError
 from services.api_client import ApiError
 
@@ -78,9 +78,14 @@ class OtpController(BaseController):
             self.error_banner.show_error("Vui lòng nhập đủ 6 chữ số")
             return
 
+        confirm_text = self.confirm_button.text()
+        self.confirm_button.setEnabled(False)
+        self.confirm_button.setText("ĐANG KIỂM TRA...")
+        process_events()
         try:
             rental, compartment = self.api_client.verify_pin(code, self.state.mode)
         except ApiError as error:
+            self.confirm_button.setText(confirm_text)
             if error.status_code and 400 <= error.status_code < 500:
                 self.error_banner.show_error(error.message)
                 self._clear()
@@ -93,6 +98,8 @@ class OtpController(BaseController):
                 )
             return
         except Exception as error:
+            self.confirm_button.setText(confirm_text)
+            self.confirm_button.setEnabled(True)
             self.show_error_dialog(
                 message=str(error) or "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng.",
                 title="LỖI KẾT NỐI",

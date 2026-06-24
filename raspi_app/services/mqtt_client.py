@@ -154,6 +154,12 @@ class MqttClient(QObject):
             self._client.publish(topic, json.dumps({"compartmentId": compartment_id}), qos=1)
             print(f"[MQTT] Published lock: {compartment_id}")
 
+    def publish_door_opened(self, compartment_id: str, rental_id: str) -> None:
+        if self.connected:
+            topic = f"smartbox/{self.cabinet_id}/event/opened"
+            self._client.publish(topic, json.dumps({"event": "opened", "rentalId": rental_id, "compartmentId": compartment_id}), qos=1)
+            print(f"[MQTT] Published door opened: {compartment_id} rental={rental_id}")
+
     def publish_heartbeat(self) -> None:
         if self.connected:
             topic = f"smartbox/{self.cabinet_id}/heartbeat"
