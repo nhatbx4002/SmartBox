@@ -120,21 +120,10 @@ class LockerOpenController(BaseController):
         self._complete_rental_action()
 
     def _complete_rental_action(self) -> None:
-        if self.state.mode == "pickup" and self.state.rental_data:
-            try:
-                self.api_client.complete_rental(self.state.rental_data.id)
-                self.hide_error_dialog()
-            except Exception as e:
-                print(f"[locker_open] complete_rental failed: {e}")
-                self.finish_button.setEnabled(True)
-                self.finish_button.setText("HOÀN THÀNH")
-                self.show_error_dialog(
-                    message=str(e) or "Không thể đồng bộ trạng thái hoàn thành lên máy chủ.",
-                    title="LỖI ĐỒNG BỘ",
-                    on_retry=self._complete_rental_action,
-                )
-                return
-
+        # ponytail: rental completion is driven by the backend, not the kiosk.
+        # handleUnlock auto-completes + releases the compartment once
+        # openCount reaches maxOpens; the expiry job handles time-outs. Forcing
+        # complete here killed multi-open plans after the first pickup.
         self.finished = True
         self.state.reset_all()
         self.go_home()
