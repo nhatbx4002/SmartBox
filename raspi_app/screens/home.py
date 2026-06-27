@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QLabel, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
 
 from screens.base import BaseController
 
@@ -20,7 +20,7 @@ class HomeController(BaseController):
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
-        root.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        root.setFixedSize(720, 1280)
         root.setStyleSheet("background-color: #0A0A0A;")
 
         layout = QVBoxLayout(root)
@@ -68,7 +68,6 @@ class HomeController(BaseController):
             card = QFrame(root)
             card.setObjectName(obj_name)
             card.setMinimumHeight(105)
-            card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             card.setCursor(Qt.PointingHandCursor)
 
             border_color = border_info[0] if border_info else None

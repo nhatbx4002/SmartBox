@@ -63,18 +63,18 @@ class QRPaymentController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(40, 40, 40, 0)
-        body.setSpacing(20)
+        body.setContentsMargins(20, 20, 20, 0)
+        body.setSpacing(12)
         body.setAlignment(Qt.AlignTop)
 
         self.lbl_countdown = QLabel("05:00", root)
         self.lbl_countdown.setObjectName("lblPaymentCountdown")
         self.lbl_countdown.setAlignment(Qt.AlignCenter)
-        self.lbl_countdown.setStyleSheet("background: transparent; border: none; color: #FFB596; font-size: 48px; font-weight: 900; font-family: 'Be Vietnam Pro', Arial, sans-serif;")
+        self.lbl_countdown.setStyleSheet("background: transparent; border: none; color: #FFB596; font-size: 36px; font-weight: 900; font-family: 'Be Vietnam Pro', Arial, sans-serif;")
         body.addWidget(self.lbl_countdown)
 
         qr_frame = QFrame(root)
-        qr_frame.setFixedSize(520, 520)
+        qr_frame.setFixedSize(640, 640)
         qr_frame.setStyleSheet("""
             QFrame {
                 background-color: white;
@@ -90,7 +90,7 @@ class QRPaymentController(BaseController):
 
         self.lbl_qr = QLabel(qr_frame)
         self.lbl_qr.setObjectName("lblQrImage")
-        self.lbl_qr.setFixedSize(472, 472)
+        self.lbl_qr.setFixedSize(592, 592)
         self.lbl_qr.setAlignment(Qt.AlignCenter)
         self.lbl_qr.setStyleSheet("background: transparent; border: none;")
         self.lbl_qr.setScaledContents(False)

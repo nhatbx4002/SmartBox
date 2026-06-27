@@ -60,11 +60,11 @@ class PaymentController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(32, 40, 32, 0)
-        body.setSpacing(22)
+        body.setContentsMargins(32, 32, 32, 0)
+        body.setSpacing(28)
 
         amount_card = QFrame(root)
-        amount_card.setFixedHeight(140)
+        amount_card.setFixedHeight(200)
         amount_card.setStyleSheet("QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 20px; } QLabel { background: transparent; }")
         a_layout = QVBoxLayout(amount_card)
         a_layout.setAlignment(Qt.AlignCenter)
@@ -85,7 +85,7 @@ class PaymentController(BaseController):
             "border: none; "
             "color: #FF6600; "
             "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
-            "font-size: 48px; "
+            "font-size: 80px; "
             "font-weight: 900;"
         )
 
@@ -138,8 +138,6 @@ class PaymentController(BaseController):
         )
         body.addWidget(payos_hint)
 
-        body.addStretch()
-
         self.btn_pay = QPushButton("THANH TOÁN NGAY")
         self.btn_pay.setObjectName("btnPayNow")
         self.btn_pay.setFixedHeight(96)
@@ -151,6 +149,7 @@ class PaymentController(BaseController):
         body.addWidget(self.btn_pay)
 
         layout.addLayout(body)
+        layout.addStretch()
         return root
 
     def on_enter(self, data: dict | None = None) -> None:

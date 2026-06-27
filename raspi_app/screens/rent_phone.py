@@ -65,7 +65,7 @@ class RentPhoneController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(42, 32, 42, 0)
+        body.setContentsMargins(42, 48, 42, 0)
         body.setSpacing(18)
 
         input_frame = QFrame(root)
@@ -128,8 +128,8 @@ class RentPhoneController(BaseController):
         )
         body.addWidget(self.btn_confirm)
 
-        body.addStretch()
         layout.addLayout(body)
+        layout.addStretch()
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
