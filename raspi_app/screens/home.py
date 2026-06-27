@@ -54,7 +54,7 @@ class HomeController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(18, 10, 18, 18)
+        body.setContentsMargins(18, 10, 18, 56)
         body.setSpacing(10)
 
         cards = [

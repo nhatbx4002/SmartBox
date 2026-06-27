@@ -224,10 +224,33 @@ class BaseController:
         footer = self._build_footer()
         footer.setParent(self.widget)
         footer.setAttribute(Qt.WA_TransparentForMouseEvents, True)
-        footer.setGeometry(0, self.widget.height() - 48, self.widget.width(), 48)
-        footer.raise_()
+        footer.hide()
+
         self._footer_widget = footer
+        self.widget.installEventFilter(self)
+
         self._apply_network_status(self.network_status)
+        self._position_footer()
+
+    def _position_footer(self) -> None:
+        if self._footer_widget is None:
+            return
+
+        width = self.widget.width()
+        height = self.widget.height()
+
+        if width <= 0 or height <= 0:
+            return
+
+        footer_height = 48
+        self._footer_widget.setGeometry(0, height - footer_height, width, footer_height)
+        self._footer_widget.raise_()
+        self._footer_widget.show()
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if watched is self.widget and event.type() in (QEvent.Resize, QEvent.Show):
+            self._position_footer()
+        return False
 
     def _bind_network_monitor(self) -> None:
         monitor = getattr(self.app, "network_monitor", None)
