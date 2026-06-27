@@ -130,17 +130,11 @@ class HomeController(BaseController):
         cabinet_status = self.config.get("cabinet_status")
         if cabinet_status == "INACTIVE":
             overlay_title = "TỦ TẠM NGƯNG"
-			overlay_msg = (
-            "Tủ đang tạm ngưng hoạt động.\n"
-            "Vui lòng liên hệ quản trị viên."
-            )
-             overlay_status = "Đang chờ kích hoạt lại..."
+            overlay_msg = "Tủ đang tạm ngưng hoạt động.\nVui lòng liên hệ quản trị viên."
+            overlay_status = "Đang chờ kích hoạt lại..."
         else:
-			overlay_title = "CHƯA CẤU HÌNH NGĂN"
-			overlay_msg = (
-                "Tủ đang trong giai đoạn cấu hình.\n"
-                "Vui lòng liên hệ quản trị viên để thiết lập ngăn tủ."
-            )
+            overlay_title = "CHƯA CẤU HÌNH NGĂN"
+            overlay_msg = "Tủ đang trong giai đoạn cấu hình.\nVui lòng liên hệ quản trị viên để thiết lập ngăn tủ."
             overlay_status = "Đang đợi cấu hình từ quản trị viên..."
 
         overlay = QWidget(self.widget)

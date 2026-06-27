@@ -153,9 +153,9 @@ class ErrorDialog(QWidget):
 
         self.lbl_hotline.setText(hotline)
 
-		self.btn_retry.setEnabled(True)
-		self.btn_retry.setText("THỬ LẠI")
-		self.btn_gohome.setEnabled(True)
+        self.btn_retry.setEnabled(True)
+        self.btn_retry.setText("THỬ LẠI")
+        self.btn_gohome.setEnabled(True)
 
         self.raise_()
         self.show()

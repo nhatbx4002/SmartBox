@@ -163,15 +163,15 @@ class LockerOpenController(BaseController):
                 self.mqtt_client.publish_door_opened(self.compartment_id, rental_id)
         else:
             if self.unlock_attempts < 3:
-				self.show_error_dialog(
+                self.show_error_dialog(
                     message=(
                         f"Không thể kích hoạt mở khóa tủ "
                         f"(Lần thử {self.unlock_attempts}/3). "
                         "Vui lòng kiểm tra lại thiết bị."
                     ),
-                        title="LỖI PHẦN CỨNG",
-                        on_retry=self._attempt_unlock,
-					)
+                    title="LỖI PHẦN CỨNG",
+                    on_retry=self._attempt_unlock,
+                )
             else:
                 self.door_poll_timer.stop()
                 self.navigate("/error", {
