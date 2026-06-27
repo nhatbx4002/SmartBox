@@ -87,7 +87,7 @@ class RentSizeController(BaseController):
 
         self.btn_continue = QPushButton("TIẾP TỤC")
         self.btn_continue.setObjectName("btnContinue")
-        self.btn_continue.setFixedHeight(80)
+        self.btn_continue.setFixedHeight(96)
         self.btn_continue.setEnabled(False)
         self.btn_continue.setCursor(Qt.PointingHandCursor)
         self.btn_continue.setStyleSheet(
@@ -97,7 +97,7 @@ class RentSizeController(BaseController):
 
         body.addStretch(1)
         body.addWidget(self.btn_continue)
-        
+
         layout.addLayout(body)
         return root
 
