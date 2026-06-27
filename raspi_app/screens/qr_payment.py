@@ -6,12 +6,16 @@ from io import BytesIO
 import qrcode
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget,
+)
 
 from screens.base import BaseController
 from services.formatters import format_currency
 
 _POLL_INTERVAL_MS = 5000
+_QR_SIZE = 560   # inner QLabel fixed size
+_FRAME_PAD = 20  # padding inside white frame on each side
 
 
 class QRPaymentController(BaseController):
@@ -39,101 +43,106 @@ class QRPaymentController(BaseController):
         root.setStyleSheet("background-color: #0A0A0A;")
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
+        # ── Header ──────────────────────────────────────────────
         header = QFrame(root)
         header.setObjectName("headerFrame")
         header.setFixedHeight(80)
-        header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
-        h = QHBoxLayout2(header, 16, 0, 16, 0)
+        header.setStyleSheet(
+            "QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }"
+        )
+        h = QHBoxLayout(header)
+        h.setContentsMargins(16, 0, 16, 0)
 
-        btn_back = QPushButton("\u2190", header)
+        btn_back = QPushButton("←", header)
         btn_back.setObjectName("btnBack")
         btn_back.setFixedSize(60, 60)
         btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
+        btn_back.setStyleSheet(
+            "QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; }"
+            "QPushButton:pressed { color: #FF6600; }"
+        )
 
-        title = QLabel("QU\xc9T M\xc3 THANH TO\xc1N", header)
-        title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 900;")
+        title = QLabel("QUÉT MÃ THANH TOÁN", header)
+        title.setStyleSheet(
+            "background: transparent; border: none; color: #E8E8E8;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 900;"
+        )
 
         h.addWidget(btn_back)
         h.addWidget(title)
         h.addStretch()
         layout.addWidget(header)
 
+        # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(20, 20, 20, 0)
-        body.setSpacing(12)
+        body.setContentsMargins(20, 24, 20, 0)
+        body.setSpacing(16)
         body.setAlignment(Qt.AlignTop)
 
+        # Countdown — trên QR
         self.lbl_countdown = QLabel("05:00", root)
         self.lbl_countdown.setObjectName("lblPaymentCountdown")
         self.lbl_countdown.setAlignment(Qt.AlignCenter)
-        self.lbl_countdown.setStyleSheet("background: transparent; border: none; color: #FFB596; font-size: 36px; font-weight: 900; font-family: 'Be Vietnam Pro', Arial, sans-serif;")
+        self.lbl_countdown.setStyleSheet(
+            "background: transparent; border: none; color: #FFB596;"
+            "font-size: 48px; font-weight: 900; font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+        )
         body.addWidget(self.lbl_countdown)
 
+        # QR frame — trắng, bo góc
+        frame_size = _QR_SIZE + _FRAME_PAD * 2
         qr_frame = QFrame(root)
-        qr_frame.setFixedSize(640, 640)
-        qr_frame.setStyleSheet("""
-            QFrame {
-                background-color: white;
-                border: none;
-                border-radius: 28px;
-            }
-        """)
+        qr_frame.setFixedSize(frame_size, frame_size)
+        qr_frame.setStyleSheet("QFrame { background-color: white; border: none; border-radius: 24px; }")
 
-        qr_layout = QVBoxLayout(qr_frame)
-        qr_layout.setContentsMargins(24, 24, 24, 24)
-        qr_layout.setSpacing(0)
-        qr_layout.setAlignment(Qt.AlignCenter)
+        qr_frame_layout = QVBoxLayout(qr_frame)
+        qr_frame_layout.setContentsMargins(_FRAME_PAD, _FRAME_PAD, _FRAME_PAD, _FRAME_PAD)
+        qr_frame_layout.setSpacing(0)
+        qr_frame_layout.setAlignment(Qt.AlignCenter)
 
         self.lbl_qr = QLabel(qr_frame)
         self.lbl_qr.setObjectName("lblQrImage")
-        self.lbl_qr.setFixedSize(592, 592)
+        self.lbl_qr.setFixedSize(_QR_SIZE, _QR_SIZE)
         self.lbl_qr.setAlignment(Qt.AlignCenter)
         self.lbl_qr.setStyleSheet("background: transparent; border: none;")
         self.lbl_qr.setScaledContents(False)
-
-        qr_layout.addWidget(self.lbl_qr, alignment=Qt.AlignCenter)
+        qr_frame_layout.addWidget(self.lbl_qr, alignment=Qt.AlignCenter)
 
         body.addWidget(qr_frame, alignment=Qt.AlignCenter)
 
-        self.lbl_amount = QLabel("0\u20ab", root)
+        # Amount — dưới QR
+        self.lbl_amount = QLabel("0₫", root)
         self.lbl_amount.setObjectName("lblAmountValue")
         self.lbl_amount.setAlignment(Qt.AlignCenter)
-        self.lbl_amount.setStyleSheet("""
-            background: transparent;
-            border: none;
-            color: #FF6600;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 44px;
-            font-weight: 900;
-        """)
+        self.lbl_amount.setStyleSheet(
+            "background: transparent; border: none; color: #FF6600;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 44px; font-weight: 900;"
+        )
         body.addWidget(self.lbl_amount)
 
+        # Hướng dẫn
         note = QLabel("Quét mã trên ứng dụng ngân hàng để thanh toán", root)
         note.setAlignment(Qt.AlignCenter)
         note.setWordWrap(True)
-        note.setStyleSheet("""
-            background: transparent;
-            border: none;
-            color: #888;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 20px;
-            font-weight: 500;
-        """)
-
+        note.setStyleSheet(
+            "background: transparent; border: none; color: #888;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 500;"
+        )
         body.addWidget(note)
 
         body.addStretch()
-        layout.addLayout(body)
+        layout.addLayout(body, 1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
-        print(f"[QRPayment] on_enter \u2014 orderCode={self.state.payment_order_code!r} "
-              f"qrString={'set' if self.state.payment_qr_string else 'MISSING'} "
-              f"expiresAt={self.state.payment_expires_at!r}")
+        print(
+            f"[QRPayment] on_enter — orderCode={self.state.payment_order_code!r} "
+            f"qrString={'set' if self.state.payment_qr_string else 'MISSING'} "
+            f"expiresAt={self.state.payment_expires_at!r}"
+        )
         if self.state.payment_expires_at:
             try:
                 dt_str = self.state.payment_expires_at.replace("Z", "+00:00")
@@ -166,7 +175,7 @@ class QRPaymentController(BaseController):
     def _poll_payment_status(self) -> None:
         order_code = self.state.payment_order_code
         if not isinstance(order_code, int) or order_code <= 0:
-            print(f"[QRPayment] Poll skipped \u2014 invalid orderCode: {order_code!r}")
+            print(f"[QRPayment] Poll skipped — invalid orderCode: {order_code!r}")
             return
         try:
             result = self.api_client.get_payment_status(order_code)
@@ -227,26 +236,15 @@ class QRPaymentController(BaseController):
                 print("[QRPayment] QR pixmap load failed")
                 return
 
-            target_size = self.qr_label.size()
-            if target_size.width() <= 0 or target_size.height() <= 0:
-                target_size = self.qr_label.minimumSize()
-
             self.qr_label.setPixmap(
                 pixmap.scaled(
-                    target_size,
+                    self.qr_label.size(),
                     Qt.KeepAspectRatio,
-                    Qt.FastTransformation,
+                    Qt.SmoothTransformation,
                 )
             )
-
-            print(f"[QRPayment] QR rendered — label={target_size.width()}x{target_size.height()}")
+            print(f"[QRPayment] QR rendered — {_QR_SIZE}×{_QR_SIZE}")
 
         except Exception as exc:
             print(f"[QRPayment] QR render error: {exc}")
             self.qr_label.clear()
-
-def QHBoxLayout2(parent, left, top, right, bottom):
-    from PySide6.QtWidgets import QHBoxLayout
-    l = QHBoxLayout(parent)
-    l.setContentsMargins(left, top, right, bottom)
-    return l

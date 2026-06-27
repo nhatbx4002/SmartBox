@@ -54,7 +54,7 @@ class QRScanController(BaseController):
         btn_back.setCursor(Qt.PointingHandCursor)
         btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
 
-        title = QLabel("QU\xc9T M\xc3 QR", header)
+        title = QLabel("QUÉT MÃ QR", header)
         title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
 
         h.addWidget(btn_back)
@@ -80,21 +80,21 @@ class QRScanController(BaseController):
         p_layout.addWidget(self.lbl_preview)
         body.addWidget(preview_frame, alignment=Qt.AlignCenter)
 
-        self.lbl_status = QLabel("S\u1eb5n s\xe0ng qu\xe9t QR", root)
+        self.lbl_status = QLabel("S\u1eb5n s\u00e0ng qu\u00e9t QR", root)
         self.lbl_status.setObjectName("statusLabel")
         self.lbl_status.setAlignment(Qt.AlignCenter)
         self.lbl_status.setStyleSheet("background: transparent; border: none; color: #00FF41; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 700;")
         body.addWidget(self.lbl_status)
 
-        self.lbl_hint = QLabel("\u0110\u01b0a m\xe3 QR v\xe0o gi\u1eefa khung qu\xe9t", root)
+        self.lbl_hint = QLabel("Đưa mã QR vào giữa khung quét", root)
         self.lbl_hint.setObjectName("hintLabel")
         self.lbl_hint.setAlignment(Qt.AlignCenter)
         self.lbl_hint.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;")
         body.addWidget(self.lbl_hint)
 
-        self.btn_retry = QPushButton("TH\u1eec L\u1ea0I")
+        self.btn_retry = QPushButton("THỬ LẠI")
         self.btn_retry.setObjectName("btnRetry")
-        self.btn_retry.setFixedHeight(80)
+        self.btn_retry.setFixedHeight(96)
         self.btn_retry.setCursor(Qt.PointingHandCursor)
         self.btn_retry.setStyleSheet(
             "QPushButton { background-color: #FF6600; color: white; border: none; border-radius: 18px; font-size: 22px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"

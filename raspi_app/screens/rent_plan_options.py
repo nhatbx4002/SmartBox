@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QScrollArea, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QFrame, QHBoxLayout, QLabel, QPushButton,
+    QScrollArea, QVBoxLayout, QWidget,
+)
 
 from screens.base import BaseController
 from services.app_state import Plan
@@ -32,43 +35,61 @@ class RentPlanOptionsController(BaseController):
         root.setStyleSheet("background-color: #0A0A0A;")
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 56)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
+        # ── Header ──────────────────────────────────────────────
         header = QFrame(root)
         header.setObjectName("headerFrame")
         header.setFixedHeight(80)
-        header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
-        h = QHBoxLayout6(header, 16, 0, 16, 0)
+        header.setStyleSheet(
+            "QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }"
+        )
+        h = QHBoxLayout(header)
+        h.setContentsMargins(16, 0, 16, 0)
 
-        btn_back = QPushButton("\u2190", header)
+        btn_back = QPushButton("←", header)
         btn_back.setObjectName("btnBack")
         btn_back.setFixedSize(60, 60)
         btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
+        btn_back.setStyleSheet(
+            "QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; }"
+            "QPushButton:pressed { color: #FF6600; }"
+        )
 
-        self.lbl_title = QLabel("", header)
+        self.lbl_title = QLabel("Chọn gói thuê", header)
         self.lbl_title.setObjectName("lblTitle")
-        self.lbl_title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
+        self.lbl_title.setStyleSheet(
+            "background: transparent; border: none; color: #E8E8E8;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;"
+        )
 
         h.addWidget(btn_back)
         h.addWidget(self.lbl_title)
         h.addStretch()
         layout.addWidget(header)
 
+        # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(24, 8, 24, 32)
+        body.setContentsMargins(24, 8, 24, 0)
         body.setSpacing(0)
 
         self.lbl_group = QLabel("", root)
         self.lbl_group.setObjectName("lblSelectedGroup")
-        self.lbl_group.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500; padding: 8px 0;")
+        self.lbl_group.setFixedHeight(44)
+        self.lbl_group.setStyleSheet(
+            "background: transparent; border: none; color: #888;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500; padding: 4px 0;"
+        )
         body.addWidget(self.lbl_group)
 
         scroll = QScrollArea(root)
         scroll.setObjectName("scrollArea")
         scroll.setWidgetResizable(True)
-        scroll.setStyleSheet("QScrollArea { background: transparent; border: none; } QScrollBar:vertical { width: 0; }")
+        scroll.setStyleSheet(
+            "QScrollArea { background: transparent; border: none; }"
+            "QScrollBar:vertical { width: 0; }"
+        )
 
         container = QWidget()
         container.setObjectName("planOptionsContainer")
@@ -76,30 +97,33 @@ class RentPlanOptionsController(BaseController):
         container_layout = QVBoxLayout(container)
         container_layout.setObjectName("planOptionsLayout")
         container_layout.setContentsMargins(0, 8, 0, 8)
-        container_layout.setSpacing(12)
-
+        container_layout.setSpacing(14)
         scroll.setWidget(container)
         body.addWidget(scroll, stretch=1)
 
-        self.btn_continue = QPushButton("TIẾP TỤC")
-        self.btn_continue.setObjectName("btnContinue")
-        self.btn_continue.setFixedHeight(96)
-        self.btn_continue.setEnabled(False)
-        self.btn_continue.setCursor(Qt.PointingHandCursor)
-        self.btn_continue.setStyleSheet(
-            "QPushButton { background-color: #333; color: #777; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
+        body.addSpacing(12)
+
+        btn_continue = QPushButton("TIẾP TỤC")
+        btn_continue.setObjectName("btnContinue")
+        btn_continue.setFixedHeight(96)
+        btn_continue.setEnabled(False)
+        btn_continue.setCursor(Qt.PointingHandCursor)
+        btn_continue.setStyleSheet(
+            "QPushButton { background-color: #333; color: #777; border: none;"
+            " border-radius: 24px; font-size: 26px; font-weight: 800;"
+            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
             "QPushButton:enabled { background-color: #2E7D32; color: white; }"
         )
-        body.addWidget(self.btn_continue)
+        body.addWidget(btn_continue)
+        body.addSpacing(68)
 
-        layout.addLayout(body)
+        layout.addLayout(body, 1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
         if not self.state.selected_size:
             self.navigate("/rent-size", replace=True)
             return
-
         if not self.state.selected_plan_group:
             self.navigate("/rent-plan", replace=True)
             return
@@ -148,41 +172,45 @@ class RentPlanOptionsController(BaseController):
         card = QFrame()
         card.setObjectName(f"planCard_{plan.id}")
         card.setCursor(Qt.CursorShape.PointingHandCursor)
+        card.setMinimumHeight(190)
         card.setStyleSheet("""
             QFrame {
                 background-color: #111111;
                 border: 3px solid #2A2A2A;
-                border-radius: 18px;
+                border-radius: 22px;
             }
             QFrame:hover {
                 border: 3px solid #FF6600;
                 background-color: #1A1A1A;
             }
-            QLabel {
-                background-color: transparent;
-            }
+            QLabel { background-color: transparent; }
         """)
-        card.setMinimumHeight(180)
 
         card_layout = QHBoxLayout(card)
-        card_layout.setContentsMargins(34, 26, 34, 26)
+        card_layout.setContentsMargins(36, 28, 36, 28)
 
         info_layout = QVBoxLayout()
-        info_layout.setSpacing(10)
+        info_layout.setSpacing(12)
 
         name_label = QLabel(plan.name)
-        name_label.setStyleSheet("color: #E8E8E8; font-size: 28px; font-weight: 700; border: none;")
+        name_label.setStyleSheet(
+            "color: #E8E8E8; font-size: 28px; font-weight: 700; border: none;"
+        )
 
         subtitle_text = format_plan_subtitle(plan.rental_type, plan.duration_days, plan.max_opens)
         subtitle_label = QLabel(subtitle_text)
-        subtitle_label.setStyleSheet("color: #888888; font-size: 20px; font-weight: 500; border: none;")
+        subtitle_label.setStyleSheet(
+            "color: #888888; font-size: 20px; font-weight: 500; border: none;"
+        )
 
         info_layout.addWidget(name_label)
         info_layout.addWidget(subtitle_label)
 
         price_label = QLabel(format_currency(plan.price))
         price_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        price_label.setStyleSheet("color: #FF6600; font-size: 34px; font-weight: 900; border: none;")
+        price_label.setStyleSheet(
+            "color: #FF6600; font-size: 36px; font-weight: 900; border: none;"
+        )
 
         card_layout.addLayout(info_layout)
         card_layout.addStretch()
@@ -199,22 +227,18 @@ class RentPlanOptionsController(BaseController):
                 QFrame {
                     background-color: #111111;
                     border: 3px solid #2A2A2A;
-                    border-radius: 18px;
+                    border-radius: 22px;
                 }
-                QLabel {
-                    background-color: transparent;
-                }
+                QLabel { background-color: transparent; }
             """)
 
         card.setStyleSheet("""
             QFrame {
                 background-color: #1A3A1A;
                 border: 3px solid #2E7D32;
-                border-radius: 18px;
+                border-radius: 22px;
             }
-            QLabel {
-                background-color: transparent;
-            }
+            QLabel { background-color: transparent; }
         """)
         self.selected_card = card
         self.continue_button.setEnabled(True)
@@ -228,10 +252,3 @@ class RentPlanOptionsController(BaseController):
 
     def on_exit(self) -> None:
         pass
-
-
-def QHBoxLayout6(parent, left, top, right, bottom):
-    from PySide6.QtWidgets import QHBoxLayout
-    l = QHBoxLayout(parent)
-    l.setContentsMargins(left, top, right, bottom)
-    return l

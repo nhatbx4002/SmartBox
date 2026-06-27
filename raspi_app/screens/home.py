@@ -27,71 +27,68 @@ class HomeController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
+        # Header vùng logo — 130px
         header = QFrame(root)
-        header.setFixedHeight(118)
+        header.setFixedHeight(130)
         header.setStyleSheet("background: transparent; border: none;")
 
         h_layout = QVBoxLayout(header)
-        h_layout.setContentsMargins(18, 24, 18, 0)
-        h_layout.setSpacing(4)
+        h_layout.setContentsMargins(24, 28, 24, 0)
+        h_layout.setSpacing(6)
 
-        logo = QLabel("OmniBox", header)
+        logo = QLabel("SmartBox", header)
         logo.setStyleSheet(
             "background: transparent; border: none; color: #E8E8E8;"
             "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 36px; font-weight: 900;"
+            "font-size: 42px; font-weight: 900;"
         )
 
         tagline = QLabel("Tủ thông minh – Gửi đồ tiện lợi", header)
         tagline.setStyleSheet(
             "background: transparent; border: none; color: #888;"
             "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 14px; font-weight: 500;"
+            "font-size: 16px; font-weight: 500;"
         )
 
         h_layout.addWidget(logo)
         h_layout.addWidget(tagline)
         layout.addWidget(header)
 
+        # Body cards — left/right 20px, bottom 68px (để hở footer 48px + buffer 20px)
         body = QVBoxLayout()
-        body.setContentsMargins(18, 10, 18, 56)
-        body.setSpacing(10)
+        body.setContentsMargins(20, 8, 20, 68)
+        body.setSpacing(14)
 
         cards = [
-            ("SendCard", "GỬI ĐỒ", "#FF6600", "Gửi đồ vào tủ an toàn"),
-            ("ReceiveCard", "NHẬN ĐỒ", "#1565C0", "Nhận đồ bằng mã PIN hoặc QR"),
-            ("RentCard", "THUÊ TỦ", "#2E7D32", "Thuê ngăn tủ theo nhu cầu"),
-            ("SupportCard", "HỖ TRỢ", "#1C1B1B", "Cần hỗ trợ? Gọi ngay", "#444"),
+            ("SendCard",    "GỬI ĐỒ",   "#FF6600", "Gửi đồ vào tủ an toàn",          None),
+            ("ReceiveCard", "NHẬN ĐỒ",  "#1565C0", "Nhận đồ bằng mã PIN hoặc QR",    None),
+            ("RentCard",    "THUÊ TỦ",  "#2E7D32", "Thuê ngăn tủ theo nhu cầu",       None),
+            ("SupportCard", "HỖ TRỢ",  "#1C1B1B", "Cần hỗ trợ? Liên hệ ngay",       "#3A3A3A"),
         ]
 
-        for obj_name, label, bg, subtitle, *border_info in cards:
+        for obj_name, label, bg, subtitle, border_color in cards:
             card = QFrame(root)
             card.setObjectName(obj_name)
-            card.setMinimumHeight(105)
+            card.setMinimumHeight(150)
             card.setCursor(Qt.PointingHandCursor)
-
-            border_color = border_info[0] if border_info else None
-            border = f"border: 2px solid {border_color};" if border_color else ""
-
+            border = f"border: 2px solid {border_color};" if border_color else "border: none;"
             card.setStyleSheet(
                 f"QFrame#{obj_name} {{"
-                f"  background-color: {bg};"
-                f"  border-radius: 18px;"
-                f"  {border}"
+                f"  background-color: {bg}; border-radius: 24px; {border}"
                 f"}}"
                 f"QLabel {{ background: transparent; }}"
             )
 
             c_layout = QVBoxLayout(card)
-            c_layout.setContentsMargins(18, 12, 18, 12)
-            c_layout.setSpacing(6)
+            c_layout.setContentsMargins(24, 16, 24, 16)
+            c_layout.setSpacing(8)
 
             title = QLabel(label, card)
             title.setAlignment(Qt.AlignCenter)
             title.setStyleSheet(
                 "background: transparent; border: none; color: white;"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "font-size: 44px; font-weight: 900;"
+                "font-size: 46px; font-weight: 900;"
             )
 
             sub = QLabel(subtitle, card)
@@ -99,7 +96,7 @@ class HomeController(BaseController):
             sub.setStyleSheet(
                 "background: transparent; border: none; color: rgba(255,255,255,0.72);"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "font-size: 17px; font-weight: 500;"
+                "font-size: 18px; font-weight: 500;"
             )
 
             c_layout.addStretch(1)

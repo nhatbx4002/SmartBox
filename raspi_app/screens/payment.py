@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget,
+)
 
 from screens.base import BaseController, process_events
 from screens.inline_error import InlineError
@@ -23,7 +25,7 @@ class PaymentController(BaseController):
         self.payos_card = self.child("btnPaymentPayOS", QPushButton)
 
         self.error_banner = InlineError(self.widget)
-        self.error_banner.setGeometry(20, 720, 680, 64)
+        self.error_banner.setGeometry(40, 860, 640, 64)
 
         self.child("btnBack", QPushButton).clicked.connect(lambda: self.navigate("/rent-phone"))
         self.pay_button.clicked.connect(self._pay_now)
@@ -36,120 +38,134 @@ class PaymentController(BaseController):
         root.setStyleSheet("background-color: #0A0A0A;")
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
+        # ── Header ──────────────────────────────────────────────
         header = QFrame(root)
         header.setObjectName("headerFrame")
         header.setFixedHeight(80)
-        header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
+        header.setStyleSheet(
+            "QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }"
+        )
         h = QHBoxLayout(header)
         h.setContentsMargins(16, 0, 16, 0)
 
-        btn_back = QPushButton("\u2190", header)
+        btn_back = QPushButton("←", header)
         btn_back.setObjectName("btnBack")
         btn_back.setFixedSize(60, 60)
         btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
+        btn_back.setStyleSheet(
+            "QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; }"
+            "QPushButton:pressed { color: #FF6600; }"
+        )
         h.addWidget(btn_back)
 
         title = QLabel("THANH TOÁN", header)
-        title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
+        title.setStyleSheet(
+            "background: transparent; border: none; color: #E8E8E8;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;"
+        )
         h.addWidget(title)
         h.addStretch()
         layout.addWidget(header)
 
+        # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(32, 32, 32, 0)
-        body.setSpacing(28)
+        body.setContentsMargins(32, 36, 32, 0)
+        body.setSpacing(24)
 
+        # Card số tiền
         amount_card = QFrame(root)
         amount_card.setFixedHeight(200)
-        amount_card.setStyleSheet("QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 20px; } QLabel { background: transparent; }")
+        amount_card.setStyleSheet(
+            "QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 24px; }"
+            "QLabel { background: transparent; }"
+        )
         a_layout = QVBoxLayout(amount_card)
         a_layout.setAlignment(Qt.AlignCenter)
+        a_layout.setSpacing(6)
 
-        lbl_amount_title = QLabel("Số tiền", amount_card)
+        lbl_amount_title = QLabel("Số tiền thanh toán", amount_card)
         lbl_amount_title.setAlignment(Qt.AlignCenter)
         lbl_amount_title.setStyleSheet(
-            "border: none; "
-            "color: #888; "
-            "font-size: 18px; "
-            "font-weight: 500;"
+            "border: none; color: #888; font-size: 18px; font-weight: 500;"
         )
 
         self.lbl_amount = QLabel("0đ", amount_card)
         self.lbl_amount.setObjectName("lblAmount")
         self.lbl_amount.setAlignment(Qt.AlignCenter)
         self.lbl_amount.setStyleSheet(
-            "border: none; "
-            "color: #FF6600; "
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
-            "font-size: 80px; "
-            "font-weight: 900;"
+            "border: none; color: #FF6600;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 80px; font-weight: 900;"
         )
 
         a_layout.addWidget(lbl_amount_title)
         a_layout.addWidget(self.lbl_amount)
         body.addWidget(amount_card)
 
+        # Thông tin gói
         self.lbl_plan = QLabel("", root)
         self.lbl_plan.setObjectName("lblPlanInfo")
         self.lbl_plan.setAlignment(Qt.AlignCenter)
-        self.lbl_plan.setStyleSheet("background: transparent; border: none; color: #B0B0B0; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;")
+        self.lbl_plan.setStyleSheet(
+            "background: transparent; border: none; color: #B0B0B0;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;"
+        )
         body.addWidget(self.lbl_plan)
 
+        # Tiêu đề phương thức
         methods_title = QLabel("Phương thức thanh toán", root)
         methods_title.setAlignment(Qt.AlignCenter)
         methods_title.setStyleSheet(
-            "background: transparent; border: none; color: #E8E8E8; "
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
-            "font-size: 22px; font-weight: 800;"
+            "background: transparent; border: none; color: #E8E8E8;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 800;"
         )
         body.addWidget(methods_title)
 
-        payos_card = QPushButton("PayOS")
+        # Card PayOS duy nhất — lớn, rõ ràng
+        payos_card = QPushButton("PayOS", root)
         payos_card.setObjectName("btnPaymentPayOS")
-        payos_card.setFixedHeight(128)
+        payos_card.setFixedHeight(180)
         payos_card.setCursor(Qt.PointingHandCursor)
         payos_card.setCheckable(True)
         payos_card.setChecked(True)
         payos_card.setStyleSheet(
-            "QPushButton { "
-            "background-color: #1C1B1B; "
-            "color: #FFFFFF; "
-            "border: 3px solid #FF6600; "
-            "border-radius: 22px; "
-            "font-size: 28px; "
-            "font-weight: 900; "
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
+            "QPushButton {"
+            "  background-color: #1C1B1B; color: #FFFFFF;"
+            "  border: 3px solid #FF6600; border-radius: 28px;"
+            "  font-size: 40px; font-weight: 900;"
+            "  font-family: 'Be Vietnam Pro', Arial, sans-serif;"
             "}"
             "QPushButton:pressed { background-color: #232323; }"
         )
         body.addWidget(payos_card)
 
+        # Gợi ý hướng dẫn
         payos_hint = QLabel("Quét mã QR PayOS ở bước tiếp theo để hoàn tất thanh toán", root)
         payos_hint.setAlignment(Qt.AlignCenter)
         payos_hint.setWordWrap(True)
         payos_hint.setStyleSheet(
-            "background: transparent; border: none; color: #A8A8A8; "
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
-            "font-size: 18px; font-weight: 500;"
+            "background: transparent; border: none; color: #888;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;"
         )
         body.addWidget(payos_hint)
 
+        # CTA button
         self.btn_pay = QPushButton("THANH TOÁN NGAY")
         self.btn_pay.setObjectName("btnPayNow")
         self.btn_pay.setFixedHeight(96)
         self.btn_pay.setCursor(Qt.PointingHandCursor)
         self.btn_pay.setStyleSheet(
-            "QPushButton { background-color: #FF6600; color: white; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
+            "QPushButton { background-color: #FF6600; color: white; border: none;"
+            " border-radius: 24px; font-size: 26px; font-weight: 800;"
+            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
             "QPushButton:disabled { background-color: #333; color: #777; }"
         )
         body.addWidget(self.btn_pay)
+        body.addSpacing(68)
 
-        layout.addLayout(body)
-        layout.addStretch()
+        layout.addLayout(body, 1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
@@ -160,7 +176,7 @@ class PaymentController(BaseController):
         self.error_banner.clear()
         self.amount_label.setText(format_currency(self.state.selected_plan.price))
         size_text = "Size 1" if self.state.selected_size == "SMALL" else "Size 2"
-        self.plan_info_label.setText(f"{size_text} - {self.state.selected_plan.name}")
+        self.plan_info_label.setText(f"{size_text} – {self.state.selected_plan.name}")
         self.pay_button.setText(self.pay_button_text)
         self._apply_selection()
 
@@ -210,7 +226,7 @@ class PaymentController(BaseController):
         except ApiError as error:
             self._show_payment_error_dialog(error.message or "Không thể tạo yêu cầu thanh toán. Vui lòng thử lại.")
         except Exception as error:
-            self._show_payment_error_dialog(str(error) or "Không thể kết nối đến máy chủ để tạo thanh toán. Vui lòng thử lại.")
+            self._show_payment_error_dialog(str(error) or "Không thể kết nối để tạo thanh toán. Vui lòng thử lại.")
 
     def _show_payment_error(self, message: str) -> None:
         self.error_banner.show_error(message)
