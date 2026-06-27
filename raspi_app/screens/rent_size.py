@@ -55,30 +55,35 @@ class RentSizeController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 32, 24, 0)
-        body.setSpacing(16)
+        body.setContentsMargins(32, 36, 32, 24)
+        body.setSpacing(22)
 
-        sizes_row = QHBoxLayout()
-        sizes_row.setSpacing(16)
+        subtitle = QLabel("Chọn kích thước phù hợp với đồ cần gửi")
+        subtitle.setAlignment(Qt.AlignCenter)
+        subtitle.setStyleSheet(
+            "background: transparent; border: none; color: #888;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 20px; font-weight: 600;"
+        )
+        body.addWidget(subtitle)
 
         card1 = self._size_card(
             "cardSize1",
             "Tủ nhỏ",
             "📦",
-            "Phù hợp với đồ cá nhân nhỏ",
+            "Phù hợp với đồ cá nhân, ví, sạc, phụ kiện nhỏ",
         )
 
         card2 = self._size_card(
             "cardSize2",
             "Tủ lớn",
             "🧳",
-            "Phù hợp với hành lý, ba lô, túi xách",
+            "Phù hợp với balo, túi xách, hành lý nhỏ",
         )
 
-        sizes_row.addWidget(card1)
-        sizes_row.addWidget(card2)
-
-        body.addLayout(sizes_row)
+        body.addSpacing(12)
+        body.addWidget(card1)
+        body.addWidget(card2)
         body.addStretch()
 
         self.btn_continue = QPushButton("TIẾP TỤC")
@@ -90,6 +95,7 @@ class RentSizeController(BaseController):
             "QPushButton { background-color: #333; color: #777; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
             "QPushButton:enabled { background-color: #FF6600; color: white; }"
         )
+        body.addSpacing(12)
         body.addWidget(self.btn_continue)
 
         layout.addLayout(body)
@@ -98,7 +104,7 @@ class RentSizeController(BaseController):
     def _size_card(self, obj_name: str, label: str, icon: str, desc: str) -> QFrame:
         card = QFrame()
         card.setObjectName(obj_name)
-        card.setFixedHeight(280)
+        card.setFixedHeight(220)
         card.setCursor(Qt.PointingHandCursor)
         card.setStyleSheet(
             f"QFrame#{obj_name} {{"
@@ -112,26 +118,39 @@ class RentSizeController(BaseController):
             f"QLabel {{ background: transparent; }}"
         )
 
-        c_layout = QVBoxLayout(card)
-        c_layout.setContentsMargins(20, 24, 20, 24)
-        c_layout.setSpacing(8)
-        c_layout.setAlignment(Qt.AlignCenter)
+        c_layout = QHBoxLayout(card)
+        c_layout.setContentsMargins(36, 24, 36, 24)
+        c_layout.setSpacing(28)
 
         icon_lbl = QLabel(icon, card)
+        icon_lbl.setFixedSize(96, 96)
         icon_lbl.setAlignment(Qt.AlignCenter)
-        icon_lbl.setStyleSheet("border: none; font-size: 56px;")
+        icon_lbl.setStyleSheet("border: none; font-size: 58px;")
         c_layout.addWidget(icon_lbl)
 
+        text_box = QVBoxLayout()
+        text_box.setSpacing(8)
+        text_box.setAlignment(Qt.AlignVCenter)
+
         title_lbl = QLabel(label, card)
-        title_lbl.setAlignment(Qt.AlignCenter)
-        title_lbl.setStyleSheet("border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 800;")
-        c_layout.addWidget(title_lbl)
+        title_lbl.setStyleSheet(
+            "border: none; color: #E8E8E8;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 28px; font-weight: 900;"
+        )
+        text_box.addWidget(title_lbl)
 
         desc_lbl = QLabel(desc, card)
-        desc_lbl.setAlignment(Qt.AlignCenter)
         desc_lbl.setWordWrap(True)
-        desc_lbl.setStyleSheet("border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 15px; font-weight: 500;")
-        c_layout.addWidget(desc_lbl)
+        desc_lbl.setStyleSheet(
+            "border: none; color: #999;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 18px; font-weight: 500;"
+        )
+        text_box.addWidget(desc_lbl)
+
+        c_layout.addLayout(text_box)
+        c_layout.addStretch()
 
         return card
 
