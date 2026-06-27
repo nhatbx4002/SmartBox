@@ -19,6 +19,7 @@ class BaseController:
         self._footer_widget: QWidget | None = None
         self._footer_status_label: QLabel | None = None
         self._footer_status_dot: QWidget | None = None
+        self._footer_filter: QObject | None = None
         self.widget = widget
         self._attach_footer()
         self._bind_network_monitor()
@@ -227,7 +228,9 @@ class BaseController:
         footer.hide()
 
         self._footer_widget = footer
-        self.widget.installEventFilter(self)
+
+        self._footer_filter = _FooterPositionFilter(self._position_footer, self.widget)
+        self.widget.installEventFilter(self._footer_filter)
 
         self._apply_network_status(self.network_status)
         self._position_footer()
@@ -246,11 +249,6 @@ class BaseController:
         self._footer_widget.setGeometry(0, height - footer_height, width, footer_height)
         self._footer_widget.raise_()
         self._footer_widget.show()
-
-    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
-        if watched is self.widget and event.type() in (QEvent.Resize, QEvent.Show):
-            self._position_footer()
-        return False
 
     def _bind_network_monitor(self) -> None:
         monitor = getattr(self.app, "network_monitor", None)
@@ -327,6 +325,17 @@ def process_events() -> None:
     app = QApplication.instance()
     if app is not None:
         app.processEvents()
+
+
+class _FooterPositionFilter(QObject):
+    def __init__(self, callback: Callable[[], None], parent: QObject | None = None):
+        super().__init__(parent)
+        self.callback = callback
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if event.type() in (QEvent.Resize, QEvent.Show):
+            self.callback()
+        return False
 
 
 class _ClickFilter(QObject):
