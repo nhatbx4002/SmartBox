@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QLabel, QPushButton
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from screens.base import BaseController
 from services.api_client import ApiError
@@ -14,7 +14,9 @@ class QRScanController(BaseController):
     route = "/qr-scan"
 
     def __init__(self, app):
-        super().__init__(app, self.route, "QRScan.ui")
+        widget = self._build_ui()
+        super().__init__(app, self.route, widget=widget)
+
         self.preview_label = self.child("cameraPreview", QLabel)
         self.status_label = self.child("statusLabel", QLabel)
         self.hint_label = self.child("hintLabel", QLabel)
@@ -30,6 +32,79 @@ class QRScanController(BaseController):
         self.last_token = ""
         self.frame_count = 0
         self.preview_label.setScaledContents(False)
+
+    def _build_ui(self) -> QWidget:
+        root = QWidget()
+        root.setFixedSize(720, 1280)
+        root.setStyleSheet("background-color: #0A0A0A;")
+
+        layout = QVBoxLayout(root)
+        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setSpacing(0)
+
+        header = QFrame(root)
+        header.setObjectName("headerFrame")
+        header.setFixedHeight(80)
+        header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
+        h = QHBoxLayout3(header, 16, 0, 16, 0)
+
+        btn_back = QPushButton("\u2190", header)
+        btn_back.setObjectName("btnBack")
+        btn_back.setFixedSize(60, 60)
+        btn_back.setCursor(Qt.PointingHandCursor)
+        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
+
+        title = QLabel("QU\xc9T M\xc3 QR", header)
+        title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
+
+        h.addWidget(btn_back)
+        h.addWidget(title)
+        h.addStretch()
+        layout.addWidget(header)
+
+        body = QVBoxLayout()
+        body.setContentsMargins(24, 24, 24, 0)
+        body.setSpacing(12)
+
+        preview_frame = QFrame(root)
+        preview_frame.setFixedSize(672, 480)
+        preview_frame.setStyleSheet("QFrame { background-color: #111; border: 2px solid #333; border-radius: 20px; }")
+        p_layout = QVBoxLayout(preview_frame)
+        p_layout.setAlignment(Qt.AlignCenter)
+
+        self.lbl_preview = QLabel(preview_frame)
+        self.lbl_preview.setObjectName("cameraPreview")
+        self.lbl_preview.setAlignment(Qt.AlignCenter)
+        self.lbl_preview.setStyleSheet("background: transparent; border: none;")
+        self.lbl_preview.setFixedSize(640, 440)
+        p_layout.addWidget(self.lbl_preview)
+        body.addWidget(preview_frame, alignment=Qt.AlignCenter)
+
+        self.lbl_status = QLabel("S\u1eb5n s\xe0ng qu\xe9t QR", root)
+        self.lbl_status.setObjectName("statusLabel")
+        self.lbl_status.setAlignment(Qt.AlignCenter)
+        self.lbl_status.setStyleSheet("background: transparent; border: none; color: #00FF41; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 700;")
+        body.addWidget(self.lbl_status)
+
+        self.lbl_hint = QLabel("\u0110\u01b0a m\xe3 QR v\xe0o gi\u1eefa khung qu\xe9t", root)
+        self.lbl_hint.setObjectName("hintLabel")
+        self.lbl_hint.setAlignment(Qt.AlignCenter)
+        self.lbl_hint.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;")
+        body.addWidget(self.lbl_hint)
+
+        self.btn_retry = QPushButton("TH\u1eec L\u1ea0I")
+        self.btn_retry.setObjectName("btnRetry")
+        self.btn_retry.setFixedHeight(80)
+        self.btn_retry.setCursor(Qt.PointingHandCursor)
+        self.btn_retry.setStyleSheet(
+            "QPushButton { background-color: #FF6600; color: white; border: none; border-radius: 18px; font-size: 22px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
+        )
+        self.btn_retry.hide()
+        body.addWidget(self.btn_retry)
+
+        body.addStretch()
+        layout.addLayout(body)
+        return root
 
     def on_enter(self, data: dict | None = None) -> None:
         self.state.mode = "pickup"
@@ -48,7 +123,7 @@ class QRScanController(BaseController):
 
     def _start_camera(self) -> None:
         if not self.scanner.start():
-            self._show_camera_error("Không thể khởi động Pi Camera")
+            self._show_camera_error("Không thể khởi động camera")
             return
 
         print(f"[qr_scan] camera ready, scanning at {self.scan_interval_ms}ms")
@@ -87,10 +162,10 @@ class QRScanController(BaseController):
             if frame.detected and not frame.token:
                 print("[qr_scan] QR DETECTED but NOT DECODED (move closer / steady / lighting)")
                 self.status_label.setText("Đã thấy mã QR — giữ yên")
-                self.hint_label.setText("Đưa gần hơn / đủ sáng để đọc mã")
+                self.hint_label.setText("Giữ mã QR gần hơn và đảm bảo đủ sáng")
             elif not frame.detected and not self.processing:
-                self.status_label.setText("Sẵn sàng quét QR")
-                self.hint_label.setText("Đưa mã QR vào giữa khung quét")
+                self.status_label.setText("Sẵn sàng quét mã QR")
+                self.hint_label.setText("Đặt mã QR vào giữa khung quét")
 
         if frame.token:
             print(f"[qr_scan] QR DECODED token='{frame.token}'")
@@ -114,7 +189,7 @@ class QRScanController(BaseController):
             return
         except Exception as error:
             print(f"[qr_scan] verify failed: {error}")
-            self._show_scan_error(str(error) or "Không thể xác minh mã QR")
+            self._show_scan_error(str(error) or "Không thể xác minh mã QR. Vui lòng thử lại.")
             return
 
         print("[qr_scan] verified OK -> /locker-open")
@@ -127,11 +202,18 @@ class QRScanController(BaseController):
     def _show_camera_error(self, message: str) -> None:
         self.timer.stop()
         self.status_label.setText(message)
-        self.hint_label.setText("Kiểm tra kết nối Pi Camera Rev 1.3 rồi thử lại")
+        self.hint_label.setText("Kiểm tra kết nối camera rồi thử lại")
         self.retry_button.show()
 
     def _show_scan_error(self, message: str) -> None:
         self.processing = False
-        self.status_label.setText(message or "Mã QR không hợp lệ")
-        self.hint_label.setText("Vui lòng đưa mã QR hợp lệ vào camera")
+        self.status_label.setText(message or "Mã QR không hợp lệ. Vui lòng thử lại.")
+        self.hint_label.setText("Vui lòng đưa mã QR hợp lệ vào khung quét")
         self.retry_button.show()
+
+
+def QHBoxLayout3(parent, left, top, right, bottom):
+    from PySide6.QtWidgets import QHBoxLayout
+    l = QHBoxLayout(parent)
+    l.setContentsMargins(left, top, right, bottom)
+    return l

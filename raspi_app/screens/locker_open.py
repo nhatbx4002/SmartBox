@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QLabel, QPushButton
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from screens.base import BaseController, process_events
 
@@ -10,7 +10,9 @@ class LockerOpenController(BaseController):
     route = "/locker-open"
 
     def __init__(self, app):
-        super().__init__(app, self.route, "OpenSuccess.ui")
+        widget = self._build_ui()
+        super().__init__(app, self.route, widget=widget)
+
         self.status_label = self.child("lblOpenStatus", QLabel)
         self.locker_name_label = self.child("lblLockerName", QLabel)
         self.locker_size_label = self.child("lblLockerSize", QLabel)
@@ -23,6 +25,99 @@ class LockerOpenController(BaseController):
         self.door_poll_timer.timeout.connect(self._poll_door_status)
         self.compartment_id = ""
         self.finished = False
+
+    def _build_ui(self) -> QWidget:
+        root = QWidget()
+        root.setFixedSize(720, 1280)
+        root.setStyleSheet("background-color: #0A0A0A;")
+
+        layout = QVBoxLayout(root)
+        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setSpacing(0)
+
+        header = QFrame(root)
+        header.setObjectName("headerFrame")
+        header.setFixedHeight(80)
+        header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
+        h = _HLayout(header, 16, 0, 16, 0)
+
+        title = QLabel("Mở Tủ", header)
+        title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
+        h.addWidget(title)
+        h.addStretch()
+        layout.addWidget(header)
+
+        body = QVBoxLayout()
+        body.setContentsMargins(32, 40, 32, 0)
+        body.setSpacing(16)
+        body.setAlignment(Qt.AlignTop)
+
+        icon_label = QLabel("\U0001f513", root)
+        icon_label.setObjectName("lblOpenIcon")
+        icon_label.setAlignment(Qt.AlignCenter)
+        icon_label.setFixedHeight(140)
+        icon_label.setStyleSheet("background: transparent; border: none; font-size: 100px;")
+        body.addWidget(icon_label)
+
+        self.status = QLabel("Mở Cửa Thành Công", root)
+        self.status.setObjectName("lblOpenStatus")
+        self.status.setAlignment(Qt.AlignCenter)
+        self.status.setStyleSheet("background: transparent; border: none; color: #2E7D32; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 36px; font-weight: 900;")
+        body.addWidget(self.status)
+
+        self.locker_name = QLabel("", root)
+        self.locker_name.setObjectName("lblLockerName")
+        self.locker_name.setAlignment(Qt.AlignCenter)
+        self.locker_name.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 700;")
+        body.addWidget(self.locker_name)
+
+        self.locker_size = QLabel("", root)
+        self.locker_size.setObjectName("lblLockerSize")
+        self.locker_size.setAlignment(Qt.AlignCenter)
+        self.locker_size.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 500;")
+        body.addWidget(self.locker_size)
+
+        door_card = QFrame(root)
+        door_card.setFixedHeight(120)
+        door_card.setStyleSheet("QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 20px; } QLabel { background: transparent; }")
+        d_layout = QVBoxLayout(door_card)
+        d_layout.setAlignment(Qt.AlignCenter)
+
+        door_label = QLabel("Trạng thái cửa", door_card)
+        door_label.setAlignment(Qt.AlignCenter)
+        door_label.setStyleSheet("border: none; color: #888; font-size: 18px; font-weight: 500;")
+
+        self.door_status = QLabel("Đang Kiểm Tra", door_card)
+        self.door_status.setObjectName("lblDoorStatusText")
+        self.door_status.setAlignment(Qt.AlignCenter)
+        self.door_status.setStyleSheet("border: none; color: #888; font-size: 24px; font-weight: 900;")
+
+        d_layout.addWidget(door_label)
+        d_layout.addWidget(self.door_status)
+        body.addWidget(door_card)
+
+        self.instruction = QLabel("", root)
+        self.instruction.setObjectName("lblInstruction")
+        self.instruction.setAlignment(Qt.AlignCenter)
+        self.instruction.setWordWrap(True)
+        self.instruction.setStyleSheet("background: transparent; border: none; color: #999; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500; padding: 8px 0;")
+        body.addWidget(self.instruction)
+
+        body.addStretch()
+
+        self.finish = QPushButton("HOÀN THÀNH")
+        self.finish.setObjectName("btnFinish")
+        self.finish.setFixedHeight(88)
+        self.finish.setEnabled(False)
+        self.finish.setCursor(Qt.PointingHandCursor)
+        self.finish.setStyleSheet(
+            "QPushButton { background-color: #333; color: #777; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
+            "QPushButton:enabled { background-color: #2E7D32; color: white; }"
+        )
+        body.addWidget(self.finish)
+
+        layout.addLayout(body)
+        return root
 
     def on_enter(self, data: dict | None = None) -> None:
         compartment = self.state.compartment_data
@@ -46,7 +141,7 @@ class LockerOpenController(BaseController):
             "Vui lòng lấy đồ và đóng cửa thật kỹ" if is_pickup else "Vui lòng bỏ đồ vào tủ rồi đóng cửa thật kỹ"
         )
 
-        self._update_door_status("CỬA ĐANG MỞ", "#FF6600")
+        self._update_door_status("Cửa Đang Mở", "#FF6600")
         self.door_poll_timer.start(1000)
 
         self._attempt_unlock()
@@ -68,16 +163,20 @@ class LockerOpenController(BaseController):
                 self.mqtt_client.publish_door_opened(self.compartment_id, rental_id)
         else:
             if self.unlock_attempts < 3:
-                self.show_error_dialog(
-                    message=f"Không thể kích hoạt mở khóa tủ (Lần thử {self.unlock_attempts}/3). Vui lòng kiểm tra lại thiết bị.",
-                    title="LỖI PHẦN CỨNG",
-                    on_retry=self._attempt_unlock,
-                )
+				self.show_error_dialog(
+                    message=(
+                        f"Không thể kích hoạt mở khóa tủ "
+                        f"(Lần thử {self.unlock_attempts}/3). "
+                        "Vui lòng kiểm tra lại thiết bị."
+                    ),
+                        title="LỖI PHẦN CỨNG",
+                        on_retry=self._attempt_unlock,
+					)
             else:
                 self.door_poll_timer.stop()
                 self.navigate("/error", {
-                    "title": "Lỗi phần cứng nghiêm trọng",
-                    "message": f"Kích hoạt mở khóa khoang tủ {self.compartment_id} thất bại sau 3 lần thử liên tiếp. GPIO không hoạt động.",
+                    "title": "Không thể mở tủ",
+                    "message": f"Không thể mở khoang tủ {self.compartment_id} sau nhiều lần thử. Vui lòng liên hệ nhân viên hỗ trợ.",
                     "retry_route": "/",
                 }, replace=True)
 
@@ -90,19 +189,19 @@ class LockerOpenController(BaseController):
         print(f"[locker_open] door status={door_status}")
 
         if door_status == "CLOSED":
-            self._update_door_status("CỬA ĐÃ ĐÓNG", "#00C853")
+            self._update_door_status("Cửa Đang Đóng", "#00C853")
             self.finish_button.setEnabled(True)
             self.door_poll_timer.stop()
         elif door_status == "OPEN":
-            self._update_door_status("CỬA ĐANG MỞ", "#FF6600")
+            self._update_door_status("Cửa Đang Mở", "#FF6600")
             self.finish_button.setEnabled(False)
         else:
-            self._update_door_status("ĐANG KIỂM TRA...", "#888888")
+            self._update_door_status("Đang kiểm tra....", "#888888")
             self.finish_button.setEnabled(False)
 
     def _update_door_status(self, text: str, color: str) -> None:
         self.door_status_label.setText(text)
-        self.door_status_label.setStyleSheet(f"color: {color}; font-size: 24px; font-weight: 900; background-color: transparent;")
+        self.door_status_label.setStyleSheet(f"color: {color}; font-size: 24px; font-weight: 900; background: transparent;")
 
     def _finish(self) -> None:
         if self.finished:
@@ -110,7 +209,7 @@ class LockerOpenController(BaseController):
 
         self.door_poll_timer.stop()
         self.finish_button.setEnabled(False)
-        self.finish_button.setText("ĐANG HOÀN THÀNH...")
+        self.finish_button.setText("Đang Hoàn Thành....")
         process_events()
 
         if self.compartment_id:
@@ -120,10 +219,6 @@ class LockerOpenController(BaseController):
         self._complete_rental_action()
 
     def _complete_rental_action(self) -> None:
-        # ponytail: rental completion is driven by the backend, not the kiosk.
-        # handleUnlock auto-completes + releases the compartment once
-        # openCount reaches maxOpens; the expiry job handles time-outs. Forcing
-        # complete here killed multi-open plans after the first pickup.
         self.finished = True
         self.state.reset_all()
         self.go_home()
@@ -147,3 +242,10 @@ class LockerOpenController(BaseController):
         if compartment is None:
             return ""
         return compartment.id
+
+
+def _HLayout(parent, left, top, right, bottom):
+    from PySide6.QtWidgets import QHBoxLayout
+    l = QHBoxLayout(parent)
+    l.setContentsMargins(left, top, right, bottom)
+    return l

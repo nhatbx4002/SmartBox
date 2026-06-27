@@ -1,48 +1,54 @@
 from __future__ import annotations
 
-from pathlib import Path
-
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QLabel, QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 
 class InlineError(QWidget):
-    """Reusable inline error banner that can be embedded directly in other screens."""
-
     def __init__(self, parent: QWidget):
         super().__init__(parent)
-
-        # Load the UI
-        loader = QUiLoader()
-        ui_path = Path(__file__).resolve().parents[1] / "ui" / "InlineError.ui"
-        self.ui = loader.load(str(ui_path), self)
-        if self.ui is None:
-            raise RuntimeError(f"Could not load UI file: {ui_path}")
-
-        # Get label widgets
-        self.lbl_icon = self.ui.findChild(QLabel, "lblErrorIcon")
-        self.lbl_message = self.ui.findChild(QLabel, "lblErrorMessage")
-
+        self.setObjectName("InlineError")
+        self.setFixedHeight(44)
         self.hide()
 
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(12, 0, 12, 0)
+        layout.setSpacing(8)
+
+        self.lbl_icon = QLabel("\u26a0\ufe0f")
+        self.lbl_icon.setFixedWidth(28)
+        self.lbl_icon.setAlignment(Qt.AlignCenter)
+        self.lbl_icon.setObjectName("lblErrorIcon")
+
+        self.lbl_message = QLabel("")
+        self.lbl_message.setObjectName("lblErrorMessage")
+        self.lbl_message.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.lbl_message.setWordWrap(True)
+
+        layout.addWidget(self.lbl_icon)
+        layout.addWidget(self.lbl_message, stretch=1)
+
+        self.setStyleSheet("""
+            InlineError {
+                background-color: #1A0A0A;
+                border: 1px solid #EF4444;
+                border-radius: 10px;
+            }
+            QLabel {
+                background: transparent;
+                color: #E8E8E8;
+                font-size: 20px;
+                font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            }
+            QLabel#lblErrorIcon {
+                font-size: 22px;
+            }
+        """)
+
     def show_error(self, message: str, icon: str = "⚠️") -> None:
-        """Sets the error message and displays the banner."""
-        if self.lbl_message:
-            self.lbl_message.setText(message)
-        if self.lbl_icon:
-            self.lbl_icon.setText(icon)
+        self.lbl_icon.setText(icon)
+        self.lbl_message.setText(message)
         self.show()
 
     def clear(self) -> None:
-        """Hides the error banner."""
         self.hide()
-
-    def setGeometry(self, *args) -> None:
-        """Overrides setGeometry to ensure the underlying UI widget stretches with the QWidget wrapper."""
-        super().setGeometry(*args)
-        if len(args) == 4:
-            self.ui.setGeometry(0, 0, args[2], args[3])
-        elif len(args) == 1 and hasattr(args[0], "width"):
-            rect = args[0]
-            self.ui.setGeometry(0, 0, rect.width(), rect.height())
-

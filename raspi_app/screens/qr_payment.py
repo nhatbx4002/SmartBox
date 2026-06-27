@@ -1,17 +1,16 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-import qrcode
 from io import BytesIO
+
+import qrcode
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QLabel, QPushButton
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from screens.base import BaseController
 from services.formatters import format_currency
 
-# Poll the backend every 5 seconds as a fallback when the MQTT signal is
-# missed (e.g. broker offline, network blip, or race with the webhook).
 _POLL_INTERVAL_MS = 5000
 
 
@@ -19,23 +18,93 @@ class QRPaymentController(BaseController):
     route = "/qr-payment"
 
     def __init__(self, app):
-        super().__init__(app, self.route, "QRPayment.ui")
+        widget = self._build_ui()
+        super().__init__(app, self.route, widget=widget)
+
         self.countdown_label = self.child("lblPaymentCountdown", QLabel)
         self.amount_label = self.child("lblAmountValue", QLabel)
         self.qr_label = self.child("lblQrImage", QLabel)
         self.child("btnBack", QPushButton).clicked.connect(lambda: self.navigate("/payment"))
 
-        # Countdown timer (1-second ticks)
         self.timer = QTimer(self.widget)
         self.timer.timeout.connect(self._tick)
         self.remaining = 299
 
-        # Polling fallback timer
         self.poll_timer = QTimer(self.widget)
         self.poll_timer.timeout.connect(self._poll_payment_status)
 
+    def _build_ui(self) -> QWidget:
+        root = QWidget()
+        root.setFixedSize(720, 1280)
+        root.setStyleSheet("background-color: #0A0A0A;")
+
+        layout = QVBoxLayout(root)
+        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setSpacing(0)
+
+        header = QFrame(root)
+        header.setObjectName("headerFrame")
+        header.setFixedHeight(80)
+        header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
+        h = QHBoxLayout2(header, 16, 0, 16, 0)
+
+        btn_back = QPushButton("\u2190", header)
+        btn_back.setObjectName("btnBack")
+        btn_back.setFixedSize(60, 60)
+        btn_back.setCursor(Qt.PointingHandCursor)
+        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
+
+        title = QLabel("QU\xc9T M\xc3 THANH TO\xc1N", header)
+        title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 900;")
+
+        h.addWidget(btn_back)
+        h.addWidget(title)
+        h.addStretch()
+        layout.addWidget(header)
+
+        body = QVBoxLayout()
+        body.setContentsMargins(40, 32, 40, 0)
+        body.setSpacing(16)
+        body.setAlignment(Qt.AlignTop)
+
+        self.lbl_countdown = QLabel("05:00", root)
+        self.lbl_countdown.setObjectName("lblPaymentCountdown")
+        self.lbl_countdown.setAlignment(Qt.AlignCenter)
+        self.lbl_countdown.setStyleSheet("background: transparent; border: none; color: #FFB596; font-size: 48px; font-weight: 900; font-family: 'Be Vietnam Pro', Arial, sans-serif;")
+        body.addWidget(self.lbl_countdown)
+
+        qr_frame = QFrame(root)
+        qr_frame.setFixedSize(400, 400)
+        qr_frame.setStyleSheet("QFrame { background-color: white; border: none; border-radius: 20px; }")
+        qr_layout = QVBoxLayout(qr_frame)
+        qr_layout.setAlignment(Qt.AlignCenter)
+
+        self.lbl_qr = QLabel(qr_frame)
+        self.lbl_qr.setObjectName("lblQrImage")
+        self.lbl_qr.setAlignment(Qt.AlignCenter)
+        self.lbl_qr.setStyleSheet("background: transparent; border: none;")
+        qr_layout.addWidget(self.lbl_qr)
+
+        body.addWidget(qr_frame, alignment=Qt.AlignCenter)
+
+        self.lbl_amount = QLabel("0\u20ab", root)
+        self.lbl_amount.setObjectName("lblAmountValue")
+        self.lbl_amount.setAlignment(Qt.AlignCenter)
+        self.lbl_amount.setStyleSheet("background: transparent; border: none; color: #FF6600; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 36px; font-weight: 900;")
+        body.addWidget(self.lbl_amount)
+
+        note = QLabel("Quét mã trên ứng dụng ngân hàng để thanh toán", root)
+        note.setAlignment(Qt.AlignCenter)
+        note.setWordWrap(True)
+        note.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;")
+        body.addWidget(note)
+
+        body.addStretch()
+        layout.addLayout(body)
+        return root
+
     def on_enter(self, data: dict | None = None) -> None:
-        print(f"[QRPayment] on_enter — orderCode={self.state.payment_order_code!r} "
+        print(f"[QRPayment] on_enter \u2014 orderCode={self.state.payment_order_code!r} "
               f"qrString={'set' if self.state.payment_qr_string else 'MISSING'} "
               f"expiresAt={self.state.payment_expires_at!r}")
         if self.state.payment_expires_at:
@@ -63,16 +132,14 @@ class QRPaymentController(BaseController):
         self.poll_timer.stop()
 
     def on_payment_paid(self, order_code, payload) -> None:
-        """Called from MQTT signal (already on Qt main thread)."""
         if order_code == self.state.payment_order_code:
             print(f"[QRPayment] MQTT payment confirmed: orderCode={order_code}")
             self._confirm_paid()
 
     def _poll_payment_status(self) -> None:
-        """Fallback: poll GET /api/payments/payment-status every 5 s."""
         order_code = self.state.payment_order_code
         if not isinstance(order_code, int) or order_code <= 0:
-            print(f"[QRPayment] Poll skipped — invalid orderCode: {order_code!r}")
+            print(f"[QRPayment] Poll skipped \u2014 invalid orderCode: {order_code!r}")
             return
         try:
             result = self.api_client.get_payment_status(order_code)
@@ -80,11 +147,9 @@ class QRPaymentController(BaseController):
                 print(f"[QRPayment] Poll confirmed PAID: orderCode={order_code}")
                 self._confirm_paid()
         except Exception as exc:
-            # Silently ignore poll errors — MQTT is the primary channel
             print(f"[QRPayment] Poll error (ignored): {exc}")
 
     def _confirm_paid(self) -> None:
-        """Stop all timers and navigate to success screen."""
         self.timer.stop()
         self.poll_timer.stop()
         self.navigate("/rent-success", replace=True)
@@ -96,8 +161,8 @@ class QRPaymentController(BaseController):
             self.timer.stop()
             self.poll_timer.stop()
             self.show_error_dialog(
-                message="Thời gian thanh toán đã hết hạn. Vui lòng thử lại.",
-                title="GIAO DỊCH HẾT HẠN",
+                message="Phiên thanh toán đã hết hạn. Vui lòng thử lại.",
+                title="PHIÊN THANH TOÁN HẾT HẠN",
                 on_retry=lambda: self.navigate("/payment", replace=True),
             )
 
@@ -120,3 +185,10 @@ class QRPaymentController(BaseController):
             self.qr_label.width(), self.qr_label.height(),
             Qt.KeepAspectRatio, Qt.SmoothTransformation,
         ))
+
+
+def QHBoxLayout2(parent, left, top, right, bottom):
+    from PySide6.QtWidgets import QHBoxLayout
+    l = QHBoxLayout(parent)
+    l.setContentsMargins(left, top, right, bottom)
+    return l

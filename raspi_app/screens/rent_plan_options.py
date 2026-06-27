@@ -12,7 +12,9 @@ class RentPlanOptionsController(BaseController):
     route = "/rent-plan-options"
 
     def __init__(self, app):
-        super().__init__(app, self.route, "RentPlanOptions.ui")
+        widget = self._build_ui()
+        super().__init__(app, self.route, widget=widget)
+
         self.title_label = self.child("lblTitle", QLabel)
         self.group_label = self.child("lblSelectedGroup", QLabel)
         self.scroll_area = self.child("scrollArea", QScrollArea)
@@ -23,6 +25,75 @@ class RentPlanOptionsController(BaseController):
 
         self.child("btnBack", QPushButton).clicked.connect(lambda: self.navigate("/rent-plan"))
         self.continue_button.clicked.connect(lambda: self.navigate("/rent-phone"))
+
+    def _build_ui(self) -> QWidget:
+        root = QWidget()
+        root.setFixedSize(720, 1280)
+        root.setStyleSheet("background-color: #0A0A0A;")
+
+        layout = QVBoxLayout(root)
+        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setSpacing(0)
+
+        header = QFrame(root)
+        header.setObjectName("headerFrame")
+        header.setFixedHeight(80)
+        header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
+        h = QHBoxLayout6(header, 16, 0, 16, 0)
+
+        btn_back = QPushButton("\u2190", header)
+        btn_back.setObjectName("btnBack")
+        btn_back.setFixedSize(60, 60)
+        btn_back.setCursor(Qt.PointingHandCursor)
+        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
+
+        self.lbl_title = QLabel("", header)
+        self.lbl_title.setObjectName("lblTitle")
+        self.lbl_title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
+
+        h.addWidget(btn_back)
+        h.addWidget(self.lbl_title)
+        h.addStretch()
+        layout.addWidget(header)
+
+        body = QVBoxLayout()
+        body.setContentsMargins(24, 8, 24, 0)
+        body.setSpacing(0)
+
+        self.lbl_group = QLabel("", root)
+        self.lbl_group.setObjectName("lblSelectedGroup")
+        self.lbl_group.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500; padding: 8px 0;")
+        body.addWidget(self.lbl_group)
+
+        scroll = QScrollArea(root)
+        scroll.setObjectName("scrollArea")
+        scroll.setWidgetResizable(True)
+        scroll.setStyleSheet("QScrollArea { background: transparent; border: none; } QScrollBar:vertical { width: 0; }")
+
+        container = QWidget()
+        container.setObjectName("planOptionsContainer")
+        container.setStyleSheet("background: transparent;")
+        container_layout = QVBoxLayout(container)
+        container_layout.setObjectName("planOptionsLayout")
+        container_layout.setContentsMargins(0, 8, 0, 8)
+        container_layout.setSpacing(12)
+
+        scroll.setWidget(container)
+        body.addWidget(scroll, stretch=1)
+
+        self.btn_continue = QPushButton("TIẾP TỤC")
+        self.btn_continue.setObjectName("btnContinue")
+        self.btn_continue.setFixedHeight(80)
+        self.btn_continue.setEnabled(False)
+        self.btn_continue.setCursor(Qt.PointingHandCursor)
+        self.btn_continue.setStyleSheet(
+            "QPushButton { background-color: #333; color: #777; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
+            "QPushButton:enabled { background-color: #2E7D32; color: white; }"
+        )
+        body.addWidget(self.btn_continue)
+
+        layout.addLayout(body)
+        return root
 
     def on_enter(self, data: dict | None = None) -> None:
         if not self.state.selected_size:
@@ -48,8 +119,8 @@ class RentPlanOptionsController(BaseController):
                 plans = [p for p in self.state.available_plans if p.rental_type.upper() == self.state.selected_plan_group]
             except Exception as error:
                 self.show_error_dialog(
-                    message=str(error) or "Kh\u00f4ng th\u1ec3 t\u1ea3i danh s\u00e1ch g\u00f3i thu\u00ea.",
-                    title="L\u1ed6I T\u1ea2I G\u00d3I THU\u00ca",
+                    message=str(error) or "Không thể tải danh sách gói thuê.",
+                    title="LỖI TẢI GÓI THUÊ",
                     on_retry=lambda: self.on_enter(data),
                 )
                 return
@@ -60,8 +131,8 @@ class RentPlanOptionsController(BaseController):
         self._clear_layout(self.options_layout)
 
         if not plans:
-            label = QLabel("Kh\u00f4ng c\u00f3 g\u00f3i n\u00e0o trong nh\u00f3m n\u00e0y")
-            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label = QLabel("Không có gói nào trong nhóm này")
+            label.setAlignment(Qt.AlignCenter)
             label.setStyleSheet("color: #888888; font-size: 20px; font-weight: 600; padding: 60px 0;")
             self.options_layout.addWidget(label)
             return
@@ -92,8 +163,8 @@ class RentPlanOptionsController(BaseController):
         """)
         card.setMinimumHeight(180)
 
-        layout = QHBoxLayout(card)
-        layout.setContentsMargins(34, 26, 34, 26)
+        card_layout = QHBoxLayout(card)
+        card_layout.setContentsMargins(34, 26, 34, 26)
 
         info_layout = QVBoxLayout()
         info_layout.setSpacing(10)
@@ -109,15 +180,14 @@ class RentPlanOptionsController(BaseController):
         info_layout.addWidget(subtitle_label)
 
         price_label = QLabel(format_currency(plan.price))
-        price_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        price_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         price_label.setStyleSheet("color: #FF6600; font-size: 34px; font-weight: 900; border: none;")
 
-        layout.addLayout(info_layout)
-        layout.addStretch()
-        layout.addWidget(price_label)
+        card_layout.addLayout(info_layout)
+        card_layout.addStretch()
+        card_layout.addWidget(price_label)
 
         self.set_clickable(card, lambda p=plan: self._select_plan(p, card))
-
         return card
 
     def _select_plan(self, plan: Plan, card: QFrame) -> None:
@@ -157,3 +227,10 @@ class RentPlanOptionsController(BaseController):
 
     def on_exit(self) -> None:
         pass
+
+
+def QHBoxLayout6(parent, left, top, right, bottom):
+    from PySide6.QtWidgets import QHBoxLayout
+    l = QHBoxLayout(parent)
+    l.setContentsMargins(left, top, right, bottom)
+    return l

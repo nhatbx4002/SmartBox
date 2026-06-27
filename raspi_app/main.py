@@ -125,7 +125,7 @@ class KioskApp(QWidget):
             self.navigate(
                 "/error",
                 {
-                    "title": "KhĂ´ng thá»ƒ khá»Ÿi Ä‘á»™ng tá»§",
+                    "title": "Không thể khởi động tủ",
                     "message": str(self.startup_error),
                     "retry_route": "/",
                 },
@@ -483,8 +483,8 @@ class KioskApp(QWidget):
         if self.current_route and self.current_route in self.controllers:
             controller = self.controllers[self.current_route]
             controller.show_error_dialog(
-                message="Máº¥t káº¿t ná»‘i vá»›i mĂ¡y chá»§ Ä‘iá»u khiá»ƒn MQTT. Äang tá»± Ä‘á»™ng káº¿t ná»‘i láº¡i...",
-                title="Lá»–I Máº¤T Káº¾T Ná»I",
+                message="Mất kết nối với máy chủ điều khiển MQTT. Đang tự động kết nối lại...",
+                title="LỖI MẤT KẾT NỐI",
                 on_retry=self._retry_mqtt,
             )
 

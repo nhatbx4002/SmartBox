@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Callable, TypeVar
-from xml.etree import ElementTree
 
 from PySide6.QtCore import QEvent, QObject, Qt
-from PySide6.QtGui import QPixmap
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QApplication, QLabel, QWidget
+from PySide6.QtWidgets import QApplication, QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from services.config_loader import get_config_value
 
@@ -15,16 +11,15 @@ WidgetT = TypeVar("WidgetT", bound=QWidget)
 
 
 class BaseController:
-    def __init__(self, app: Any, route: str, ui_file: str):
+    def __init__(self, app: Any, route: str, *, widget: QWidget):
         self.app = app
         self.route = route
-        self.ui_file = ui_file
         self._click_filters: list[QObject] = []
         self._network_status = "OFFLINE"
         self._footer_widget: QWidget | None = None
         self._footer_status_label: QLabel | None = None
         self._footer_status_dot: QWidget | None = None
-        self.widget = self._load_ui(ui_file)
+        self.widget = widget
         self._attach_footer()
         self._bind_network_monitor()
 
@@ -62,7 +57,6 @@ class BaseController:
         pass
 
     def on_config_updated(self) -> None:
-        """Called when cabinet config is reloaded (via MQTT or polling)."""
         pass
 
     def navigate(self, route: str, data: dict | None = None, replace: bool = False) -> None:
@@ -77,7 +71,7 @@ class BaseController:
     def child(self, name: str, widget_type: type[WidgetT] | None = None) -> WidgetT | QWidget:
         found = self.widget.findChild(widget_type or QWidget, name)
         if found is None:
-            raise AttributeError(f"{self.ui_file} does not contain widget {name!r}")
+            raise AttributeError(f"{self.route} does not contain widget {name!r}")
         return found
 
     def optional_child(self, name: str, widget_type: type[WidgetT] | None = None) -> WidgetT | QWidget | None:
@@ -101,38 +95,138 @@ class BaseController:
         widget.setProperty("selected", "true" if selected else "false")
         self.refresh_style(widget)
 
-    def _load_ui(self, ui_file: str) -> QWidget:
-        loader = QUiLoader()
-        path = Path(__file__).resolve().parents[1] / "ui" / ui_file
-        widget = loader.load(str(path))
-        if widget is None:
-            raise RuntimeError(f"Could not load UI file: {path}")
-        widget.setFixedSize(720, 1280)
-        self._restore_file_pixmaps(widget, path)
-        return widget
+    def _build_footer(self) -> QFrame:
+        footer = QFrame(self.widget)
+        footer.setObjectName("DashboardFooterFrame")
+        footer.setFixedHeight(48)
+        footer.setStyleSheet("""
+            QFrame#DashboardFooterFrame {
+                background-color: #111111;
+                border: none;
+                border-top: 1px solid #222;
+            }
+        """)
+
+        f_layout = QHBoxLayout(footer)
+        f_layout.setContentsMargins(16, 0, 16, 0)
+
+        self._footer_status_dot = QWidget(footer)
+        self._footer_status_dot.setObjectName("FooterStatusDot")
+        self._footer_status_dot.setFixedSize(8, 8)
+
+        self._footer_status_label = QLabel(footer)
+        self._footer_status_label.setObjectName("FooterStatusLabel")
+        self._footer_status_label.setStyleSheet(
+            "background: transparent; border: none; color: #EF4444;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 12px; font-weight: 700;"
+        )
+
+        version_label = QLabel("Version v1.0", footer)
+        version_label.setObjectName("FooterVersionLabel")
+        version_label.setStyleSheet(
+            "background: transparent; border: none; color: #555;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 12px;"
+        )
+        version_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        f_layout.addWidget(self._footer_status_dot)
+        f_layout.addSpacing(6)
+        f_layout.addWidget(self._footer_status_label)
+        f_layout.addStretch()
+        f_layout.addWidget(version_label)
+
+        return footer
+
+    def _make_header(self, title: str, back_fn: Callable[[], None] | None = None) -> QFrame:
+        header = QFrame(self.widget)
+        header.setObjectName("headerFrame")
+        header.setFixedHeight(80)
+        header.setStyleSheet("""
+            QFrame#headerFrame {
+                background-color: #0A0A0A;
+                border: none;
+                border-bottom: 1px solid #222;
+            }
+        """)
+
+        h_layout = QHBoxLayout(header)
+        h_layout.setContentsMargins(16, 0, 16, 0)
+
+        if back_fn is not None:
+            btn_back = QPushButton("\u2190", header)
+            btn_back.setObjectName("btnBack")
+            btn_back.setFixedSize(60, 60)
+            btn_back.setCursor(Qt.PointingHandCursor)
+            btn_back.setStyleSheet("""
+                QPushButton {
+                    background: transparent;
+                    border: none;
+                    color: #E8E8E8;
+                    font-size: 32px;
+                }
+                QPushButton:pressed {
+                    color: #FF6600;
+                }
+            """)
+            btn_back.clicked.connect(back_fn)
+            h_layout.addWidget(btn_back)
+
+        title_label = QLabel(title, header)
+        title_label.setStyleSheet(
+            "background: transparent; border: none; color: #E8E8E8;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 26px; font-weight: 900;"
+        )
+        h_layout.addWidget(title_label)
+        h_layout.addStretch()
+
+        return header
+
+    def _make_btn(
+        self, text: str, bg: str = "#FF6600", text_color: str = "#FFF",
+        height: int = 88, radius: int = 18,
+    ) -> QPushButton:
+        btn = QPushButton(text)
+        btn.setFixedHeight(height)
+        btn.setCursor(Qt.PointingHandCursor)
+        btn.setStyleSheet(
+            f"QPushButton {{"
+            f"  background-color: {bg}; color: {text_color};"
+            f"  border: none; border-radius: {radius}px;"
+            f"  font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            f"  font-size: 24px; font-weight: 800;"
+            f"}}"
+            f"QPushButton:disabled {{"
+            f"  background-color: #333; color: #777;"
+            f"}}"
+        )
+        return btn
+
+    def _make_card(
+        self, bg: str = "#1C1B1B", border_color: str | None = None,
+        radius: int = 20, min_height: int = 160,
+    ) -> QFrame:
+        card = QFrame()
+        border = f"border: 3px solid {border_color};" if border_color else "border: 3px solid #2A2A2A;"
+        card.setMinimumHeight(min_height)
+        card.setStyleSheet(
+            f"QFrame {{"
+            f"  background-color: {bg}; {border}"
+            f"  border-radius: {radius}px;"
+            f"}}"
+            f"QLabel {{ background: transparent; }}"
+        )
+        return card
 
     def _attach_footer(self) -> None:
-        footer = self.widget.findChild(QWidget, "DashboardFooterFrame")
-        if footer is None:
-            footer_path = Path(__file__).resolve().parents[1] / "ui" / "components" / "Footers.ui"
-            if not footer_path.exists():
-                return
-
-            loader = QUiLoader()
-            footer = loader.load(str(footer_path), self.widget)
-            if footer is None:
-                return
-
+        footer = self._build_footer()
         footer.setParent(self.widget)
         footer.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         footer.setGeometry(0, self.widget.height() - 48, self.widget.width(), 48)
         footer.raise_()
         self._footer_widget = footer
-        version_label = footer.findChild(QLabel, "FooterVersionLabel")
-        if version_label is not None:
-            version_label.setText("Version v1.0")
-        self._footer_status_label = footer.findChild(QLabel, "FooterStatusLabel")
-        self._footer_status_dot = footer.findChild(QWidget, "FooterStatusDot")
         self._apply_network_status(self.network_status)
 
     def _bind_network_monitor(self) -> None:
@@ -156,8 +250,8 @@ class BaseController:
         if self._footer_status_label is not None:
             self._footer_status_label.setText(normalized)
             self._footer_status_label.setStyleSheet(
-                "background-color: transparent; border: none; "
-                f"color: {color}; font-family: 'Be Vietnam Pro', 'Arial', sans-serif; "
+                "background: transparent; border: none;"
+                f"color: {color}; font-family: 'Be Vietnam Pro', 'Arial', sans-serif;"
                 "font-size: 12px; font-weight: 700;"
             )
 
@@ -165,32 +259,6 @@ class BaseController:
             self._footer_status_dot.setStyleSheet(
                 f"background-color: {color}; border: none; border-radius: 4px;"
             )
-
-    def _restore_file_pixmaps(self, root_widget: QWidget, ui_path: Path) -> None:
-        tree = ElementTree.parse(ui_path)
-        for widget_node in tree.findall(".//widget[@class='QLabel']"):
-            name = widget_node.attrib.get("name")
-            pixmap_node = widget_node.find("./property[@name='pixmap']/pixmap")
-            if not name or pixmap_node is None or not pixmap_node.text:
-                continue
-
-            pixmap_ref = pixmap_node.text.strip()
-            if not pixmap_ref.startswith(":/assets/"):
-                continue
-
-            label = root_widget.findChild(QLabel, name)
-            if label is None:
-                continue
-
-            pixmap = QPixmap(pixmap_ref)
-            if pixmap.isNull():
-                asset_name = pixmap_ref.removeprefix(":/assets/")
-                asset_path = Path(__file__).resolve().parents[1] / "assets" / asset_name
-                if asset_path.exists():
-                    pixmap = QPixmap(str(asset_path))
-
-            if not pixmap.isNull():
-                label.setPixmap(pixmap)
 
     def show_error_dialog(
         self,
@@ -221,7 +289,7 @@ class BaseController:
         self._error_dialog.show_error(
             detail_message,
             title=title,
-            hotline=f"Hotline: {hotline} • {status}",
+            hotline=f"Hotline: {hotline} \u2022 {status}",
         )
 
     def hide_error_dialog(self) -> None:
@@ -230,7 +298,6 @@ class BaseController:
                 self._error_dialog.hide()
             except Exception:
                 pass
-
 
 
 def process_events() -> None:
