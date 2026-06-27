@@ -55,8 +55,8 @@ class RentSizeController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(32, 36, 32, 24)
-        body.setSpacing(22)
+        body.setContentsMargins(32, 40, 32, 24)
+        body.setSpacing(24)
 
         subtitle = QLabel("Chọn kích thước phù hợp với đồ cần gửi")
         subtitle.setAlignment(Qt.AlignCenter)
@@ -81,10 +81,9 @@ class RentSizeController(BaseController):
             "Phù hợp với balo, túi xách, hành lý nhỏ",
         )
 
-        body.addSpacing(12)
+        body.addSpacing(16)
         body.addWidget(card1)
         body.addWidget(card2)
-        body.addStretch()
 
         self.btn_continue = QPushButton("TIẾP TỤC")
         self.btn_continue.setObjectName("btnContinue")
@@ -95,16 +94,17 @@ class RentSizeController(BaseController):
             "QPushButton { background-color: #333; color: #777; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
             "QPushButton:enabled { background-color: #FF6600; color: white; }"
         )
-        body.addSpacing(12)
-        body.addWidget(self.btn_continue)
 
+        body.addStretch(1)
+        body.addWidget(self.btn_continue)
+        
         layout.addLayout(body)
         return root
 
     def _size_card(self, obj_name: str, label: str, icon: str, desc: str) -> QFrame:
         card = QFrame()
         card.setObjectName(obj_name)
-        card.setFixedHeight(220)
+        card.setFixedHeight(340)
         card.setCursor(Qt.PointingHandCursor)
         card.setStyleSheet(
             f"QFrame#{obj_name} {{"

@@ -85,14 +85,14 @@ class HomeController(BaseController):
 
             c_layout = QVBoxLayout(card)
             c_layout.setContentsMargins(18, 12, 18, 12)
-            c_layout.setSpacing(4)
+            c_layout.setSpacing(6)
 
             title = QLabel(label, card)
             title.setAlignment(Qt.AlignCenter)
             title.setStyleSheet(
                 "background: transparent; border: none; color: white;"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "font-size: 36px; font-weight: 900;"
+                "font-size: 44px; font-weight: 900;"
             )
 
             sub = QLabel(subtitle, card)
@@ -100,7 +100,7 @@ class HomeController(BaseController):
             sub.setStyleSheet(
                 "background: transparent; border: none; color: rgba(255,255,255,0.72);"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "font-size: 13px; font-weight: 500;"
+                "font-size: 17px; font-weight: 500;"
             )
 
             c_layout.addStretch(1)
