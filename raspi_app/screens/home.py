@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QLabel, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QVBoxLayout, QWidget
 
 from screens.base import BaseController
 
@@ -85,41 +85,76 @@ class HomeController(BaseController):
             )
 
             c_layout = QVBoxLayout(card)
-            c_layout.setContentsMargins(20, 16, 20, 16)
-            c_layout.setSpacing(2)
+            c_layout.setContentsMargins(18, 12, 18, 12)
+            c_layout.setSpacing(4)
 
             title = QLabel(label, card)
+            title.setAlignment(Qt.AlignCenter)
             title.setStyleSheet(
                 "background: transparent; border: none; color: white;"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "font-size: 28px; font-weight: 900;"
+                "font-size: 36px; font-weight: 900;"
             )
 
             sub = QLabel(subtitle, card)
+            sub.setAlignment(Qt.AlignCenter)
             sub.setStyleSheet(
                 "background: transparent; border: none; color: rgba(255,255,255,0.72);"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
                 "font-size: 13px; font-weight: 500;"
             )
 
+            c_layout.addStretch(1)
             c_layout.addWidget(title)
             c_layout.addWidget(sub)
-            c_layout.addStretch()
+            c_layout.addStretch(1)
 
-            body.addWidget(card, 1)
+            body.addWidget(card)
 
-        layout.addLayout(body, 1)
+        layout.addLayout(body)
+        layout.addStretch(1)
+
+        status_row = QFrame(root)
+        status_row.setFixedHeight(24)
+        status_row.setStyleSheet("background: transparent; border: none;")
+
+        status_layout = QHBoxLayout(status_row)
+        status_layout.setContentsMargins(12, 0, 12, 0)
+        status_layout.setSpacing(0)
+
+        online = QLabel("● ONLINE", status_row)
+        online.setStyleSheet(
+            "background: transparent; border: none; color: #00FF41;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 11px; font-weight: 800;"
+        )
+
+        version = QLabel("Version v1.0", status_row)
+        version.setAlignment(Qt.AlignRight)
+        version.setStyleSheet(
+            "background: transparent; border: none; color: #666;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 10px; font-weight: 600;"
+        )
+
+        status_layout.addWidget(online)
+        status_layout.addStretch()
+        status_layout.addWidget(version)
 
         footer = QLabel("OmniBox Kiosk · Hotline: 1900 1234", root)
         footer.setAlignment(Qt.AlignCenter)
+        footer.setFixedHeight(20)
         footer.setStyleSheet(
             "background: transparent; border: none; color: #777;"
             "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 12px; font-weight: 600;"
+            "font-size: 11px; font-weight: 600;"
         )
+
+        layout.addWidget(status_row)
         layout.addWidget(footer)
 
         return root
+
     def on_enter(self, data: dict | None = None) -> None:
         self._check_not_configured()
 
@@ -182,7 +217,7 @@ class HomeController(BaseController):
         card_layout.setSpacing(16)
         card_layout.setAlignment(Qt.AlignCenter)
 
-        icon_label = QLabel("\u2699\ufe0f", card)
+        icon_label = QLabel("⚙️", card)
         icon_label.setAlignment(Qt.AlignCenter)
         icon_label.setStyleSheet("background: transparent; border: none; font-size: 64px;")
         card_layout.addWidget(icon_label)
