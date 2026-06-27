@@ -34,7 +34,7 @@ class RentPlanController(BaseController):
         root.setStyleSheet("background-color: #0A0A0A;")
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 72)
         layout.setSpacing(0)
 
         header = QFrame(root)
@@ -58,12 +58,21 @@ class RentPlanController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 8, 24, 0)
+        body.setContentsMargins(24, 16, 24, 24)
         body.setSpacing(0)
 
         self.lbl_size = QLabel("", root)
         self.lbl_size.setObjectName("lblSelectedSize")
-        self.lbl_size.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500; padding: 8px 0;")
+        self.lbl_size.setMinimumHeight(56)
+        self.lbl_size.setStyleSheet("""
+            background: transparent;
+            border: none;
+            color: #A0A0A0;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            padding: 12px 0;
+        """)
         body.addWidget(self.lbl_size)
 
         scroll = QScrollArea(root)
@@ -84,7 +93,7 @@ class RentPlanController(BaseController):
 
         self.btn_continue = QPushButton("Tiếp Tục")
         self.btn_continue.setObjectName("btnContinue")
-        self.btn_continue.setFixedHeight(80)
+        self.btn_continue.setFixedHeight(96)
         self.btn_continue.setEnabled(False)
         self.btn_continue.setCursor(Qt.PointingHandCursor)
         self.btn_continue.setStyleSheet(
@@ -92,6 +101,7 @@ class RentPlanController(BaseController):
             "QPushButton:enabled { background-color: #FF6600; color: white; }"
         )
         body.addWidget(self.btn_continue)
+        body.addSpacing(8)
 
         layout.addLayout(body)
         return root
