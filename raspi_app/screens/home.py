@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QLabel, QSizePolicy, QVBoxLayout, QWidget
 
 from screens.base import BaseController
 
@@ -20,30 +20,34 @@ class HomeController(BaseController):
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
-        root.setFixedSize(720, 1280)
+        root.setMinimumSize(360, 640)
+        root.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         root.setStyleSheet("background-color: #0A0A0A;")
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 18)
         layout.setSpacing(0)
 
         header = QFrame(root)
-        header.setFixedHeight(160)
+        header.setFixedHeight(118)
         header.setStyleSheet("background: transparent; border: none;")
-        h_layout = QVBoxLayout(header)
-        h_layout.setContentsMargins(24, 40, 24, 0)
 
-        logo = QLabel("SmartBox", header)
+        h_layout = QVBoxLayout(header)
+        h_layout.setContentsMargins(18, 24, 18, 0)
+        h_layout.setSpacing(4)
+
+        logo = QLabel("OmniBox", header)
         logo.setStyleSheet(
             "background: transparent; border: none; color: #E8E8E8;"
             "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 42px; font-weight: 900;"
+            "font-size: 36px; font-weight: 900;"
         )
-        tagline = QLabel("T\u1ee7 th\u00f4ng minh \u2013 G\u1eedi \u0111\u1ed3 ti\u1ec7n l\u1ee3i", header)
+
+        tagline = QLabel("Tủ thông minh – Gửi đồ tiện lợi", header)
         tagline.setStyleSheet(
             "background: transparent; border: none; color: #888;"
             "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 16px; font-weight: 500;"
+            "font-size: 14px; font-weight: 500;"
         )
 
         h_layout.addWidget(logo)
@@ -51,58 +55,71 @@ class HomeController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 16, 24, 0)
-        body.setSpacing(16)
+        body.setContentsMargins(18, 10, 18, 0)
+        body.setSpacing(10)
 
         cards = [
-				("SendCard", "GỬI ĐỒ", "#FF6600", "Gửi đồ vào tủ an toàn"),
-				("ReceiveCard", "NHẬN ĐỒ", "#1565C0", "Nhận đồ bằng mã PIN hoặc QR"),
-				("RentCard", "THUÊ TỦ", "#2E7D32", "Thuê ngăn tủ theo nhu cầu"),
-				("SupportCard", "HỖ TRỢ", "#1C1B1B", "Cần hỗ trợ? Gọi ngay", "#444"),
+            ("SendCard", "GỬI ĐỒ", "#FF6600", "Gửi đồ vào tủ an toàn"),
+            ("ReceiveCard", "NHẬN ĐỒ", "#1565C0", "Nhận đồ bằng mã PIN hoặc QR"),
+            ("RentCard", "THUÊ TỦ", "#2E7D32", "Thuê ngăn tủ theo nhu cầu"),
+            ("SupportCard", "HỖ TRỢ", "#1C1B1B", "Cần hỗ trợ? Gọi ngay", "#444"),
         ]
 
         for obj_name, label, bg, subtitle, *border_info in cards:
             card = QFrame(root)
             card.setObjectName(obj_name)
-            card.setFixedHeight(200)
+            card.setMinimumHeight(105)
+            card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             card.setCursor(Qt.PointingHandCursor)
+
             border_color = border_info[0] if border_info else None
-            border = f"border: 3px solid {border_color};" if border_color else ""
+            border = f"border: 2px solid {border_color};" if border_color else ""
+
             card.setStyleSheet(
                 f"QFrame#{obj_name} {{"
                 f"  background-color: {bg};"
-                f"  border-radius: 24px;"
+                f"  border-radius: 18px;"
                 f"  {border}"
                 f"}}"
                 f"QLabel {{ background: transparent; }}"
             )
 
             c_layout = QVBoxLayout(card)
-            c_layout.setContentsMargins(28, 24, 28, 24)
+            c_layout.setContentsMargins(20, 16, 20, 16)
+            c_layout.setSpacing(2)
 
             title = QLabel(label, card)
             title.setStyleSheet(
                 "background: transparent; border: none; color: white;"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "font-size: 32px; font-weight: 900;"
+                "font-size: 28px; font-weight: 900;"
             )
 
             sub = QLabel(subtitle, card)
             sub.setStyleSheet(
-                "background: transparent; border: none; color: rgba(255,255,255,0.7);"
+                "background: transparent; border: none; color: rgba(255,255,255,0.72);"
                 "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "font-size: 16px; font-weight: 500;"
+                "font-size: 13px; font-weight: 500;"
             )
 
             c_layout.addWidget(title)
             c_layout.addWidget(sub)
             c_layout.addStretch()
-            body.addWidget(card)
 
-        layout.addLayout(body)
-        layout.addStretch()
+            body.addWidget(card, 1)
+
+        layout.addLayout(body, 1)
+
+        footer = QLabel("OmniBox Kiosk · Hotline: 1900 1234", root)
+        footer.setAlignment(Qt.AlignCenter)
+        footer.setStyleSheet(
+            "background: transparent; border: none; color: #777;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 12px; font-weight: 600;"
+        )
+        layout.addWidget(footer)
+
         return root
-
     def on_enter(self, data: dict | None = None) -> None:
         self._check_not_configured()
 
@@ -138,13 +155,22 @@ class HomeController(BaseController):
             overlay_status = "Đang đợi cấu hình từ quản trị viên..."
 
         overlay = QWidget(self.widget)
-        overlay.setFixedSize(720, 1280)
+        overlay.setGeometry(self.widget.rect())
         overlay.setStyleSheet("background-color: rgba(10, 10, 10, 0.97);")
         overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
 
+        overlay_width = self.widget.width()
+        overlay_height = self.widget.height()
+
+        card_width = min(600, int(overlay_width * 0.86))
+        card_height = min(420, int(overlay_height * 0.55))
+
         card = QFrame(overlay)
-        card.setFixedSize(600, 420)
-        card.move((720 - 600) // 2, (1280 - 420) // 2)
+        card.setFixedSize(card_width, card_height)
+        card.move(
+            (overlay_width - card_width) // 2,
+            (overlay_height - card_height) // 2,
+        )
         card.setStyleSheet(
             "background-color: #1C1C1B;"
             "border: 2px solid #FF6600;"
