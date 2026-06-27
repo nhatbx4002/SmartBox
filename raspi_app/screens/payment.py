@@ -20,20 +20,15 @@ class PaymentController(BaseController):
         self.plan_info_label = self.child("lblPlanInfo", QLabel)
         self.pay_button = self.child("btnPayNow", QPushButton)
         self.pay_button_text = self.pay_button.text()
-        self.method_buttons: dict[str, QPushButton] = {
-            "PAYOS": self.child("btnPaymentPayOS", QPushButton),
-            "ZALOPAY": self.child("btnPaymentZalo", QPushButton),
-            "VIETQR": self.child("btnPaymentVietQR", QPushButton),
-        }
-        self.button_styles = {method: button.styleSheet() for method, button in self.method_buttons.items()}
+        self.payos_card = self.child("btnPaymentPayOS", QPushButton)
 
         self.error_banner = InlineError(self.widget)
         self.error_banner.setGeometry(20, 720, 680, 64)
 
         self.child("btnBack", QPushButton).clicked.connect(lambda: self.navigate("/rent-phone"))
         self.pay_button.clicked.connect(self._pay_now)
-        for method, button in self.method_buttons.items():
-            button.clicked.connect(lambda _checked=False, value=method: self._select_method(value))
+        self.state.payment_method = "PAYOS"
+        self.payos_card.setChecked(True)
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
@@ -58,30 +53,41 @@ class PaymentController(BaseController):
         btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
         h.addWidget(btn_back)
 
-        title = QLabel("THANH TO\xc1N", header)
+        title = QLabel("THANH TOÁN", header)
         title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
         h.addWidget(title)
         h.addStretch()
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(32, 32, 32, 0)
-        body.setSpacing(16)
+        body.setContentsMargins(32, 40, 32, 0)
+        body.setSpacing(22)
 
         amount_card = QFrame(root)
-        amount_card.setFixedHeight(120)
+        amount_card.setFixedHeight(140)
         amount_card.setStyleSheet("QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 20px; } QLabel { background: transparent; }")
         a_layout = QVBoxLayout(amount_card)
         a_layout.setAlignment(Qt.AlignCenter)
 
-        lbl_amount_title = QLabel("S\u1ed1 ti\u1ec1n", amount_card)
+        lbl_amount_title = QLabel("Số tiền", amount_card)
         lbl_amount_title.setAlignment(Qt.AlignCenter)
-        lbl_amount_title.setStyleSheet("border: none; color: #888; font-size: 18px; font-weight: 500;")
+        lbl_amount_title.setStyleSheet(
+            "border: none; "
+            "color: #888; "
+            "font-size: 18px; "
+            "font-weight: 500;"
+        )
 
-        self.lbl_amount = QLabel("0\u20ab", amount_card)
+        self.lbl_amount = QLabel("0đ", amount_card)
         self.lbl_amount.setObjectName("lblAmount")
         self.lbl_amount.setAlignment(Qt.AlignCenter)
-        self.lbl_amount.setStyleSheet("border: none; color: #FF6600; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 48px; font-weight: 900;")
+        self.lbl_amount.setStyleSheet(
+            "border: none; "
+            "color: #FF6600; "
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
+            "font-size: 48px; "
+            "font-weight: 900;"
+        )
 
         a_layout.addWidget(lbl_amount_title)
         a_layout.addWidget(self.lbl_amount)
@@ -93,34 +99,50 @@ class PaymentController(BaseController):
         self.lbl_plan.setStyleSheet("background: transparent; border: none; color: #B0B0B0; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;")
         body.addWidget(self.lbl_plan)
 
-        methods_title = QLabel("Ch\u1ecdn ph\u01b0\u01a1ng th\u1ee9c thanh to\xe1n", root)
-        methods_title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 700;")
+        methods_title = QLabel("Phương thức thanh toán", root)
+        methods_title.setAlignment(Qt.AlignCenter)
+        methods_title.setStyleSheet(
+            "background: transparent; border: none; color: #E8E8E8; "
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
+            "font-size: 22px; font-weight: 800;"
+        )
         body.addWidget(methods_title)
 
-        methods_row = QHBoxLayout()
-        methods_row.setSpacing(12)
-        for name, label_text, color in [
-            ("btnPaymentPayOS", "PayOS", "#FF6600"),
-            ("btnPaymentZalo", "ZaloPay", "#0068FF"),
-            ("btnPaymentVietQR", "VietQR", "#E60000"),
-        ]:
-            btn = QPushButton(label_text)
-            btn.setObjectName(name)
-            btn.setFixedSize(200, 100)
-            btn.setCursor(Qt.PointingHandCursor)
-            btn.setCheckable(True)
-            btn.setStyleSheet(
-                f"QPushButton {{ background-color: #1C1B1B; color: #E8E8E8; border: 3px solid #2A2A2A; border-radius: 18px; font-size: 20px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }}"
-                f"QPushButton:checked {{ background-color: #2E7D32; color: white; border: 3px solid {color}; }}"
-            )
-            methods_row.addWidget(btn)
-        body.addLayout(methods_row)
+        payos_card = QPushButton("PayOS")
+        payos_card.setObjectName("btnPaymentPayOS")
+        payos_card.setFixedHeight(128)
+        payos_card.setCursor(Qt.PointingHandCursor)
+        payos_card.setCheckable(True)
+        payos_card.setChecked(True)
+        payos_card.setStyleSheet(
+            "QPushButton { "
+            "background-color: #1C1B1B; "
+            "color: #FFFFFF; "
+            "border: 3px solid #FF6600; "
+            "border-radius: 22px; "
+            "font-size: 28px; "
+            "font-weight: 900; "
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
+            "}"
+            "QPushButton:pressed { background-color: #232323; }"
+        )
+        body.addWidget(payos_card)
+
+        payos_hint = QLabel("Quét mã QR PayOS ở bước tiếp theo để hoàn tất thanh toán", root)
+        payos_hint.setAlignment(Qt.AlignCenter)
+        payos_hint.setWordWrap(True)
+        payos_hint.setStyleSheet(
+            "background: transparent; border: none; color: #A8A8A8; "
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; "
+            "font-size: 18px; font-weight: 500;"
+        )
+        body.addWidget(payos_hint)
 
         body.addStretch()
 
-        self.btn_pay = QPushButton("THANH TO\xc1N NGAY")
+        self.btn_pay = QPushButton("THANH TOÁN NGAY")
         self.btn_pay.setObjectName("btnPayNow")
-        self.btn_pay.setFixedHeight(88)
+        self.btn_pay.setFixedHeight(96)
         self.btn_pay.setCursor(Qt.PointingHandCursor)
         self.btn_pay.setStyleSheet(
             "QPushButton { background-color: #FF6600; color: white; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
@@ -143,22 +165,14 @@ class PaymentController(BaseController):
         self.pay_button.setText(self.pay_button_text)
         self._apply_selection()
 
-    def _select_method(self, method: str) -> None:
-        self.error_banner.clear()
-        self.state.payment_method = method
-        self._apply_selection()
-
     def _apply_selection(self) -> None:
-        for method, button in self.method_buttons.items():
-            selected = self.state.payment_method == method
-            button.setChecked(selected)
+        self.state.payment_method = "PAYOS"
+        self.payos_card.setChecked(True)
         self.pay_button.setEnabled(True)
 
     def _pay_now(self) -> None:
         self.error_banner.clear()
-        if not self.state.payment_method:
-            self.error_banner.show_error("Chưa chọn phương thức thanh toán")
-            return
+        self.state.payment_method = "PAYOS"
         if not self.state.selected_plan:
             return
 

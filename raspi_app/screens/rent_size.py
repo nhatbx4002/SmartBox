@@ -156,6 +156,19 @@ class RentSizeController(BaseController):
 
     def on_enter(self, data: dict | None = None) -> None:
         self.error_banner.clear()
+
+        reset = data.get("reset", False) if data else False
+
+        if reset:
+            self.state.selected_size = None
+            self.state.selected_plan = None
+            self.state.selected_plan_group = None
+            self.state.available_plans = []
+            self.state.phone = None
+            self.state.payment_method = None
+            self.state.rental_data = None
+            self.state.compartment_data = None
+
         self._apply_selection(self.state.selected_size)
 
     def _select_size(self, size: str) -> None:

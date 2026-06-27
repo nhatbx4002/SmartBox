@@ -245,4 +245,4 @@ class HomeController(BaseController):
             return
         self.state.mode = "rent"
         self.state.reset_rent_flow()
-        self.navigate("/rent-size")
+        self.navigate("/rent-size", data={"reset": True})

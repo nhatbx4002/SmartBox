@@ -32,7 +32,7 @@ class RentPlanOptionsController(BaseController):
         root.setStyleSheet("background-color: #0A0A0A;")
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 56)
         layout.setSpacing(0)
 
         header = QFrame(root)
@@ -57,7 +57,7 @@ class RentPlanOptionsController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 8, 24, 0)
+        body.setContentsMargins(24, 8, 24, 32)
         body.setSpacing(0)
 
         self.lbl_group = QLabel("", root)
@@ -83,7 +83,7 @@ class RentPlanOptionsController(BaseController):
 
         self.btn_continue = QPushButton("TIẾP TỤC")
         self.btn_continue.setObjectName("btnContinue")
-        self.btn_continue.setFixedHeight(80)
+        self.btn_continue.setFixedHeight(96)
         self.btn_continue.setEnabled(False)
         self.btn_continue.setCursor(Qt.PointingHandCursor)
         self.btn_continue.setStyleSheet(
@@ -104,6 +104,7 @@ class RentPlanOptionsController(BaseController):
             self.navigate("/rent-plan", replace=True)
             return
 
+        self.title_label.setText("Chọn gói thuê")
         self.state.selected_plan = None
         self.selected_card = None
         self.continue_button.setEnabled(False)
