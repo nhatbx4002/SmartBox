@@ -9,9 +9,10 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
-  Settings,
   ShieldCheck,
   Link,
+  Users,
+  Tag,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore, useUIStore } from '@/store'
@@ -21,11 +22,12 @@ const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
   { to: '/pairing', icon: Link, label: 'Ghép tủ', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
   { to: '/cabinets', icon: Warehouse, label: 'Tủ', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
-  { to: '/profiles', icon: Settings, label: 'Profiles', roles: ['SUPER_ADMIN'] as AdminRole[] },
   { to: '/locations', icon: MapPin, label: 'Địa điểm', roles: ['SUPER_ADMIN'] as AdminRole[] },
   { to: '/rentals', icon: ClipboardList, label: 'Thuê', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
   { to: '/notifications', icon: Bell, label: 'Thông báo', roles: ['SUPER_ADMIN', 'CABINET_ADMIN'] as AdminRole[] },
   { to: '/audit-logs', icon: FileText, label: 'Audit Logs', roles: ['SUPER_ADMIN'] as AdminRole[] },
+  { to: '/admins', icon: Users, label: 'Quản lý Admin', roles: ['SUPER_ADMIN'] as AdminRole[] },
+  { to: '/price-plans', icon: Tag, label: 'Bảng giá', roles: ['SUPER_ADMIN'] as AdminRole[] },
 ]
 
 export function Sidebar() {

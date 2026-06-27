@@ -12,8 +12,7 @@ import type {
   NotificationType,
   PairingSession,
   PaymentStatus,
-  ProvisioningConfig,
-  ProvisionProfile,
+  PricePlan,
   Rental,
   RentalEvent,
 } from '@/types'
@@ -26,10 +25,6 @@ type BackendCabinetStatus =
   | 'ACTIVE'
   | 'INACTIVE'
   | 'OFFLINE'
-  | 'DRAFT'
-  | 'PENDING_REGISTRATION'
-  | 'PENDING_PROVISION'
-  | 'PROVISION_FAILED'
   | 'CONFIGURING'
 type BackendPaymentStatus = 'PENDING' | 'PAID' | 'REFUNDED' | 'FAILED'
 
@@ -67,46 +62,10 @@ interface BackendCabinet {
   lastHeartbeatAt?: string | null
   provisionCode?: string | null
   provisionCodeExpires?: string | null
-  configVersion?: number
   hardwareSerial?: string | null
   location?: { name?: string } | null
   mcpDevices?: BackendMcpDevice[]
   compartments?: BackendCompartment[]
-  profile?: { id: string; name: string } | null
-}
-
-interface BackendProvisionMcpDevice {
-  id: string
-  bus: number
-  address: number
-  role: 'SENSOR' | 'LOCK'
-  name?: string | null
-}
-
-interface BackendProvisionProfile {
-  id: string
-  name: string
-  provisionKey: string
-  provisionSecret?: string | null
-  mode: ProvisionProfile['mode']
-  isActive: boolean
-  templateRows: number
-  templateCols: number
-  templateSizes: string | Compartment['size'][][]
-  mcpDevices: BackendProvisionMcpDevice[]
-  _count?: { cabinets?: number }
-  createdAt: string
-  updatedAt: string
-}
-
-interface BackendProvisioningConfig {
-  id?: string
-  strategy: string
-  provisionKey: string
-  provisionSecret?: string | null
-  webhookUrl?: string | null
-  isActive: boolean
-  updatedAt?: string
 }
 
 interface BackendLocation {
@@ -115,7 +74,6 @@ interface BackendLocation {
   address: string
   latitude?: number | null
   longitude?: number | null
-  googlePlaceId?: string | null
   status: Location['status']
   _count?: { cabinets?: number }
 }
@@ -208,42 +166,9 @@ function mapCabinetStatus(status: BackendCabinetStatus): CabinetStatus {
     ACTIVE: 'ONLINE',
     INACTIVE: 'INACTIVE',
     OFFLINE: 'OFFLINE',
-    DRAFT: 'DRAFT',
-    PENDING_REGISTRATION: 'PENDING_REGISTRATION',
-    PENDING_PROVISION: 'PENDING_PROVISION',
-    PROVISION_FAILED: 'PROVISION_FAILED',
     CONFIGURING: 'CONFIGURING',
   }
   return map[status] ?? 'INACTIVE'
-}
-
-function mapTemplateSizes(templateSizes: BackendProvisionProfile['templateSizes']): Compartment['size'][][] {
-  return Array.isArray(templateSizes) ? templateSizes : (JSON.parse(templateSizes) as Compartment['size'][][])
-}
-
-function mapProfile(profile: BackendProvisionProfile): ProvisionProfile {
-  const sizes = mapTemplateSizes(profile.templateSizes)
-  return {
-    id: profile.id,
-    name: profile.name,
-    provisionKey: profile.provisionKey,
-    provisionSecret: profile.provisionSecret,
-    mode: profile.mode,
-    isActive: profile.isActive,
-    templateRows: profile.templateRows,
-    templateCols: profile.templateCols,
-    templateSizes: sizes,
-    mcpDevices: profile.mcpDevices.map((d) => ({
-      id: d.id,
-      bus: d.bus,
-      address: d.address,
-      role: d.role,
-      name: d.name ?? undefined,
-    })),
-    cabinetCount: profile._count?.cabinets ?? 0,
-    createdAt: profile.createdAt,
-    updatedAt: profile.updatedAt,
-  }
 }
 
 function mapPaymentStatus(status: BackendPaymentStatus): PaymentStatus {
@@ -313,22 +238,8 @@ function mapCabinet(cabinet: BackendCabinet): Cabinet {
     })),
     provisionCode: cabinet.provisionCode ?? null,
     provisionCodeExpires: cabinet.provisionCodeExpires ?? null,
-    configVersion: cabinet.configVersion,
     hardwareSerial: cabinet.hardwareSerial ?? null,
-    profile: cabinet.profile ?? null,
     compartments: compartments.map((compartment) => mapCompartment(compartment, cabinet.name)),
-  }
-}
-
-function mapProvisioningConfig(config: BackendProvisioningConfig): ProvisioningConfig {
-  return {
-    id: config.id,
-    strategy: config.strategy,
-    provisionKey: config.provisionKey,
-    provisionSecret: config.provisionSecret ?? null,
-    webhookUrl: config.webhookUrl ?? null,
-    isActive: config.isActive,
-    updatedAt: config.updatedAt,
   }
 }
 
@@ -339,7 +250,6 @@ function mapLocation(location: BackendLocation): Location {
     address: location.address,
     lat: location.latitude ?? undefined,
     lng: location.longitude ?? undefined,
-    googlePlaceId: location.googlePlaceId ?? undefined,
     status: location.status,
     cabinetCount: location._count?.cabinets ?? 0,
   }
@@ -419,8 +329,6 @@ export const cabinetsApi = {
     unwrap<BackendCabinet[]>(api.get('/admin/cabinets', { params })).then((items) => items.map(mapCabinet)),
   get: (id: string) =>
     unwrap<BackendCabinet>(api.get(`/admin/cabinets/${id}`)).then(mapCabinet),
-  create: (data: unknown) =>
-    unwrap<BackendCabinet>(api.post('/admin/cabinets', data)).then(mapCabinet),
   update: (id: string, data: unknown) =>
     unwrap<BackendCabinet>(api.put(`/admin/cabinets/${id}`, data)).then(mapCabinet),
   delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/cabinets/${id}`)),
@@ -518,18 +426,6 @@ export const auditApi = {
     })),
 }
 
-export const profilesApi = {
-  list: () =>
-    unwrap<BackendProvisionProfile[]>(api.get('/admin/profiles')).then((items) => items.map(mapProfile)),
-  get: (id: string) =>
-    unwrap<BackendProvisionProfile>(api.get(`/admin/profiles/${id}`)).then(mapProfile),
-  create: (data: unknown) =>
-    unwrap<BackendProvisionProfile>(api.post('/admin/profiles', data)).then(mapProfile),
-  update: (id: string, data: unknown) =>
-    unwrap<BackendProvisionProfile>(api.put(`/admin/profiles/${id}`, data)).then(mapProfile),
-  delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/profiles/${id}`)),
-}
-
 export const pairingApi = {
   list: () =>
     unwrap<PairingSession[]>(api.get('/pair')),
@@ -543,11 +439,92 @@ export const pairingApi = {
     unwrap<{ ok: boolean }>(api.post(`/pair/${sessionId}/cancel`)),
 }
 
-export const provisioningApi = {
-  getConfig: () =>
-    unwrap<BackendProvisioningConfig>(api.get('/provisioning/config')).then(mapProvisioningConfig),
-  updateConfig: (data: unknown) =>
-    unwrap<BackendProvisioningConfig>(api.put('/provisioning/config', data)).then(mapProvisioningConfig),
-  listCabinets: (params?: { cabinetId?: string }) =>
-    unwrap<BackendCabinet[]>(api.get('/provisioning/cabinets', { params })).then((items) => items.map(mapCabinet)),
+interface BackendAdmin {
+  id: string
+  email: string
+  name: string
+  role: Admin['role']
+  passwordHash?: string
+  createdAt: string
+  updatedAt: string
+  cabinetAssignments?: { cabinet: { id: string; name: string } }[]
+}
+
+interface BackendPricePlan {
+  id: string
+  name: string
+  size: PricePlan['size']
+  rentalType: PricePlan['rentalType']
+  price: number
+  maxOpens?: number | null
+  durationDays: number
+  description?: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+function mapAdmin(admin: BackendAdmin): Admin {
+  return {
+    id: admin.id,
+    name: admin.name,
+    email: admin.email,
+    role: admin.role,
+    assignedCabinets: (admin.cabinetAssignments ?? []).map((a) => a.cabinet),
+    cabinetIds: (admin.cabinetAssignments ?? []).map((a) => a.cabinet.id),
+  }
+}
+
+function mapPricePlan(plan: BackendPricePlan): PricePlan {
+  return {
+    id: plan.id,
+    name: plan.name,
+    size: plan.size,
+    rentalType: plan.rentalType,
+    price: plan.price,
+    maxOpens: plan.maxOpens ?? null,
+    durationDays: plan.durationDays,
+    description: plan.description ?? null,
+    isActive: plan.isActive,
+    createdAt: plan.createdAt,
+    updatedAt: plan.updatedAt,
+  }
+}
+
+export const adminsApi = {
+  list: () =>
+    unwrap<BackendAdmin[]>(api.get('/admin/admins')).then((items) => items.map(mapAdmin)),
+  create: (data: { email: string; name: string; password: string; role?: string }) =>
+    unwrap<BackendAdmin>(api.post('/admin/admins', data)).then(mapAdmin),
+  update: (id: string, data: { email?: string; name?: string; password?: string }) =>
+    unwrap<BackendAdmin>(api.put(`/admin/admins/${id}`, data)).then(mapAdmin),
+  delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/admins/${id}`)),
+  setCabinets: (id: string, cabinetIds: string[]) =>
+    unwrap<BackendAdmin>(api.put(`/admin/admins/${id}/cabinets`, { cabinetIds })).then(mapAdmin),
+}
+
+export const pricePlansApi = {
+  list: () =>
+    unwrap<BackendPricePlan[]>(api.get('/admin/price-plans')).then((items) => items.map(mapPricePlan)),
+  create: (data: {
+    name: string
+    size: string
+    rentalType: string
+    price: number
+    maxOpens?: number
+    durationDays: number
+    description?: string
+  }) =>
+    unwrap<BackendPricePlan>(api.post('/admin/price-plans', data)).then(mapPricePlan),
+  update: (id: string, data: Partial<{
+    name: string
+    size: string
+    rentalType: string
+    price: number
+    maxOpens?: number
+    durationDays: number
+    description?: string
+  }>) =>
+    unwrap<BackendPricePlan>(api.put(`/admin/price-plans/${id}`, data)).then(mapPricePlan),
+  delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/price-plans/${id}`)),
 }

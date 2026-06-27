@@ -6,7 +6,9 @@ import authRoutes from './routes/auth.routes';
 import adminLocationsRoutes from './routes/admin.locations.routes';
 import auditRoutes from './routes/audit.routes';
 import adminCabinetsRoutes from './routes/admin.cabinets.routes';
-import adminCompartmentsRoutes from './routes/admin.compartments.routes';
+import adminAdminsRoutes from './routes/admin.admins.routes';
+import adminPricePlansRoutes from './routes/admin.priceplans.routes';
+
 import cabinetsRoutes from './routes/cabinets.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import locationsRoutes from './routes/locations.routes';
@@ -68,8 +70,9 @@ async function bootstrap() {
     }
   });
   app.use('/api/admin/cabinets', adminCabinetsRoutes);
-  app.use('/api/admin/cabinets', cabinetsRoutes);
-  app.use('/api/admin/compartments', adminCompartmentsRoutes);
+  app.use('/api/admin/admins', adminAdminsRoutes);
+  app.use('/api/admin/price-plans', adminPricePlansRoutes);
+
   app.use('/api/admin/locations', adminLocationsRoutes);
   app.use('/api/public/locations', locationsRoutes);
   app.use('/api/locations', locationsRoutes);

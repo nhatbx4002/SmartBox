@@ -19,10 +19,13 @@ test('createCompartment rejects duplicate lock pin on the same MCP device', asyn
   (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.ACTIVE });
   (prisma.mcpDevice.findFirst as unknown) = async () => ({ id: 'mcp-1', cabinetId: 'cabinet-1' });
   (prisma.compartment.findFirst as unknown) = async (args: {
-    where?: { mcp23017PinLock?: number; lockMcpDeviceId?: string };
+    where?: { OR?: Array<{ lockMcpDeviceId?: string; mcp23017PinLock?: number }> };
   }) => {
-    if (args.where?.lockMcpDeviceId === 'mcp-1' && args.where.mcp23017PinLock === 4) {
-      return { id: 'existing-compartment' };
+    const or = args.where?.OR ?? [];
+    for (const condition of or) {
+      if (condition.lockMcpDeviceId === 'mcp-1' && condition.mcp23017PinLock === 4) {
+        return { id: 'existing-compartment' };
+      }
     }
     return null;
   };
@@ -32,14 +35,12 @@ test('createCompartment rejects duplicate lock pin on the same MCP device', asyn
       createCompartment('cabinet-1', {
         name: 'A3',
         size: CompartmentSize.SMALL,
-        rowIndex: 0,
-        colIndex: 2,
         lockMcpDeviceId: 'mcp-1',
         sensorMcpDeviceId: 'mcp-1',
         mcp23017PinLock: 4,
         mcp23017PinSensor: 5,
       }),
-    /Lock pin already used/,
+    /Pin already in use/,
   );
 });
 
@@ -49,36 +50,43 @@ test('createCompartment creates compartment and increments cabinet configVersion
     cabinetUpdate: prisma.cabinet.update,
     mcpDeviceFindFirst: prisma.mcpDevice.findFirst,
     compartmentFindFirst: prisma.compartment.findFirst,
-    compartmentCreate: prisma.compartment.create,
+    transaction: prisma.$transaction,
   };
   t.after(() => {
     (prisma.cabinet.findUnique as unknown) = originals.cabinetFindUnique;
     (prisma.cabinet.update as unknown) = originals.cabinetUpdate;
     (prisma.mcpDevice.findFirst as unknown) = originals.mcpDeviceFindFirst;
     (prisma.compartment.findFirst as unknown) = originals.compartmentFindFirst;
-    (prisma.compartment.create as unknown) = originals.compartmentCreate;
+    (prisma.$transaction as unknown) = originals.transaction;
   });
 
   (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.ACTIVE });
   (prisma.mcpDevice.findFirst as unknown) = async () => ({ id: 'mcp-1', cabinetId: 'cabinet-1' });
   (prisma.compartment.findFirst as unknown) = async () => null;
-  (prisma.compartment.create as unknown) = async () => ({
-    id: 'comp-3',
-    cabinetId: 'cabinet-1',
-    name: 'A3',
-    status: CompartmentAvailability.AVAILABLE,
-  });
-  (prisma.cabinet.update as unknown) = async () => ({
-    id: 'cabinet-1',
-    configVersion: 2,
-    compartments: [{ id: 'comp-3', name: 'A3' }],
-  });
+  (prisma.$transaction as unknown) = async (fn: (tx: unknown) => unknown) => {
+    return fn({
+      compartment: {
+        create: async () => ({
+          id: 'comp-3',
+          cabinetId: 'cabinet-1',
+          name: 'A3',
+          status: CompartmentAvailability.AVAILABLE,
+        }),
+      },
+      cabinet: {
+        update: async () => ({
+          id: 'cabinet-1',
+          configVersion: 2,
+        }),
+      },
+    });
+  };
+
+  (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.ACTIVE, mcpDevices: [], compartments: [] });
 
   const result = await createCompartment('cabinet-1', {
     name: 'A3',
     size: CompartmentSize.SMALL,
-    rowIndex: 0,
-    colIndex: 2,
     lockMcpDeviceId: 'mcp-1',
     sensorMcpDeviceId: 'mcp-1',
     mcp23017PinLock: 4,
@@ -96,34 +104,42 @@ test('createCompartment allows multiple compartments without sensors', async (t)
     cabinetUpdate: prisma.cabinet.update,
     mcpDeviceFindFirst: prisma.mcpDevice.findFirst,
     compartmentFindFirst: prisma.compartment.findFirst,
-    compartmentCreate: prisma.compartment.create,
+    transaction: prisma.$transaction,
   };
   t.after(() => {
     (prisma.cabinet.findUnique as unknown) = originals.cabinetFindUnique;
     (prisma.cabinet.update as unknown) = originals.cabinetUpdate;
     (prisma.mcpDevice.findFirst as unknown) = originals.mcpDeviceFindFirst;
     (prisma.compartment.findFirst as unknown) = originals.compartmentFindFirst;
-    (prisma.compartment.create as unknown) = originals.compartmentCreate;
+    (prisma.$transaction as unknown) = originals.transaction;
   });
 
-  (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.CONFIGURING });
+  (prisma.cabinet.findUnique as unknown) = async () => ({ id: 'cabinet-1', status: CabinetStatus.CONFIGURING, mcpDevices: [], compartments: [] });
   (prisma.mcpDevice.findFirst as unknown) = async () => ({ id: 'mcp-1', cabinetId: 'cabinet-1' });
   (prisma.compartment.findFirst as unknown) = async (args: unknown) => {
     calls.push(args);
     return null;
   };
-  (prisma.compartment.create as unknown) = async (args: { data: { mcp23017PinSensor: number; sensorMcpDeviceId?: string | null } }) => ({
-    id: 'comp-4',
-    cabinetId: 'cabinet-1',
-    name: 'A4',
-    status: CompartmentAvailability.AVAILABLE,
-    ...args.data,
-  });
-  (prisma.cabinet.update as unknown) = async () => ({
-    id: 'cabinet-1',
-    configVersion: 2,
-    compartments: [{ id: 'comp-4', name: 'A4' }],
-  });
+  (prisma.$transaction as unknown) = async (fn: (tx: unknown) => unknown) => {
+    return fn({
+      compartment: {
+        create: async (args: { data: { mcp23017PinSensor: number; sensorMcpDeviceId?: string | null } }) => ({
+          id: 'comp-4',
+          cabinetId: 'cabinet-1',
+          name: 'A4',
+          status: CompartmentAvailability.AVAILABLE,
+          ...args.data,
+        }),
+      },
+      cabinet: {
+        update: async () => ({
+          id: 'cabinet-1',
+          configVersion: 2,
+          compartments: [{ id: 'comp-4', name: 'A4' }],
+        }),
+      },
+    });
+  };
 
   const result = await createCompartment('cabinet-1', {
     name: 'A4',

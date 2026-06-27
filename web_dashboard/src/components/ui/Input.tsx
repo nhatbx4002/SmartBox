@@ -8,7 +8,9 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, helper, type = 'text', ...props }, ref) => {
+  ({ className, label, error, helper, type = 'text', id, ...props }, ref) => {
+    const generatedId = React.useId()
+    const inputId = id || generatedId
     const [showPassword, setShowPassword] = React.useState(false)
     const isPassword = type === 'password'
     const isDate = type === 'date'
@@ -16,10 +18,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>
+          <label htmlFor={inputId} className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>
         )}
         <div className="relative">
           <input
+            id={inputId}
             type={isPassword && showPassword ? 'text' : type}
             className={cn(
               'w-full h-10 px-3.5 rounded-lg',

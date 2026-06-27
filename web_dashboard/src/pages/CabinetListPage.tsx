@@ -1,24 +1,20 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react'
+import { Eye, MoreHorizontal, Trash2 } from 'lucide-react'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Button, DataTable, Badge, Select, Modal, Input, type Column } from '@/components/ui'
+import { DataTable, Badge, Select, type Column } from '@/components/ui'
 import { getCabinetStatusVariant, getCompartmentStatusColor } from '@/components/ui/Badge'
 import { formatRelativeTime, cn } from '@/lib/utils'
-import { cabinetsApi, locationsApi, profilesApi } from '@/lib/api'
-import type { Cabinet, Compartment, Location, ProvisionProfile } from '@/types'
+import { cabinetsApi, locationsApi } from '@/lib/api'
+import type { Cabinet, Compartment, Location } from '@/types'
 
 const cabinetStatusLabels: Record<Cabinet['status'], string> = {
   ACTIVE: 'Active',
   ONLINE: 'Online',
   OFFLINE: 'Offline',
   INACTIVE: 'Inactive',
-  PENDING_REGISTRATION: 'Pending Registration',
-  PENDING_PROVISION: 'Pending Provision',
-  PROVISION_FAILED: 'Provision Failed',
-  DRAFT: 'Draft',
   CONFIGURING: 'Configuring',
 }
 
@@ -34,8 +30,6 @@ export default function CabinetListPage() {
   const queryClient = useQueryClient()
   const [locationFilter, setLocationFilter] = React.useState('')
   const [statusFilter, setStatusFilter] = React.useState('')
-  const [showCreateModal, setShowCreateModal] = React.useState(false)
-  const [cabinetForm, setCabinetForm] = React.useState({ locationId: '', profileId: '', deviceName: '', hardwareSerial: '' })
 
   const { data: cabinets = [], isLoading: cabinetsLoading } = useQuery({
     queryKey: ['cabinets'],
@@ -45,31 +39,6 @@ export default function CabinetListPage() {
   const { data: locations = [] } = useQuery({
     queryKey: ['locations'],
     queryFn: () => locationsApi.list(),
-  })
-
-  const { data: profiles = [] } = useQuery({
-    queryKey: ['profiles'],
-    queryFn: () => profilesApi.list(),
-  })
-
-  const createCabinetMutation = useMutation({
-    mutationFn: (data: typeof cabinetForm) =>
-      cabinetsApi.create({
-        locationId: data.locationId,
-        profileId: data.profileId,
-        deviceName: data.deviceName,
-        hardwareSerial: data.hardwareSerial || undefined,
-      }),
-    onSuccess: () => {
-      toast.success('Cabinet created')
-      setShowCreateModal(false)
-      setCabinetForm({ locationId: '', profileId: '', deviceName: '', hardwareSerial: '' })
-      queryClient.invalidateQueries({ queryKey: ['cabinets'] })
-    },
-    onError: (err: unknown) => {
-      const msg = (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error?.message || 'Failed to create cabinet'
-      toast.error(msg)
-    },
   })
 
   const deleteMutation = useMutation({
@@ -113,8 +82,8 @@ export default function CabinetListPage() {
       ),
     },
     {
-      key: 'provision',
-      header: 'Provision',
+      key: 'pairing',
+      header: 'Pairing',
       width: '170px',
       render: (row) => {
         const expiry = formatProvisionExpiry(row.provisionCodeExpires)
@@ -124,17 +93,11 @@ export default function CabinetListPage() {
               <code className="text-xs bg-warning/10 border border-warning/30 px-2 py-0.5 rounded text-warning">
                 {row.provisionCode}
               </code>
-              <p className="text-xs text-text-muted">{expiry ? `Expires ${expiry}` : 'No expiry'}</p>
+              <p className="text-xs text-text-muted">{expiry ? `Expires ${expiry}` : ''}</p>
             </div>
           )
         }
-
-        return (
-          <div className="space-y-1">
-            <p className="text-xs text-text-secondary">{row.profile?.name ?? 'No profile'}</p>
-            <p className="text-xs text-text-muted">Config v{row.configVersion ?? 1}</p>
-          </div>
-        )
+        return <span className="text-text-muted">—</span>
       },
     },
     {
@@ -187,9 +150,6 @@ export default function CabinetListPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-text-primary">Cabinets</h2>
-        <Button size="sm" onClick={() => setShowCreateModal(true)}>
-          <Plus className="h-4 w-4" /> Create Cabinet
-        </Button>
       </div>
 
       <div className="bg-surface rounded-xl border border-border p-4">
@@ -216,10 +176,6 @@ export default function CabinetListPage() {
               { value: 'ONLINE', label: 'Online' },
               { value: 'OFFLINE', label: 'Offline' },
               { value: 'INACTIVE', label: 'Inactive' },
-              { value: 'PENDING_REGISTRATION', label: 'Pending Registration' },
-              { value: 'PENDING_PROVISION', label: 'Pending Provision' },
-              { value: 'PROVISION_FAILED', label: 'Provision Failed' },
-              { value: 'DRAFT', label: 'Draft' },
             ]}
             className="w-44"
           />
@@ -280,78 +236,6 @@ export default function CabinetListPage() {
           </div>
         )}
       </div>
-
-      {/* Create Cabinet Modal */}
-      <Modal
-        open={showCreateModal}
-        onOpenChange={(open) => { if (!open) { setShowCreateModal(false); setCabinetForm({ locationId: '', profileId: '', deviceName: '', hardwareSerial: '' }) } }}
-        title="Create Cabinet"
-        size="md"
-      >
-        <div className="space-y-4">
-          <Select
-            label="Location *"
-            value={cabinetForm.locationId}
-            onValueChange={(v) => setCabinetForm({ ...cabinetForm, locationId: v })}
-            options={[
-              { value: '', label: 'Select location...' },
-              ...locations.map((l: Location) => ({ value: l.id, label: l.name })),
-            ]}
-          />
-          <Select
-            label="Profile *"
-            value={cabinetForm.profileId}
-            onValueChange={(v) => setCabinetForm({ ...cabinetForm, profileId: v })}
-            options={[
-              { value: '', label: 'Select profile...' },
-              ...profiles.map((p: ProvisionProfile) => ({
-                value: p.id,
-                label: `${p.name} (${p.mode === 'ALLOW_NEW' ? 'Allow New' : 'Check Existing'})`,
-              })),
-            ]}
-          />
-          <Input
-            label="Device Name *"
-            value={cabinetForm.deviceName}
-            onChange={(e) => setCabinetForm({ ...cabinetForm, deviceName: e.target.value })}
-            placeholder="VD: Tu A - Tầng 1"
-          />
-          <Input
-            label="Hardware Serial (optional)"
-            value={cabinetForm.hardwareSerial}
-            onChange={(e) => setCabinetForm({ ...cabinetForm, hardwareSerial: e.target.value })}
-            placeholder="VD: RPI-ABC123"
-          />
-          {cabinetForm.profileId && (() => {
-            const selected = profiles.find((p: ProvisionProfile) => p.id === cabinetForm.profileId)
-            if (!selected) return null
-            return (
-              <div className="bg-surface-elevated rounded-lg p-3 text-xs text-text-secondary">
-                <p className="font-medium text-text-primary mb-2">Profile preview</p>
-                <p>Layout: {selected.templateRows}×{selected.templateCols} ({selected.templateSizes.flat().filter(s => s === 'SMALL').length}S / {selected.templateSizes.flat().filter(s => s === 'LARGE').length}L)</p>
-                <p>MCP devices: {selected.mcpDevices.map(d => `0x${d.address.toString(16).toUpperCase()}(${d.role})`).join(', ')}</p>
-              </div>
-            )
-          })()}
-          <div className="flex gap-3 pt-2">
-            <Button
-              className="flex-1"
-              loading={createCabinetMutation.isPending}
-              onClick={() => {
-                if (!cabinetForm.locationId) return toast.error('Select a location')
-                if (!cabinetForm.profileId) return toast.error('Select a profile')
-                if (!cabinetForm.deviceName.trim()) return toast.error('Device name is required')
-                createCabinetMutation.mutate(cabinetForm)
-              }}
-            >
-              Create
-            </Button>
-            <Button variant="ghost" onClick={() => { setShowCreateModal(false); setCabinetForm({ locationId: '', profileId: '', deviceName: '', hardwareSerial: '' }) }}>
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   )
 }

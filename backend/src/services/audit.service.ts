@@ -20,6 +20,24 @@ export interface AuditLogFilters {
   limit?: number;
 }
 
+export async function auditFromRequest(
+  req: { admin?: { id: string }; ip?: string },
+  action: AuditAction,
+  resource: string,
+  resourceId: string,
+  details: object,
+) {
+  if (!req.admin) return;
+  return createAuditLog({
+    adminId: req.admin.id,
+    action,
+    resource,
+    resourceId,
+    details,
+    ipAddress: req.ip,
+  });
+}
+
 export async function createAuditLog(input: CreateAuditLogInput) {
   return prisma.auditLog.create({
     data: {

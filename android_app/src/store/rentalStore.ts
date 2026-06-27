@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { rentalService } from '../services/rental';
 import { RentalWithRelations, CreateRentalPayload } from '../types';
 
@@ -7,17 +9,23 @@ interface RentalState {
   currentRental: RentalWithRelations | null;
   isLoading: boolean;
   error: string | null;
+  _hasHydrated: boolean;
+  setHasHydrated: (v: boolean) => void;
   fetchRentals: (params?: { page?: number; limit?: number; status?: string }) => Promise<void>;
   fetchRentalDetail: (id: string) => Promise<RentalWithRelations>;
   createRental: (payload: CreateRentalPayload) => Promise<RentalWithRelations>;
   completeRental: (id: string) => Promise<void>;
 }
 
-export const useRentalStore = create<RentalState>((set) => ({
+export const useRentalStore = create<RentalState>()(
+  persist(
+    (set) => ({
   rentals: [],
   currentRental: null,
   isLoading: false,
   error: null,
+  _hasHydrated: false,
+  setHasHydrated: (v) => set({ _hasHydrated: v }),
 
   fetchRentals: async (params) => {
     set({ isLoading: true, error: null });
@@ -74,4 +82,12 @@ export const useRentalStore = create<RentalState>((set) => ({
       throw err;
     }
   },
-}));
+    }),
+    {
+      name: 'smartbox-rental-store',
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({ rentals: state.rentals }),
+      onRehydrateStorage: () => (state) => state?.setHasHydrated(true),
+    },
+  )
+);

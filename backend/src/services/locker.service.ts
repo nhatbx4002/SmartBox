@@ -27,19 +27,6 @@ export async function unlockCompartment(cabinetId: string, compartmentIdOrName: 
   });
 }
 
-export async function lockCompartment(cabinetId: string, compartmentIdOrName: string) {
-  const compartment = await findCompartment(cabinetId, compartmentIdOrName);
-  const topicName = compartment?.name ?? compartmentIdOrName;
-
-  publishMqtt(`smartbox/${cabinetId}/lock/${topicName}/lock`, {
-    action: 'lock',
-    cabinetId,
-    compartmentId: compartment?.id ?? compartmentIdOrName,
-    compartmentName: topicName,
-    timestamp: new Date().toISOString(),
-  });
-}
-
 async function findCompartment(cabinetId: string, compartmentIdOrName: string) {
   return prisma.compartment.findFirst({
     where: {

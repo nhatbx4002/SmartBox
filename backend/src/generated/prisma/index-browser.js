@@ -150,11 +150,17 @@ exports.Prisma.LocationScalarFieldEnum = {
   address: 'address',
   latitude: 'latitude',
   longitude: 'longitude',
-  googlePlaceId: 'googlePlaceId',
   mapImageUrl: 'mapImageUrl',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AdminCabinetScalarFieldEnum = {
+  id: 'id',
+  adminId: 'adminId',
+  cabinetId: 'cabinetId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.CabinetScalarFieldEnum = {
@@ -185,8 +191,6 @@ exports.Prisma.CompartmentScalarFieldEnum = {
   cabinetId: 'cabinetId',
   name: 'name',
   size: 'size',
-  rowIndex: 'rowIndex',
-  colIndex: 'colIndex',
   mcp23017PinLock: 'mcp23017PinLock',
   mcp23017PinSensor: 'mcp23017PinSensor',
   lockMcpDeviceId: 'lockMcpDeviceId',
@@ -368,10 +372,6 @@ exports.CabinetStatus = exports.$Enums.CabinetStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
   OFFLINE: 'OFFLINE',
-  DRAFT: 'DRAFT',
-  PENDING_PROVISION: 'PENDING_PROVISION',
-  PROVISION_FAILED: 'PROVISION_FAILED',
-  PENDING_REGISTRATION: 'PENDING_REGISTRATION',
   CONFIGURING: 'CONFIGURING'
 };
 
@@ -440,7 +440,15 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   CREATE_PROVISION_PROFILE: 'CREATE_PROVISION_PROFILE',
   UPDATE_PROVISION_PROFILE: 'UPDATE_PROVISION_PROFILE',
   DELETE_PROVISION_PROFILE: 'DELETE_PROVISION_PROFILE',
-  CABINET_AUTO_PROVISIONED: 'CABINET_AUTO_PROVISIONED'
+  CABINET_AUTO_PROVISIONED: 'CABINET_AUTO_PROVISIONED',
+  CREATE_ADMIN: 'CREATE_ADMIN',
+  UPDATE_ADMIN: 'UPDATE_ADMIN',
+  DELETE_ADMIN: 'DELETE_ADMIN',
+  ASSIGN_ADMIN_CABINET: 'ASSIGN_ADMIN_CABINET',
+  UNASSIGN_ADMIN_CABINET: 'UNASSIGN_ADMIN_CABINET',
+  CREATE_PRICE_PLAN: 'CREATE_PRICE_PLAN',
+  UPDATE_PRICE_PLAN: 'UPDATE_PRICE_PLAN',
+  DELETE_PRICE_PLAN: 'DELETE_PRICE_PLAN'
 };
 
 exports.NotificationType = exports.$Enums.NotificationType = {
@@ -483,6 +491,7 @@ exports.Prisma.ModelName = {
   Admin: 'Admin',
   User: 'User',
   Location: 'Location',
+  AdminCabinet: 'AdminCabinet',
   Cabinet: 'Cabinet',
   McpDevice: 'McpDevice',
   Compartment: 'Compartment',

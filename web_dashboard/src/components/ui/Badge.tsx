@@ -64,10 +64,6 @@ export function getCabinetStatusVariant(status: CabinetStatus): BadgeVariant {
     ONLINE: 'online',
     OFFLINE: 'offline',
     INACTIVE: 'inactive',
-    PENDING_REGISTRATION: 'warning',
-    PENDING_PROVISION: 'warning',
-    PROVISION_FAILED: 'error',
-    DRAFT: 'muted',
     ACTIVE: 'online',
     CONFIGURING: 'warning',
   }

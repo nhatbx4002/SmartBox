@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { AppLayout } from '@/components/layout'
+import { AppLayout, RequireRole } from '@/components/layout'
 import {
   LoginPage,
   DashboardPage,
@@ -11,7 +11,8 @@ import {
   LocationsPage,
   NotificationsPage,
   AuditLogsPage,
-  ProfilesPage,
+  AdminsPage,
+  PricePlansPage,
 } from '@/pages'
 
 export default function App() {
@@ -23,13 +24,15 @@ export default function App() {
         <Route path="/pairing" element={<PairingQueuePage />} />
         <Route path="/cabinets" element={<CabinetListPage />} />
         <Route path="/cabinets/:id" element={<CabinetDetailPage />} />
-        <Route path="/profiles" element={<ProfilesPage />} />
-        <Route path="/profiles/:id" element={<ProfilesPage />} />
         <Route path="/rentals" element={<RentalsPage />} />
         <Route path="/rentals/:id" element={<RentalDetailPage />} />
-        <Route path="/locations" element={<LocationsPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/audit-logs" element={<AuditLogsPage />} />
+        <Route element={<RequireRole roles={['SUPER_ADMIN']} />}>
+          <Route path="/locations" element={<LocationsPage />} />
+          <Route path="/audit-logs" element={<AuditLogsPage />} />
+          <Route path="/admins" element={<AdminsPage />} />
+          <Route path="/price-plans" element={<PricePlansPage />} />
+        </Route>
       </Route>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

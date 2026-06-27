@@ -1,10 +1,13 @@
 import { Router } from 'express';
 import { NotFoundError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
+import { requireAdmin } from '../middleware/auth';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { listNotifications, markAllNotificationsRead } from '../services/notification.service';
 
 const router = Router();
+
+router.use(requireAdmin);
 
 router.get(
   '/',

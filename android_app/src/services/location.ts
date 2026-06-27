@@ -7,7 +7,6 @@ export interface LocationListItem {
   address: string;
   latitude: number | null;
   longitude: number | null;
-  googlePlaceId: string | null;
   mapImageUrl: string | null;
   distance: number | null;
   availableSmall: number;
@@ -40,7 +39,6 @@ export interface UserLocationDetail {
   address: string;
   latitude: number | null;
   longitude: number | null;
-  googlePlaceId: string | null;
   mapImageUrl: string | null;
   status: string;
   cabinets: CabinetDetail[];

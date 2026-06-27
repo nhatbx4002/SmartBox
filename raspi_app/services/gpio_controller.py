@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
-import time
+import threading
 
 from services.config_loader import save_config
 
@@ -148,8 +148,15 @@ class GpioController:
             with SMBus(bus_number) as bus:
                 self._configure_output(bus, address, pin)
                 self._write_pin(bus, address, pin, high=True)
-                time.sleep(duration)
-                self._write_pin(bus, address, pin, high=False)
+
+            def _reset():
+                try:
+                    with SMBus(bus_number) as b:
+                        self._write_pin(b, address, pin, high=False)
+                except Exception as e:
+                    print(f"[GPIO ERROR] reset pin failed: {e}")
+
+            threading.Timer(duration, _reset).start()
             return True
         except Exception as error:
             print(f"[GPIO ERROR] unlock failed: {error}")

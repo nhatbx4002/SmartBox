@@ -1,4 +1,16 @@
 services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: omnibox_mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
   postgres:
     image: postgres:16-alpine
     container_name: omnibox_database
@@ -18,7 +30,7 @@ services:
       retries: 5
 
   backend:
-    image: nhatbx2004/smartbox-backend:add-payment
+    image: nhatbx2004/smartbox-backend:latest
     container_name: omnibox_backend
     restart: unless-stopped
     ports:
@@ -28,6 +40,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      mosquitto:
+        condition: service_started
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/health"]
       interval: 30s
@@ -36,3 +50,5 @@ services:
 
 volumes:
   postgres_data:
+  mosquitto_data:
+  mosquitto_log:

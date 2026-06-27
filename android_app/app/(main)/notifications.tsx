@@ -39,6 +39,7 @@ export default function NotificationsScreen() {
     try {
       await userService.markAllNotificationsRead();
       setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
+      setFilter("all");
     } catch (error: any) {
       Alert.alert("Không thể cập nhật", error?.message || "Có lỗi xảy ra.");
     }

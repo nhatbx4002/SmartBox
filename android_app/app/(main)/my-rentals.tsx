@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -24,6 +24,7 @@ export default function MyRentalsScreen() {
   const fetchRentals = useRentalStore((state) => state.fetchRentals);
   const isLoading = useRentalStore((state) => state.isLoading);
   const [now, setNow] = useState(Date.now());
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchRentals({ limit: 50 });
@@ -54,6 +55,14 @@ export default function MyRentalsScreen() {
         className="flex-1 px-four py-four"
         contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={async () => { setRefreshing(true); await fetchRentals({ limit: 50 }); setRefreshing(false); }}
+            tintColor="#FF6600"
+            colors={["#FF6600"]}
+          />
+        }
       >
         {isLoading ? (
           <RentalListSkeleton />

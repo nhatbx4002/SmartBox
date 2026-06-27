@@ -29,6 +29,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Location = $Result.DefaultSelection<Prisma.$LocationPayload>
 /**
+ * Model AdminCabinet
+ * 
+ */
+export type AdminCabinet = $Result.DefaultSelection<Prisma.$AdminCabinetPayload>
+/**
  * Model Cabinet
  * 
  */
@@ -126,10 +131,6 @@ export const CabinetStatus: {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
   OFFLINE: 'OFFLINE',
-  DRAFT: 'DRAFT',
-  PENDING_PROVISION: 'PENDING_PROVISION',
-  PROVISION_FAILED: 'PROVISION_FAILED',
-  PENDING_REGISTRATION: 'PENDING_REGISTRATION',
   CONFIGURING: 'CONFIGURING'
 };
 
@@ -222,7 +223,15 @@ export const AuditAction: {
   CREATE_PROVISION_PROFILE: 'CREATE_PROVISION_PROFILE',
   UPDATE_PROVISION_PROFILE: 'UPDATE_PROVISION_PROFILE',
   DELETE_PROVISION_PROFILE: 'DELETE_PROVISION_PROFILE',
-  CABINET_AUTO_PROVISIONED: 'CABINET_AUTO_PROVISIONED'
+  CABINET_AUTO_PROVISIONED: 'CABINET_AUTO_PROVISIONED',
+  CREATE_ADMIN: 'CREATE_ADMIN',
+  UPDATE_ADMIN: 'UPDATE_ADMIN',
+  DELETE_ADMIN: 'DELETE_ADMIN',
+  ASSIGN_ADMIN_CABINET: 'ASSIGN_ADMIN_CABINET',
+  UNASSIGN_ADMIN_CABINET: 'UNASSIGN_ADMIN_CABINET',
+  CREATE_PRICE_PLAN: 'CREATE_PRICE_PLAN',
+  UPDATE_PRICE_PLAN: 'UPDATE_PRICE_PLAN',
+  DELETE_PRICE_PLAN: 'DELETE_PRICE_PLAN'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -500,6 +509,16 @@ export class PrismaClient<
     * ```
     */
   get location(): Prisma.LocationDelegate<ExtArgs>;
+
+  /**
+   * `prisma.adminCabinet`: Exposes CRUD operations for the **AdminCabinet** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdminCabinets
+    * const adminCabinets = await prisma.adminCabinet.findMany()
+    * ```
+    */
+  get adminCabinet(): Prisma.AdminCabinetDelegate<ExtArgs>;
 
   /**
    * `prisma.cabinet`: Exposes CRUD operations for the **Cabinet** model.
@@ -1074,6 +1093,7 @@ export namespace Prisma {
     Admin: 'Admin',
     User: 'User',
     Location: 'Location',
+    AdminCabinet: 'AdminCabinet',
     Cabinet: 'Cabinet',
     McpDevice: 'McpDevice',
     Compartment: 'Compartment',
@@ -1102,7 +1122,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "admin" | "user" | "location" | "cabinet" | "mcpDevice" | "compartment" | "cabinetCredential" | "pairingSession" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "auditLog" | "notification" | "userSession" | "payment"
+      modelProps: "admin" | "user" | "location" | "adminCabinet" | "cabinet" | "mcpDevice" | "compartment" | "cabinetCredential" | "pairingSession" | "compartmentStatus" | "pricePlan" | "rental" | "lockerLog" | "auditLog" | "notification" | "userSession" | "payment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1313,6 +1333,76 @@ export namespace Prisma {
           count: {
             args: Prisma.LocationCountArgs<ExtArgs>
             result: $Utils.Optional<LocationCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdminCabinet: {
+        payload: Prisma.$AdminCabinetPayload<ExtArgs>
+        fields: Prisma.AdminCabinetFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminCabinetFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminCabinetFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminCabinetFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminCabinetFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>
+          }
+          findMany: {
+            args: Prisma.AdminCabinetFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>[]
+          }
+          create: {
+            args: Prisma.AdminCabinetCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>
+          }
+          createMany: {
+            args: Prisma.AdminCabinetCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminCabinetCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminCabinetDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>
+          }
+          update: {
+            args: Prisma.AdminCabinetUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminCabinetDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminCabinetUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.AdminCabinetUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminCabinetPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminCabinetAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdminCabinet>
+          }
+          groupBy: {
+            args: Prisma.AdminCabinetGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminCabinetGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminCabinetCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminCabinetCountAggregateOutputType> | number
           }
         }
       }
@@ -2388,10 +2478,12 @@ export namespace Prisma {
 
   export type AdminCountOutputType = {
     auditLogs: number
+    cabinetAssignments: number
   }
 
   export type AdminCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     auditLogs?: boolean | AdminCountOutputTypeCountAuditLogsArgs
+    cabinetAssignments?: boolean | AdminCountOutputTypeCountCabinetAssignmentsArgs
   }
 
   // Custom InputTypes
@@ -2410,6 +2502,13 @@ export namespace Prisma {
    */
   export type AdminCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AuditLogWhereInput
+  }
+
+  /**
+   * AdminCountOutputType without action
+   */
+  export type AdminCountOutputTypeCountCabinetAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminCabinetWhereInput
   }
 
 
@@ -2501,12 +2600,14 @@ export namespace Prisma {
     compartments: number
     mcpDevices: number
     logs: number
+    adminAssignments: number
   }
 
   export type CabinetCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     compartments?: boolean | CabinetCountOutputTypeCountCompartmentsArgs
     mcpDevices?: boolean | CabinetCountOutputTypeCountMcpDevicesArgs
     logs?: boolean | CabinetCountOutputTypeCountLogsArgs
+    adminAssignments?: boolean | CabinetCountOutputTypeCountAdminAssignmentsArgs
   }
 
   // Custom InputTypes
@@ -2539,6 +2640,13 @@ export namespace Prisma {
    */
   export type CabinetCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LockerLogWhereInput
+  }
+
+  /**
+   * CabinetCountOutputType without action
+   */
+  export type CabinetCountOutputTypeCountAdminAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminCabinetWhereInput
   }
 
 
@@ -2869,6 +2977,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     auditLogs?: boolean | Admin$auditLogsArgs<ExtArgs>
+    cabinetAssignments?: boolean | Admin$cabinetAssignmentsArgs<ExtArgs>
     _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["admin"]>
 
@@ -2894,6 +3003,7 @@ export namespace Prisma {
 
   export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     auditLogs?: boolean | Admin$auditLogsArgs<ExtArgs>
+    cabinetAssignments?: boolean | Admin$cabinetAssignmentsArgs<ExtArgs>
     _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2902,6 +3012,7 @@ export namespace Prisma {
     name: "Admin"
     objects: {
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+      cabinetAssignments: Prisma.$AdminCabinetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3276,6 +3387,7 @@ export namespace Prisma {
   export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     auditLogs<T extends Admin$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Admin$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany"> | Null>
+    cabinetAssignments<T extends Admin$cabinetAssignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Admin$cabinetAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3643,6 +3755,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * Admin.cabinetAssignments
+   */
+  export type Admin$cabinetAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    where?: AdminCabinetWhereInput
+    orderBy?: AdminCabinetOrderByWithRelationInput | AdminCabinetOrderByWithRelationInput[]
+    cursor?: AdminCabinetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdminCabinetScalarFieldEnum | AdminCabinetScalarFieldEnum[]
   }
 
   /**
@@ -4732,7 +4864,6 @@ export namespace Prisma {
     address: string | null
     latitude: number | null
     longitude: number | null
-    googlePlaceId: string | null
     mapImageUrl: string | null
     status: $Enums.LocationStatus | null
     createdAt: Date | null
@@ -4745,7 +4876,6 @@ export namespace Prisma {
     address: string | null
     latitude: number | null
     longitude: number | null
-    googlePlaceId: string | null
     mapImageUrl: string | null
     status: $Enums.LocationStatus | null
     createdAt: Date | null
@@ -4758,7 +4888,6 @@ export namespace Prisma {
     address: number
     latitude: number
     longitude: number
-    googlePlaceId: number
     mapImageUrl: number
     status: number
     createdAt: number
@@ -4783,7 +4912,6 @@ export namespace Prisma {
     address?: true
     latitude?: true
     longitude?: true
-    googlePlaceId?: true
     mapImageUrl?: true
     status?: true
     createdAt?: true
@@ -4796,7 +4924,6 @@ export namespace Prisma {
     address?: true
     latitude?: true
     longitude?: true
-    googlePlaceId?: true
     mapImageUrl?: true
     status?: true
     createdAt?: true
@@ -4809,7 +4936,6 @@ export namespace Prisma {
     address?: true
     latitude?: true
     longitude?: true
-    googlePlaceId?: true
     mapImageUrl?: true
     status?: true
     createdAt?: true
@@ -4909,7 +5035,6 @@ export namespace Prisma {
     address: string
     latitude: number | null
     longitude: number | null
-    googlePlaceId: string | null
     mapImageUrl: string | null
     status: $Enums.LocationStatus
     createdAt: Date
@@ -4941,7 +5066,6 @@ export namespace Prisma {
     address?: boolean
     latitude?: boolean
     longitude?: boolean
-    googlePlaceId?: boolean
     mapImageUrl?: boolean
     status?: boolean
     createdAt?: boolean
@@ -4956,7 +5080,6 @@ export namespace Prisma {
     address?: boolean
     latitude?: boolean
     longitude?: boolean
-    googlePlaceId?: boolean
     mapImageUrl?: boolean
     status?: boolean
     createdAt?: boolean
@@ -4969,7 +5092,6 @@ export namespace Prisma {
     address?: boolean
     latitude?: boolean
     longitude?: boolean
-    googlePlaceId?: boolean
     mapImageUrl?: boolean
     status?: boolean
     createdAt?: boolean
@@ -4993,7 +5115,6 @@ export namespace Prisma {
       address: string
       latitude: number | null
       longitude: number | null
-      googlePlaceId: string | null
       mapImageUrl: string | null
       status: $Enums.LocationStatus
       createdAt: Date
@@ -5397,7 +5518,6 @@ export namespace Prisma {
     readonly address: FieldRef<"Location", 'String'>
     readonly latitude: FieldRef<"Location", 'Float'>
     readonly longitude: FieldRef<"Location", 'Float'>
-    readonly googlePlaceId: FieldRef<"Location", 'String'>
     readonly mapImageUrl: FieldRef<"Location", 'String'>
     readonly status: FieldRef<"Location", 'LocationStatus'>
     readonly createdAt: FieldRef<"Location", 'DateTime'>
@@ -5751,6 +5871,933 @@ export namespace Prisma {
 
 
   /**
+   * Model AdminCabinet
+   */
+
+  export type AggregateAdminCabinet = {
+    _count: AdminCabinetCountAggregateOutputType | null
+    _min: AdminCabinetMinAggregateOutputType | null
+    _max: AdminCabinetMaxAggregateOutputType | null
+  }
+
+  export type AdminCabinetMinAggregateOutputType = {
+    id: string | null
+    adminId: string | null
+    cabinetId: string | null
+    createdAt: Date | null
+  }
+
+  export type AdminCabinetMaxAggregateOutputType = {
+    id: string | null
+    adminId: string | null
+    cabinetId: string | null
+    createdAt: Date | null
+  }
+
+  export type AdminCabinetCountAggregateOutputType = {
+    id: number
+    adminId: number
+    cabinetId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AdminCabinetMinAggregateInputType = {
+    id?: true
+    adminId?: true
+    cabinetId?: true
+    createdAt?: true
+  }
+
+  export type AdminCabinetMaxAggregateInputType = {
+    id?: true
+    adminId?: true
+    cabinetId?: true
+    createdAt?: true
+  }
+
+  export type AdminCabinetCountAggregateInputType = {
+    id?: true
+    adminId?: true
+    cabinetId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AdminCabinetAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminCabinet to aggregate.
+     */
+    where?: AdminCabinetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminCabinets to fetch.
+     */
+    orderBy?: AdminCabinetOrderByWithRelationInput | AdminCabinetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminCabinetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminCabinets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminCabinets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdminCabinets
+    **/
+    _count?: true | AdminCabinetCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminCabinetMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminCabinetMaxAggregateInputType
+  }
+
+  export type GetAdminCabinetAggregateType<T extends AdminCabinetAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdminCabinet]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdminCabinet[P]>
+      : GetScalarType<T[P], AggregateAdminCabinet[P]>
+  }
+
+
+
+
+  export type AdminCabinetGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminCabinetWhereInput
+    orderBy?: AdminCabinetOrderByWithAggregationInput | AdminCabinetOrderByWithAggregationInput[]
+    by: AdminCabinetScalarFieldEnum[] | AdminCabinetScalarFieldEnum
+    having?: AdminCabinetScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminCabinetCountAggregateInputType | true
+    _min?: AdminCabinetMinAggregateInputType
+    _max?: AdminCabinetMaxAggregateInputType
+  }
+
+  export type AdminCabinetGroupByOutputType = {
+    id: string
+    adminId: string
+    cabinetId: string
+    createdAt: Date
+    _count: AdminCabinetCountAggregateOutputType | null
+    _min: AdminCabinetMinAggregateOutputType | null
+    _max: AdminCabinetMaxAggregateOutputType | null
+  }
+
+  type GetAdminCabinetGroupByPayload<T extends AdminCabinetGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminCabinetGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminCabinetGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminCabinetGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminCabinetGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminCabinetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    adminId?: boolean
+    cabinetId?: boolean
+    createdAt?: boolean
+    admin?: boolean | AdminDefaultArgs<ExtArgs>
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adminCabinet"]>
+
+  export type AdminCabinetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    adminId?: boolean
+    cabinetId?: boolean
+    createdAt?: boolean
+    admin?: boolean | AdminDefaultArgs<ExtArgs>
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adminCabinet"]>
+
+  export type AdminCabinetSelectScalar = {
+    id?: boolean
+    adminId?: boolean
+    cabinetId?: boolean
+    createdAt?: boolean
+  }
+
+  export type AdminCabinetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | AdminDefaultArgs<ExtArgs>
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }
+  export type AdminCabinetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | AdminDefaultArgs<ExtArgs>
+    cabinet?: boolean | CabinetDefaultArgs<ExtArgs>
+  }
+
+  export type $AdminCabinetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdminCabinet"
+    objects: {
+      admin: Prisma.$AdminPayload<ExtArgs>
+      cabinet: Prisma.$CabinetPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      adminId: string
+      cabinetId: string
+      createdAt: Date
+    }, ExtArgs["result"]["adminCabinet"]>
+    composites: {}
+  }
+
+  type AdminCabinetGetPayload<S extends boolean | null | undefined | AdminCabinetDefaultArgs> = $Result.GetResult<Prisma.$AdminCabinetPayload, S>
+
+  type AdminCabinetCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<AdminCabinetFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: AdminCabinetCountAggregateInputType | true
+    }
+
+  export interface AdminCabinetDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminCabinet'], meta: { name: 'AdminCabinet' } }
+    /**
+     * Find zero or one AdminCabinet that matches the filter.
+     * @param {AdminCabinetFindUniqueArgs} args - Arguments to find a AdminCabinet
+     * @example
+     * // Get one AdminCabinet
+     * const adminCabinet = await prisma.adminCabinet.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminCabinetFindUniqueArgs>(args: SelectSubset<T, AdminCabinetFindUniqueArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one AdminCabinet that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {AdminCabinetFindUniqueOrThrowArgs} args - Arguments to find a AdminCabinet
+     * @example
+     * // Get one AdminCabinet
+     * const adminCabinet = await prisma.adminCabinet.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminCabinetFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminCabinetFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first AdminCabinet that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCabinetFindFirstArgs} args - Arguments to find a AdminCabinet
+     * @example
+     * // Get one AdminCabinet
+     * const adminCabinet = await prisma.adminCabinet.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminCabinetFindFirstArgs>(args?: SelectSubset<T, AdminCabinetFindFirstArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first AdminCabinet that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCabinetFindFirstOrThrowArgs} args - Arguments to find a AdminCabinet
+     * @example
+     * // Get one AdminCabinet
+     * const adminCabinet = await prisma.adminCabinet.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminCabinetFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminCabinetFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more AdminCabinets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCabinetFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdminCabinets
+     * const adminCabinets = await prisma.adminCabinet.findMany()
+     * 
+     * // Get first 10 AdminCabinets
+     * const adminCabinets = await prisma.adminCabinet.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminCabinetWithIdOnly = await prisma.adminCabinet.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminCabinetFindManyArgs>(args?: SelectSubset<T, AdminCabinetFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a AdminCabinet.
+     * @param {AdminCabinetCreateArgs} args - Arguments to create a AdminCabinet.
+     * @example
+     * // Create one AdminCabinet
+     * const AdminCabinet = await prisma.adminCabinet.create({
+     *   data: {
+     *     // ... data to create a AdminCabinet
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminCabinetCreateArgs>(args: SelectSubset<T, AdminCabinetCreateArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many AdminCabinets.
+     * @param {AdminCabinetCreateManyArgs} args - Arguments to create many AdminCabinets.
+     * @example
+     * // Create many AdminCabinets
+     * const adminCabinet = await prisma.adminCabinet.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminCabinetCreateManyArgs>(args?: SelectSubset<T, AdminCabinetCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdminCabinets and returns the data saved in the database.
+     * @param {AdminCabinetCreateManyAndReturnArgs} args - Arguments to create many AdminCabinets.
+     * @example
+     * // Create many AdminCabinets
+     * const adminCabinet = await prisma.adminCabinet.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdminCabinets and only return the `id`
+     * const adminCabinetWithIdOnly = await prisma.adminCabinet.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminCabinetCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminCabinetCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a AdminCabinet.
+     * @param {AdminCabinetDeleteArgs} args - Arguments to delete one AdminCabinet.
+     * @example
+     * // Delete one AdminCabinet
+     * const AdminCabinet = await prisma.adminCabinet.delete({
+     *   where: {
+     *     // ... filter to delete one AdminCabinet
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminCabinetDeleteArgs>(args: SelectSubset<T, AdminCabinetDeleteArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one AdminCabinet.
+     * @param {AdminCabinetUpdateArgs} args - Arguments to update one AdminCabinet.
+     * @example
+     * // Update one AdminCabinet
+     * const adminCabinet = await prisma.adminCabinet.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminCabinetUpdateArgs>(args: SelectSubset<T, AdminCabinetUpdateArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more AdminCabinets.
+     * @param {AdminCabinetDeleteManyArgs} args - Arguments to filter AdminCabinets to delete.
+     * @example
+     * // Delete a few AdminCabinets
+     * const { count } = await prisma.adminCabinet.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminCabinetDeleteManyArgs>(args?: SelectSubset<T, AdminCabinetDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminCabinets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCabinetUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdminCabinets
+     * const adminCabinet = await prisma.adminCabinet.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminCabinetUpdateManyArgs>(args: SelectSubset<T, AdminCabinetUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one AdminCabinet.
+     * @param {AdminCabinetUpsertArgs} args - Arguments to update or create a AdminCabinet.
+     * @example
+     * // Update or create a AdminCabinet
+     * const adminCabinet = await prisma.adminCabinet.upsert({
+     *   create: {
+     *     // ... data to create a AdminCabinet
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdminCabinet we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminCabinetUpsertArgs>(args: SelectSubset<T, AdminCabinetUpsertArgs<ExtArgs>>): Prisma__AdminCabinetClient<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of AdminCabinets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCabinetCountArgs} args - Arguments to filter AdminCabinets to count.
+     * @example
+     * // Count the number of AdminCabinets
+     * const count = await prisma.adminCabinet.count({
+     *   where: {
+     *     // ... the filter for the AdminCabinets we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminCabinetCountArgs>(
+      args?: Subset<T, AdminCabinetCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminCabinetCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdminCabinet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCabinetAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminCabinetAggregateArgs>(args: Subset<T, AdminCabinetAggregateArgs>): Prisma.PrismaPromise<GetAdminCabinetAggregateType<T>>
+
+    /**
+     * Group by AdminCabinet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCabinetGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminCabinetGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminCabinetGroupByArgs['orderBy'] }
+        : { orderBy?: AdminCabinetGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminCabinetGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminCabinetGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdminCabinet model
+   */
+  readonly fields: AdminCabinetFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdminCabinet.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminCabinetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    admin<T extends AdminDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AdminDefaultArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    cabinet<T extends CabinetDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CabinetDefaultArgs<ExtArgs>>): Prisma__CabinetClient<$Result.GetResult<Prisma.$CabinetPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdminCabinet model
+   */ 
+  interface AdminCabinetFieldRefs {
+    readonly id: FieldRef<"AdminCabinet", 'String'>
+    readonly adminId: FieldRef<"AdminCabinet", 'String'>
+    readonly cabinetId: FieldRef<"AdminCabinet", 'String'>
+    readonly createdAt: FieldRef<"AdminCabinet", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdminCabinet findUnique
+   */
+  export type AdminCabinetFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminCabinet to fetch.
+     */
+    where: AdminCabinetWhereUniqueInput
+  }
+
+  /**
+   * AdminCabinet findUniqueOrThrow
+   */
+  export type AdminCabinetFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminCabinet to fetch.
+     */
+    where: AdminCabinetWhereUniqueInput
+  }
+
+  /**
+   * AdminCabinet findFirst
+   */
+  export type AdminCabinetFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminCabinet to fetch.
+     */
+    where?: AdminCabinetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminCabinets to fetch.
+     */
+    orderBy?: AdminCabinetOrderByWithRelationInput | AdminCabinetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminCabinets.
+     */
+    cursor?: AdminCabinetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminCabinets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminCabinets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminCabinets.
+     */
+    distinct?: AdminCabinetScalarFieldEnum | AdminCabinetScalarFieldEnum[]
+  }
+
+  /**
+   * AdminCabinet findFirstOrThrow
+   */
+  export type AdminCabinetFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminCabinet to fetch.
+     */
+    where?: AdminCabinetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminCabinets to fetch.
+     */
+    orderBy?: AdminCabinetOrderByWithRelationInput | AdminCabinetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminCabinets.
+     */
+    cursor?: AdminCabinetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminCabinets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminCabinets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminCabinets.
+     */
+    distinct?: AdminCabinetScalarFieldEnum | AdminCabinetScalarFieldEnum[]
+  }
+
+  /**
+   * AdminCabinet findMany
+   */
+  export type AdminCabinetFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminCabinets to fetch.
+     */
+    where?: AdminCabinetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminCabinets to fetch.
+     */
+    orderBy?: AdminCabinetOrderByWithRelationInput | AdminCabinetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdminCabinets.
+     */
+    cursor?: AdminCabinetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminCabinets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminCabinets.
+     */
+    skip?: number
+    distinct?: AdminCabinetScalarFieldEnum | AdminCabinetScalarFieldEnum[]
+  }
+
+  /**
+   * AdminCabinet create
+   */
+  export type AdminCabinetCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AdminCabinet.
+     */
+    data: XOR<AdminCabinetCreateInput, AdminCabinetUncheckedCreateInput>
+  }
+
+  /**
+   * AdminCabinet createMany
+   */
+  export type AdminCabinetCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdminCabinets.
+     */
+    data: AdminCabinetCreateManyInput | AdminCabinetCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminCabinet createManyAndReturn
+   */
+  export type AdminCabinetCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many AdminCabinets.
+     */
+    data: AdminCabinetCreateManyInput | AdminCabinetCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdminCabinet update
+   */
+  export type AdminCabinetUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AdminCabinet.
+     */
+    data: XOR<AdminCabinetUpdateInput, AdminCabinetUncheckedUpdateInput>
+    /**
+     * Choose, which AdminCabinet to update.
+     */
+    where: AdminCabinetWhereUniqueInput
+  }
+
+  /**
+   * AdminCabinet updateMany
+   */
+  export type AdminCabinetUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdminCabinets.
+     */
+    data: XOR<AdminCabinetUpdateManyMutationInput, AdminCabinetUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminCabinets to update
+     */
+    where?: AdminCabinetWhereInput
+  }
+
+  /**
+   * AdminCabinet upsert
+   */
+  export type AdminCabinetUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AdminCabinet to update in case it exists.
+     */
+    where: AdminCabinetWhereUniqueInput
+    /**
+     * In case the AdminCabinet found by the `where` argument doesn't exist, create a new AdminCabinet with this data.
+     */
+    create: XOR<AdminCabinetCreateInput, AdminCabinetUncheckedCreateInput>
+    /**
+     * In case the AdminCabinet was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminCabinetUpdateInput, AdminCabinetUncheckedUpdateInput>
+  }
+
+  /**
+   * AdminCabinet delete
+   */
+  export type AdminCabinetDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    /**
+     * Filter which AdminCabinet to delete.
+     */
+    where: AdminCabinetWhereUniqueInput
+  }
+
+  /**
+   * AdminCabinet deleteMany
+   */
+  export type AdminCabinetDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminCabinets to delete
+     */
+    where?: AdminCabinetWhereInput
+  }
+
+  /**
+   * AdminCabinet without action
+   */
+  export type AdminCabinetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Cabinet
    */
 
@@ -5993,6 +7040,7 @@ export namespace Prisma {
     compartments?: boolean | Cabinet$compartmentsArgs<ExtArgs>
     mcpDevices?: boolean | Cabinet$mcpDevicesArgs<ExtArgs>
     logs?: boolean | Cabinet$logsArgs<ExtArgs>
+    adminAssignments?: boolean | Cabinet$adminAssignmentsArgs<ExtArgs>
     _count?: boolean | CabinetCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cabinet"]>
 
@@ -6029,6 +7077,7 @@ export namespace Prisma {
     compartments?: boolean | Cabinet$compartmentsArgs<ExtArgs>
     mcpDevices?: boolean | Cabinet$mcpDevicesArgs<ExtArgs>
     logs?: boolean | Cabinet$logsArgs<ExtArgs>
+    adminAssignments?: boolean | Cabinet$adminAssignmentsArgs<ExtArgs>
     _count?: boolean | CabinetCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CabinetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6043,6 +7092,7 @@ export namespace Prisma {
       compartments: Prisma.$CompartmentPayload<ExtArgs>[]
       mcpDevices: Prisma.$McpDevicePayload<ExtArgs>[]
       logs: Prisma.$LockerLogPayload<ExtArgs>[]
+      adminAssignments: Prisma.$AdminCabinetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6424,6 +7474,7 @@ export namespace Prisma {
     compartments<T extends Cabinet$compartmentsArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$compartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompartmentPayload<ExtArgs>, T, "findMany"> | Null>
     mcpDevices<T extends Cabinet$mcpDevicesArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$mcpDevicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpDevicePayload<ExtArgs>, T, "findMany"> | Null>
     logs<T extends Cabinet$logsArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LockerLogPayload<ExtArgs>, T, "findMany"> | Null>
+    adminAssignments<T extends Cabinet$adminAssignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Cabinet$adminAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminCabinetPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6853,6 +7904,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LockerLogScalarFieldEnum | LockerLogScalarFieldEnum[]
+  }
+
+  /**
+   * Cabinet.adminAssignments
+   */
+  export type Cabinet$adminAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCabinet
+     */
+    select?: AdminCabinetSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminCabinetInclude<ExtArgs> | null
+    where?: AdminCabinetWhereInput
+    orderBy?: AdminCabinetOrderByWithRelationInput | AdminCabinetOrderByWithRelationInput[]
+    cursor?: AdminCabinetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdminCabinetScalarFieldEnum | AdminCabinetScalarFieldEnum[]
   }
 
   /**
@@ -7928,15 +8999,11 @@ export namespace Prisma {
   }
 
   export type CompartmentAvgAggregateOutputType = {
-    rowIndex: number | null
-    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
   }
 
   export type CompartmentSumAggregateOutputType = {
-    rowIndex: number | null
-    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
   }
@@ -7946,8 +9013,6 @@ export namespace Prisma {
     cabinetId: string | null
     name: string | null
     size: $Enums.CompartmentSize | null
-    rowIndex: number | null
-    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
     lockMcpDeviceId: string | null
@@ -7962,8 +9027,6 @@ export namespace Prisma {
     cabinetId: string | null
     name: string | null
     size: $Enums.CompartmentSize | null
-    rowIndex: number | null
-    colIndex: number | null
     mcp23017PinLock: number | null
     mcp23017PinSensor: number | null
     lockMcpDeviceId: string | null
@@ -7978,8 +9041,6 @@ export namespace Prisma {
     cabinetId: number
     name: number
     size: number
-    rowIndex: number
-    colIndex: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId: number
@@ -7992,15 +9053,11 @@ export namespace Prisma {
 
 
   export type CompartmentAvgAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
   }
 
   export type CompartmentSumAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
   }
@@ -8010,8 +9067,6 @@ export namespace Prisma {
     cabinetId?: true
     name?: true
     size?: true
-    rowIndex?: true
-    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
     lockMcpDeviceId?: true
@@ -8026,8 +9081,6 @@ export namespace Prisma {
     cabinetId?: true
     name?: true
     size?: true
-    rowIndex?: true
-    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
     lockMcpDeviceId?: true
@@ -8042,8 +9095,6 @@ export namespace Prisma {
     cabinetId?: true
     name?: true
     size?: true
-    rowIndex?: true
-    colIndex?: true
     mcp23017PinLock?: true
     mcp23017PinSensor?: true
     lockMcpDeviceId?: true
@@ -8145,8 +9196,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex: number
-    colIndex: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId: string | null
@@ -8180,8 +9229,6 @@ export namespace Prisma {
     cabinetId?: boolean
     name?: boolean
     size?: boolean
-    rowIndex?: boolean
-    colIndex?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
     lockMcpDeviceId?: boolean
@@ -8203,8 +9250,6 @@ export namespace Prisma {
     cabinetId?: boolean
     name?: boolean
     size?: boolean
-    rowIndex?: boolean
-    colIndex?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
     lockMcpDeviceId?: boolean
@@ -8222,8 +9267,6 @@ export namespace Prisma {
     cabinetId?: boolean
     name?: boolean
     size?: boolean
-    rowIndex?: boolean
-    colIndex?: boolean
     mcp23017PinLock?: boolean
     mcp23017PinSensor?: boolean
     lockMcpDeviceId?: boolean
@@ -8263,8 +9306,6 @@ export namespace Prisma {
       cabinetId: string
       name: string
       size: $Enums.CompartmentSize
-      rowIndex: number
-      colIndex: number
       mcp23017PinLock: number
       mcp23017PinSensor: number
       lockMcpDeviceId: string | null
@@ -8675,8 +9716,6 @@ export namespace Prisma {
     readonly cabinetId: FieldRef<"Compartment", 'String'>
     readonly name: FieldRef<"Compartment", 'String'>
     readonly size: FieldRef<"Compartment", 'CompartmentSize'>
-    readonly rowIndex: FieldRef<"Compartment", 'Int'>
-    readonly colIndex: FieldRef<"Compartment", 'Int'>
     readonly mcp23017PinLock: FieldRef<"Compartment", 'Int'>
     readonly mcp23017PinSensor: FieldRef<"Compartment", 'Int'>
     readonly lockMcpDeviceId: FieldRef<"Compartment", 'String'>
@@ -19251,7 +20290,6 @@ export namespace Prisma {
     address: 'address',
     latitude: 'latitude',
     longitude: 'longitude',
-    googlePlaceId: 'googlePlaceId',
     mapImageUrl: 'mapImageUrl',
     status: 'status',
     createdAt: 'createdAt',
@@ -19259,6 +20297,16 @@ export namespace Prisma {
   };
 
   export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typeof LocationScalarFieldEnum]
+
+
+  export const AdminCabinetScalarFieldEnum: {
+    id: 'id',
+    adminId: 'adminId',
+    cabinetId: 'cabinetId',
+    createdAt: 'createdAt'
+  };
+
+  export type AdminCabinetScalarFieldEnum = (typeof AdminCabinetScalarFieldEnum)[keyof typeof AdminCabinetScalarFieldEnum]
 
 
   export const CabinetScalarFieldEnum: {
@@ -19295,8 +20343,6 @@ export namespace Prisma {
     cabinetId: 'cabinetId',
     name: 'name',
     size: 'size',
-    rowIndex: 'rowIndex',
-    colIndex: 'colIndex',
     mcp23017PinLock: 'mcp23017PinLock',
     mcp23017PinSensor: 'mcp23017PinSensor',
     lockMcpDeviceId: 'lockMcpDeviceId',
@@ -19839,6 +20885,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Admin"> | Date | string
     updatedAt?: DateTimeFilter<"Admin"> | Date | string
     auditLogs?: AuditLogListRelationFilter
+    cabinetAssignments?: AdminCabinetListRelationFilter
   }
 
   export type AdminOrderByWithRelationInput = {
@@ -19850,6 +20897,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     auditLogs?: AuditLogOrderByRelationAggregateInput
+    cabinetAssignments?: AdminCabinetOrderByRelationAggregateInput
   }
 
   export type AdminWhereUniqueInput = Prisma.AtLeast<{
@@ -19864,6 +20912,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Admin"> | Date | string
     updatedAt?: DateTimeFilter<"Admin"> | Date | string
     auditLogs?: AuditLogListRelationFilter
+    cabinetAssignments?: AdminCabinetListRelationFilter
   }, "id" | "email">
 
   export type AdminOrderByWithAggregationInput = {
@@ -19982,7 +21031,6 @@ export namespace Prisma {
     address?: StringFilter<"Location"> | string
     latitude?: FloatNullableFilter<"Location"> | number | null
     longitude?: FloatNullableFilter<"Location"> | number | null
-    googlePlaceId?: StringNullableFilter<"Location"> | string | null
     mapImageUrl?: StringNullableFilter<"Location"> | string | null
     status?: EnumLocationStatusFilter<"Location"> | $Enums.LocationStatus
     createdAt?: DateTimeFilter<"Location"> | Date | string
@@ -19996,7 +21044,6 @@ export namespace Prisma {
     address?: SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
-    googlePlaceId?: SortOrderInput | SortOrder
     mapImageUrl?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -20006,7 +21053,6 @@ export namespace Prisma {
 
   export type LocationWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    googlePlaceId?: string
     AND?: LocationWhereInput | LocationWhereInput[]
     OR?: LocationWhereInput[]
     NOT?: LocationWhereInput | LocationWhereInput[]
@@ -20019,7 +21065,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Location"> | Date | string
     updatedAt?: DateTimeFilter<"Location"> | Date | string
     cabinets?: CabinetListRelationFilter
-  }, "id" | "googlePlaceId">
+  }, "id">
 
   export type LocationOrderByWithAggregationInput = {
     id?: SortOrder
@@ -20027,7 +21073,6 @@ export namespace Prisma {
     address?: SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
-    googlePlaceId?: SortOrderInput | SortOrder
     mapImageUrl?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -20048,11 +21093,64 @@ export namespace Prisma {
     address?: StringWithAggregatesFilter<"Location"> | string
     latitude?: FloatNullableWithAggregatesFilter<"Location"> | number | null
     longitude?: FloatNullableWithAggregatesFilter<"Location"> | number | null
-    googlePlaceId?: StringNullableWithAggregatesFilter<"Location"> | string | null
     mapImageUrl?: StringNullableWithAggregatesFilter<"Location"> | string | null
     status?: EnumLocationStatusWithAggregatesFilter<"Location"> | $Enums.LocationStatus
     createdAt?: DateTimeWithAggregatesFilter<"Location"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Location"> | Date | string
+  }
+
+  export type AdminCabinetWhereInput = {
+    AND?: AdminCabinetWhereInput | AdminCabinetWhereInput[]
+    OR?: AdminCabinetWhereInput[]
+    NOT?: AdminCabinetWhereInput | AdminCabinetWhereInput[]
+    id?: StringFilter<"AdminCabinet"> | string
+    adminId?: StringFilter<"AdminCabinet"> | string
+    cabinetId?: StringFilter<"AdminCabinet"> | string
+    createdAt?: DateTimeFilter<"AdminCabinet"> | Date | string
+    admin?: XOR<AdminRelationFilter, AdminWhereInput>
+    cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+  }
+
+  export type AdminCabinetOrderByWithRelationInput = {
+    id?: SortOrder
+    adminId?: SortOrder
+    cabinetId?: SortOrder
+    createdAt?: SortOrder
+    admin?: AdminOrderByWithRelationInput
+    cabinet?: CabinetOrderByWithRelationInput
+  }
+
+  export type AdminCabinetWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    adminId_cabinetId?: AdminCabinetAdminIdCabinetIdCompoundUniqueInput
+    AND?: AdminCabinetWhereInput | AdminCabinetWhereInput[]
+    OR?: AdminCabinetWhereInput[]
+    NOT?: AdminCabinetWhereInput | AdminCabinetWhereInput[]
+    adminId?: StringFilter<"AdminCabinet"> | string
+    cabinetId?: StringFilter<"AdminCabinet"> | string
+    createdAt?: DateTimeFilter<"AdminCabinet"> | Date | string
+    admin?: XOR<AdminRelationFilter, AdminWhereInput>
+    cabinet?: XOR<CabinetRelationFilter, CabinetWhereInput>
+  }, "id" | "adminId_cabinetId">
+
+  export type AdminCabinetOrderByWithAggregationInput = {
+    id?: SortOrder
+    adminId?: SortOrder
+    cabinetId?: SortOrder
+    createdAt?: SortOrder
+    _count?: AdminCabinetCountOrderByAggregateInput
+    _max?: AdminCabinetMaxOrderByAggregateInput
+    _min?: AdminCabinetMinOrderByAggregateInput
+  }
+
+  export type AdminCabinetScalarWhereWithAggregatesInput = {
+    AND?: AdminCabinetScalarWhereWithAggregatesInput | AdminCabinetScalarWhereWithAggregatesInput[]
+    OR?: AdminCabinetScalarWhereWithAggregatesInput[]
+    NOT?: AdminCabinetScalarWhereWithAggregatesInput | AdminCabinetScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdminCabinet"> | string
+    adminId?: StringWithAggregatesFilter<"AdminCabinet"> | string
+    cabinetId?: StringWithAggregatesFilter<"AdminCabinet"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AdminCabinet"> | Date | string
   }
 
   export type CabinetWhereInput = {
@@ -20074,6 +21172,7 @@ export namespace Prisma {
     compartments?: CompartmentListRelationFilter
     mcpDevices?: McpDeviceListRelationFilter
     logs?: LockerLogListRelationFilter
+    adminAssignments?: AdminCabinetListRelationFilter
   }
 
   export type CabinetOrderByWithRelationInput = {
@@ -20092,6 +21191,7 @@ export namespace Prisma {
     compartments?: CompartmentOrderByRelationAggregateInput
     mcpDevices?: McpDeviceOrderByRelationAggregateInput
     logs?: LockerLogOrderByRelationAggregateInput
+    adminAssignments?: AdminCabinetOrderByRelationAggregateInput
   }
 
   export type CabinetWhereUniqueInput = Prisma.AtLeast<{
@@ -20113,6 +21213,7 @@ export namespace Prisma {
     compartments?: CompartmentListRelationFilter
     mcpDevices?: McpDeviceListRelationFilter
     logs?: LockerLogListRelationFilter
+    adminAssignments?: AdminCabinetListRelationFilter
   }, "id">
 
   export type CabinetOrderByWithAggregationInput = {
@@ -20231,8 +21332,6 @@ export namespace Prisma {
     cabinetId?: StringFilter<"Compartment"> | string
     name?: StringFilter<"Compartment"> | string
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
-    rowIndex?: IntFilter<"Compartment"> | number
-    colIndex?: IntFilter<"Compartment"> | number
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
@@ -20253,8 +21352,6 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrderInput | SortOrder
@@ -20279,8 +21376,6 @@ export namespace Prisma {
     cabinetId?: StringFilter<"Compartment"> | string
     name?: StringFilter<"Compartment"> | string
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
-    rowIndex?: IntFilter<"Compartment"> | number
-    colIndex?: IntFilter<"Compartment"> | number
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
@@ -20301,8 +21396,6 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrderInput | SortOrder
@@ -20325,8 +21418,6 @@ export namespace Prisma {
     cabinetId?: StringWithAggregatesFilter<"Compartment"> | string
     name?: StringWithAggregatesFilter<"Compartment"> | string
     size?: EnumCompartmentSizeWithAggregatesFilter<"Compartment"> | $Enums.CompartmentSize
-    rowIndex?: IntWithAggregatesFilter<"Compartment"> | number
-    colIndex?: IntWithAggregatesFilter<"Compartment"> | number
     mcp23017PinLock?: IntWithAggregatesFilter<"Compartment"> | number
     mcp23017PinSensor?: IntWithAggregatesFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableWithAggregatesFilter<"Compartment"> | string | null
@@ -21138,6 +22229,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     auditLogs?: AuditLogCreateNestedManyWithoutAdminInput
+    cabinetAssignments?: AdminCabinetCreateNestedManyWithoutAdminInput
   }
 
   export type AdminUncheckedCreateInput = {
@@ -21149,6 +22241,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAdminInput
+    cabinetAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutAdminInput
   }
 
   export type AdminUpdateInput = {
@@ -21160,6 +22253,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     auditLogs?: AuditLogUpdateManyWithoutAdminNestedInput
+    cabinetAssignments?: AdminCabinetUpdateManyWithoutAdminNestedInput
   }
 
   export type AdminUncheckedUpdateInput = {
@@ -21171,6 +22265,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     auditLogs?: AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+    cabinetAssignments?: AdminCabinetUncheckedUpdateManyWithoutAdminNestedInput
   }
 
   export type AdminCreateManyInput = {
@@ -21305,7 +22400,6 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
-    googlePlaceId?: string | null
     mapImageUrl?: string | null
     status?: $Enums.LocationStatus
     createdAt?: Date | string
@@ -21319,7 +22413,6 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
-    googlePlaceId?: string | null
     mapImageUrl?: string | null
     status?: $Enums.LocationStatus
     createdAt?: Date | string
@@ -21333,7 +22426,6 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    googlePlaceId?: NullableStringFieldUpdateOperationsInput | string | null
     mapImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21347,7 +22439,6 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    googlePlaceId?: NullableStringFieldUpdateOperationsInput | string | null
     mapImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21361,7 +22452,6 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
-    googlePlaceId?: string | null
     mapImageUrl?: string | null
     status?: $Enums.LocationStatus
     createdAt?: Date | string
@@ -21374,7 +22464,6 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    googlePlaceId?: NullableStringFieldUpdateOperationsInput | string | null
     mapImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21387,11 +22476,57 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    googlePlaceId?: NullableStringFieldUpdateOperationsInput | string | null
     mapImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminCabinetCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    admin: AdminCreateNestedOneWithoutCabinetAssignmentsInput
+    cabinet: CabinetCreateNestedOneWithoutAdminAssignmentsInput
+  }
+
+  export type AdminCabinetUncheckedCreateInput = {
+    id?: string
+    adminId: string
+    cabinetId: string
+    createdAt?: Date | string
+  }
+
+  export type AdminCabinetUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    admin?: AdminUpdateOneRequiredWithoutCabinetAssignmentsNestedInput
+    cabinet?: CabinetUpdateOneRequiredWithoutAdminAssignmentsNestedInput
+  }
+
+  export type AdminCabinetUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminCabinetCreateManyInput = {
+    id?: string
+    adminId: string
+    cabinetId: string
+    createdAt?: Date | string
+  }
+
+  export type AdminCabinetUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminCabinetUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CabinetCreateInput = {
@@ -21409,6 +22544,7 @@ export namespace Prisma {
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateInput = {
@@ -21426,6 +22562,7 @@ export namespace Prisma {
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUpdateInput = {
@@ -21443,6 +22580,7 @@ export namespace Prisma {
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateInput = {
@@ -21460,6 +22598,7 @@ export namespace Prisma {
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetCreateManyInput = {
@@ -21581,8 +22720,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -21601,8 +22738,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -21619,8 +22754,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -21639,8 +22772,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21658,8 +22789,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -21673,8 +22802,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -21687,8 +22814,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22605,7 +23730,17 @@ export namespace Prisma {
     none?: AuditLogWhereInput
   }
 
+  export type AdminCabinetListRelationFilter = {
+    every?: AdminCabinetWhereInput
+    some?: AdminCabinetWhereInput
+    none?: AdminCabinetWhereInput
+  }
+
   export type AuditLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdminCabinetOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22836,7 +23971,6 @@ export namespace Prisma {
     address?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
-    googlePlaceId?: SortOrder
     mapImageUrl?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -22854,7 +23988,6 @@ export namespace Prisma {
     address?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
-    googlePlaceId?: SortOrder
     mapImageUrl?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -22867,7 +24000,6 @@ export namespace Prisma {
     address?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
-    googlePlaceId?: SortOrder
     mapImageUrl?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -22903,6 +24035,42 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumLocationStatusFilter<$PrismaModel>
     _max?: NestedEnumLocationStatusFilter<$PrismaModel>
+  }
+
+  export type AdminRelationFilter = {
+    is?: AdminWhereInput
+    isNot?: AdminWhereInput
+  }
+
+  export type CabinetRelationFilter = {
+    is?: CabinetWhereInput
+    isNot?: CabinetWhereInput
+  }
+
+  export type AdminCabinetAdminIdCabinetIdCompoundUniqueInput = {
+    adminId: string
+    cabinetId: string
+  }
+
+  export type AdminCabinetCountOrderByAggregateInput = {
+    id?: SortOrder
+    adminId?: SortOrder
+    cabinetId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminCabinetMaxOrderByAggregateInput = {
+    id?: SortOrder
+    adminId?: SortOrder
+    cabinetId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminCabinetMinOrderByAggregateInput = {
+    id?: SortOrder
+    adminId?: SortOrder
+    cabinetId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type EnumCabinetStatusFilter<$PrismaModel = never> = {
@@ -23061,11 +24229,6 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type CabinetRelationFilter = {
-    is?: CabinetWhereInput
-    isNot?: CabinetWhereInput
-  }
-
   export type McpDeviceCabinetIdBusAddressCompoundUniqueInput = {
     cabinetId: string
     bus: number
@@ -23146,8 +24309,6 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrder
@@ -23158,8 +24319,6 @@ export namespace Prisma {
   }
 
   export type CompartmentAvgOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
   }
@@ -23169,8 +24328,6 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrder
@@ -23185,8 +24342,6 @@ export namespace Prisma {
     cabinetId?: SortOrder
     name?: SortOrder
     size?: SortOrder
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
     lockMcpDeviceId?: SortOrder
@@ -23197,8 +24352,6 @@ export namespace Prisma {
   }
 
   export type CompartmentSumOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
     mcp23017PinLock?: SortOrder
     mcp23017PinSensor?: SortOrder
   }
@@ -23706,11 +24859,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type AdminRelationFilter = {
-    is?: AdminWhereInput
-    isNot?: AdminWhereInput
-  }
-
   export type AuditLogCountOrderByAggregateInput = {
     id?: SortOrder
     adminId?: SortOrder
@@ -24007,11 +25155,25 @@ export namespace Prisma {
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
+  export type AdminCabinetCreateNestedManyWithoutAdminInput = {
+    create?: XOR<AdminCabinetCreateWithoutAdminInput, AdminCabinetUncheckedCreateWithoutAdminInput> | AdminCabinetCreateWithoutAdminInput[] | AdminCabinetUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutAdminInput | AdminCabinetCreateOrConnectWithoutAdminInput[]
+    createMany?: AdminCabinetCreateManyAdminInputEnvelope
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+  }
+
   export type AuditLogUncheckedCreateNestedManyWithoutAdminInput = {
     create?: XOR<AuditLogCreateWithoutAdminInput, AuditLogUncheckedCreateWithoutAdminInput> | AuditLogCreateWithoutAdminInput[] | AuditLogUncheckedCreateWithoutAdminInput[]
     connectOrCreate?: AuditLogCreateOrConnectWithoutAdminInput | AuditLogCreateOrConnectWithoutAdminInput[]
     createMany?: AuditLogCreateManyAdminInputEnvelope
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type AdminCabinetUncheckedCreateNestedManyWithoutAdminInput = {
+    create?: XOR<AdminCabinetCreateWithoutAdminInput, AdminCabinetUncheckedCreateWithoutAdminInput> | AdminCabinetCreateWithoutAdminInput[] | AdminCabinetUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutAdminInput | AdminCabinetCreateOrConnectWithoutAdminInput[]
+    createMany?: AdminCabinetCreateManyAdminInputEnvelope
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -24040,6 +25202,20 @@ export namespace Prisma {
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
+  export type AdminCabinetUpdateManyWithoutAdminNestedInput = {
+    create?: XOR<AdminCabinetCreateWithoutAdminInput, AdminCabinetUncheckedCreateWithoutAdminInput> | AdminCabinetCreateWithoutAdminInput[] | AdminCabinetUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutAdminInput | AdminCabinetCreateOrConnectWithoutAdminInput[]
+    upsert?: AdminCabinetUpsertWithWhereUniqueWithoutAdminInput | AdminCabinetUpsertWithWhereUniqueWithoutAdminInput[]
+    createMany?: AdminCabinetCreateManyAdminInputEnvelope
+    set?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    disconnect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    delete?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    update?: AdminCabinetUpdateWithWhereUniqueWithoutAdminInput | AdminCabinetUpdateWithWhereUniqueWithoutAdminInput[]
+    updateMany?: AdminCabinetUpdateManyWithWhereWithoutAdminInput | AdminCabinetUpdateManyWithWhereWithoutAdminInput[]
+    deleteMany?: AdminCabinetScalarWhereInput | AdminCabinetScalarWhereInput[]
+  }
+
   export type AuditLogUncheckedUpdateManyWithoutAdminNestedInput = {
     create?: XOR<AuditLogCreateWithoutAdminInput, AuditLogUncheckedCreateWithoutAdminInput> | AuditLogCreateWithoutAdminInput[] | AuditLogUncheckedCreateWithoutAdminInput[]
     connectOrCreate?: AuditLogCreateOrConnectWithoutAdminInput | AuditLogCreateOrConnectWithoutAdminInput[]
@@ -24052,6 +25228,20 @@ export namespace Prisma {
     update?: AuditLogUpdateWithWhereUniqueWithoutAdminInput | AuditLogUpdateWithWhereUniqueWithoutAdminInput[]
     updateMany?: AuditLogUpdateManyWithWhereWithoutAdminInput | AuditLogUpdateManyWithWhereWithoutAdminInput[]
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type AdminCabinetUncheckedUpdateManyWithoutAdminNestedInput = {
+    create?: XOR<AdminCabinetCreateWithoutAdminInput, AdminCabinetUncheckedCreateWithoutAdminInput> | AdminCabinetCreateWithoutAdminInput[] | AdminCabinetUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutAdminInput | AdminCabinetCreateOrConnectWithoutAdminInput[]
+    upsert?: AdminCabinetUpsertWithWhereUniqueWithoutAdminInput | AdminCabinetUpsertWithWhereUniqueWithoutAdminInput[]
+    createMany?: AdminCabinetCreateManyAdminInputEnvelope
+    set?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    disconnect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    delete?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    update?: AdminCabinetUpdateWithWhereUniqueWithoutAdminInput | AdminCabinetUpdateWithWhereUniqueWithoutAdminInput[]
+    updateMany?: AdminCabinetUpdateManyWithWhereWithoutAdminInput | AdminCabinetUpdateManyWithWhereWithoutAdminInput[]
+    deleteMany?: AdminCabinetScalarWhereInput | AdminCabinetScalarWhereInput[]
   }
 
   export type RentalCreateNestedManyWithoutUserInput = {
@@ -24242,6 +25432,34 @@ export namespace Prisma {
     deleteMany?: CabinetScalarWhereInput | CabinetScalarWhereInput[]
   }
 
+  export type AdminCreateNestedOneWithoutCabinetAssignmentsInput = {
+    create?: XOR<AdminCreateWithoutCabinetAssignmentsInput, AdminUncheckedCreateWithoutCabinetAssignmentsInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutCabinetAssignmentsInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type CabinetCreateNestedOneWithoutAdminAssignmentsInput = {
+    create?: XOR<CabinetCreateWithoutAdminAssignmentsInput, CabinetUncheckedCreateWithoutAdminAssignmentsInput>
+    connectOrCreate?: CabinetCreateOrConnectWithoutAdminAssignmentsInput
+    connect?: CabinetWhereUniqueInput
+  }
+
+  export type AdminUpdateOneRequiredWithoutCabinetAssignmentsNestedInput = {
+    create?: XOR<AdminCreateWithoutCabinetAssignmentsInput, AdminUncheckedCreateWithoutCabinetAssignmentsInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutCabinetAssignmentsInput
+    upsert?: AdminUpsertWithoutCabinetAssignmentsInput
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutCabinetAssignmentsInput, AdminUpdateWithoutCabinetAssignmentsInput>, AdminUncheckedUpdateWithoutCabinetAssignmentsInput>
+  }
+
+  export type CabinetUpdateOneRequiredWithoutAdminAssignmentsNestedInput = {
+    create?: XOR<CabinetCreateWithoutAdminAssignmentsInput, CabinetUncheckedCreateWithoutAdminAssignmentsInput>
+    connectOrCreate?: CabinetCreateOrConnectWithoutAdminAssignmentsInput
+    upsert?: CabinetUpsertWithoutAdminAssignmentsInput
+    connect?: CabinetWhereUniqueInput
+    update?: XOR<XOR<CabinetUpdateToOneWithWhereWithoutAdminAssignmentsInput, CabinetUpdateWithoutAdminAssignmentsInput>, CabinetUncheckedUpdateWithoutAdminAssignmentsInput>
+  }
+
   export type LocationCreateNestedOneWithoutCabinetsInput = {
     create?: XOR<LocationCreateWithoutCabinetsInput, LocationUncheckedCreateWithoutCabinetsInput>
     connectOrCreate?: LocationCreateOrConnectWithoutCabinetsInput
@@ -24275,6 +25493,13 @@ export namespace Prisma {
     connect?: LockerLogWhereUniqueInput | LockerLogWhereUniqueInput[]
   }
 
+  export type AdminCabinetCreateNestedManyWithoutCabinetInput = {
+    create?: XOR<AdminCabinetCreateWithoutCabinetInput, AdminCabinetUncheckedCreateWithoutCabinetInput> | AdminCabinetCreateWithoutCabinetInput[] | AdminCabinetUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutCabinetInput | AdminCabinetCreateOrConnectWithoutCabinetInput[]
+    createMany?: AdminCabinetCreateManyCabinetInputEnvelope
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+  }
+
   export type CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput = {
     create?: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
     connectOrCreate?: CabinetCredentialCreateOrConnectWithoutCabinetInput
@@ -24300,6 +25525,13 @@ export namespace Prisma {
     connectOrCreate?: LockerLogCreateOrConnectWithoutCabinetInput | LockerLogCreateOrConnectWithoutCabinetInput[]
     createMany?: LockerLogCreateManyCabinetInputEnvelope
     connect?: LockerLogWhereUniqueInput | LockerLogWhereUniqueInput[]
+  }
+
+  export type AdminCabinetUncheckedCreateNestedManyWithoutCabinetInput = {
+    create?: XOR<AdminCabinetCreateWithoutCabinetInput, AdminCabinetUncheckedCreateWithoutCabinetInput> | AdminCabinetCreateWithoutCabinetInput[] | AdminCabinetUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutCabinetInput | AdminCabinetCreateOrConnectWithoutCabinetInput[]
+    createMany?: AdminCabinetCreateManyCabinetInputEnvelope
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
   }
 
   export type EnumCabinetStatusFieldUpdateOperationsInput = {
@@ -24378,6 +25610,20 @@ export namespace Prisma {
     deleteMany?: LockerLogScalarWhereInput | LockerLogScalarWhereInput[]
   }
 
+  export type AdminCabinetUpdateManyWithoutCabinetNestedInput = {
+    create?: XOR<AdminCabinetCreateWithoutCabinetInput, AdminCabinetUncheckedCreateWithoutCabinetInput> | AdminCabinetCreateWithoutCabinetInput[] | AdminCabinetUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutCabinetInput | AdminCabinetCreateOrConnectWithoutCabinetInput[]
+    upsert?: AdminCabinetUpsertWithWhereUniqueWithoutCabinetInput | AdminCabinetUpsertWithWhereUniqueWithoutCabinetInput[]
+    createMany?: AdminCabinetCreateManyCabinetInputEnvelope
+    set?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    disconnect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    delete?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    update?: AdminCabinetUpdateWithWhereUniqueWithoutCabinetInput | AdminCabinetUpdateWithWhereUniqueWithoutCabinetInput[]
+    updateMany?: AdminCabinetUpdateManyWithWhereWithoutCabinetInput | AdminCabinetUpdateManyWithWhereWithoutCabinetInput[]
+    deleteMany?: AdminCabinetScalarWhereInput | AdminCabinetScalarWhereInput[]
+  }
+
   export type CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput = {
     create?: XOR<CabinetCredentialCreateWithoutCabinetInput, CabinetCredentialUncheckedCreateWithoutCabinetInput>
     connectOrCreate?: CabinetCredentialCreateOrConnectWithoutCabinetInput
@@ -24428,6 +25674,20 @@ export namespace Prisma {
     update?: LockerLogUpdateWithWhereUniqueWithoutCabinetInput | LockerLogUpdateWithWhereUniqueWithoutCabinetInput[]
     updateMany?: LockerLogUpdateManyWithWhereWithoutCabinetInput | LockerLogUpdateManyWithWhereWithoutCabinetInput[]
     deleteMany?: LockerLogScalarWhereInput | LockerLogScalarWhereInput[]
+  }
+
+  export type AdminCabinetUncheckedUpdateManyWithoutCabinetNestedInput = {
+    create?: XOR<AdminCabinetCreateWithoutCabinetInput, AdminCabinetUncheckedCreateWithoutCabinetInput> | AdminCabinetCreateWithoutCabinetInput[] | AdminCabinetUncheckedCreateWithoutCabinetInput[]
+    connectOrCreate?: AdminCabinetCreateOrConnectWithoutCabinetInput | AdminCabinetCreateOrConnectWithoutCabinetInput[]
+    upsert?: AdminCabinetUpsertWithWhereUniqueWithoutCabinetInput | AdminCabinetUpsertWithWhereUniqueWithoutCabinetInput[]
+    createMany?: AdminCabinetCreateManyCabinetInputEnvelope
+    set?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    disconnect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    delete?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    connect?: AdminCabinetWhereUniqueInput | AdminCabinetWhereUniqueInput[]
+    update?: AdminCabinetUpdateWithWhereUniqueWithoutCabinetInput | AdminCabinetUpdateWithWhereUniqueWithoutCabinetInput[]
+    updateMany?: AdminCabinetUpdateManyWithWhereWithoutCabinetInput | AdminCabinetUpdateManyWithWhereWithoutCabinetInput[]
+    deleteMany?: AdminCabinetScalarWhereInput | AdminCabinetScalarWhereInput[]
   }
 
   export type CabinetCreateNestedOneWithoutMcpDevicesInput = {
@@ -25628,6 +26888,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AdminCabinetCreateWithoutAdminInput = {
+    id?: string
+    createdAt?: Date | string
+    cabinet: CabinetCreateNestedOneWithoutAdminAssignmentsInput
+  }
+
+  export type AdminCabinetUncheckedCreateWithoutAdminInput = {
+    id?: string
+    cabinetId: string
+    createdAt?: Date | string
+  }
+
+  export type AdminCabinetCreateOrConnectWithoutAdminInput = {
+    where: AdminCabinetWhereUniqueInput
+    create: XOR<AdminCabinetCreateWithoutAdminInput, AdminCabinetUncheckedCreateWithoutAdminInput>
+  }
+
+  export type AdminCabinetCreateManyAdminInputEnvelope = {
+    data: AdminCabinetCreateManyAdminInput | AdminCabinetCreateManyAdminInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AuditLogUpsertWithWhereUniqueWithoutAdminInput = {
     where: AuditLogWhereUniqueInput
     update: XOR<AuditLogUpdateWithoutAdminInput, AuditLogUncheckedUpdateWithoutAdminInput>
@@ -25656,6 +26938,32 @@ export namespace Prisma {
     details?: JsonNullableFilter<"AuditLog">
     ipAddress?: StringNullableFilter<"AuditLog"> | string | null
     createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+  }
+
+  export type AdminCabinetUpsertWithWhereUniqueWithoutAdminInput = {
+    where: AdminCabinetWhereUniqueInput
+    update: XOR<AdminCabinetUpdateWithoutAdminInput, AdminCabinetUncheckedUpdateWithoutAdminInput>
+    create: XOR<AdminCabinetCreateWithoutAdminInput, AdminCabinetUncheckedCreateWithoutAdminInput>
+  }
+
+  export type AdminCabinetUpdateWithWhereUniqueWithoutAdminInput = {
+    where: AdminCabinetWhereUniqueInput
+    data: XOR<AdminCabinetUpdateWithoutAdminInput, AdminCabinetUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type AdminCabinetUpdateManyWithWhereWithoutAdminInput = {
+    where: AdminCabinetScalarWhereInput
+    data: XOR<AdminCabinetUpdateManyMutationInput, AdminCabinetUncheckedUpdateManyWithoutAdminInput>
+  }
+
+  export type AdminCabinetScalarWhereInput = {
+    AND?: AdminCabinetScalarWhereInput | AdminCabinetScalarWhereInput[]
+    OR?: AdminCabinetScalarWhereInput[]
+    NOT?: AdminCabinetScalarWhereInput | AdminCabinetScalarWhereInput[]
+    id?: StringFilter<"AdminCabinet"> | string
+    adminId?: StringFilter<"AdminCabinet"> | string
+    cabinetId?: StringFilter<"AdminCabinet"> | string
+    createdAt?: DateTimeFilter<"AdminCabinet"> | Date | string
   }
 
   export type RentalCreateWithoutUserInput = {
@@ -25874,6 +27182,7 @@ export namespace Prisma {
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateWithoutLocationInput = {
@@ -25890,6 +27199,7 @@ export namespace Prisma {
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetCreateOrConnectWithoutLocationInput = {
@@ -25934,13 +27244,156 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Cabinet"> | Date | string
   }
 
+  export type AdminCreateWithoutCabinetAssignmentsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    role?: $Enums.AdminRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogCreateNestedManyWithoutAdminInput
+  }
+
+  export type AdminUncheckedCreateWithoutCabinetAssignmentsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    role?: $Enums.AdminRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  }
+
+  export type AdminCreateOrConnectWithoutCabinetAssignmentsInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutCabinetAssignmentsInput, AdminUncheckedCreateWithoutCabinetAssignmentsInput>
+  }
+
+  export type CabinetCreateWithoutAdminAssignmentsInput = {
+    id?: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    location: LocationCreateNestedOneWithoutCabinetsInput
+    credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
+    compartments?: CompartmentCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetUncheckedCreateWithoutAdminAssignmentsInput = {
+    id?: string
+    locationId: string
+    name: string
+    status?: $Enums.CabinetStatus
+    lastHeartbeatAt?: Date | string | null
+    configVersion?: number
+    hardwareSerial?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
+    compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
+    mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
+    logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+  }
+
+  export type CabinetCreateOrConnectWithoutAdminAssignmentsInput = {
+    where: CabinetWhereUniqueInput
+    create: XOR<CabinetCreateWithoutAdminAssignmentsInput, CabinetUncheckedCreateWithoutAdminAssignmentsInput>
+  }
+
+  export type AdminUpsertWithoutCabinetAssignmentsInput = {
+    update: XOR<AdminUpdateWithoutCabinetAssignmentsInput, AdminUncheckedUpdateWithoutCabinetAssignmentsInput>
+    create: XOR<AdminCreateWithoutCabinetAssignmentsInput, AdminUncheckedCreateWithoutCabinetAssignmentsInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutCabinetAssignmentsInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutCabinetAssignmentsInput, AdminUncheckedUpdateWithoutCabinetAssignmentsInput>
+  }
+
+  export type AdminUpdateWithoutCabinetAssignmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUpdateManyWithoutAdminNestedInput
+  }
+
+  export type AdminUncheckedUpdateWithoutCabinetAssignmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  }
+
+  export type CabinetUpsertWithoutAdminAssignmentsInput = {
+    update: XOR<CabinetUpdateWithoutAdminAssignmentsInput, CabinetUncheckedUpdateWithoutAdminAssignmentsInput>
+    create: XOR<CabinetCreateWithoutAdminAssignmentsInput, CabinetUncheckedCreateWithoutAdminAssignmentsInput>
+    where?: CabinetWhereInput
+  }
+
+  export type CabinetUpdateToOneWithWhereWithoutAdminAssignmentsInput = {
+    where?: CabinetWhereInput
+    data: XOR<CabinetUpdateWithoutAdminAssignmentsInput, CabinetUncheckedUpdateWithoutAdminAssignmentsInput>
+  }
+
+  export type CabinetUpdateWithoutAdminAssignmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: LocationUpdateOneRequiredWithoutCabinetsNestedInput
+    credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
+    compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+  }
+
+  export type CabinetUncheckedUpdateWithoutAdminAssignmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    status?: EnumCabinetStatusFieldUpdateOperationsInput | $Enums.CabinetStatus
+    lastHeartbeatAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    configVersion?: IntFieldUpdateOperationsInput | number
+    hardwareSerial?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
+    compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
+    mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
+    logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+  }
+
   export type LocationCreateWithoutCabinetsInput = {
     id?: string
     name: string
     address: string
     latitude?: number | null
     longitude?: number | null
-    googlePlaceId?: string | null
     mapImageUrl?: string | null
     status?: $Enums.LocationStatus
     createdAt?: Date | string
@@ -25953,7 +27406,6 @@ export namespace Prisma {
     address: string
     latitude?: number | null
     longitude?: number | null
-    googlePlaceId?: string | null
     mapImageUrl?: string | null
     status?: $Enums.LocationStatus
     createdAt?: Date | string
@@ -25990,8 +27442,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -26008,8 +27458,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -26100,6 +27548,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AdminCabinetCreateWithoutCabinetInput = {
+    id?: string
+    createdAt?: Date | string
+    admin: AdminCreateNestedOneWithoutCabinetAssignmentsInput
+  }
+
+  export type AdminCabinetUncheckedCreateWithoutCabinetInput = {
+    id?: string
+    adminId: string
+    createdAt?: Date | string
+  }
+
+  export type AdminCabinetCreateOrConnectWithoutCabinetInput = {
+    where: AdminCabinetWhereUniqueInput
+    create: XOR<AdminCabinetCreateWithoutCabinetInput, AdminCabinetUncheckedCreateWithoutCabinetInput>
+  }
+
+  export type AdminCabinetCreateManyCabinetInputEnvelope = {
+    data: AdminCabinetCreateManyCabinetInput | AdminCabinetCreateManyCabinetInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LocationUpsertWithoutCabinetsInput = {
     update: XOR<LocationUpdateWithoutCabinetsInput, LocationUncheckedUpdateWithoutCabinetsInput>
     create: XOR<LocationCreateWithoutCabinetsInput, LocationUncheckedCreateWithoutCabinetsInput>
@@ -26117,7 +27587,6 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    googlePlaceId?: NullableStringFieldUpdateOperationsInput | string | null
     mapImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26130,7 +27599,6 @@ export namespace Prisma {
     address?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
-    googlePlaceId?: NullableStringFieldUpdateOperationsInput | string | null
     mapImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLocationStatusFieldUpdateOperationsInput | $Enums.LocationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26188,8 +27656,6 @@ export namespace Prisma {
     cabinetId?: StringFilter<"Compartment"> | string
     name?: StringFilter<"Compartment"> | string
     size?: EnumCompartmentSizeFilter<"Compartment"> | $Enums.CompartmentSize
-    rowIndex?: IntFilter<"Compartment"> | number
-    colIndex?: IntFilter<"Compartment"> | number
     mcp23017PinLock?: IntFilter<"Compartment"> | number
     mcp23017PinSensor?: IntFilter<"Compartment"> | number
     lockMcpDeviceId?: StringNullableFilter<"Compartment"> | string | null
@@ -26261,6 +27727,22 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"LockerLog"> | Date | string
   }
 
+  export type AdminCabinetUpsertWithWhereUniqueWithoutCabinetInput = {
+    where: AdminCabinetWhereUniqueInput
+    update: XOR<AdminCabinetUpdateWithoutCabinetInput, AdminCabinetUncheckedUpdateWithoutCabinetInput>
+    create: XOR<AdminCabinetCreateWithoutCabinetInput, AdminCabinetUncheckedCreateWithoutCabinetInput>
+  }
+
+  export type AdminCabinetUpdateWithWhereUniqueWithoutCabinetInput = {
+    where: AdminCabinetWhereUniqueInput
+    data: XOR<AdminCabinetUpdateWithoutCabinetInput, AdminCabinetUncheckedUpdateWithoutCabinetInput>
+  }
+
+  export type AdminCabinetUpdateManyWithWhereWithoutCabinetInput = {
+    where: AdminCabinetScalarWhereInput
+    data: XOR<AdminCabinetUpdateManyMutationInput, AdminCabinetUncheckedUpdateManyWithoutCabinetInput>
+  }
+
   export type CabinetCreateWithoutMcpDevicesInput = {
     id?: string
     name: string
@@ -26275,6 +27757,7 @@ export namespace Prisma {
     credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateWithoutMcpDevicesInput = {
@@ -26291,6 +27774,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetCreateOrConnectWithoutMcpDevicesInput = {
@@ -26302,8 +27786,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -26321,8 +27803,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     sensorMcpDeviceId?: string | null
@@ -26348,8 +27828,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -26367,8 +27845,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -26415,6 +27891,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateWithoutMcpDevicesInput = {
@@ -26431,6 +27908,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type CompartmentUpsertWithWhereUniqueWithoutLockMcpDeviceInput = {
@@ -26479,6 +27957,7 @@ export namespace Prisma {
     credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateWithoutCompartmentsInput = {
@@ -26495,6 +27974,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetCreateOrConnectWithoutCompartmentsInput = {
@@ -26680,6 +28160,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateWithoutCompartmentsInput = {
@@ -26696,6 +28177,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type McpDeviceUpsertWithoutLockCompartmentsInput = {
@@ -26835,6 +28317,7 @@ export namespace Prisma {
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
     logs?: LockerLogCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateWithoutCredentialInput = {
@@ -26851,6 +28334,7 @@ export namespace Prisma {
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
     logs?: LockerLogUncheckedCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetCreateOrConnectWithoutCredentialInput = {
@@ -26883,6 +28367,7 @@ export namespace Prisma {
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateWithoutCredentialInput = {
@@ -26899,14 +28384,13 @@ export namespace Prisma {
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type CompartmentCreateWithoutRealtimeStatusInput = {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -26924,8 +28408,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -26957,8 +28439,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -26976,8 +28456,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27123,8 +28601,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -27142,8 +28618,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -27326,8 +28800,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -27345,8 +28817,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27427,6 +28897,7 @@ export namespace Prisma {
     credential?: CabinetCredentialCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetUncheckedCreateWithoutLogsInput = {
@@ -27443,6 +28914,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUncheckedCreateNestedOneWithoutCabinetInput
     compartments?: CompartmentUncheckedCreateNestedManyWithoutCabinetInput
     mcpDevices?: McpDeviceUncheckedCreateNestedManyWithoutCabinetInput
+    adminAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutCabinetInput
   }
 
   export type CabinetCreateOrConnectWithoutLogsInput = {
@@ -27454,8 +28926,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     status?: $Enums.CompartmentAvailability
@@ -27473,8 +28943,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -27555,6 +29023,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateWithoutLogsInput = {
@@ -27571,6 +29040,7 @@ export namespace Prisma {
     credential?: CabinetCredentialUncheckedUpdateOneWithoutCabinetNestedInput
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type CompartmentUpsertWithoutLogsInput = {
@@ -27588,8 +29058,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -27607,8 +29075,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27673,6 +29139,7 @@ export namespace Prisma {
     role?: $Enums.AdminRole
     createdAt?: Date | string
     updatedAt?: Date | string
+    cabinetAssignments?: AdminCabinetCreateNestedManyWithoutAdminInput
   }
 
   export type AdminUncheckedCreateWithoutAuditLogsInput = {
@@ -27683,6 +29150,7 @@ export namespace Prisma {
     role?: $Enums.AdminRole
     createdAt?: Date | string
     updatedAt?: Date | string
+    cabinetAssignments?: AdminCabinetUncheckedCreateNestedManyWithoutAdminInput
   }
 
   export type AdminCreateOrConnectWithoutAuditLogsInput = {
@@ -27709,6 +29177,7 @@ export namespace Prisma {
     role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinetAssignments?: AdminCabinetUpdateManyWithoutAdminNestedInput
   }
 
   export type AdminUncheckedUpdateWithoutAuditLogsInput = {
@@ -27719,6 +29188,7 @@ export namespace Prisma {
     role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinetAssignments?: AdminCabinetUncheckedUpdateManyWithoutAdminNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -27959,6 +29429,12 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type AdminCabinetCreateManyAdminInput = {
+    id?: string
+    cabinetId: string
+    createdAt?: Date | string
+  }
+
   export type AuditLogUpdateWithoutAdminInput = {
     id?: StringFieldUpdateOperationsInput | string
     action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
@@ -27986,6 +29462,24 @@ export namespace Prisma {
     resourceId?: NullableStringFieldUpdateOperationsInput | string | null
     details?: NullableJsonNullValueInput | InputJsonValue
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminCabinetUpdateWithoutAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cabinet?: CabinetUpdateOneRequiredWithoutAdminAssignmentsNestedInput
+  }
+
+  export type AdminCabinetUncheckedUpdateWithoutAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminCabinetUncheckedUpdateManyWithoutAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cabinetId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28163,6 +29657,7 @@ export namespace Prisma {
     compartments?: CompartmentUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateWithoutLocationInput = {
@@ -28179,6 +29674,7 @@ export namespace Prisma {
     compartments?: CompartmentUncheckedUpdateManyWithoutCabinetNestedInput
     mcpDevices?: McpDeviceUncheckedUpdateManyWithoutCabinetNestedInput
     logs?: LockerLogUncheckedUpdateManyWithoutCabinetNestedInput
+    adminAssignments?: AdminCabinetUncheckedUpdateManyWithoutCabinetNestedInput
   }
 
   export type CabinetUncheckedUpdateManyWithoutLocationInput = {
@@ -28197,8 +29693,6 @@ export namespace Prisma {
     id?: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -28230,12 +29724,16 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type AdminCabinetCreateManyCabinetInput = {
+    id?: string
+    adminId: string
+    createdAt?: Date | string
+  }
+
   export type CompartmentUpdateWithoutCabinetInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -28252,8 +29750,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28270,8 +29766,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28351,13 +29845,29 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AdminCabinetUpdateWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    admin?: AdminUpdateOneRequiredWithoutCabinetAssignmentsNestedInput
+  }
+
+  export type AdminCabinetUncheckedUpdateWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminCabinetUncheckedUpdateManyWithoutCabinetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    adminId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CompartmentCreateManyLockMcpDeviceInput = {
     id?: string
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     sensorMcpDeviceId?: string | null
@@ -28371,8 +29881,6 @@ export namespace Prisma {
     cabinetId: string
     name: string
     size: $Enums.CompartmentSize
-    rowIndex?: number
-    colIndex?: number
     mcp23017PinLock: number
     mcp23017PinSensor: number
     lockMcpDeviceId?: string | null
@@ -28385,8 +29893,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -28404,8 +29910,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28422,8 +29926,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     sensorMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28436,8 +29938,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     status?: EnumCompartmentAvailabilityFieldUpdateOperationsInput | $Enums.CompartmentAvailability
@@ -28455,8 +29955,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28473,8 +29971,6 @@ export namespace Prisma {
     cabinetId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     size?: EnumCompartmentSizeFieldUpdateOperationsInput | $Enums.CompartmentSize
-    rowIndex?: IntFieldUpdateOperationsInput | number
-    colIndex?: IntFieldUpdateOperationsInput | number
     mcp23017PinLock?: IntFieldUpdateOperationsInput | number
     mcp23017PinSensor?: IntFieldUpdateOperationsInput | number
     lockMcpDeviceId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28764,6 +30260,10 @@ export namespace Prisma {
      * @deprecated Use LocationDefaultArgs instead
      */
     export type LocationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LocationDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use AdminCabinetDefaultArgs instead
+     */
+    export type AdminCabinetArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AdminCabinetDefaultArgs<ExtArgs>
     /**
      * @deprecated Use CabinetDefaultArgs instead
      */

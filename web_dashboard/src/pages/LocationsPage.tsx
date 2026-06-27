@@ -3,7 +3,7 @@ import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Button, DataTable, Badge, Modal, Input, Select, type Column } from '@/components/ui'
+import { Button, DataTable, Badge, Modal, Input, Select, LocationMapPicker, type Column } from '@/components/ui'
 import { locationsApi } from '@/lib/api'
 import type { Location } from '@/types'
 
@@ -17,7 +17,6 @@ export default function LocationsPage() {
     address: '',
     lat: '',
     lng: '',
-    googlePlaceId: '',
     status: 'ACTIVE',
   })
 
@@ -50,7 +49,7 @@ export default function LocationsPage() {
   })
 
   const resetForm = () => {
-    setForm({ name: '', address: '', lat: '', lng: '', googlePlaceId: '', status: 'ACTIVE' })
+    setForm({ name: '', address: '', lat: '', lng: '', status: 'ACTIVE' })
     setEditingLocation(null)
   }
 
@@ -61,7 +60,6 @@ export default function LocationsPage() {
       address: location.address,
       lat: location.lat?.toString() || '',
       lng: location.lng?.toString() || '',
-      googlePlaceId: location.googlePlaceId || '',
       status: location.status,
     })
     setModalOpen(true)
@@ -75,7 +73,6 @@ export default function LocationsPage() {
       address: form.address,
       lat: form.lat ? parseFloat(form.lat) : undefined,
       lng: form.lng ? parseFloat(form.lng) : undefined,
-      googlePlaceId: form.googlePlaceId || undefined,
       status: form.status,
     })
   }
@@ -182,6 +179,13 @@ export default function LocationsPage() {
             onChange={(event) => setForm({ ...form, address: event.target.value })}
             placeholder="273 An Duong Vuong, Q.5, TP.HCM"
           />
+          <LocationMapPicker
+            lat={form.lat ? parseFloat(form.lat) : undefined}
+            lng={form.lng ? parseFloat(form.lng) : undefined}
+            onChange={(lat, lng, address) =>
+              setForm({ ...form, lat: lat.toFixed(6), lng: lng.toFixed(6), address: address ?? form.address })
+            }
+          />
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Latitude"
@@ -198,12 +202,6 @@ export default function LocationsPage() {
               placeholder="106.6824"
             />
           </div>
-          <Input
-            label="Google Place ID"
-            value={form.googlePlaceId}
-            onChange={(event) => setForm({ ...form, googlePlaceId: event.target.value })}
-            placeholder="ChIJ..."
-          />
           <Select
             label="Status"
             value={form.status}

@@ -22,10 +22,6 @@ const STATUS_CONFIG: Record<string, { label: string; variant: 'success' | 'warni
   OFFLINE: { label: 'Offline', variant: 'error' },
   INACTIVE: { label: 'Tắt', variant: 'neutral' },
   CONFIGURING: { label: 'Đang cấu hình', variant: 'warning' },
-  DRAFT: { label: 'Bản nháp', variant: 'neutral' },
-  PENDING_PROVISION: { label: 'Chờ provision', variant: 'warning' },
-  PENDING_REGISTRATION: { label: 'Chờ đăng ký', variant: 'warning' },
-  PROVISION_FAILED: { label: 'Provision lỗi', variant: 'error' },
 }
 
 function formatTime(dateStr?: string): string {
@@ -119,7 +115,7 @@ export default function CabinetDetailPage() {
   const mcpDevices: McpDevice[] = Array.isArray(cabinet.mcpDevices) ? cabinet.mcpDevices : []
   const isConfigurable = cabinet.status === 'CONFIGURING'
   const isActive = cabinet.status === 'ACTIVE'
-  const canAddCompartment = isConfigurable
+  const canAddCompartment = isConfigurable || isActive
   const canActivate = isConfigurable && (cabinet.compartments?.length ?? 0) > 0
 
   return (
@@ -198,10 +194,6 @@ export default function CabinetDetailPage() {
           value={cabinet.locationName}
         />
         <InfoCard
-          label="Phiên bản cấu hình"
-          value={cabinet.configVersion != null ? `v${cabinet.configVersion}` : '—'}
-        />
-        <InfoCard
           label="MCP Devices"
           value={
             mcpDevices.length > 0 ? (
@@ -257,7 +249,7 @@ export default function CabinetDetailPage() {
           <CompartmentTable
             compartments={cabinet.compartments!}
             cabinetId={cabinet.id}
-            isConfigurable={isConfigurable}
+            canEdit={isConfigurable || isActive}
             onEdit={setEditCompartment}
             onTest={(compId) => { setTestLoading(compId); testOpen.mutate(compId) }}
             testLoading={testLoading}
@@ -306,7 +298,7 @@ function InfoCard({ label, value }: { label: string; value: React.ReactNode }) {
 function CompartmentTable({
   compartments,
   cabinetId,
-  isConfigurable,
+  canEdit,
   onEdit,
   onTest,
   testLoading,
@@ -314,7 +306,7 @@ function CompartmentTable({
 }: {
   compartments: Compartment[]
   cabinetId: string
-  isConfigurable: boolean
+  canEdit: boolean
   onEdit: (c: Compartment) => void
   onTest: (id: string) => void
   testLoading: string | null
@@ -391,7 +383,7 @@ function CompartmentTable({
                       <Lock className="h-3.5 w-3.5" />
                     )}
                   </Button>
-                  {isConfigurable && (
+                  {canEdit && (
                     <>
                       <Button
                         variant="ghost"

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ForbiddenError, UnauthorizedError } from '../lib/errors';
 import { verifyToken } from '../lib/jwt';
+import { prisma } from '../lib/prisma';
 
 export const ADMIN_ROLES = ['SUPER_ADMIN', 'CABINET_ADMIN'] as const;
 
@@ -47,5 +48,21 @@ export function requireSuperAdmin(req: Request, _res: Response, next: NextFuncti
     return next();
   } catch {
     return next(UnauthorizedError('Invalid token'));
+  }
+}
+
+export async function requireCabinetAccess(req: Request, _res: Response, next: NextFunction) {
+  try {
+    req.admin = readAdminFromRequest(req);
+    if (req.admin.role === 'SUPER_ADMIN') return next();
+    const cabinetId = req.params.id || req.params.cabinetId;
+    if (!cabinetId) return next(ForbiddenError('Cabinet ID required'));
+    const assigned = await prisma.adminCabinet.findUnique({
+      where: { adminId_cabinetId: { adminId: req.admin.id, cabinetId } },
+    });
+    if (!assigned) return next(ForbiddenError('Không có quyền trên cabinet này'));
+    next();
+  } catch {
+    next(UnauthorizedError('Invalid token'));
   }
 }

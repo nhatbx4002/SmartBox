@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocationStore } from "../../../src/store/locationStore";
+import { useIsOnline } from "../../../src/hooks/useIsOnline";
 
 let MapView: any = null;
 let Marker: any = null;
@@ -28,6 +29,7 @@ export default function StationDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const isOnline = useIsOnline();
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const fetchLocationDetail = useLocationStore((state) => state.fetchLocationDetail);
   const isLoading = useLocationStore((state) => state.isLoading);
@@ -157,13 +159,14 @@ export default function StationDetailScreen() {
                 onPress={handleDirections}
                 className="flex-1 h-12 bg-background border border-border rounded-input items-center justify-center"
               >
-                <Text className="text-button text-white">Chỉ đường</Text>
+                <Text className="text-btn text-white">Chỉ đường</Text>
               </Pressable>
               <Pressable
                 onPress={() => router.push(`/rent/${id}` as any)}
-                className="flex-1 h-12 bg-brand rounded-input items-center justify-center"
+                disabled={!isOnline}
+                className={`flex-1 h-12 rounded-input items-center justify-center ${isOnline ? "bg-brand" : "bg-text-muted/30"}`}
               >
-                <Text className="text-button text-white">Thuê tủ</Text>
+                <Text className="text-btn text-white">Thuê tủ</Text>
               </Pressable>
             </View>
           </>

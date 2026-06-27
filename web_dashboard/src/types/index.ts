@@ -6,6 +6,8 @@ export interface Admin {
   email: string
   role: AdminRole
   avatarUrl?: string
+  cabinetIds?: string[]
+  assignedCabinets?: { id: string; name: string }[]
 }
 
 export type CompartmentStatus = 'AVAILABLE' | 'OCCUPIED' | 'MAINTENANCE' | 'RESERVED'
@@ -46,47 +48,7 @@ export type CabinetStatus =
   | 'ACTIVE' | 'ONLINE'
   | 'OFFLINE'
   | 'INACTIVE'
-  | 'PENDING_REGISTRATION'
-  | 'PENDING_PROVISION'
-  | 'PROVISION_FAILED'
-  | 'DRAFT'
   | 'CONFIGURING'
-
-export type ProvisionMode = 'CHECK_EXISTING' | 'ALLOW_NEW'
-
-export interface ProvisionMcpDevice {
-  id: string
-  bus: number
-  address: number
-  role: 'SENSOR' | 'LOCK'
-  name?: string
-}
-
-export interface ProvisionProfile {
-  id: string
-  name: string
-  provisionKey: string
-  provisionSecret?: string | null
-  mode: ProvisionMode
-  isActive: boolean
-  templateRows: number
-  templateCols: number
-  templateSizes: CompartmentSize[][]
-  mcpDevices: ProvisionMcpDevice[]
-  cabinetCount: number
-  createdAt: string
-  updatedAt: string
-}
-
-export interface ProvisioningConfig {
-  id?: string
-  strategy: string
-  provisionKey: string
-  provisionSecret?: string | null
-  webhookUrl?: string | null
-  isActive: boolean
-  updatedAt?: string
-}
 
 export interface Cabinet {
   id: string
@@ -100,10 +62,8 @@ export interface Cabinet {
   mcpDevices: number | McpDevice[]
   provisionCode?: string | null
   provisionCodeExpires?: string | null
-  configVersion?: number
   hardwareSerial?: string | null
   notes?: string | null
-  profile?: { id: string; name: string } | null
   compartments?: Compartment[]
   createdAt?: string
 }
@@ -147,7 +107,6 @@ export interface Location {
   address: string
   lat?: number
   lng?: number
-  googlePlaceId?: string
   status: 'ACTIVE' | 'INACTIVE'
   cabinetCount: number
 }
@@ -211,6 +170,22 @@ export interface PairingStartResponse {
   sessionId: string
   pairingCode: string
   expiresInSeconds: number
+}
+
+export type RentalType = 'ONCE' | 'DAILY' | 'MONTHLY'
+
+export interface PricePlan {
+  id: string
+  name: string
+  size: CompartmentSize
+  rentalType: RentalType
+  price: number
+  maxOpens?: number | null
+  durationDays: number
+  description?: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
 }
 
 export interface DashboardStats {

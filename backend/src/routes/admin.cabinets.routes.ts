@@ -2,13 +2,12 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { AuditAction, CabinetStatus, CompartmentSize } from '../generated/prisma';
 import { prisma } from '../lib/prisma';
-import { requireAdmin } from '../middleware/auth';
+import { requireAdmin, requireCabinetAccess } from '../middleware/auth';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate } from '../middleware/validate';
-import { createAuditLog } from '../services/audit.service';
+import { auditFromRequest } from '../services/audit.service';
 import {
   activateCabinet,
-  createCabinet,
   deactivateCabinet,
   deleteCabinet,
   testOpenCompartment,
@@ -18,13 +17,6 @@ import { createCompartment, deleteCompartment, updateCompartment } from '../serv
 import { unlockCompartment } from '../services/locker.service';
 
 const router = Router({ mergeParams: true });
-
-const cabinetCreateSchema = z.object({
-  locationId: z.string().min(1),
-  deviceName: z.string().min(1),
-  hardwareSerial: z.string().optional(),
-  notes: z.string().optional(),
-});
 
 const cabinetUpdateSchema = z.object({
   locationId: z.string().min(1).optional(),
@@ -37,9 +29,7 @@ const cabinetUpdateSchema = z.object({
 const compartmentSchema = z.object({
   name: z.string().min(1),
   size: z.nativeEnum(CompartmentSize),
-  rowIndex: z.number().int().min(0).optional(),
-  colIndex: z.number().int().min(0).optional(),
-  lockMcpDeviceId: z.string().nullable().optional(),
+  lockMcpDeviceId: z.string().min(1),
   sensorMcpDeviceId: z.string().nullable().optional(),
   mcp23017PinLock: z.number().int().min(0).max(15),
   mcp23017PinSensor: z.number().int().min(0).max(15).nullable().optional(),
@@ -51,14 +41,18 @@ router.use(requireAdmin);
 
 router.get(
   '/',
-  asyncHandler(async (_req, res) => {
+  asyncHandler(async (req, res) => {
+    const where = req.admin!.role === 'SUPER_ADMIN'
+      ? {}
+      : { adminAssignments: { some: { adminId: req.admin!.id } } };
     const cabinets = await prisma.cabinet.findMany({
+      where,
       include: {
         location: true,
         mcpDevices: { orderBy: [{ bus: 'asc' }, { address: 'asc' }] },
         compartments: {
           include: { realtimeStatus: true, lockMcpDevice: true, sensorMcpDevice: true },
-          orderBy: [{ rowIndex: 'asc' }, { colIndex: 'asc' }, { name: 'asc' }],
+          orderBy: { name: 'asc' },
         },
       },
       orderBy: { createdAt: 'asc' },
@@ -69,6 +63,7 @@ router.get(
 
 router.get(
   '/:id',
+  requireCabinetAccess,
   asyncHandler(async (req, res) => {
     const cabinet = await prisma.cabinet.findUnique({
       where: { id: req.params.id },
@@ -77,7 +72,7 @@ router.get(
         mcpDevices: { orderBy: [{ bus: 'asc' }, { address: 'asc' }] },
         compartments: {
           include: { realtimeStatus: true, lockMcpDevice: true, sensorMcpDevice: true },
-          orderBy: [{ rowIndex: 'asc' }, { colIndex: 'asc' }, { name: 'asc' }],
+          orderBy: { name: 'asc' },
         },
       },
     });
@@ -85,125 +80,100 @@ router.get(
   }),
 );
 
-router.post(
-  '/',
-  validate(cabinetCreateSchema),
-  asyncHandler(async (req, res) => {
-    const cabinet = await createCabinet({
-      locationId: req.body.locationId,
-      name: req.body.deviceName,
-      hardwareSerial: req.body.hardwareSerial,
-      notes: req.body.notes,
-      status: CabinetStatus.DRAFT,
-    });
-    await audit(req, AuditAction.CREATE_CABINET, 'Cabinet', cabinet.id, req.body);
-    res.status(201).json({ data: cabinet });
-  }),
-);
-
 router.put(
   '/:id',
+  requireCabinetAccess,
   validate(cabinetUpdateSchema),
   asyncHandler(async (req, res) => {
     const cabinet = await updateCabinet(req.params.id, req.body);
-    await audit(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, req.body);
+    await auditFromRequest(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, req.body);
     res.json({ data: cabinet });
   }),
 );
 
 router.delete(
   '/:id',
+  requireCabinetAccess,
   asyncHandler(async (req, res) => {
     await deleteCabinet(req.params.id);
-    await audit(req, AuditAction.DELETE_CABINET, 'Cabinet', req.params.id, {});
+    await auditFromRequest(req, AuditAction.DELETE_CABINET, 'Cabinet', req.params.id, {});
     res.json({ data: { ok: true } });
   }),
 );
 
 router.post(
   '/:id/compartments',
+  requireCabinetAccess,
   validate(compartmentSchema),
   asyncHandler(async (req, res) => {
     const result = await createCompartment(req.params.id, req.body);
-    await audit(req, AuditAction.UPDATE_CABINET, 'Compartment', result.compartment.id, req.body);
+    await auditFromRequest(req, AuditAction.UPDATE_CABINET, 'Compartment', result.compartment.id, req.body);
     res.status(201).json({ data: result });
   }),
 );
 
 router.put(
   '/:cabinetId/compartments/:compId',
+  requireCabinetAccess,
   validate(compartmentUpdateSchema),
   asyncHandler(async (req, res) => {
     const result = await updateCompartment(req.params.compId, req.body);
-    await audit(req, AuditAction.UPDATE_CABINET, 'Compartment', req.params.compId, req.body);
+    await auditFromRequest(req, AuditAction.UPDATE_CABINET, 'Compartment', req.params.compId, req.body);
     res.json({ data: result });
   }),
 );
 
 router.delete(
   '/:cabinetId/compartments/:compId',
+  requireCabinetAccess,
   asyncHandler(async (req, res) => {
     const result = await deleteCompartment(req.params.compId);
-    await audit(req, AuditAction.UPDATE_CABINET, 'Compartment', req.params.compId, {});
+    await auditFromRequest(req, AuditAction.UPDATE_CABINET, 'Compartment', req.params.compId, {});
     res.json({ data: result });
   }),
 );
 
 router.post(
   '/:id/unlock/:compId',
+  requireCabinetAccess,
   asyncHandler(async (req, res) => {
     await unlockCompartment(req.params.id, req.params.compId);
-    await audit(req, AuditAction.UNLOCK_COMPARTMENT, 'Cabinet', req.params.id, { compartmentId: req.params.compId });
+    await auditFromRequest(req, AuditAction.UNLOCK_COMPARTMENT, 'Cabinet', req.params.id, { compartmentId: req.params.compId });
     res.json({ data: { ok: true } });
   }),
 );
 
 router.post(
   '/:id/activate',
+  requireCabinetAccess,
   asyncHandler(async (req, res) => {
     const cabinet = await activateCabinet(req.params.id);
-    await audit(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, { status: cabinet.status });
+    await auditFromRequest(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, { status: cabinet.status });
     res.json({ data: { cabinet, configVersion: cabinet.configVersion } });
   }),
 );
 
 router.post(
   '/:id/deactivate',
+  requireCabinetAccess,
   asyncHandler(async (req, res) => {
     const cabinet = await deactivateCabinet(req.params.id);
-    await audit(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, { status: cabinet.status });
+    await auditFromRequest(req, AuditAction.UPDATE_CABINET, 'Cabinet', cabinet.id, { status: cabinet.status });
     res.json({ data: { cabinet } });
   }),
 );
 
 router.post(
   '/:id/compartments/:compId/test-open',
+  requireCabinetAccess,
   asyncHandler(async (req, res) => {
     const result = await testOpenCompartment(req.params.id, req.params.compId);
-    await audit(req, AuditAction.UNLOCK_COMPARTMENT, 'Cabinet', req.params.id, {
+    await auditFromRequest(req, AuditAction.UNLOCK_COMPARTMENT, 'Cabinet', req.params.id, {
       compartmentId: req.params.compId,
       action: 'test-open',
     });
     res.json({ data: result });
   }),
 );
-
-async function audit(
-  req: { admin?: { id: string }; ip?: string },
-  action: AuditAction,
-  resource: string,
-  resourceId: string,
-  details: object,
-) {
-  if (!req.admin) return;
-  await createAuditLog({
-    adminId: req.admin.id,
-    action,
-    resource,
-    resourceId,
-    details,
-    ipAddress: req.ip,
-  });
-}
 
 export default router;

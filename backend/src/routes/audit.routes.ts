@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { AuditAction } from '../generated/prisma';
-import { requireAdmin } from '../middleware/auth';
+import { requireSuperAdmin } from '../middleware/auth';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { listAuditLogs } from '../services/audit.service';
 
 const router = Router();
 
-router.use(requireAdmin);
+router.use(requireSuperAdmin);
 
 router.get(
   '/',

@@ -27,10 +27,6 @@ enum CabinetStatus {
   ACTIVE
   INACTIVE
   OFFLINE
-  DRAFT
-  PENDING_PROVISION
-  PROVISION_FAILED
-  PENDING_REGISTRATION
   CONFIGURING
 }
 
@@ -116,6 +112,14 @@ enum AuditAction {
   UPDATE_PROVISION_PROFILE
   DELETE_PROVISION_PROFILE
   CABINET_AUTO_PROVISIONED
+  CREATE_ADMIN
+  UPDATE_ADMIN
+  DELETE_ADMIN
+  ASSIGN_ADMIN_CABINET
+  UNASSIGN_ADMIN_CABINET
+  CREATE_PRICE_PLAN
+  UPDATE_PRICE_PLAN
+  DELETE_PRICE_PLAN
 }
 
 enum NotificationType {
@@ -139,14 +143,15 @@ enum PaymentSource{
 }
 
 model Admin {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  passwordHash String
-  name         String
-  role         AdminRole @default(CABINET_ADMIN)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  auditLogs    AuditLog[]
+  id                 String         @id @default(cuid())
+  email              String         @unique
+  passwordHash       String
+  name               String
+  role               AdminRole      @default(CABINET_ADMIN)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  auditLogs          AuditLog[]
+  cabinetAssignments AdminCabinet[]
 }
 
 model User {
@@ -173,7 +178,6 @@ model Location {
   address       String
   latitude      Float?
   longitude     Float?
-  googlePlaceId String?        @unique
   mapImageUrl   String?
   status        LocationStatus @default(ACTIVE)
   createdAt     DateTime       @default(now())
@@ -183,22 +187,35 @@ model Location {
   @@index([status])
 }
 
+model AdminCabinet {
+  id        String   @id @default(cuid())
+  adminId   String
+  cabinetId String
+  createdAt DateTime @default(now())
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  cabinet   Cabinet  @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+
+  @@unique([adminId, cabinetId])
+  @@index([cabinetId])
+}
+
 model Cabinet {
-  id              String        @id @default(cuid())
+  id              String         @id @default(cuid())
   locationId      String
   name            String
-  status          CabinetStatus @default(ACTIVE)
+  status          CabinetStatus  @default(ACTIVE)
   lastHeartbeatAt DateTime?
-  configVersion   Int           @default(1)
+  configVersion   Int            @default(1)
   hardwareSerial  String?
   notes           String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  location        Location      @relation(fields: [locationId], references: [id])
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  location        Location       @relation(fields: [locationId], references: [id])
   credential      CabinetCredential?
   compartments    Compartment[]
   mcpDevices      McpDevice[]
   logs            LockerLog[]
+  adminAssignments AdminCabinet[]
 
   @@index([locationId])
   @@index([status])
@@ -226,8 +243,6 @@ model Compartment {
   cabinetId         String
   name              String
   size              CompartmentSize
-  rowIndex          Int                     @default(0)
-  colIndex          Int                     @default(0)
   mcp23017PinLock   Int
   mcp23017PinSensor Int
   lockMcpDeviceId   String?

@@ -84,7 +84,6 @@ export interface Location {
   address: string;
   latitude: number | null;
   longitude: number | null;
-  googlePlaceId: string | null;
   mapImageUrl: string | null;
   status: LocationStatus;
   createdAt: ISODateString;

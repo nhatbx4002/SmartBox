@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { tokenStorage } from './tokenStorage';
 
-const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? (Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001');
 
 export class ApiError extends Error {
   status?: number;
@@ -85,8 +85,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
           if (refreshResponse.ok) {
             const refreshData = await refreshResponse.json();
-            const result = refreshData.data;
-            const newAccessToken = result?.accessToken;
+            const newAccessToken = refreshData.data?.accessToken;
 
             if (!newAccessToken) {
               throw new Error('No access token in refresh response');

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, Alert } from "react-native";
+import { View, Text, ScrollView, Pressable, Alert, Modal } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,6 +8,7 @@ import Button from "../../../src/components/ui/button";
 import { RentalDetailSkeleton } from "../../../src/components/ui/rental-skeleton";
 import QrCodeDisplay from "../../../src/components/ui/qr-code-display";
 import { useRentalStore } from "../../../src/store/rentalStore";
+import { useIsOnline } from "../../../src/hooks/useIsOnline";
 
 function formatCountdown(expiresAt: string, nowMs: number) {
   const seconds = Math.max(0, Math.floor((new Date(expiresAt).getTime() - nowMs) / 1000));
@@ -27,6 +28,8 @@ export default function RentalDetailScreen() {
   const completeRental = useRentalStore((state) => state.completeRental);
   const isLoading = useRentalStore((state) => state.isLoading);
   const [now, setNow] = useState(Date.now());
+  const [qrVisible, setQrVisible] = useState(false);
+  const isOnline = useIsOnline();
 
   useEffect(() => {
     if (id) {
@@ -97,8 +100,30 @@ export default function RentalDetailScreen() {
                   size={160}
                   label=""
                 />
+                <Pressable onPress={() => setQrVisible(true)} className="mt-three">
+                  <Text className="text-small-bold text-brand">Phóng to QR</Text>
+                </Pressable>
               </View>
             ) : null}
+
+            <Modal visible={qrVisible} animationType="fade" transparent onRequestClose={() => setQrVisible(false)}>
+              <Pressable
+                className="flex-1 bg-black/90 items-center justify-center"
+                onPress={() => setQrVisible(false)}
+              >
+                <View className="bg-surface rounded-panel p-six items-center">
+                  {currentRental && (
+                    <QrCodeDisplay
+                      value={currentRental.qrToken}
+                      code={currentRental.code}
+                      size={280}
+                      label=""
+                    />
+                  )}
+                  <Text className="text-caption text-text-secondary mt-four">Nhấn vào bất kỳ đâu để đóng</Text>
+                </View>
+              </Pressable>
+            </Modal>
 
             <View className="bg-surface border border-border rounded-panel p-four mb-four gap-three">
               <View className="flex-row justify-between">
@@ -115,7 +140,7 @@ export default function RentalDetailScreen() {
 
             {currentRental.status === "ACTIVE" ? (
               <View className="gap-three mb-four">
-                <Button title="Hoàn tất phiên thuê" variant="secondary" onPress={handleComplete} />
+                <Button title="Hoàn tất phiên thuê" variant="secondary" onPress={handleComplete} disabled={!isOnline} />
               </View>
             ) : null}
 

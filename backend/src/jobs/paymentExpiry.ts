@@ -13,7 +13,9 @@ export function startPaymentExpiry() {
         },
       });
 
-      console.log(`[PaymentExpiry] ${expiredPayments.length} expired payment(s) found`);
+      if (expiredPayments.length > 0) {
+        console.log(`[PaymentExpiry] ${expiredPayments.length} expired payment(s) found`);
+      }
 
       for (const payment of expiredPayments) {
         await cancelPendingPayment(payment.id);

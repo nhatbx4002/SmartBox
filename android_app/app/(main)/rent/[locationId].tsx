@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, ScrollView, Pressable, ActivityIndicator, Alert } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,10 +7,23 @@ import Button from "../../../src/components/ui/button";
 import Badge from "../../../src/components/ui/badge";
 import SpringPressable from "../../../src/components/ui/spring-pressable";
 import QrCodeDisplay from "../../../src/components/ui/qr-code-display";
-import { PaymentMethod, PricePlan, CreatePaymentResult } from "../../../src/types";
+import { PaymentMethod, PricePlan, RentalType, CreatePaymentResult } from "../../../src/types";
 import { useLocationStore } from "../../../src/store/locationStore";
 import { useRentalStore } from "../../../src/store/rentalStore";
 import { paymentService } from "../../../src/services/payment";
+import { useIsOnline } from "../../../src/hooks/useIsOnline";
+
+const PLAN_GROUPS: Record<RentalType, { title: string; subtitle: string }> = {
+  ONCE:    { title: 'Gói ngắn hạn',              subtitle: 'Phù hợp gửi/lấy trong thời gian ngắn' },
+  DAILY:   { title: 'Gói nhiều lượt mở',          subtitle: 'Mở tủ nhiều lần trong nhiều ngày' },
+  MONTHLY: { title: 'Gói không giới hạn lượt mở', subtitle: 'Dùng dài hạn, không giới hạn lượt mở' },
+};
+
+function formatPlanSubtitle(plan: PricePlan): string {
+  if (plan.rentalType === 'MONTHLY') return 'Không giới hạn lượt mở';
+  if (plan.rentalType === 'DAILY') return `${plan.maxOpens} lượt / ${plan.durationDays} ngày`;
+  return `Sử dụng trong ${plan.durationDays} ngày`;
+}
 
 export default function RentFlowScreen() {
   const router = useRouter();
@@ -24,6 +37,8 @@ export default function RentFlowScreen() {
   const [plansLoading, setPlansLoading] = useState(false);
   const [payment, setPayment] = useState<CreatePaymentResult | null>(null);
   const [countdownText, setCountdownText] = useState("");
+  const [selectedPlanGroup, setSelectedPlanGroup] = useState<RentalType | null>(null);
+  const isOnline = useIsOnline();
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const fetchLocationDetail = useLocationStore((state) => state.fetchLocationDetail);
@@ -45,6 +60,13 @@ export default function RentFlowScreen() {
     return plans.filter((plan) => plan.size === selectedSize);
   }, [plans, selectedSize]);
 
+  const groupedPlans = useMemo(() => {
+    return sizePlans.reduce((acc, plan) => {
+      (acc[plan.rentalType] ??= []).push(plan);
+      return acc;
+    }, {} as Partial<Record<RentalType, PricePlan[]>>);
+  }, [sizePlans]);
+
   const selectedPlan = useMemo(
     () => sizePlans.find((plan) => plan.id === selectedPlanId) || null,
     [selectedPlanId, sizePlans],
@@ -55,11 +77,26 @@ export default function RentFlowScreen() {
     return activeCabinet?.id || selectedLocation?.cabinets[0]?.id;
   }, [selectedLocation]);
 
+  // Đếm ngăn trống theo size trên toàn location (khớp số liệu màn Chi tiết trạm)
+  const availability = useMemo(() => {
+    const result = { SMALL: 0, LARGE: 0 };
+    for (const cabinet of selectedLocation?.cabinets ?? []) {
+      for (const compartment of cabinet.compartments) {
+        if (compartment.status === "AVAILABLE") result[compartment.size] += 1;
+      }
+    }
+    return result;
+  }, [selectedLocation]);
+
   const formatCurrency = (amount: number) => amount.toLocaleString("vi-VN") + "đ";
 
   const handleNextStep = async () => {
     if (step === 1 && !selectedSize) {
       Alert.alert("Thiếu thông tin", "Vui lòng chọn kích thước tủ.");
+      return;
+    }
+    if (step === 1 && selectedSize && availability[selectedSize] === 0) {
+      Alert.alert("Hết ngăn trống", `${selectedSize === "SMALL" ? "Tủ nhỏ" : "Tủ lớn"} tại trạm này đã hết ngăn trống. Vui lòng chọn kích thước khác.`);
       return;
     }
     if (step === 1 && selectedSize) {
@@ -127,7 +164,18 @@ export default function RentFlowScreen() {
   useEffect(() => {
     if (step !== 4 || !payment) return;
 
+    const maxRetries = 72;
+    const retryCount = { current: 0 };
+
     const interval = setInterval(async () => {
+      retryCount.current += 1;
+      if (retryCount.current > maxRetries) {
+        clearInterval(interval);
+        Alert.alert('Hết thời gian', 'Phiên thanh toán đã hết hạn, vui lòng thử lại.');
+        setStep(3);
+        return;
+      }
+
       try {
         const res = await paymentService.getPaymentStatus(payment.orderCode);
         if (res.data.status === 'PAID') {
@@ -187,24 +235,35 @@ export default function RentFlowScreen() {
             {step === 1 && (
               <View className="gap-four">
                 <Text className="text-body-bold text-white">Chọn kích thước tủ</Text>
-                {(["SMALL", "LARGE"] as const).map((size) => (
-                  <SpringPressable
-                    key={size}
-                    onPress={() => {
-                      setSelectedSize(size);
-                      setSelectedPlanId(null);
-                    }}
-                    className={`bg-surface border p-four rounded-panel ${selectedSize === size ? "border-brand" : "border-border"}`}
-                  >
-                    <Text className="text-body-bold text-white">{size === "SMALL" ? "Tủ nhỏ" : "Tủ lớn"}</Text>
-                    <Text className="text-caption text-text-secondary mt-two">
-                      {size === "SMALL" ? "Phù hợp balo, laptop, tài liệu." : "Phù hợp vali, túi lớn, nhiều đồ."}
-                    </Text>
-                  </SpringPressable>
-                ))}
+                {(["SMALL", "LARGE"] as const).map((size) => {
+                  const soldOut = availability[size] === 0;
+                  return (
+                    <SpringPressable
+                      key={size}
+                      onPress={() => {
+                        if (soldOut) return;
+                        setSelectedSize(size);
+                        setSelectedPlanId(null);
+                        setSelectedPlanGroup(null);
+                      }}
+                      className={`bg-surface border p-four rounded-panel ${soldOut ? "opacity-50 border-border" : selectedSize === size ? "border-brand" : "border-border"}`}
+                    >
+                      <View className="flex-row justify-between items-start">
+                        <Text className="text-body-bold text-white">{size === "SMALL" ? "Tủ nhỏ" : "Tủ lớn"}</Text>
+                        <Badge
+                          label={soldOut ? "Hết ngăn" : `${availability[size]} ngăn trống`}
+                          status={soldOut ? "expired" : "active"}
+                        />
+                      </View>
+                      <Text className="text-caption text-text-secondary mt-two">
+                        {size === "SMALL" ? "Phù hợp balo, laptop, tài liệu." : "Phù hợp vali, túi lớn, nhiều đồ."}
+                      </Text>
+                    </SpringPressable>
+                  );
+                })}
                 <Button
                   title="Tiếp tục"
-                  disabled={!selectedSize}
+                  disabled={!selectedSize || availability[selectedSize] === 0}
                   onPress={handleNextStep}
                 />
               </View>
@@ -212,42 +271,72 @@ export default function RentFlowScreen() {
 
             {step === 2 && (
               <View className="gap-four">
-                <Text className="text-body-bold text-white">Chọn gói thuê</Text>
                 {plansLoading ? (
                   <View className="items-center py-eight">
                     <ActivityIndicator color="#FF6600" />
                   </View>
                 ) : sizePlans.length === 0 ? (
-                  <Text className="text-caption text-text-secondary">Không có gói thuê cho kích thước này.</Text>
+                  <>
+                    <Text className="text-caption text-text-secondary">Không có gói thuê cho kích thước này.</Text>
+                    <Button title="Quay lại" variant="secondary" onPress={() => setStep(1)} />
+                  </>
+                ) : selectedPlanGroup === null ? (
+                  <>
+                    <Text className="text-body-bold text-white">Chọn nhóm gói thuê</Text>
+                    {(Object.keys(PLAN_GROUPS) as RentalType[])
+                      .filter((type) => groupedPlans[type]?.length)
+                      .map((type) => {
+                        const group = PLAN_GROUPS[type];
+                        const groupPlans = groupedPlans[type]!;
+                        const minPrice = Math.min(...groupPlans.map((p) => p.price));
+                        return (
+                          <SpringPressable
+                            key={type}
+                            onPress={() => setSelectedPlanGroup(type)}
+                            className="bg-surface border border-border p-four rounded-panel"
+                          >
+                            <Text className="text-body-bold text-white">{group.title}</Text>
+                            <Text className="text-caption text-text-secondary mt-one">{group.subtitle}</Text>
+                            <Text className="text-small-bold text-brand mt-two">Từ {formatCurrency(minPrice)}</Text>
+                          </SpringPressable>
+                        );
+                      })}
+                    <Button title="Quay lại" variant="secondary" onPress={() => setStep(1)} />
+                  </>
                 ) : (
                   <>
-                {sizePlans.map((plan: PricePlan) => (
-                  <SpringPressable
-                    key={plan.id}
-                    onPress={() => setSelectedPlanId(plan.id)}
-                    className={`bg-surface border p-four rounded-panel ${selectedPlanId === plan.id ? "border-brand" : "border-border"}`}
-                  >
-                    <View className="flex-row justify-between items-start">
-                      <View className="flex-1 pr-three">
-                        <Text className="text-body-bold text-white">{plan.name}</Text>
-                        <Text className="text-caption text-text-secondary mt-one">
-                          {plan.description || `${plan.durationDays} ngày • tối đa ${plan.maxOpens ?? "không giới hạn"} lượt mở`}
-                        </Text>
+                    <Pressable
+                      onPress={() => { setSelectedPlanGroup(null); setSelectedPlanId(null); }}
+                      className="flex-row items-center gap-two"
+                    >
+                      <Ionicons name="arrow-back" size={16} color="#FF6600" />
+                      <Text className="text-small-bold text-brand">{PLAN_GROUPS[selectedPlanGroup].title}</Text>
+                    </Pressable>
+                    {(groupedPlans[selectedPlanGroup] ?? []).map((plan) => (
+                      <SpringPressable
+                        key={plan.id}
+                        onPress={() => setSelectedPlanId(plan.id)}
+                        className={`bg-surface border p-four rounded-panel ${selectedPlanId === plan.id ? "border-brand" : "border-border"}`}
+                      >
+                        <View className="flex-row justify-between items-start">
+                          <View className="flex-1 pr-three">
+                            <Text className="text-body-bold text-white">{plan.name}</Text>
+                            <Text className="text-caption text-text-secondary mt-one">{formatPlanSubtitle(plan)}</Text>
+                          </View>
+                          <Badge label={formatCurrency(plan.price)} status="active" />
+                        </View>
+                      </SpringPressable>
+                    ))}
+                    <View className="flex-row gap-three">
+                      <View className="flex-1">
+                        <Button title="Quay lại" variant="secondary" onPress={() => { setSelectedPlanGroup(null); setSelectedPlanId(null); }} />
                       </View>
-                      <Badge label={formatCurrency(plan.price)} status="active" />
+                      <View className="flex-1">
+                        <Button title="Tiếp tục" disabled={!selectedPlanId} onPress={handleNextStep} />
+                      </View>
                     </View>
-                  </SpringPressable>
-                ))}
                   </>
                 )}
-                <View className="flex-row gap-three">
-                  <View className="flex-1">
-                    <Button title="Quay lại" variant="secondary" onPress={() => setStep(1)} />
-                  </View>
-                  <View className="flex-1">
-                    <Button title="Tiếp tục" disabled={!selectedPlanId} onPress={handleNextStep} />
-                  </View>
-                </View>
               </View>
             )}
 
@@ -297,7 +386,7 @@ export default function RentFlowScreen() {
                     <Button title="Quay lại" variant="secondary" onPress={() => setStep(2)} />
                   </View>
                   <View className="flex-1">
-                    <Button title="Thanh toán" onPress={handlePayment} />
+                    <Button title="Thanh toán" onPress={handlePayment} disabled={!isOnline} />
                   </View>
                 </View>
               </View>

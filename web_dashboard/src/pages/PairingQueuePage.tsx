@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { Check, RefreshCw, Search, X, Wifi, WifiOff } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Button, Modal, Input, Select, Badge } from '@/components/ui'
+import { Button, Modal, Input, Select, Badge, LocationMapPicker } from '@/components/ui'
 import { locationsApi, pairingApi } from '@/lib/api'
+import { useAuthStore } from '@/store'
 import type { PairingSession, PairingSessionStatus } from '@/types'
 
 const STATUS_LABELS: Record<PairingSessionStatus, string> = {
@@ -54,6 +55,9 @@ export default function PairingQueuePage() {
   })
   const [approveForm, setApproveForm] = React.useState({ locationId: '', cabinetName: '' })
   const [searchByCodeResult, setSearchByCodeResult] = React.useState<PairingSession | null>(null)
+  const [isCreatingLocation, setIsCreatingLocation] = React.useState(false)
+  const [newLocationForm, setNewLocationForm] = React.useState({ name: '', address: '', lat: '', lng: '' })
+  const admin = useAuthStore((s) => s.admin)
 
   // Fetch locations for approve modal
   const { data: locations = [] } = useQuery({
@@ -101,8 +105,11 @@ export default function PairingQueuePage() {
       toast.success('Đã duyệt ghép tủ thành công')
       queryClient.invalidateQueries({ queryKey: ['pairing-sessions'] })
       queryClient.invalidateQueries({ queryKey: ['cabinets'] })
+      queryClient.invalidateQueries({ queryKey: ['locations'] })
       setApproveModal({ open: false, session: null })
       setApproveForm({ locationId: '', cabinetName: '' })
+      setIsCreatingLocation(false)
+      setNewLocationForm({ name: '', address: '', lat: '', lng: '' })
       // Navigate to cabinet detail for configuration
       navigate(`/cabinets/${result.cabinetId}`)
     },
@@ -128,22 +135,46 @@ export default function PairingQueuePage() {
       locationId: locations[0]?.id ?? '',
       cabinetName: `Tủ ${session.hardwareSerial.slice(-6)}`,
     })
+    setIsCreatingLocation(false)
+    setNewLocationForm({ name: '', address: '', lat: '', lng: '' })
     setApproveModal({ open: true, session })
   }
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
     if (!approveModal.session) return
-    if (!approveForm.locationId) {
-      toast.error('Vui lòng chọn địa điểm')
-      return
-    }
     if (!approveForm.cabinetName.trim()) {
       toast.error('Vui lòng nhập tên tủ')
       return
     }
+
+    let locationId = approveForm.locationId
+
+    if (isCreatingLocation) {
+      if (!newLocationForm.name.trim() || !newLocationForm.address.trim()) {
+        toast.error('Vui lòng nhập tên và địa chỉ địa điểm')
+        return
+      }
+      try {
+        const newLocation = await locationsApi.create({
+          name: newLocationForm.name.trim(),
+          address: newLocationForm.address.trim(),
+          lat: newLocationForm.lat ? parseFloat(newLocationForm.lat) : undefined,
+          lng: newLocationForm.lng ? parseFloat(newLocationForm.lng) : undefined,
+          status: 'ACTIVE',
+        })
+        locationId = newLocation.id
+      } catch {
+        toast.error('Không thể tạo địa điểm mới')
+        return
+      }
+    } else if (!locationId) {
+      toast.error('Vui lòng chọn địa điểm')
+      return
+    }
+
     approveMutation.mutate({
       sessionId: approveModal.session.id,
-      data: { locationId: approveForm.locationId, cabinetName: approveForm.cabinetName.trim() },
+      data: { locationId, cabinetName: approveForm.cabinetName.trim() },
     })
   }
 
@@ -261,6 +292,8 @@ export default function PairingQueuePage() {
           if (!open) {
             setApproveModal({ open: false, session: null })
             setApproveForm({ locationId: '', cabinetName: '' })
+            setIsCreatingLocation(false)
+            setNewLocationForm({ name: '', address: '', lat: '', lng: '' })
           }
         }}
         title="Duyệt ghép tủ"
@@ -288,13 +321,48 @@ export default function PairingQueuePage() {
 
             {/* Form */}
             <div className="space-y-3">
-              <Select
-                label="Địa điểm"
-                options={locationOptions}
-                value={approveForm.locationId}
-                onValueChange={(v) => setApproveForm((f) => ({ ...f, locationId: v }))}
-                placeholder="Chọn địa điểm"
-              />
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-sm font-medium text-text-secondary">Địa điểm</label>
+                  {admin?.role === 'SUPER_ADMIN' && (
+                    <button
+                      type="button"
+                      onClick={() => { setIsCreatingLocation(!isCreatingLocation); setNewLocationForm({ name: '', address: '', lat: '', lng: '' }) }}
+                      className="text-xs text-brand hover:text-brand-hover transition-colors cursor-pointer"
+                    >
+                      {isCreatingLocation ? '← Chọn địa điểm có sẵn' : '+ Tạo địa điểm mới'}
+                    </button>
+                  )}
+                </div>
+                {isCreatingLocation ? (
+                  <div className="space-y-3">
+                    <Input
+                      value={newLocationForm.name}
+                      onChange={(e) => setNewLocationForm((f) => ({ ...f, name: e.target.value }))}
+                      placeholder="Tên địa điểm"
+                    />
+                    <Input
+                      value={newLocationForm.address}
+                      onChange={(e) => setNewLocationForm((f) => ({ ...f, address: e.target.value }))}
+                      placeholder="Địa chỉ"
+                    />
+                    <LocationMapPicker
+                      lat={newLocationForm.lat ? parseFloat(newLocationForm.lat) : undefined}
+                      lng={newLocationForm.lng ? parseFloat(newLocationForm.lng) : undefined}
+                      onChange={(lat, lng, address) =>
+                        setNewLocationForm((f) => ({ ...f, lat: lat.toFixed(6), lng: lng.toFixed(6), address: address ?? f.address }))
+                      }
+                    />
+                  </div>
+                ) : (
+                  <Select
+                    options={locationOptions}
+                    value={approveForm.locationId}
+                    onValueChange={(v) => setApproveForm((f) => ({ ...f, locationId: v }))}
+                    placeholder="Chọn địa điểm"
+                  />
+                )}
+              </div>
               <Input
                 label="Tên tủ"
                 value={approveForm.cabinetName}
@@ -310,6 +378,8 @@ export default function PairingQueuePage() {
                 onClick={() => {
                   setApproveModal({ open: false, session: null })
                   setApproveForm({ locationId: '', cabinetName: '' })
+                  setIsCreatingLocation(false)
+                  setNewLocationForm({ name: '', address: '', lat: '', lng: '' })
                 }}
               >
                 Hủy

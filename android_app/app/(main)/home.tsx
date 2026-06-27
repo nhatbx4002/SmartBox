@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   Platform,
   Linking,
+  RefreshControl,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -17,6 +18,7 @@ import Badge from "../../src/components/ui/badge";
 import SpringPressable from "../../src/components/ui/spring-pressable";
 import { StationListSkeleton } from "../../src/components/ui/station-list-skeleton";
 import { ActiveRentalSkeleton } from "../../src/components/ui/active-rental-skeleton";
+import { HomeSkeleton } from "../../src/components/ui/home-skeleton";
 import { userService } from "../../src/services/user";
 import { useAuthStore } from "../../src/store/authStore";
 import { useLocationStore } from "../../src/store/locationStore";
@@ -67,59 +69,70 @@ export default function HomeScreen() {
   const locations = useLocationStore((state) => state.locations);
   const fetchLocations = useLocationStore((state) => state.fetchLocations);
   const locationsLoading = useLocationStore((state) => state.isLoading);
+  const locationsHydrated = useLocationStore((state) => state._hasHydrated);
   const rentals = useRentalStore((state) => state.rentals);
   const fetchRentals = useRentalStore((state) => state.fetchRentals);
   const rentalsLoading = useRentalStore((state) => state.isLoading);
+  const rentalsHydrated = useRentalStore((state) => state._hasHydrated);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const [now, setNow] = useState(Date.now());
   const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadLocations = useCallback(async (mountedRef?: { current: boolean }) => {
+    const mounted = mountedRef?.current ?? true;
+    try {
+      const permission = await ExpoLocation.requestForegroundPermissionsAsync();
+      if (permission.status === "granted") {
+        const current = await ExpoLocation.getCurrentPositionAsync({});
+        if (mounted) {
+          setUserCoords({
+            latitude: current.coords.latitude,
+            longitude: current.coords.longitude,
+          });
+          await fetchLocations(current.coords.latitude, current.coords.longitude);
+        }
+      } else {
+        await fetchLocations();
+      }
+    } catch {
+      if (mounted) {
+        setLocationError("Không thể lấy vị trí hiện tại.");
+        await fetchLocations();
+      }
+    }
+  }, [fetchLocations]);
+
+  const loadNotifications = useCallback(async (mountedRef?: { current: boolean }) => {
+    const mounted = mountedRef?.current ?? true;
+    try {
+      const notifications = await userService.getNotifications();
+      if (mounted) {
+        setHasUnreadNotifications(notifications.data.some((item) => !item.isRead));
+      }
+    } catch {}
+  }, []);
+
+  const loadRentals = useCallback(() => fetchRentals({ status: "ACTIVE", limit: 20 }), [fetchRentals]);
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await Promise.all([loadLocations(), loadNotifications(), loadRentals()]);
+    setRefreshing(false);
+  }, [loadLocations, loadNotifications, loadRentals]);
 
   useEffect(() => {
     let mounted = true;
+    const mountedRef = { current: true };
 
-    // Chạy song song — skeleton biến mất từng phần khi load xong
-    const loadLocations = async () => {
-      try {
-        const permission = await ExpoLocation.requestForegroundPermissionsAsync();
-        if (permission.status === "granted") {
-          const current = await ExpoLocation.getCurrentPositionAsync({});
-          if (mounted) {
-            setUserCoords({
-              latitude: current.coords.latitude,
-              longitude: current.coords.longitude,
-            });
-            await fetchLocations(current.coords.latitude, current.coords.longitude);
-          }
-        } else {
-          await fetchLocations();
-        }
-      } catch {
-        if (mounted) {
-          setLocationError("Không thể lấy vị trí hiện tại.");
-          await fetchLocations();
-        }
-      }
-    };
-
-    const loadNotifications = async () => {
-      try {
-        const notifications = await userService.getNotifications();
-        if (mounted) {
-          setHasUnreadNotifications(notifications.data.some((item) => !item.isRead));
-        }
-      } catch {}
-    };
-
-    const loadRentals = () => fetchRentals({ status: "ACTIVE", limit: 20 });
-
-    // Chạy tất cả song song
-    Promise.all([loadLocations(), loadNotifications(), loadRentals()]);
+    Promise.all([loadLocations(mountedRef), loadNotifications(mountedRef), loadRentals()]);
 
     return () => {
       mounted = false;
+      mountedRef.current = false;
     };
-  }, [fetchLocations, fetchRentals]);
+  }, [loadLocations, loadNotifications, loadRentals]);
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -145,12 +158,23 @@ export default function HomeScreen() {
     });
   };
 
+  if (!locationsHydrated || !rentalsHydrated) {
+    return (
+      <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          <HomeSkeleton />
+        </ScrollView>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FF6600" colors={["#FF6600"]} />}
       >
         <View className="px-four py-four">
           <View className="flex-row justify-between items-start mb-five">
@@ -225,8 +249,10 @@ export default function HomeScreen() {
                         coordinate={{ latitude: station.latitude, longitude: station.longitude }}
                         onPress={() => router.push(`/station/${station.id}` as any)}
                       >
-                        <View className="bg-brand border border-white px-two py-one rounded-full">
-                          <Text className="text-[10px] text-white font-bold">{station.availableCount}</Text>
+                        <View className={`border border-white px-two py-one rounded-full ${station.status === 'online' ? 'bg-brand' : 'bg-surface'}`}>
+                          <Text className="text-[10px] text-white font-bold">
+                            {station.status === 'online' ? station.availableCount : '—'}
+                          </Text>
                         </View>
                       </Marker>
                     ) : null,
@@ -252,8 +278,20 @@ export default function HomeScreen() {
                         <Text className="text-caption text-text-secondary mt-one">{station.address}</Text>
                       </View>
                       <Badge
-                        label={station.availableCount > 0 ? `Còn ${station.availableCount}` : "Hết chỗ"}
-                        status={station.availableCount > 0 ? "active" : "expired"}
+                        label={
+                          station.status !== 'online'
+                            ? "Offline"
+                            : station.availableCount > 0
+                            ? `Còn ${station.availableCount}`
+                            : "Hết chỗ"
+                        }
+                        status={
+                          station.status !== 'online'
+                            ? "completed"
+                            : station.availableCount > 0
+                            ? "active"
+                            : "expired"
+                        }
                       />
                     </View>
                     <View className="flex-row items-center justify-between mt-three">

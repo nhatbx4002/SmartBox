@@ -54,7 +54,7 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-sm">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-10">
+        <div className="flex flex-col items-center mb-8">
           <div className="relative mb-5">
             <div className="w-16 h-16 rounded-2xl bg-brand flex items-center justify-center shadow-[0_0_40px_rgba(255,102,0,0.25)]">
               <svg className="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -79,6 +79,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
+                autoFocus
               />
               <Input
                 label="Mật khẩu"
@@ -90,7 +91,7 @@ export default function LoginPage() {
               />
 
               {error && (
-                <div className="bg-error/8 border border-error/20 rounded-lg px-4 py-3">
+                <div role="alert" className="bg-error/8 border border-error/20 rounded-lg px-4 py-3">
                   <p className="text-sm text-error">{error}</p>
                 </div>
               )}
@@ -106,6 +107,11 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Version footer */}
+        <div className="mt-6 text-center text-xs text-text-muted">
+          OmniBox v1.0.0
         </div>
       </div>
     </div>

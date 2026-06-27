@@ -17,9 +17,7 @@ export function requireCabinet(req: Request, _res: Response, next: NextFunction)
 
     const token = auth.slice(7);
     const secret = process.env.JWT_SECRET || '';
-    console.log(`[CABINET AUTH] secret="${secret}", token="${token.slice(0, 20)}..."`);
     const payload = verifyToken(token, secret);
-    console.log(`[CABINET AUTH] payload=${JSON.stringify(payload)}`);
     if (!payload.sub || payload.type !== 'CABINET') {
       throw UnauthorizedError('Invalid cabinet token');
     }
