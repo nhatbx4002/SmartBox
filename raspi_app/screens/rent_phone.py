@@ -5,7 +5,6 @@ from PySide6.QtWidgets import QFrame, QLineEdit, QPushButton, QVBoxLayout, QWidg
 
 from screens.components.buttons import PrimaryButton
 from screens.components.numeric_keypad import NumericKeypad
-from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
 from screens.base import BaseController
@@ -55,8 +54,8 @@ class RentPhoneController(BaseController):
 
         # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(40, 88, 40, 32)
-        body.setSpacing(18)
+        body.setContentsMargins(40, 48, 40, 0)
+        body.setSpacing(0)
         body.setAlignment(Qt.AlignTop)
 
         # Input frame
@@ -81,12 +80,22 @@ class RentPhoneController(BaseController):
         i_layout.addWidget(self.line_input)
         body.addWidget(input_frame)
 
+        body.addSpacing(10)
+
         keypad = NumericKeypad(parent=root)
         body.addWidget(keypad, alignment=Qt.AlignCenter)
-        body.addStretch(1)
 
-        btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="green")
-        body.addWidget(BottomActionBar(btn_confirm))
+        body.addSpacing(36)
+
+        btn_confirm = PrimaryButton(
+            "XÁC NHẬN",
+            object_name="btnConfirm",
+            color="green",
+        )
+        btn_confirm.setEnabled(False)
+        body.addWidget(btn_confirm)
+
+        body.addStretch(1)
 
         layout.addLayout(body, 1)
         return root
