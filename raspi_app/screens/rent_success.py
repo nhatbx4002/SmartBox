@@ -120,7 +120,7 @@ class RentSuccessController(BaseController):
 
         btn_later = QPushButton("DÙNG SAU")
         btn_later.setObjectName("btnUseLater")
-        btn_later.setFixedHeight(96)
+        btn_later.setFixedHeight(116)
         btn_later.setCursor(Qt.PointingHandCursor)
         btn_later.setStyleSheet(
             "QPushButton { background-color: #333; color: white; border: 2px solid #666;"

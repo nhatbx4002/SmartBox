@@ -83,7 +83,7 @@ class QRScanController(BaseController):
 
         self.btn_retry = QPushButton("THỬ LẠI")
         self.btn_retry.setObjectName("btnRetry")
-        self.btn_retry.setFixedHeight(96)
+        self.btn_retry.setFixedHeight(116)
         self.btn_retry.setCursor(Qt.PointingHandCursor)
         self.btn_retry.setStyleSheet(
             "QPushButton { background-color: #FF6600; color: white; border: none; border-radius: 18px; font-size: 22px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
