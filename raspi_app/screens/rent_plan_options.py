@@ -45,6 +45,7 @@ class RentPlanOptionsController(BaseController):
             on_back=lambda: self.navigate("/rent-plan"),
             parent=root,
             back_object_name="btnBack",
+            title_object_name="lblTitle",
         )
         layout.addWidget(header)
 
