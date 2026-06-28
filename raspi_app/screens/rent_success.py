@@ -109,8 +109,6 @@ class RentSuccessController(BaseController):
 
         body.addStretch()
 
-        layout.addLayout(body, 1)
-
         # Row nút hành động
         btn_row_widget = QWidget(root)
         btn_row = QHBoxLayout(btn_row_widget)
@@ -131,7 +129,9 @@ class RentSuccessController(BaseController):
         )
         btn_row.addWidget(btn_later, stretch=1)
 
-        layout.addWidget(BottomActionBar(btn_row_widget))
+        body.addWidget(BottomActionBar(btn_row_widget))
+
+        layout.addLayout(body, 1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:

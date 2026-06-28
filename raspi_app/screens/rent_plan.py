@@ -83,15 +83,15 @@ class RentPlanController(BaseController):
         scroll.setWidget(container)
         body.addWidget(scroll, stretch=1)
 
-        layout.addLayout(body, 1)
-
         btn_continue = PrimaryButton(
             "TIẾP TỤC",
             object_name="btnContinue",
             color="orange",
         )
         btn_continue.setEnabled(False)
-        layout.addWidget(BottomActionBar(btn_continue))
+        body.addWidget(BottomActionBar(btn_continue))
+
+        layout.addLayout(body, 1)
         return root
 
     def _on_continue(self) -> None:

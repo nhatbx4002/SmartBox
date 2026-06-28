@@ -79,12 +79,12 @@ class OtpController(BaseController):
 
         keypad = NumericKeypad(parent=root)
         body.addWidget(keypad)
-
-        layout.addLayout(body)
-        layout.addStretch(1)
+        body.addStretch(1)
 
         btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="orange")
-        layout.addWidget(BottomActionBar(btn_confirm))
+        body.addWidget(BottomActionBar(btn_confirm))
+
+        layout.addLayout(body, 1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:

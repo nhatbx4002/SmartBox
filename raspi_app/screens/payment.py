@@ -111,8 +111,7 @@ class PaymentController(BaseController):
             "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;"
         )
         body.addWidget(payos_hint)
-
-        layout.addLayout(body, 1)
+        body.addStretch(1)
 
         # CTA button
         self.btn_pay = PrimaryButton(
@@ -120,7 +119,9 @@ class PaymentController(BaseController):
             object_name="btnPayNow",
             color="orange",
         )
-        layout.addWidget(BottomActionBar(self.btn_pay))
+        body.addWidget(BottomActionBar(self.btn_pay))
+
+        layout.addLayout(body, 1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
