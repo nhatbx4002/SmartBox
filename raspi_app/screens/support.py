@@ -33,7 +33,7 @@ class SupportController(BaseController):
         root.setStyleSheet(root_style())
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         header = HeaderBar(
@@ -45,30 +45,31 @@ class SupportController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 24, 24, 0)
-        body.setSpacing(16)
+        body.setContentsMargins(24, 28, 24, 32)
+        body.setSpacing(20)
 
         hotline_card = QFrame(root)
-        hotline_card.setFixedHeight(100)
-        hotline_card.setStyleSheet("QFrame { background-color: #1C1B1B; border: 2px solid #FF6600; border-radius: 20px; } QLabel { background: transparent; }")
+        hotline_card.setFixedHeight(148)
+        hotline_card.setStyleSheet("QFrame { background-color: #1C1B1B; border: 2px solid #FF6600; border-radius: 24px; } QLabel { background: transparent; }")
         hot_layout = QVBoxLayout(hotline_card)
         hot_layout.setAlignment(Qt.AlignCenter)
+        hot_layout.setSpacing(8)
 
         hot_title = QLabel("Hotline hỗ trợ", hotline_card)
         hot_title.setAlignment(Qt.AlignCenter)
-        hot_title.setStyleSheet("border: none; color: #888; font-size: 16px; font-weight: 500;")
+        hot_title.setStyleSheet("border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 500;")
 
         self.hotline = QLabel("1900 1234", hotline_card)
         self.hotline.setObjectName("lblHotline")
         self.hotline.setAlignment(Qt.AlignCenter)
-        self.hotline.setStyleSheet("border: none; color: #FF6600; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 32px; font-weight: 900;")
+        self.hotline.setStyleSheet("border: none; color: #FF6600; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 44px; font-weight: 900;")
 
         hot_layout.addWidget(hot_title)
         hot_layout.addWidget(self.hotline)
         body.addWidget(hotline_card)
 
         faq_title = QLabel("CÂU HỎI THƯỜNG GẶP", root)
-        faq_title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 700;")
+        faq_title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 700;")
         body.addWidget(faq_title)
 
         faqs = [
@@ -85,32 +86,34 @@ class SupportController(BaseController):
         for obj_name, question, answer in faqs:
             faq_item = QFrame(root)
             faq_item.setObjectName(obj_name)
-            faq_item.setMinimumHeight(64)
+            faq_item.setMinimumHeight(96)
             faq_item.setCursor(Qt.PointingHandCursor)
             faq_item.setStyleSheet(
-                f"QFrame#{obj_name} {{ background-color: #111111; border: 2px solid #2A2A2A; border-radius: 16px; }}"
+                f"QFrame#{obj_name} {{ background-color: #111111; border: 2px solid #2A2A2A; border-radius: 20px; }}"
                 f"QFrame#{obj_name}:hover {{ border: 2px solid #FF6600; }}"
                 f"QLabel {{ background: transparent; }}"
             )
 
             faq_layout = QVBoxLayout(faq_item)
-            faq_layout.setContentsMargins(20, 16, 20, 16)
+            faq_layout.setContentsMargins(24, 20, 24, 20)
+            faq_layout.setSpacing(10)
 
             q_label = QLabel(question, faq_item)
-            q_label.setStyleSheet("border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 700;")
+            q_label.setWordWrap(True)
+            q_label.setStyleSheet("border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 700;")
 
             a_label = QLabel(answer, faq_item)
             a_label.setObjectName(f"{obj_name.replace('faqItem', 'lblFaq')}Answer")
             a_label.setWordWrap(True)
             a_label.setVisible(False)
-            a_label.setStyleSheet("border: none; color: #B0B0B0; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 16px; font-weight: 500; padding: 8px 0 0 0;")
+            a_label.setStyleSheet("border: none; color: #B0B0B0; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 500; padding: 4px 0 0 0;")
 
             faq_layout.addWidget(q_label)
             faq_layout.addWidget(a_label)
             body.addWidget(faq_item)
 
         body.addStretch()
-        layout.addLayout(body)
+        layout.addLayout(body, 1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:

@@ -109,7 +109,7 @@ class BaseController:
         if back_fn is not None:
             btn_back = QPushButton("\u2190", header)
             btn_back.setObjectName("btnBack")
-            btn_back.setFixedSize(60, 60)
+            btn_back.setFixedSize(88, 88)
             btn_back.setCursor(Qt.PointingHandCursor)
             btn_back.setStyleSheet("""
                 QPushButton {

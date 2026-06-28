@@ -109,15 +109,22 @@ class HomeController(BaseController):
             body.addWidget(card, 1)
 
         layout.addLayout(body, 1)
-        footer = FooterBar(
-            status=self.network_status if hasattr(self, "network_status") else "ONLINE",
+
+        self._footer_bar = FooterBar(
+            status="OFFLINE",
             version="Version v1.0",
             parent=root,
         )
-        layout.addWidget(footer)
+        layout.addWidget(self._footer_bar)
 
         return root
+    def _apply_network_status(self, status: str) -> None:
+        super()._apply_network_status(status)
+        if hasattr(self, "_footer_bar"):
+            self._footer_bar.set_status(status)
+
     def on_enter(self, data: dict | None = None) -> None:
+        self._footer_bar.set_status(self.network_status)
         self._check_not_configured()
 
     def on_exit(self) -> None:
