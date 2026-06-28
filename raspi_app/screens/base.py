@@ -17,7 +17,6 @@ class BaseController:
         self._click_filters: list[QObject] = []
         self._network_status = "OFFLINE"
         self.widget = widget
-        self._attach_footer()
         self._bind_network_monitor()
 
     @property
@@ -173,21 +172,6 @@ class BaseController:
         )
         return card
 
-    def _position_footer(self) -> None:
-        if self._footer_widget is None:
-            return
-
-        width = self.widget.width()
-        height = self.widget.height()
-
-        if width <= 0 or height <= 0:
-            return
-
-        footer_height = 48
-        self._footer_widget.setGeometry(0, height - footer_height, width, footer_height)
-        self._footer_widget.raise_()
-        self._footer_widget.show()
-
     def _bind_network_monitor(self) -> None:
         monitor = getattr(self.app, "network_monitor", None)
         if monitor is None:
@@ -201,9 +185,8 @@ class BaseController:
         self._apply_network_status(getattr(monitor, "current_status", "OFFLINE"))
 
     def _apply_network_status(self, status: str) -> None:
-        def _apply_network_status(self, status: str) -> None:
-            normalized = (status or "OFFLINE").upper()
-            self._network_status = normalized
+        normalized = (status or "OFFLINE").upper()
+        self._network_status = normalized
 
     def show_error_dialog(
         self,
@@ -249,17 +232,6 @@ def process_events() -> None:
     app = QApplication.instance()
     if app is not None:
         app.processEvents()
-
-
-class _FooterPositionFilter(QObject):
-    def __init__(self, callback: Callable[[], None], parent: QObject | None = None):
-        super().__init__(parent)
-        self.callback = callback
-
-    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
-        if event.type() in (QEvent.Resize, QEvent.Show):
-            self.callback()
-        return False
 
 
 class _ClickFilter(QObject):
