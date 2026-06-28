@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
 )
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
+from screens.components.header_bar import HeaderBar
 from screens.base import BaseController
 from screens.inline_error import InlineError
 from services.formatters import is_valid_local_phone, normalize_vn_phone
@@ -26,7 +27,6 @@ class RentPhoneController(BaseController):
         self.error_banner = InlineError(self.widget)
         self.error_banner.setGeometry(40, 440, 640, 60)
 
-        self.child("btnBackMain", QPushButton).clicked.connect(lambda: self.navigate("/rent-plan"))
         self.child("btnBackspace", QPushButton).clicked.connect(self._backspace)
         self.child("btnClear", QPushButton).clicked.connect(self._clear)
         self.confirm_button.clicked.connect(self._confirm)
@@ -49,33 +49,12 @@ class RentPhoneController(BaseController):
         layout.setSpacing(0)
 
         # ── Header ──────────────────────────────────────────────
-        header = QFrame(root)
-        header.setObjectName("headerFrame")
-        header.setFixedHeight(80)
-        header.setStyleSheet(
-            "QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }"
+        header = HeaderBar(
+            "Nhập số điện thoại",
+            on_back=lambda: self.navigate("/rent-plan"),
+            parent=root,
+            back_object_name="btnBack",
         )
-        h = QHBoxLayout(header)
-        h.setContentsMargins(16, 0, 16, 0)
-
-        btn_back = QPushButton("←", header)
-        btn_back.setObjectName("btnBackMain")
-        btn_back.setFixedSize(60, 60)
-        btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet(
-            "QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; }"
-            "QPushButton:pressed { color: #FF6600; }"
-        )
-
-        title = QLabel("SỐ ĐIỆN THOẠI", header)
-        title.setStyleSheet(
-            "background: transparent; border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;"
-        )
-
-        h.addWidget(btn_back)
-        h.addWidget(title)
-        h.addStretch()
         layout.addWidget(header)
 
         # ── Body ────────────────────────────────────────────────

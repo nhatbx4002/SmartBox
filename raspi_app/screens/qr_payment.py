@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget,
 )
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
+from screens.components.header_bar import HeaderBar
 from screens.base import BaseController
 from services.formatters import format_currency
 
@@ -47,33 +48,12 @@ class QRPaymentController(BaseController):
         layout.setSpacing(0)
 
         # ── Header ──────────────────────────────────────────────
-        header = QFrame(root)
-        header.setObjectName("headerFrame")
-        header.setFixedHeight(80)
-        header.setStyleSheet(
-            "QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }"
+        header = HeaderBar(
+            "Quét mã QR để thanh toán",
+            on_back=lambda: self.navigate("/payment"),
+            parent=root,
+            back_object_name="btnBack",
         )
-        h = QHBoxLayout(header)
-        h.setContentsMargins(16, 0, 16, 0)
-
-        btn_back = QPushButton("←", header)
-        btn_back.setObjectName("btnBack")
-        btn_back.setFixedSize(60, 60)
-        btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet(
-            "QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; }"
-            "QPushButton:pressed { color: #FF6600; }"
-        )
-
-        title = QLabel("QUÉT MÃ THANH TOÁN", header)
-        title.setStyleSheet(
-            "background: transparent; border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 900;"
-        )
-
-        h.addWidget(btn_back)
-        h.addWidget(title)
-        h.addStretch()
         layout.addWidget(header)
 
         # ── Body ────────────────────────────────────────────────

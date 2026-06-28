@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.base import BaseController
+from screens.components.header_bar import HeaderBar
 from services.app_state import Plan
 from services.formatters import PLAN_GROUPS, format_currency
 
@@ -29,7 +30,6 @@ class RentPlanController(BaseController):
         self.selected_group_type: str | None = None
         self.group_cards: dict[str, QFrame] = {}
 
-        self.child("btnBackMain", QPushButton).clicked.connect(lambda: self.navigate("/rent-size"))
         self.continue_button.clicked.connect(self._on_continue)
 
     def _build_ui(self) -> QWidget:
@@ -42,33 +42,12 @@ class RentPlanController(BaseController):
         layout.setSpacing(0)
 
         # ── Header ──────────────────────────────────────────────
-        header = QFrame(root)
-        header.setObjectName("headerFrame")
-        header.setFixedHeight(80)
-        header.setStyleSheet(
-            "QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }"
+        header = HeaderBar(
+            "CHỌN GÓI THUÊ",
+            on_back=lambda: self.navigate("/rent-size"),
+            parent=root,
+            back_object_name="btnBack",
         )
-        h = QHBoxLayout(header)
-        h.setContentsMargins(16, 0, 16, 0)
-
-        btn_back = QPushButton("←", header)
-        btn_back.setObjectName("btnBackMain")
-        btn_back.setFixedSize(60, 60)
-        btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet(
-            "QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; }"
-            "QPushButton:pressed { color: #FF6600; }"
-        )
-
-        title = QLabel("CHỌN GÓI THUÊ", header)
-        title.setStyleSheet(
-            "background: transparent; border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;"
-        )
-
-        h.addWidget(btn_back)
-        h.addWidget(title)
-        h.addStretch()
         layout.addWidget(header)
 
         # ── Body ────────────────────────────────────────────────

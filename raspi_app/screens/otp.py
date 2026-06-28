@@ -3,6 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QGridLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
+from screens.components.header_bar import HeaderBar
 
 from screens.base import BaseController
 
@@ -17,7 +18,6 @@ class OtpController(BaseController):
         self.code = ""
         self.code_label = self.child("lblCode", QLabel)
 
-        self.child("btnBack", QPushButton).clicked.connect(self.go_back)
         self.child("btnClear", QPushButton).clicked.connect(self._clear)
         self.child("btnBackspace", QPushButton).clicked.connect(self._backspace)
         self.child("btnConfirm", QPushButton).clicked.connect(self._confirm)
@@ -36,33 +36,12 @@ class OtpController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        header = QFrame(root)
-        header.setFixedHeight(80)
-        header.setStyleSheet(
-            "background-color: #0A0A0A; border: none; border-bottom: 1px solid #222;"
+        header = HeaderBar(
+            "Nhập mã PIN ",
+            on_back=lambda: self.go_back,
+            parent=root,
+            back_object_name="btnBack",
         )
-
-        h = QHBoxLayout(header)
-        h.setContentsMargins(16, 0, 16, 0)
-
-        btn_back = QPushButton("←", header)
-        btn_back.setObjectName("btnBack")
-        btn_back.setFixedSize(60, 60)
-        btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet(
-            "QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; }"
-            "QPushButton:pressed { color: #FF6600; }"
-        )
-
-        title = QLabel(title_text, header)
-        title.setStyleSheet(
-            "background: transparent; border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;"
-        )
-
-        h.addWidget(btn_back)
-        h.addWidget(title)
-        h.addStretch()
         layout.addWidget(header)
 
         body = QVBoxLayout()

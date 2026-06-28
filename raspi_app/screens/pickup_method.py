@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
+from screens.components.header_bar import HeaderBar
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 
 from screens.base import BaseController
@@ -13,7 +14,6 @@ class PickupMethodController(BaseController):
     def __init__(self, app):
         widget = self._build_ui()
         super().__init__(app, self.route, widget=widget)
-        self.child("btnBack", QPushButton).clicked.connect(self.go_back)
         self.set_clickable(self.child("pinCard"), self._open_pin)
         self.set_clickable(self.child("qrCard"), self._open_qr)
 
@@ -26,31 +26,12 @@ class PickupMethodController(BaseController):
         layout.setContentsMargins(0, 0, 0, 48)
         layout.setSpacing(0)
 
-        header = QFrame(root)
-        header.setObjectName("headerFrame")
-        header.setFixedHeight(80)
-        header.setStyleSheet("""
-            QFrame#headerFrame {
-                background-color: #0A0A0A;
-                border: none;
-                border-bottom: 1px solid #222;
-            }
-        """)
-        h_layout = _HLayout(header, 16, 0, 16, 0)
-
-        btn_back = QPushButton("\u2190", header)
-        btn_back.setObjectName("btnBack")
-        btn_back.setFixedSize(60, 60)
-        btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
-
-        title = QLabel("NH\u1eacN \u0110\u1ed2", header)
-        title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
-
-        h_layout.addWidget(btn_back)
-        h_layout.addWidget(title)
-        h_layout.addStretch()
-
+        header = HeaderBar(
+            "TÊN MÀN HÌNH",
+            on_back=self.go_back,
+            parent=root,
+            back_object_name="btnBack",
+        )
         layout.addWidget(header)
 
         body = QVBoxLayout()
