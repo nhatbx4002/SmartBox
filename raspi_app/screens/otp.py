@@ -1,39 +1,37 @@
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 
-from screens.base import BaseController, process_events
-from screens.inline_error import InlineError
+from screens.base import BaseController
 from services.api_client import ApiError
+from services.config_loader import get_config_value
+from services.qr_camera import QrCameraScanner
 
 
-class OtpController(BaseController):
-    route = "/otp"
+class QRScanController(BaseController):
+    route = "/qr-scan"
 
     def __init__(self, app):
         widget = self._build_ui()
         super().__init__(app, self.route, widget=widget)
 
-        self.lines: list[QLineEdit] = [self.child(f"lineOtp{i}", QLineEdit) for i in range(1, 7)]
-        for line in self.lines:
-            line.setAlignment(Qt.AlignCenter)
-        self.title = self.child("labelOtpTitle", QLabel)
-        self.confirm_button = self.child("btnConfirm", QPushButton)
-        self.error_banner = InlineError(self.child("frameOtpCard"))
-        self.error_banner.setGeometry(28, 205, 600, 54)
-
+        self.preview_label = self.child("cameraPreview", QLabel)
+        self.status_label = self.child("statusLabel", QLabel)
+        self.hint_label = self.child("hintLabel", QLabel)
+        self.retry_button = self.child("btnRetry", QPushButton)
         self.child("btnBack", QPushButton).clicked.connect(self.go_back)
-        self.child("btnBackspace", QPushButton).clicked.connect(self._backspace)
-        self.child("btnClear", QPushButton).clicked.connect(self._clear)
-        self.confirm_button.clicked.connect(self._submit)
+        self.retry_button.clicked.connect(self._restart_camera)
 
-        for digit in range(10):
-            self.child(f"btnKey{digit}", QPushButton).clicked.connect(
-                lambda _checked=False, value=str(digit): self._append_digit(value)
-            )
-        for line in self.lines:
-            line.textChanged.connect(self._sync_confirm_state)
+        self.scanner = getattr(app, "qr_scanner", None) or QrCameraScanner()
+        self.timer = QTimer(self.widget)
+        self.timer.timeout.connect(self._poll_camera)
+        self.scan_interval_ms = int(get_config_value(self.config, "camera.scan_interval_ms", 40))
+        self.processing = False
+        self.last_token = ""
+        self.frame_count = 0
+        self.preview_label.setScaledContents(False)
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
@@ -46,197 +44,203 @@ class OtpController(BaseController):
 
         header = QFrame(root)
         header.setObjectName("headerFrame")
-        header.setFixedHeight(80)
+        header.setFixedHeight(96)
         header.setStyleSheet("QFrame#headerFrame { background-color: #0A0A0A; border: none; border-bottom: 1px solid #222; }")
-        h = QHBoxLayout(header)
-        h.setContentsMargins(16, 0, 16, 0)
+        h = QHBoxLayout3(header, 20, 0, 24, 0)
+        h.setSpacing(12)
 
-        btn_back = QPushButton("←", header)
+        btn_back = QPushButton("\u2190", header)
         btn_back.setObjectName("btnBack")
-        btn_back.setFixedSize(60, 60)
+        btn_back.setFixedSize(64, 64)
         btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 32px; } QPushButton:pressed { color: #FF6600; }")
+        btn_back.setStyleSheet("QPushButton { background: transparent; border: none; color: #E8E8E8; font-size: 34px; font-weight: 700; } QPushButton:pressed { color: #FF6600; }")
 
-        self.lbl_title = QLabel("", header)
-        self.lbl_title.setObjectName("labelOtpTitle")
-        self.lbl_title.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 26px; font-weight: 900;")
+        title = QLabel("QUÉT MÃ QR", header)
+        title.setStyleSheet("background: transparent; border: none; color: #F5F5F5; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 28px; font-weight: 900;")
 
         h.addWidget(btn_back)
-        h.addWidget(self.lbl_title)
+        h.addWidget(title)
         h.addStretch()
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 32, 24, 0)
-        body.setAlignment(Qt.AlignTop)
+        body.setContentsMargins(32, 32, 32, 0)
+        body.setSpacing(18)
 
-        card = QFrame(root)
-        card.setObjectName("frameOtpCard")
-        card.setFixedSize(656, 320)
-        card.setStyleSheet("QFrame#frameOtpCard { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 24px; }")
-        card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(28, 24, 28, 24)
-        card_layout.setSpacing(24)
-        card_layout.setAlignment(Qt.AlignCenter)
+        preview_frame = QFrame(root)
+        preview_frame.setFixedSize(656, 656)
+        preview_frame.setStyleSheet(
+            "QFrame { background-color: #111111; border: 2px solid #343434; border-radius: 28px; }"
+        )
+        p_layout = QVBoxLayout(preview_frame)
+        p_layout.setContentsMargins(16, 16, 16, 16)
+        p_layout.setAlignment(Qt.AlignCenter)
 
-        otp_row = QHBoxLayout()
-        otp_row.setSpacing(12)
-        otp_row.setAlignment(Qt.AlignCenter)
-        for i in range(1, 7):
-            line = QLineEdit(card)
-            line.setObjectName(f"lineOtp{i}")
-            line.setFixedSize(72, 72)
-            line.setMaxLength(1)
-            line.setAlignment(Qt.AlignCenter)
-            line.setStyleSheet(
-                "QLineEdit {"
-                "  background-color: #0A0A0A; color: #E8E8E8;"
-                "  border: 2px solid #444; border-radius: 12px;"
-                "  font-size: 36px; font-weight: 900;"
-                "  font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-                "}"
-                "QLineEdit:focus {"
-                "  border: 3px solid #FF6600;"
-                "}"
-            )
-            otp_row.addWidget(line)
+        self.lbl_preview = QLabel(preview_frame)
+        self.lbl_preview.setObjectName("cameraPreview")
+        self.lbl_preview.setAlignment(Qt.AlignCenter)
+        self.lbl_preview.setWordWrap(True)
+        self.lbl_preview.setStyleSheet(
+            "background: transparent; border: none; color: #777; "
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 700;"
+        )
+        self.lbl_preview.setFixedSize(624, 624)
+        p_layout.addWidget(self.lbl_preview)
+        body.addWidget(preview_frame, alignment=Qt.AlignCenter)
 
-        card_layout.addLayout(otp_row)
-        self._otp_card = card
-        body.addWidget(card, alignment=Qt.AlignTop)
+        info_card = QFrame(root)
+        info_card.setObjectName("infoCard")
+        info_card.setFixedHeight(130)
+        info_card.setStyleSheet(
+            "QFrame#infoCard { background-color: #101010; border: 1px solid #242424; border-radius: 22px; }"
+        )
+        info_layout = QVBoxLayout(info_card)
+        info_layout.setContentsMargins(20, 18, 20, 18)
+        info_layout.setSpacing(8)
+
+        self.lbl_status = QLabel("Sẵn sàng quét QR", info_card)
+        self.lbl_status.setObjectName("statusLabel")
+        self.lbl_status.setAlignment(Qt.AlignCenter)
+        self.lbl_status.setWordWrap(True)
+        self.lbl_status.setStyleSheet("background: transparent; border: none; color: #00FF41; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 24px; font-weight: 900;")
+        info_layout.addWidget(self.lbl_status)
+
+        self.lbl_hint = QLabel("Đưa mã QR vào giữa khung quét", info_card)
+        self.lbl_hint.setObjectName("hintLabel")
+        self.lbl_hint.setAlignment(Qt.AlignCenter)
+        self.lbl_hint.setWordWrap(True)
+        self.lbl_hint.setStyleSheet("background: transparent; border: none; color: #9A9A9A; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;")
+        info_layout.addWidget(self.lbl_hint)
+        body.addWidget(info_card)
+
+        body.addStretch()
+
+        self.btn_retry = QPushButton("THỬ LẠI")
+        self.btn_retry.setObjectName("btnRetry")
+        self.btn_retry.setFixedHeight(96)
+        self.btn_retry.setCursor(Qt.PointingHandCursor)
+        self.btn_retry.setStyleSheet(
+            "QPushButton { background-color: #FF6600; color: white; border: none; border-radius: 22px; "
+            "font-size: 24px; font-weight: 900; font-family: 'Be Vietnam Pro', Arial, sans-serif; } "
+            "QPushButton:pressed { background-color: #E65C00; }"
+        )
+        self.btn_retry.hide()
+        body.addWidget(self.btn_retry)
 
         layout.addLayout(body)
-
-        keypad_area = QVBoxLayout()
-        keypad_area.setContentsMargins(24, 0, 24, 0)
-        keypad_area.setSpacing(0)
-
-        keypad_grid = QGridLayout()
-        keypad_grid.setSpacing(10)
-        keys = [
-            ("btnKey1", "1"), ("btnKey2", "2"), ("btnKey3", "3"),
-            ("btnKey4", "4"), ("btnKey5", "5"), ("btnKey6", "6"),
-            ("btnKey7", "7"), ("btnKey8", "8"), ("btnKey9", "9"),
-            ("btnClear", "C"), ("btnKey0", "0"), ("btnBackspace", "\u232b"),
-        ]
-        for idx, (obj_name, text) in enumerate(keys):
-            row = idx // 3
-            col = idx % 3
-            btn = QPushButton(text)
-            btn.setObjectName(obj_name)
-            btn.setFixedSize(210, 80)
-            btn.setCursor(Qt.PointingHandCursor)
-            if text in ("C", "\u232b"):
-                btn.setStyleSheet(
-                    "QPushButton { background-color: #333; color: white; border: none; border-radius: 18px; font-size: 28px; font-weight: 700; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-                    "QPushButton:pressed { background-color: #555; }"
-                )
-            else:
-                btn.setStyleSheet(
-                    "QPushButton { background-color: #1C1B1B; color: #E8E8E8; border: 2px solid #333; border-radius: 18px; font-size: 32px; font-weight: 700; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-                    "QPushButton:pressed { background-color: #2A2A2A; border-color: #FF6600; }"
-                )
-            keypad_grid.addWidget(btn, row, col)
-
-        keypad_area.addLayout(keypad_grid)
-        keypad_area.addSpacing(16)
-
-        self.btn_confirm = QPushButton("X\xc1C NH\u1eacN")
-        self.btn_confirm.setObjectName("btnConfirm")
-        self.btn_confirm.setFixedHeight(80)
-        self.btn_confirm.setEnabled(False)
-        self.btn_confirm.setCursor(Qt.PointingHandCursor)
-        self.btn_confirm.setStyleSheet(
-            "QPushButton { background-color: #333; color: #777; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:enabled { background-color: #FF6600; color: white; }"
-        )
-        keypad_area.addWidget(self.btn_confirm)
-
-        layout.addLayout(keypad_area)
-        layout.addStretch()
-
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
-        self._clear()
-        mode_title = "Nhập mã gửi đồ" if self.state.mode == "deposit" else "Nhập mã lấy đồ"
-        self.title.setText(mode_title)
-        self.lines[0].setFocus()
+        self.state.mode = "pickup"
+        self.processing = False
+        self.last_token = ""
+        self.frame_count = 0
+        self.preview_label.clear()
+        self.preview_label.setText("")
+        self.retry_button.hide()
+        self.status_label.setText("Đang khởi động camera...")
+        self.hint_label.setText("Đưa mã QR vào giữa khung quét")
+        self._start_camera()
 
-    def _append_digit(self, digit: str) -> None:
-        self.error_banner.clear()
-        for index, line in enumerate(self.lines):
-            if not line.text():
-                line.setText(digit)
-                if index < len(self.lines) - 1:
-                    self.lines[index + 1].setFocus()
-                break
-        self._sync_confirm_state()
+    def on_exit(self) -> None:
+        self.timer.stop()
+        self.scanner.stop()
 
-    def _backspace(self) -> None:
-        self.error_banner.clear()
-        for index in range(len(self.lines) - 1, -1, -1):
-            if self.lines[index].text():
-                self.lines[index].clear()
-                self.lines[index].setFocus()
-                break
-        self._sync_confirm_state()
-
-    def _clear(self) -> None:
-        self.error_banner.clear()
-        for line in self.lines:
-            line.clear()
-        self.confirm_button.setEnabled(False)
-
-    def _otp(self) -> str:
-        return "".join(line.text() for line in self.lines)
-
-    def _sync_confirm_state(self) -> None:
-        self.confirm_button.setEnabled(len(self._otp()) == 6 and self._otp().isdigit())
-
-    def _submit(self) -> None:
-        code = self._otp()
-        if len(code) != 6:
-            self.error_banner.show_error("Vui lòng nhập đủ 6 chữ số")
+    def _start_camera(self) -> None:
+        if not self.scanner.start():
+            self._show_camera_error("Không thể khởi động camera")
             return
 
-        confirm_text = self.confirm_button.text()
-        self.confirm_button.setEnabled(False)
-        self.confirm_button.setText("ĐANG KIỂM TRA....")
-        process_events()
+        print(f"[qr_scan] camera ready, scanning at {self.scan_interval_ms}ms")
+        self.status_label.setText("Sẵn sàng quét QR")
+        self.retry_button.hide()
+        self.timer.start(self.scan_interval_ms)
+
+    def _restart_camera(self) -> None:
+        self.timer.stop()
+        self.scanner.stop()
+        self.processing = False
+        self.last_token = ""
+        self._start_camera()
+
+    def _poll_camera(self) -> None:
+        if self.processing:
+            return
+
+        frame = self.scanner.capture()
+        if frame.error:
+            self._show_camera_error(frame.error)
+            return
+
+        if frame.image is not None:
+            self.frame_count += 1
+            if self.frame_count % 30 == 0:
+                print(f"[qr_scan] streaming frames={self.frame_count}")
+            pixmap = QPixmap.fromImage(frame.image).scaled(
+                self.preview_label.size(),
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation,
+            )
+            self.preview_label.setPixmap(pixmap)
+            self.preview_label.repaint()
+
+            if frame.detected and not frame.token:
+                print("[qr_scan] QR DETECTED but NOT DECODED (move closer / steady / lighting)")
+                self.status_label.setText("Đã thấy mã QR — giữ yên")
+                self.hint_label.setText("Giữ mã QR gần hơn và đảm bảo đủ sáng")
+            elif not frame.detected and not self.processing:
+                self.status_label.setText("Sẵn sàng quét mã QR")
+                self.hint_label.setText("Đặt mã QR vào giữa khung quét")
+
+        if frame.token:
+            print(f"[qr_scan] QR DECODED token='{frame.token}'")
+            self._handle_scan(frame.token)
+
+    def _handle_scan(self, token: str) -> None:
+        if self.processing or token == self.last_token:
+            return
+
+        self.processing = True
+        self.last_token = token
+        self.timer.stop()
+        self.status_label.setText("Đang xác minh mã QR...")
+        print(f"[qr_scan] verifying token len={len(token)}")
+
         try:
-            rental, compartment = self.api_client.verify_pin(code, self.state.mode)
+            rental, compartment = self.api_client.verify_qr(token)
         except ApiError as error:
-            self.confirm_button.setText(confirm_text)
-            if error.status_code and 400 <= error.status_code < 500:
-                self.error_banner.show_error(error.message)
-                self._clear()
-                self.lines[0].setFocus()
-            else:
-                self.show_error_dialog(
-                    message=error.message or "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
-                    title="LỖI KẾT NỐI",
-                    on_retry=self._submit,
-                )
+            print(f"[qr_scan] verify failed: {error.message}")
+            self._show_scan_error(error.message)
             return
         except Exception as error:
-            self.confirm_button.setText(confirm_text)
-            self.confirm_button.setEnabled(True)
-            self.show_error_dialog(
-                message=str(error) or "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng và thử lại.",
-                title="LỖI KẾT NỐI",
-                on_retry=self._submit,
-            )
+            print(f"[qr_scan] verify failed: {error}")
+            self._show_scan_error(str(error) or "Không thể xác minh mã QR. Vui lòng thử lại.")
             return
 
+        print("[qr_scan] verified OK -> /locker-open")
+        self.scanner.stop()
+        self.state.mode = "pickup"
         self.state.rental_data = rental
         self.state.compartment_data = compartment
         self.navigate("/locker-open")
 
+    def _show_camera_error(self, message: str) -> None:
+        self.timer.stop()
+        self.preview_label.clear()
+        self.preview_label.setText("CAMERA\nCHƯA SẴN SÀNG")
+        self.status_label.setText(message)
+        self.hint_label.setText("Kiểm tra kết nối camera rồi thử lại")
+        self.retry_button.show()
 
-class OtpPickupController(OtpController):
-    route = "/otp-pickup"
+    def _show_scan_error(self, message: str) -> None:
+        self.processing = False
+        self.status_label.setText(message or "Mã QR không hợp lệ. Vui lòng thử lại.")
+        self.hint_label.setText("Vui lòng đưa mã QR hợp lệ vào khung quét")
+        self.retry_button.show()
 
-    def on_enter(self, data: dict | None = None) -> None:
-        self.state.mode = "pickup"
-        super().on_enter(data)
+
+def QHBoxLayout3(parent, left, top, right, bottom):
+    from PySide6.QtWidgets import QHBoxLayout
+    l = QHBoxLayout(parent)
+    l.setContentsMargins(left, top, right, bottom)
+    return l

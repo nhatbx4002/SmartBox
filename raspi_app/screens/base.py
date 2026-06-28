@@ -16,10 +16,6 @@ class BaseController:
         self.route = route
         self._click_filters: list[QObject] = []
         self._network_status = "OFFLINE"
-        self._footer_widget: QWidget | None = None
-        self._footer_status_label: QLabel | None = None
-        self._footer_status_dot: QWidget | None = None
-        self._footer_filter: QObject | None = None
         self.widget = widget
         self._attach_footer()
         self._bind_network_monitor()
@@ -95,50 +91,6 @@ class BaseController:
     def set_selected_style(self, widget: QWidget, selected: bool) -> None:
         widget.setProperty("selected", "true" if selected else "false")
         self.refresh_style(widget)
-
-    def _build_footer(self) -> QFrame:
-        footer = QFrame(self.widget)
-        footer.setObjectName("DashboardFooterFrame")
-        footer.setFixedHeight(48)
-        footer.setStyleSheet("""
-            QFrame#DashboardFooterFrame {
-                background-color: #111111;
-                border: none;
-                border-top: 1px solid #222;
-            }
-        """)
-
-        f_layout = QHBoxLayout(footer)
-        f_layout.setContentsMargins(16, 0, 16, 0)
-
-        self._footer_status_dot = QWidget(footer)
-        self._footer_status_dot.setObjectName("FooterStatusDot")
-        self._footer_status_dot.setFixedSize(8, 8)
-
-        self._footer_status_label = QLabel(footer)
-        self._footer_status_label.setObjectName("FooterStatusLabel")
-        self._footer_status_label.setStyleSheet(
-            "background: transparent; border: none; color: #EF4444;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 12px; font-weight: 700;"
-        )
-
-        version_label = QLabel("Version v1.0", footer)
-        version_label.setObjectName("FooterVersionLabel")
-        version_label.setStyleSheet(
-            "background: transparent; border: none; color: #555;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 12px;"
-        )
-        version_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-
-        f_layout.addWidget(self._footer_status_dot)
-        f_layout.addSpacing(6)
-        f_layout.addWidget(self._footer_status_label)
-        f_layout.addStretch()
-        f_layout.addWidget(version_label)
-
-        return footer
 
     def _make_header(self, title: str, back_fn: Callable[[], None] | None = None) -> QFrame:
         header = QFrame(self.widget)
@@ -221,20 +173,6 @@ class BaseController:
         )
         return card
 
-    def _attach_footer(self) -> None:
-        footer = self._build_footer()
-        footer.setParent(self.widget)
-        footer.setAttribute(Qt.WA_TransparentForMouseEvents, True)
-        footer.hide()
-
-        self._footer_widget = footer
-
-        self._footer_filter = _FooterPositionFilter(self._position_footer, self.widget)
-        self.widget.installEventFilter(self._footer_filter)
-
-        self._apply_network_status(self.network_status)
-        self._position_footer()
-
     def _position_footer(self) -> None:
         if self._footer_widget is None:
             return
@@ -263,23 +201,9 @@ class BaseController:
         self._apply_network_status(getattr(monitor, "current_status", "OFFLINE"))
 
     def _apply_network_status(self, status: str) -> None:
-        normalized = (status or "OFFLINE").upper()
-        self._network_status = normalized
-
-        color = "#00FF41" if normalized == "ONLINE" else "#EF4444"
-
-        if self._footer_status_label is not None:
-            self._footer_status_label.setText(normalized)
-            self._footer_status_label.setStyleSheet(
-                "background: transparent; border: none;"
-                f"color: {color}; font-family: 'Be Vietnam Pro', 'Arial', sans-serif;"
-                "font-size: 12px; font-weight: 700;"
-            )
-
-        if self._footer_status_dot is not None:
-            self._footer_status_dot.setStyleSheet(
-                f"background-color: {color}; border: none; border-radius: 4px;"
-            )
+        def _apply_network_status(self, status: str) -> None:
+            normalized = (status or "OFFLINE").upper()
+            self._network_status = normalized
 
     def show_error_dialog(
         self,

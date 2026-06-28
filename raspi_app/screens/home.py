@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from screens.base import BaseController
 
@@ -56,7 +56,7 @@ class HomeController(BaseController):
 
         # Body cards — left/right 20px, bottom 68px (để hở footer 48px + buffer 20px)
         body = QVBoxLayout()
-        body.setContentsMargins(20, 8, 20, 68)
+        body.setContentsMargins(20, 8, 20, 14)
         body.setSpacing(14)
 
         cards = [
@@ -107,6 +107,47 @@ class HomeController(BaseController):
             body.addWidget(card, 1)
 
         layout.addLayout(body, 1)
+        footer = QFrame(root)
+        footer.setFixedHeight(48)
+        footer.setStyleSheet(
+            "background-color: #111111;"
+            "border: none;"
+            "border-top: 1px solid #222;"
+        )
+
+        footer_layout = QHBoxLayout(footer)
+        footer_layout.setContentsMargins(16, 0, 16, 0)
+        footer_layout.setSpacing(6)
+
+        dot = QWidget(footer)
+        dot.setFixedSize(8, 8)
+        dot.setStyleSheet(
+            "background-color: #00FF41;"
+            "border: none;"
+            "border-radius: 4px;"
+        )
+
+        status = QLabel("ONLINE", footer)
+        status.setStyleSheet(
+            "background: transparent; border: none; color: #00FF41;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 12px; font-weight: 700;"
+        )
+
+        version = QLabel("Version v1.0", footer)
+        version.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        version.setStyleSheet(
+            "background: transparent; border: none; color: #555;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
+            "font-size: 12px;"
+        )
+
+        footer_layout.addWidget(dot)
+        footer_layout.addWidget(status)
+        footer_layout.addStretch()
+        footer_layout.addWidget(version)
+
+        layout.addWidget(footer)
 
         return root
     def on_enter(self, data: dict | None = None) -> None:

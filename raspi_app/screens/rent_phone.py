@@ -79,13 +79,14 @@ class RentPhoneController(BaseController):
 
         # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(40, 40, 40, 0)
-        body.setSpacing(20)
+        body.setContentsMargins(40, 88, 40, 0)
+        body.setSpacing(18)
+        body.setAlignment(Qt.AlignTop)
 
         # Input frame
         input_frame = QFrame(root)
         input_frame.setObjectName("phoneInputFrame")
-        input_frame.setFixedHeight(108)
+        input_frame.setFixedHeight(118)
         input_frame.setStyleSheet(
             "QFrame#phoneInputFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 22px; }"
         )
@@ -99,15 +100,15 @@ class RentPhoneController(BaseController):
         self.line_input.setMaxLength(10)
         self.line_input.setStyleSheet(
             "QLineEdit { background: transparent; border: none; color: #E8E8E8;"
-            " font-size: 52px; font-weight: 700; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
+            " font-size: 58px; font-weight: 700; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
         )
         i_layout.addWidget(self.line_input)
         body.addWidget(input_frame)
 
         # Keypad grid
         keypad_grid = QGridLayout()
-        keypad_grid.setHorizontalSpacing(16)
-        keypad_grid.setVerticalSpacing(14)
+        keypad_grid.setHorizontalSpacing(18)
+        keypad_grid.setVerticalSpacing(16)
 
         keys = [
             ("btnNum1", "1"), ("btnKey2", "2"), ("btnKey3", "3"),
@@ -117,7 +118,7 @@ class RentPhoneController(BaseController):
         ]
 
         btn_w = 200
-        btn_h = 92
+        btn_h = 96
         for idx, (obj_name, text) in enumerate(keys):
             row = idx // 3
             col = idx % 3
@@ -142,22 +143,24 @@ class RentPhoneController(BaseController):
             keypad_grid.addWidget(btn, row, col)
 
         body.addLayout(keypad_grid)
-        body.addSpacing(12)
+        body.addSpacing(18)
 
         btn_confirm = QPushButton("XÁC NHẬN")
         btn_confirm.setObjectName("btnConfirm")
         btn_confirm.setFixedHeight(96)
         btn_confirm.setCursor(Qt.PointingHandCursor)
         btn_confirm.setStyleSheet(
-            "QPushButton { background-color: #333; color: #777; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 800;"
+            "QPushButton { background-color: #333333; color: #8A8A8A; border: none;"
+            " border-radius: 24px; font-size: 26px; font-weight: 900;"
             " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
             "QPushButton:enabled { background-color: #2E7D32; color: white; }"
+            "QPushButton:pressed:enabled { background-color: #256428; }"
         )
         body.addWidget(btn_confirm)
         body.addSpacing(68)
 
-        layout.addLayout(body, 1)
+        layout.addLayout(body)
+        layout.addStretch(1)
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
