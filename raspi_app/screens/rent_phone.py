@@ -83,7 +83,6 @@ class RentPhoneController(BaseController):
 
         keypad = NumericKeypad(parent=root)
         body.addWidget(keypad, alignment=Qt.AlignCenter)
-        body.addStretch(1)
 
         btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="green")
         body.addWidget(BottomActionBar(btn_confirm))

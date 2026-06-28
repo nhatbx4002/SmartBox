@@ -79,7 +79,6 @@ class OtpController(BaseController):
 
         keypad = NumericKeypad(parent=root)
         body.addWidget(keypad)
-        body.addStretch(1)
 
         btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="orange")
         body.addWidget(BottomActionBar(btn_confirm))

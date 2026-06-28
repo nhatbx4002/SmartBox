@@ -73,7 +73,6 @@ class RentSizeController(BaseController):
 
         body.addWidget(card1)
         body.addWidget(card2)
-        body.addStretch(1)
 
         btn_continue = PrimaryButton(
             "TIẾP TỤC",
