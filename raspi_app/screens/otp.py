@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QGridLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 
 from screens.base import BaseController
 
@@ -28,8 +29,8 @@ class OtpController(BaseController):
 
     def _build_ui(self, title_text: str) -> QWidget:
         root = QWidget()
-        root.setFixedSize(720, 1280)
-        root.setStyleSheet("background-color: #0A0A0A;")
+        root.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        root.setStyleSheet(root_style())
 
         layout = QVBoxLayout(root)
         layout.setContentsMargins(0, 0, 0, 0)

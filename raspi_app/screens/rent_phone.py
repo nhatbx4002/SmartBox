@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QVBoxLayout, QWidget,
 )
 
+from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.base import BaseController
 from screens.inline_error import InlineError
 from services.formatters import is_valid_local_phone, normalize_vn_phone
@@ -40,8 +41,8 @@ class RentPhoneController(BaseController):
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
-        root.setFixedSize(720, 1280)
-        root.setStyleSheet("background-color: #0A0A0A;")
+        root.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        root.setStyleSheet(root_style())
 
         layout = QVBoxLayout(root)
         layout.setContentsMargins(0, 0, 0, 0)
