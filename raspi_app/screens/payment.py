@@ -112,15 +112,15 @@ class PaymentController(BaseController):
         )
         body.addWidget(payos_hint)
 
+        layout.addLayout(body, 1)
+
         # CTA button
         self.btn_pay = PrimaryButton(
             "THANH TOÁN NGAY",
             object_name="btnPayNow",
             color="orange",
         )
-        body.addWidget(BottomActionBar(self.btn_pay))
-
-        layout.addLayout(body, 1)
+        layout.addWidget(BottomActionBar(self.btn_pay))
         return root
 
     def on_enter(self, data: dict | None = None) -> None:

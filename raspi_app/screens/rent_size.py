@@ -75,15 +75,15 @@ class RentSizeController(BaseController):
         body.addWidget(card2)
         body.addStretch(1)
 
+        layout.addLayout(body, 1)
+
         btn_continue = PrimaryButton(
             "TIẾP TỤC",
             object_name="btnContinue",
             color="green",
         )
         btn_continue.setEnabled(False)
-        body.addWidget(BottomActionBar(btn_continue))
-
-        layout.addLayout(body, 1)
+        layout.addWidget(BottomActionBar(btn_continue))
         return root
 
     def _size_card(self, obj_name: str, label: str, icon: str, desc: str) -> QFrame:
