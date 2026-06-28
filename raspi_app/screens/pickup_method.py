@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
 from screens.components.header_bar import HeaderBar
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 
@@ -14,6 +14,7 @@ class PickupMethodController(BaseController):
     def __init__(self, app):
         widget = self._build_ui()
         super().__init__(app, self.route, widget=widget)
+        self.header_title = self.child("lblHeaderTitle", QLabel)
         self.set_clickable(self.child("pinCard"), self._open_pin)
         self.set_clickable(self.child("qrCard"), self._open_qr)
 
@@ -23,14 +24,15 @@ class PickupMethodController(BaseController):
         root.setStyleSheet(root_style())
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         header = HeaderBar(
-            "TÊN MÀN HÌNH",
+            "CHỌN PHƯƠNG THỨC",
             on_back=self.go_back,
             parent=root,
             back_object_name="btnBack",
+            title_object_name="lblHeaderTitle",
         )
         layout.addWidget(header)
 
@@ -91,19 +93,22 @@ class PickupMethodController(BaseController):
         return card
 
     def on_enter(self, data: dict | None = None) -> None:
-        self.state.mode = "pickup"
+        mode = getattr(self.state, "mode", "pickup")
+
+        if mode == "deposit":
+            self.header_title.setText("CHỌN PHƯƠNG THỨC GỬI ĐỒ")
+        else:
+            self.header_title.setText("CHỌN PHƯƠNG THỨC NHẬN ĐỒ")
 
     def _open_pin(self) -> None:
-        self.state.mode = "pickup"
-        self.navigate("/otp-pickup")
+        if self.state.mode == "deposit":
+            self.navigate("/otp")
+        else:
+            self.navigate("/otp-pickup")
 
     def _open_qr(self) -> None:
-        self.state.mode = "pickup"
-        self.navigate("/qr-scan")
+        if self.state.mode == "deposit":
+            self.navigate("/qr-scan")
+        else:
+            self.navigate("/qr-scan")
 
-
-def _HLayout(parent, left, top, right, bottom):
-    from PySide6.QtWidgets import QHBoxLayout
-    l = QHBoxLayout(parent)
-    l.setContentsMargins(left, top, right, bottom)
-    return l
