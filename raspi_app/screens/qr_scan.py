@@ -44,8 +44,8 @@ class QRScanController(BaseController):
         layout.setSpacing(0)
 
         header = HeaderBar(
-            "THANH TOÁN",
-            on_back=lambda: self.go_back,
+            "Quét mã QR",
+            on_back=lambda: self.go_back(),
             parent=root,
             back_object_name="btnBack",
         )

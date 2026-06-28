@@ -7,6 +7,8 @@ from PySide6.QtWidgets import (
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
+from screens.components.buttons import PrimaryButton
+from screens.components.bottom_action_bar import BottomActionBar
 from screens.base import BaseController
 from screens.inline_error import InlineError
 
@@ -73,19 +75,13 @@ class RentSizeController(BaseController):
         body.addWidget(card2)
         body.addStretch(1)
 
-        btn_continue = QPushButton("TIẾP TỤC")
-        btn_continue.setObjectName("btnContinue")
-        btn_continue.setFixedHeight(96)
-        btn_continue.setEnabled(False)
-        btn_continue.setCursor(Qt.PointingHandCursor)
-        btn_continue.setStyleSheet(
-            "QPushButton { background-color: #333; color: #777; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 800;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:enabled { background-color: #FF6600; color: white; }"
+        btn_continue = PrimaryButton(
+            "TIẾP TỤC",
+            object_name="btnContinue",
+            color="green",
         )
-        body.addWidget(btn_continue)
-        body.addSpacing(68)  # footer clearance
+        btn_continue.setEnabled(False)
+        body.addWidget(BottomActionBar(btn_continue))
 
         layout.addLayout(body, 1)
         return root

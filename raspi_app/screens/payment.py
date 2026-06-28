@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget,
-)
+from PySide6.QtWidgets import QLabel, QPushButton, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
+from screens.components.buttons import PrimaryButton
+from screens.components.bottom_action_bar import BottomActionBar
+from screens.components.amount_card import AmountCard
 from screens.base import BaseController, process_events
 from screens.inline_error import InlineError
 from services.api_client import ApiError
@@ -19,7 +20,7 @@ class PaymentController(BaseController):
         widget = self._build_ui()
         super().__init__(app, self.route, widget=widget)
 
-        self.amount_label = self.child("lblAmount", QLabel)
+        self.amount_card = self.child("amountCard", AmountCard)
         self.plan_info_label = self.child("lblPlanInfo", QLabel)
         self.pay_button = self.child("btnPayNow", QPushButton)
         self.pay_button_text = self.pay_button.text()
@@ -54,33 +55,14 @@ class PaymentController(BaseController):
         body.setContentsMargins(32, 36, 32, 0)
         body.setSpacing(24)
 
-        # Card số tiền
-        amount_card = QFrame(root)
-        amount_card.setFixedHeight(200)
-        amount_card.setStyleSheet(
-            "QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 24px; }"
-            "QLabel { background: transparent; }"
+        amount_card = AmountCard(
+            title="Số tiền thanh toán",
+            amount="0đ",
+            parent=root,
+            height=200,
+            radius=24,
+            amount_font_size=80,
         )
-        a_layout = QVBoxLayout(amount_card)
-        a_layout.setAlignment(Qt.AlignCenter)
-        a_layout.setSpacing(6)
-
-        lbl_amount_title = QLabel("Số tiền thanh toán", amount_card)
-        lbl_amount_title.setAlignment(Qt.AlignCenter)
-        lbl_amount_title.setStyleSheet(
-            "border: none; color: #888; font-size: 18px; font-weight: 500;"
-        )
-
-        self.lbl_amount = QLabel("0đ", amount_card)
-        self.lbl_amount.setObjectName("lblAmount")
-        self.lbl_amount.setAlignment(Qt.AlignCenter)
-        self.lbl_amount.setStyleSheet(
-            "border: none; color: #FF6600;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 80px; font-weight: 900;"
-        )
-
-        a_layout.addWidget(lbl_amount_title)
-        a_layout.addWidget(self.lbl_amount)
         body.addWidget(amount_card)
 
         # Thông tin gói
@@ -131,18 +113,12 @@ class PaymentController(BaseController):
         body.addWidget(payos_hint)
 
         # CTA button
-        self.btn_pay = QPushButton("THANH TOÁN NGAY")
-        self.btn_pay.setObjectName("btnPayNow")
-        self.btn_pay.setFixedHeight(96)
-        self.btn_pay.setCursor(Qt.PointingHandCursor)
-        self.btn_pay.setStyleSheet(
-            "QPushButton { background-color: #FF6600; color: white; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 800;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:disabled { background-color: #333; color: #777; }"
+        self.btn_pay = PrimaryButton(
+            "THANH TOÁN NGAY",
+            object_name="btnPayNow",
+            color="orange",
         )
-        body.addWidget(self.btn_pay)
-        body.addSpacing(68)
+        body.addWidget(BottomActionBar(self.btn_pay))
 
         layout.addLayout(body, 1)
         return root
@@ -153,7 +129,7 @@ class PaymentController(BaseController):
             return
 
         self.error_banner.clear()
-        self.amount_label.setText(format_currency(self.state.selected_plan.price))
+        self.amount_card.set_amount(format_currency(self.state.selected_plan.price))
         size_text = "Size 1" if self.state.selected_size == "SMALL" else "Size 2"
         self.plan_info_label.setText(f"{size_text} – {self.state.selected_plan.name}")
         self.pay_button.setText(self.pay_button_text)

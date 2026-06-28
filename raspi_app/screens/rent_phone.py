@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QFrame, QGridLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QVBoxLayout, QWidget,
-)
+from PySide6.QtWidgets import QFrame, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
+from screens.components.buttons import PrimaryButton
+from screens.components.numeric_keypad import NumericKeypad
+from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
 from screens.base import BaseController
@@ -27,17 +27,13 @@ class RentPhoneController(BaseController):
         self.error_banner = InlineError(self.widget)
         self.error_banner.setGeometry(40, 440, 640, 60)
 
-        self.child("btnBackspace", QPushButton).clicked.connect(self._backspace)
-        self.child("btnClear", QPushButton).clicked.connect(self._clear)
+        keypad = self.child("numericKeypad", NumericKeypad)
+        keypad.digit_pressed.connect(self._append_digit)
+        keypad.clear_pressed.connect(self._clear)
+        keypad.backspace_pressed.connect(self._backspace)
+
         self.confirm_button.clicked.connect(self._confirm)
         self.input.textChanged.connect(self._sync_confirm_state)
-
-        digit_buttons = {"btnNum1": "1", "btnKey0": "0"}
-        digit_buttons.update({f"btnKey{digit}": str(digit) for digit in range(2, 10)})
-        for name, digit in digit_buttons.items():
-            self.child(name, QPushButton).clicked.connect(
-                lambda _checked=False, value=digit: self._append_digit(value)
-            )
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
@@ -85,59 +81,12 @@ class RentPhoneController(BaseController):
         i_layout.addWidget(self.line_input)
         body.addWidget(input_frame)
 
-        # Keypad grid
-        keypad_grid = QGridLayout()
-        keypad_grid.setHorizontalSpacing(18)
-        keypad_grid.setVerticalSpacing(16)
-
-        keys = [
-            ("btnNum1", "1"), ("btnKey2", "2"), ("btnKey3", "3"),
-            ("btnKey4", "4"), ("btnKey5", "5"), ("btnKey6", "6"),
-            ("btnKey7", "7"), ("btnKey8", "8"), ("btnKey9", "9"),
-            ("btnClear", "C"), ("btnKey0", "0"), ("btnBackspace", "⌫"),
-        ]
-
-        btn_w = 200
-        btn_h = 96
-        for idx, (obj_name, text) in enumerate(keys):
-            row = idx // 3
-            col = idx % 3
-            btn = QPushButton(text)
-            btn.setObjectName(obj_name)
-            btn.setFixedSize(btn_w, btn_h)
-            btn.setCursor(Qt.PointingHandCursor)
-            if text in ("C", "⌫"):
-                btn.setStyleSheet(
-                    "QPushButton { background-color: #333; color: white; border: none;"
-                    " border-radius: 20px; font-size: 28px; font-weight: 700;"
-                    " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-                    "QPushButton:pressed { background-color: #555; }"
-                )
-            else:
-                btn.setStyleSheet(
-                    "QPushButton { background-color: #1C1B1B; color: #E8E8E8; border: 2px solid #333;"
-                    " border-radius: 20px; font-size: 34px; font-weight: 700;"
-                    " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-                    "QPushButton:pressed { background-color: #2A2A2A; border-color: #2E7D32; }"
-                )
-            keypad_grid.addWidget(btn, row, col)
-
-        body.addLayout(keypad_grid)
+        keypad = NumericKeypad(parent=root)
+        body.addWidget(keypad, alignment=Qt.AlignCenter)
         body.addSpacing(18)
 
-        btn_confirm = QPushButton("XÁC NHẬN")
-        btn_confirm.setObjectName("btnConfirm")
-        btn_confirm.setFixedHeight(96)
-        btn_confirm.setCursor(Qt.PointingHandCursor)
-        btn_confirm.setStyleSheet(
-            "QPushButton { background-color: #333333; color: #8A8A8A; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 900;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:enabled { background-color: #2E7D32; color: white; }"
-            "QPushButton:pressed:enabled { background-color: #256428; }"
-        )
-        body.addWidget(btn_confirm)
-        body.addSpacing(68)
+        btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="green")
+        body.addWidget(BottomActionBar(btn_confirm))
 
         layout.addLayout(body)
         layout.addStretch(1)

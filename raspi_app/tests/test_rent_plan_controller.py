@@ -111,8 +111,8 @@ class RentPlanOptionsControllerTests(unittest.TestCase):
         controller.on_enter({})
         plan = app.state.available_plans[0]
 
-        from PySide6.QtWidgets import QFrame
-        dummy_card = QFrame()
+        from screens.components.selectable_card import SelectableCard
+        dummy_card = SelectableCard(title="test")
         controller._select_plan(plan, dummy_card)
 
         self.assertIsNotNone(app.state.selected_plan)

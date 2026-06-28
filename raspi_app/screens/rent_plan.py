@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QFrame, QHBoxLayout, QLabel, QPushButton,
-    QScrollArea, QVBoxLayout, QWidget,
-)
+from PySide6.QtWidgets import QLabel, QPushButton, QScrollArea, QVBoxLayout, QWidget
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.base import BaseController
 from screens.components.header_bar import HeaderBar
+from screens.components.buttons import PrimaryButton
+from screens.components.selectable_card import SelectableCard
+from screens.components.bottom_action_bar import BottomActionBar
 from services.app_state import Plan
 from services.formatters import PLAN_GROUPS, format_currency
 
@@ -26,9 +26,9 @@ class RentPlanController(BaseController):
         self.plans_layout = self.child("plansLayout", QVBoxLayout)
         self.continue_button = self.child("btnContinue", QPushButton)
         self.continue_button.setEnabled(False)
-        self.selected_card: QFrame | None = None
+        self.selected_card: SelectableCard | None = None
         self.selected_group_type: str | None = None
-        self.group_cards: dict[str, QFrame] = {}
+        self.group_cards: dict[str, SelectableCard] = {}
 
         self.continue_button.clicked.connect(self._on_continue)
 
@@ -85,19 +85,13 @@ class RentPlanController(BaseController):
 
         body.addSpacing(12)
 
-        btn_continue = QPushButton("Tiếp Tục")
-        btn_continue.setObjectName("btnContinue")
-        btn_continue.setFixedHeight(96)
-        btn_continue.setEnabled(False)
-        btn_continue.setCursor(Qt.PointingHandCursor)
-        btn_continue.setStyleSheet(
-            "QPushButton { background-color: #333; color: #777; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 800;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:enabled { background-color: #FF6600; color: white; }"
+        btn_continue = PrimaryButton(
+            "TIẾP TỤC",
+            object_name="btnContinue",
+            color="orange",
         )
-        body.addWidget(btn_continue)
-        body.addSpacing(68)
+        btn_continue.setEnabled(False)
+        body.addWidget(BottomActionBar(btn_continue))
 
         layout.addLayout(body, 1)
         return root
@@ -162,85 +156,31 @@ class RentPlanController(BaseController):
 
         self.plans_layout.addStretch()
 
-    def _build_group_card(self, rental_type: str, plans: list[Plan]) -> QFrame:
+    def _build_group_card(self, rental_type: str, plans: list[Plan]) -> SelectableCard:
         group_info = PLAN_GROUPS.get(rental_type, {"title": rental_type, "subtitle": ""})
         min_price = min(p.price for p in plans)
 
-        card = QFrame()
-        card.setObjectName(f"groupCard_{rental_type}")
-        card.setCursor(Qt.CursorShape.PointingHandCursor)
-        card.setMinimumHeight(240)
-        card.setStyleSheet(f"""
-            QFrame#groupCard_{rental_type} {{
-                background-color: #111111;
-                border: 3px solid #2A2A2A;
-                border-radius: 24px;
-            }}
-            QFrame#groupCard_{rental_type}:hover {{
-                border: 3px solid #FF6600;
-                background-color: #1A1A1A;
-            }}
-            QLabel {{ background-color: transparent; }}
-        """)
-
-        card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(36, 32, 36, 32)
-        card_layout.setSpacing(14)
-
-        title_label = QLabel(group_info["title"])
-        title_label.setStyleSheet(
-            "color: #E8E8E8; font-size: 32px; font-weight: bold; border: none;"
+        card = SelectableCard(
+            title=group_info["title"],
+            subtitle=group_info["subtitle"],
+            trailing=f"Từ {format_currency(min_price)}",
+            object_name=f"groupCard_{rental_type}",
+            min_height=240,
+            selected_color="orange",
         )
-
-        subtitle_label = QLabel(group_info["subtitle"])
-        subtitle_label.setStyleSheet(
-            "color: #888888; font-size: 20px; font-weight: 500; border: none;"
-        )
-
-        price_label = QLabel(f"Từ {format_currency(min_price)}")
-        price_label.setStyleSheet(
-            "color: #FF6600; font-size: 30px; font-weight: 800; border: none;"
-        )
-
-        card_layout.addWidget(title_label)
-        card_layout.addWidget(subtitle_label)
-        card_layout.addWidget(price_label)
 
         self.set_clickable(card, lambda rt=rental_type: self._select_group(rt))
         return card
 
     def _select_group(self, rental_type: str) -> None:
         if self.selected_card:
-            rt = self.selected_group_type
-            self.selected_card.setStyleSheet(f"""
-                QFrame#groupCard_{rt} {{
-                    background-color: #111111;
-                    border: 3px solid #2A2A2A;
-                    border-radius: 24px;
-                }}
-                QFrame#groupCard_{rt}:hover {{
-                    border: 3px solid #FF6600;
-                    background-color: #1A1A1A;
-                }}
-                QLabel {{ background-color: transparent; }}
-            """)
+            self.selected_card.set_selected(False)
 
         card = self.group_cards.get(rental_type)
         if not card:
             return
 
-        card.setStyleSheet(f"""
-            QFrame#groupCard_{rental_type} {{
-                background-color: #1C1400;
-                border: 3px solid #FF6600;
-                border-radius: 24px;
-            }}
-            QFrame#groupCard_{rental_type}:hover {{
-                border: 3px solid #FF6600;
-                background-color: #1C1400;
-            }}
-            QLabel {{ background-color: transparent; }}
-        """)
+        card.set_selected(True)
         self.selected_card = card
         self.selected_group_type = rental_type
         self.continue_button.setEnabled(True)

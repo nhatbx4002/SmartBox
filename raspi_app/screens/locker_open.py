@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
+from screens.components.buttons import PrimaryButton
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 
 from screens.base import BaseController, process_events
@@ -106,15 +107,8 @@ class LockerOpenController(BaseController):
 
         body.addStretch()
 
-        self.finish = QPushButton("HOÀN THÀNH")
-        self.finish.setObjectName("btnFinish")
-        self.finish.setFixedHeight(88)
+        self.finish = PrimaryButton("HOÀN THÀNH", object_name="btnFinish", parent=root, color="green", height=88, radius=18)
         self.finish.setEnabled(False)
-        self.finish.setCursor(Qt.PointingHandCursor)
-        self.finish.setStyleSheet(
-            "QPushButton { background-color: #333; color: #777; border: none; border-radius: 18px; font-size: 24px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:enabled { background-color: #2E7D32; color: white; }"
-        )
         body.addWidget(self.finish)
 
         layout.addLayout(body)

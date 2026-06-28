@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QGridLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
+from screens.components.buttons import PrimaryButton
+from screens.components.numeric_keypad import NumericKeypad
+from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
 
@@ -18,14 +21,12 @@ class OtpController(BaseController):
         self.code = ""
         self.code_label = self.child("lblCode", QLabel)
 
-        self.child("btnClear", QPushButton).clicked.connect(self._clear)
-        self.child("btnBackspace", QPushButton).clicked.connect(self._backspace)
-        self.child("btnConfirm", QPushButton).clicked.connect(self._confirm)
+        keypad = self.child("numericKeypad", NumericKeypad)
+        keypad.digit_pressed.connect(self._append_digit)
+        keypad.clear_pressed.connect(self._clear)
+        keypad.backspace_pressed.connect(self._backspace)
 
-        for digit in range(10):
-            self.child(f"btnKey{digit}", QPushButton).clicked.connect(
-                lambda _checked=False, value=str(digit): self._append_digit(value)
-            )
+        self.child("btnConfirm", QPushButton).clicked.connect(self._confirm)
 
     def _build_ui(self, title_text: str) -> QWidget:
         root = QWidget()
@@ -37,8 +38,8 @@ class OtpController(BaseController):
         layout.setSpacing(0)
 
         header = HeaderBar(
-            "Nhập mã PIN ",
-            on_back=lambda: self.go_back,
+            "Nhập mẫ PIN",
+            on_back=lambda: self.go_back(),
             parent=root,
             back_object_name="btnBack",
         )
@@ -76,45 +77,12 @@ class OtpController(BaseController):
         code_layout.addWidget(lbl_code)
         body.addWidget(code_card)
 
-        keypad = QGridLayout()
-        keypad.setHorizontalSpacing(18)
-        keypad.setVerticalSpacing(16)
-
-        keys = [
-            ("btnKey1", "1"), ("btnKey2", "2"), ("btnKey3", "3"),
-            ("btnKey4", "4"), ("btnKey5", "5"), ("btnKey6", "6"),
-            ("btnKey7", "7"), ("btnKey8", "8"), ("btnKey9", "9"),
-            ("btnClear", "C"), ("btnKey0", "0"), ("btnBackspace", "⌫"),
-        ]
-
-        for idx, (name, text) in enumerate(keys):
-            btn = QPushButton(text)
-            btn.setObjectName(name)
-            btn.setFixedSize(200, 96)
-            btn.setCursor(Qt.PointingHandCursor)
-            btn.setStyleSheet(
-                "QPushButton { background-color: #1C1B1B; color: #E8E8E8;"
-                " border: 2px solid #333; border-radius: 20px;"
-                " font-size: 34px; font-weight: 800;"
-                " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-                "QPushButton:pressed { background-color: #2A2A2A; border-color: #FF6600; }"
-            )
-            keypad.addWidget(btn, idx // 3, idx % 3)
-
-        body.addLayout(keypad)
+        keypad = NumericKeypad(parent=root)
+        body.addWidget(keypad)
         body.addSpacing(20)
 
-        btn_confirm = QPushButton("XÁC NHẬN", root)
-        btn_confirm.setObjectName("btnConfirm")
-        btn_confirm.setFixedHeight(96)
-        btn_confirm.setCursor(Qt.PointingHandCursor)
-        btn_confirm.setStyleSheet(
-            "QPushButton { background-color: #FF6600; color: white; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 900;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:pressed { background-color: #E65C00; }"
-        )
-        body.addWidget(btn_confirm)
+        btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="orange")
+        body.addWidget(BottomActionBar(btn_confirm))
 
         layout.addLayout(body)
         layout.addStretch()

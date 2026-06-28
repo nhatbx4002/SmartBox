@@ -6,6 +6,8 @@ from PySide6.QtWidgets import (
 )
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
+from screens.components.buttons import PrimaryButton
+from screens.components.bottom_action_bar import BottomActionBar
 
 from screens.base import BaseController
 from services.formatters import format_pin
@@ -108,18 +110,12 @@ class RentSuccessController(BaseController):
         body.addStretch()
 
         # Row nút hành động
-        btn_row = QHBoxLayout()
+        btn_row_widget = QWidget(root)
+        btn_row = QHBoxLayout(btn_row_widget)
+        btn_row.setContentsMargins(0, 0, 0, 0)
         btn_row.setSpacing(16)
 
-        btn_open = QPushButton("MỞ NGAY")
-        btn_open.setObjectName("btnOpenNow")
-        btn_open.setFixedHeight(96)
-        btn_open.setCursor(Qt.PointingHandCursor)
-        btn_open.setStyleSheet(
-            "QPushButton { background-color: #2E7D32; color: white; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 800;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-        )
+        btn_open = PrimaryButton("MỞ NGAY", object_name="btnOpenNow", parent=btn_row_widget, color="green")
         btn_row.addWidget(btn_open, stretch=1)
 
         btn_later = QPushButton("DÙNG SAU")
@@ -133,8 +129,7 @@ class RentSuccessController(BaseController):
         )
         btn_row.addWidget(btn_later, stretch=1)
 
-        body.addLayout(btn_row)
-        body.addSpacing(68)
+        body.addWidget(BottomActionBar(btn_row_widget))
 
         layout.addLayout(body, 1)
         return root

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QFrame, QHBoxLayout, QLabel, QPushButton,
-    QScrollArea, QVBoxLayout, QWidget,
-)
+from PySide6.QtWidgets import QLabel, QPushButton, QScrollArea, QVBoxLayout, QWidget
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
+from screens.components.buttons import PrimaryButton
+from screens.components.selectable_card import SelectableCard
+from screens.components.bottom_action_bar import BottomActionBar
 from screens.base import BaseController
 from services.app_state import Plan
 from services.formatters import PLAN_GROUPS, format_currency, format_plan_subtitle
@@ -26,7 +26,7 @@ class RentPlanOptionsController(BaseController):
         self.options_container = self.child("planOptionsContainer", QWidget)
         self.options_layout = self.child("planOptionsLayout", QVBoxLayout)
         self.continue_button = self.child("btnContinue", QPushButton)
-        self.selected_card: QFrame | None = None
+        self.selected_card: SelectableCard | None = None
 
         self.continue_button.clicked.connect(lambda: self.navigate("/rent-phone"))
 
@@ -83,19 +83,13 @@ class RentPlanOptionsController(BaseController):
 
         body.addSpacing(12)
 
-        btn_continue = QPushButton("TIẾP TỤC")
-        btn_continue.setObjectName("btnContinue")
-        btn_continue.setFixedHeight(96)
-        btn_continue.setEnabled(False)
-        btn_continue.setCursor(Qt.PointingHandCursor)
-        btn_continue.setStyleSheet(
-            "QPushButton { background-color: #333; color: #777; border: none;"
-            " border-radius: 24px; font-size: 26px; font-weight: 800;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-            "QPushButton:enabled { background-color: #2E7D32; color: white; }"
+        btn_continue = PrimaryButton(
+            "TIẾP TỤC",
+            object_name="btnContinue",
+            color="orange",
         )
-        body.addWidget(btn_continue)
-        body.addSpacing(68)
+        btn_continue.setEnabled(False)
+        body.addWidget(BottomActionBar(btn_continue))
 
         layout.addLayout(body, 1)
         return root
@@ -148,78 +142,34 @@ class RentPlanOptionsController(BaseController):
 
         self.options_layout.addStretch()
 
-    def _build_plan_card(self, plan: Plan) -> QFrame:
-        card = QFrame()
-        card.setObjectName(f"planCard_{plan.id}")
-        card.setCursor(Qt.CursorShape.PointingHandCursor)
-        card.setMinimumHeight(190)
-        card.setStyleSheet("""
-            QFrame {
-                background-color: #111111;
-                border: 3px solid #2A2A2A;
-                border-radius: 22px;
-            }
-            QFrame:hover {
-                border: 3px solid #FF6600;
-                background-color: #1A1A1A;
-            }
-            QLabel { background-color: transparent; }
-        """)
-
-        card_layout = QHBoxLayout(card)
-        card_layout.setContentsMargins(36, 28, 36, 28)
-
-        info_layout = QVBoxLayout()
-        info_layout.setSpacing(12)
-
-        name_label = QLabel(plan.name)
-        name_label.setStyleSheet(
-            "color: #E8E8E8; font-size: 28px; font-weight: 700; border: none;"
+    def _build_plan_card(self, plan: Plan) -> SelectableCard:
+        subtitle_text = format_plan_subtitle(
+            plan.rental_type,
+            plan.duration_days,
+            plan.max_opens,
         )
 
-        subtitle_text = format_plan_subtitle(plan.rental_type, plan.duration_days, plan.max_opens)
-        subtitle_label = QLabel(subtitle_text)
-        subtitle_label.setStyleSheet(
-            "color: #888888; font-size: 20px; font-weight: 500; border: none;"
+        card = SelectableCard(
+            title=plan.name,
+            subtitle=subtitle_text,
+            trailing=format_currency(plan.price),
+            object_name=f"planCard_{plan.id}",
+            min_height=190,
+            radius=22,
+            selected_color="green",
+            horizontal=True,
         )
 
-        info_layout.addWidget(name_label)
-        info_layout.addWidget(subtitle_label)
-
-        price_label = QLabel(format_currency(plan.price))
-        price_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        price_label.setStyleSheet(
-            "color: #FF6600; font-size: 36px; font-weight: 900; border: none;"
-        )
-
-        card_layout.addLayout(info_layout)
-        card_layout.addStretch()
-        card_layout.addWidget(price_label)
-
-        self.set_clickable(card, lambda p=plan: self._select_plan(p, card))
+        self.set_clickable(card, lambda p=plan, c=card: self._select_plan(p, c))
         return card
 
-    def _select_plan(self, plan: Plan, card: QFrame) -> None:
+    def _select_plan(self, plan: Plan, card: SelectableCard) -> None:
         self.state.selected_plan = plan
 
         if self.selected_card and self.selected_card is not card:
-            self.selected_card.setStyleSheet("""
-                QFrame {
-                    background-color: #111111;
-                    border: 3px solid #2A2A2A;
-                    border-radius: 22px;
-                }
-                QLabel { background-color: transparent; }
-            """)
+            self.selected_card.set_selected(False)
 
-        card.setStyleSheet("""
-            QFrame {
-                background-color: #1A3A1A;
-                border: 3px solid #2E7D32;
-                border-radius: 22px;
-            }
-            QLabel { background-color: transparent; }
-        """)
+        card.set_selected(True)
         self.selected_card = card
         self.continue_button.setEnabled(True)
 
