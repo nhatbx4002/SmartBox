@@ -3,6 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
+from screens.components.footer_bar import FooterBar
 
 from screens.base import BaseController
 
@@ -37,7 +38,7 @@ class HomeController(BaseController):
         h_layout.setContentsMargins(24, 28, 24, 0)
         h_layout.setSpacing(6)
 
-        logo = QLabel("SmartBox", header)
+        logo = QLabel("OmniBox", header)
         logo.setStyleSheet(
             "background: transparent; border: none; color: #E8E8E8;"
             "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
@@ -108,46 +109,11 @@ class HomeController(BaseController):
             body.addWidget(card, 1)
 
         layout.addLayout(body, 1)
-        footer = QFrame(root)
-        footer.setFixedHeight(48)
-        footer.setStyleSheet(
-            "background-color: #111111;"
-            "border: none;"
-            "border-top: 1px solid #222;"
+        footer = FooterBar(
+            status=self.network_status if hasattr(self, "network_status") else "ONLINE",
+            version="Version v1.0",
+            parent=root,
         )
-
-        footer_layout = QHBoxLayout(footer)
-        footer_layout.setContentsMargins(16, 0, 16, 0)
-        footer_layout.setSpacing(6)
-
-        dot = QWidget(footer)
-        dot.setFixedSize(8, 8)
-        dot.setStyleSheet(
-            "background-color: #00FF41;"
-            "border: none;"
-            "border-radius: 4px;"
-        )
-
-        status = QLabel("ONLINE", footer)
-        status.setStyleSheet(
-            "background: transparent; border: none; color: #00FF41;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 12px; font-weight: 700;"
-        )
-
-        version = QLabel("Version v1.0", footer)
-        version.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        version.setStyleSheet(
-            "background: transparent; border: none; color: #555;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 12px;"
-        )
-
-        footer_layout.addWidget(dot)
-        footer_layout.addWidget(status)
-        footer_layout.addStretch()
-        footer_layout.addWidget(version)
-
         layout.addWidget(footer)
 
         return root
