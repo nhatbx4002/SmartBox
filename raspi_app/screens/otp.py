@@ -46,7 +46,7 @@ class OtpController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(40, 120, 40, 0)
+        body.setContentsMargins(40, 120, 40, 32)
         body.setSpacing(28)
 
         instruction = QLabel("Vui lòng nhập mã xác thực", root)
@@ -79,6 +79,7 @@ class OtpController(BaseController):
 
         keypad = NumericKeypad(parent=root)
         body.addWidget(keypad)
+        body.addStretch(1)
 
         btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="orange")
         body.addWidget(BottomActionBar(btn_confirm))

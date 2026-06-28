@@ -36,7 +36,7 @@ class RentSuccessController(BaseController):
         layout.setSpacing(0)
 
         body = QVBoxLayout()
-        body.setContentsMargins(36, 64, 36, 0)
+        body.setContentsMargins(36, 64, 36, 32)
         body.setSpacing(20)
         body.setAlignment(Qt.AlignTop)
 

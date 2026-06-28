@@ -49,7 +49,7 @@ class RentSizeController(BaseController):
         layout.addWidget(header)
         # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(24, 32, 24, 0)
+        body.setContentsMargins(24, 32, 24, 32)
         body.setSpacing(20)
 
         subtitle = QLabel("Chọn kích thước phù hợp với đồ cần gửi")

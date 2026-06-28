@@ -52,7 +52,7 @@ class RentPlanController(BaseController):
 
         # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(24, 16, 24, 0)
+        body.setContentsMargins(24, 16, 24, 32)
         body.setSpacing(0)
 
         self.lbl_size = QLabel("", root)

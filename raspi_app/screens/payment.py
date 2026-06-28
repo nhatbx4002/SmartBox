@@ -52,7 +52,7 @@ class PaymentController(BaseController):
         layout.addWidget(header)
         # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(32, 36, 32, 0)
+        body.setContentsMargins(32, 36, 32, 32)
         body.setSpacing(24)
 
         amount_card = AmountCard(
@@ -111,6 +111,7 @@ class PaymentController(BaseController):
             "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;"
         )
         body.addWidget(payos_hint)
+        body.addStretch(1)
 
         # CTA button
         self.btn_pay = PrimaryButton(
