@@ -9,7 +9,7 @@ from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
 from screens.components.buttons import PrimaryButton
 from screens.components.bottom_action_bar import BottomActionBar
-from screens.base import BaseController
+from screens.base import BaseController, run_in_thread
 from screens.inline_error import InlineError
 
 
@@ -148,11 +148,17 @@ class RentSizeController(BaseController):
 
     def _select_size(self, size: str) -> None:
         self.error_banner.clear()
+        self.continue_button.setEnabled(False)
         self._apply_selection(size)
 
-        try:
-            result = self.api_client.check_availability(size)
-        except Exception:
+        def _check():
+            return self.api_client.check_availability(size)
+
+        def _on_done(result):
+            if not result.get("available"):
+                size_label = "Tủ nhỏ" if size == "SMALL" else "Tủ lớn"
+                self.error_banner.show_error(f"Hiện không còn ngăn trống cho {size_label}")
+                return
             self.state.selected_size = size
             self.state.selected_plan = None
             self.state.selected_plan_group = None
@@ -161,22 +167,14 @@ class RentSizeController(BaseController):
             self.state.payment_method = None
             self.state.rental_data = None
             self.state.compartment_data = None
-            return
+            self.continue_button.setEnabled(True)
 
-        if not result.get("available"):
-            size_label = "Tủ nhỏ" if size == "SMALL" else "Tủ lớn"
-            self.error_banner.show_error(f"Hiện không còn ngăn trống cho {size_label}")
-            self.continue_button.setEnabled(False)
-            return
+        def _on_error(_exc):
+            # Không có mạng → cho phép tiếp tục, lỗi sẽ hiện ở bước sau
+            self.state.selected_size = size
+            self.continue_button.setEnabled(True)
 
-        self.state.selected_size = size
-        self.state.selected_plan = None
-        self.state.selected_plan_group = None
-        self.state.available_plans = []
-        self.state.phone = None
-        self.state.payment_method = None
-        self.state.rental_data = None
-        self.state.compartment_data = None
+        run_in_thread(_check, _on_done, _on_error)
 
     def _apply_selection(self, size: str | None) -> None:
         self._style_card(self.card_small, "cardSize1", size == "SMALL")

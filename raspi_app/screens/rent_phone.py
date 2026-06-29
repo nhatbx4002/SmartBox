@@ -56,7 +56,7 @@ class RentPhoneController(BaseController):
         # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
         body.setContentsMargins(40, 48, 40, 0)
-        body.setSpacing(0)
+        body.setSpacing(24)
 
         # Input frame
         input_frame = QFrame(root)
@@ -80,10 +80,8 @@ class RentPhoneController(BaseController):
         i_layout.addWidget(self.line_input)
         body.addWidget(input_frame)
 
-        body.addSpacing(10)
-
         keypad = NumericKeypad(parent=root)
-        body.addWidget(keypad, alignment=Qt.AlignCenter)
+        body.addWidget(keypad)
 
         body.addStretch(1)
 

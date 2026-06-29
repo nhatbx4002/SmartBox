@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, TypeVar
 
-from PySide6.QtCore import QEvent, QObject, Qt
+from PySide6.QtCore import QEvent, QObject, QRunnable, Qt, QThreadPool, Signal, QObject as _QObject
 from PySide6.QtWidgets import QApplication, QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from services.config_loader import get_config_value
@@ -232,6 +232,36 @@ def process_events() -> None:
     app = QApplication.instance()
     if app is not None:
         app.processEvents()
+
+
+class _WorkerSignals(_QObject):
+    done = Signal(object)
+    error = Signal(Exception)
+
+
+class _Worker(QRunnable):
+    def __init__(self, fn: Callable, signals: _WorkerSignals):
+        super().__init__()
+        self._fn = fn
+        self._signals = signals
+        self.setAutoDelete(True)
+
+    def run(self) -> None:
+        try:
+            self._signals.done.emit(self._fn())
+        except Exception as exc:
+            self._signals.error.emit(exc)
+
+
+def run_in_thread(
+    fn: Callable,
+    on_done: Callable[[Any], None],
+    on_error: Callable[[Exception], None],
+) -> None:
+    signals = _WorkerSignals()
+    signals.done.connect(on_done)
+    signals.error.connect(on_error)
+    QThreadPool.globalInstance().start(_Worker(fn, signals))
 
 
 class _ClickFilter(QObject):

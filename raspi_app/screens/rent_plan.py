@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QPushButton, QScrollArea, QVBoxLayout, QWidget
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
-from screens.base import BaseController
+from screens.base import BaseController, run_in_thread
 from screens.components.header_bar import HeaderBar
 from screens.components.buttons import PrimaryButton
 from screens.components.selectable_card import SelectableCard
@@ -115,18 +115,24 @@ class RentPlanController(BaseController):
         self._load_plans()
 
     def _load_plans(self) -> None:
-        try:
-            plans = self.api_client.get_plans(self.state.selected_size)
+        size = self.state.selected_size
+
+        def _fetch():
+            return self.api_client.get_plans(size)
+
+        def _on_done(plans):
             self.state.available_plans = plans
-            grouped = self._group_plans_by_type(plans)
-            self._render_plan_groups(grouped)
+            self._render_plan_groups(self._group_plans_by_type(plans))
             self.hide_error_dialog()
-        except Exception as error:
+
+        def _on_error(exc):
             self.show_error_dialog(
-                message=str(error) or "Không thể tải danh sách gói thuê. Vui lòng thử lại.",
+                message=str(exc) or "Không thể tải danh sách gói thuê. Vui lòng thử lại.",
                 title="LỖI TẢI GÓI THUÊ",
                 on_retry=self._load_plans,
             )
+
+        run_in_thread(_fetch, _on_done, _on_error)
 
     def _group_plans_by_type(self, plans: list[Plan]) -> dict[str, list[Plan]]:
         grouped: dict[str, list[Plan]] = {}
