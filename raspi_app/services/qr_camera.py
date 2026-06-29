@@ -25,7 +25,7 @@ class QrCameraScanner:
 
     def __init__(
         self,
-        size: tuple[int, int] = (640, 480),
+        size: tuple[int, int] = (1640, 1232),
         fps: int = 30,
         qr_every_n_frames: int = 3,
         stream_url: str | None = None,

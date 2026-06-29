@@ -7,7 +7,7 @@ from screens.components.header_bar import HeaderBar
 from screens.components.buttons import PrimaryButton
 from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.amount_card import AmountCard
-from screens.base import BaseController, process_events
+from screens.base import BaseController, run_in_thread
 from screens.inline_error import InlineError
 from services.api_client import ApiError
 from services.formatters import format_currency
@@ -149,40 +149,40 @@ class PaymentController(BaseController):
 
         self.pay_button.setEnabled(False)
         self.pay_button.setText("ĐANG XỬ LÝ...")
-        process_events()
-        try:
+
+        phone = self.state.phone
+        size = self.state.selected_size
+        plan_id = self.state.selected_plan.id
+        cabinet_id = getattr(self.app, "cabinet_id", None)
+
+        def _fetch():
             rental, compartment = self.api_client.create_rental(
-                phone=self.state.phone,
-                size=self.state.selected_size,
-                plan_id=self.state.selected_plan.id,
-                payment_method=self.state.payment_method,
-                cabinet_id=getattr(self.app, "cabinet_id", None),
+                phone=phone, size=size, plan_id=plan_id,
+                payment_method="PAYOS", cabinet_id=cabinet_id,
             )
-            self.hide_error_dialog()
-        except ApiError as error:
-            if error.status_code and 400 <= error.status_code < 500:
-                self._show_payment_error(error.message)
-            else:
-                self._show_payment_error_dialog(error.message or "Không thể tạo đơn thuê. Vui lòng thử lại.")
-            return
-        except Exception as error:
-            self._show_payment_error_dialog(str(error) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.")
-            return
-
-        self.state.rental_data = rental
-        self.state.compartment_data = compartment
-
-        try:
             payment = self.api_client.create_payment(rental.id, source="KIOSK")
+            return rental, compartment, payment
+
+        def _on_done(result):
+            rental, compartment, payment = result
+            self.state.rental_data = rental
+            self.state.compartment_data = compartment
             self.state.payment_order_code = payment["orderCode"]
             self.state.payment_qr_string = payment["qrCode"]
             self.state.payment_amount = payment.get("amount")
             self.state.payment_expires_at = payment.get("expiresAt")
+            self.hide_error_dialog()
             self.navigate("/qr-payment")
-        except ApiError as error:
-            self._show_payment_error_dialog(error.message or "Không thể tạo yêu cầu thanh toán. Vui lòng thử lại.")
-        except Exception as error:
-            self._show_payment_error_dialog(str(error) or "Không thể kết nối để tạo thanh toán. Vui lòng thử lại.")
+
+        def _on_error(exc):
+            if isinstance(exc, ApiError) and exc.status_code and 400 <= exc.status_code < 500:
+                self._show_payment_error(exc.message)
+            elif isinstance(exc, ApiError):
+                self._show_payment_error_dialog(exc.message or "Không thể tạo đơn thuê. Vui lòng thử lại.")
+            else:
+                self._show_payment_error_dialog(str(exc) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.")
+
+        run_in_thread(_fetch, _on_done, _on_error)
 
     def _show_payment_error(self, message: str) -> None:
         self.error_banner.show_error(message)

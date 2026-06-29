@@ -161,15 +161,16 @@ class RentSizeController(BaseController):
 
     def _load_availability(self) -> None:
         def _check():
-            return (
-                self.api_client.check_availability("SMALL"),
-                self.api_client.check_availability("LARGE"),
-            )
+            result = self.api_client.check_availability(None)
+            items = result.get("items", [])
+            return {
+                "SMALL": sum(1 for i in items if i.get("size") == "SMALL"),
+                "LARGE": sum(1 for i in items if i.get("size") == "LARGE"),
+            }
 
         def _on_done(result):
-            small, large = result
-            self.availability["SMALL"] = small.get("count", 0) if small.get("available") else 0
-            self.availability["LARGE"] = large.get("count", 0) if large.get("available") else 0
+            self.availability["SMALL"] = result["SMALL"]
+            self.availability["LARGE"] = result["LARGE"]
             self._render()
 
         def _on_error(_exc):

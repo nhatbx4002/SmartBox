@@ -8,7 +8,7 @@ from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
 
-from screens.base import BaseController
+from screens.base import BaseController, run_in_thread
 from services.api_client import ApiError
 
 
@@ -143,29 +143,26 @@ class OtpController(BaseController):
             return
 
         self._set_confirm_loading(True)
-        try:
-            rental, compartment = self.api_client.verify_pin(self.code, "deposit")
-        except ApiError as error:
-            self._set_confirm_loading(False)
-            self.show_error_dialog(
-                message=error.message or "Mã không đúng, vui lòng thử lại",
-                title="XÁC THỰC THẤT BẠI",
-                on_retry=self._retry,
-            )
-            return
-        except Exception as error:
-            self._set_confirm_loading(False)
-            self.show_error_dialog(
-                message=str(error) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
-                title="LỖI KẾT NỐI",
-                on_retry=self._retry,
-            )
-            return
+        code = self.code
 
-        self.state.mode = "deposit"
-        self.state.rental_data = rental
-        self.state.compartment_data = compartment
-        self.navigate("/locker-open")
+        def _fetch():
+            return self.api_client.verify_pin(code, "deposit")
+
+        def _on_done(result):
+            rental, compartment = result
+            self.state.mode = "deposit"
+            self.state.rental_data = rental
+            self.state.compartment_data = compartment
+            self.navigate("/locker-open")
+
+        def _on_error(exc):
+            self._set_confirm_loading(False)
+            if isinstance(exc, ApiError):
+                self.show_error_dialog(message=exc.message or "Mã không đúng, vui lòng thử lại", title="XÁC THỰC THẤT BẠI", on_retry=self._retry)
+            else:
+                self.show_error_dialog(message=str(exc) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.", title="LỖI KẾT NỐI", on_retry=self._retry)
+
+        run_in_thread(_fetch, _on_done, _on_error)
 
 
 class OtpPickupController(OtpController):
@@ -176,26 +173,23 @@ class OtpPickupController(OtpController):
             return
 
         self._set_confirm_loading(True)
-        try:
-            rental, compartment = self.api_client.verify_pin(self.code, "pickup")
-        except ApiError as error:
-            self._set_confirm_loading(False)
-            self.show_error_dialog(
-                message=error.message or "Mã không đúng, vui lòng thử lại",
-                title="XÁC THỰC THẤT BẠI",
-                on_retry=self._retry,
-            )
-            return
-        except Exception as error:
-            self._set_confirm_loading(False)
-            self.show_error_dialog(
-                message=str(error) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
-                title="LỖI KẾT NỐI",
-                on_retry=self._retry,
-            )
-            return
+        code = self.code
 
-        self.state.mode = "pickup"
-        self.state.rental_data = rental
-        self.state.compartment_data = compartment
-        self.navigate("/locker-open")
+        def _fetch():
+            return self.api_client.verify_pin(code, "pickup")
+
+        def _on_done(result):
+            rental, compartment = result
+            self.state.mode = "pickup"
+            self.state.rental_data = rental
+            self.state.compartment_data = compartment
+            self.navigate("/locker-open")
+
+        def _on_error(exc):
+            self._set_confirm_loading(False)
+            if isinstance(exc, ApiError):
+                self.show_error_dialog(message=exc.message or "Mã không đúng, vui lòng thử lại", title="XÁC THỰC THẤT BẠI", on_retry=self._retry)
+            else:
+                self.show_error_dialog(message=str(exc) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.", title="LỖI KẾT NỐI", on_retry=self._retry)
+
+        run_in_thread(_fetch, _on_done, _on_error)

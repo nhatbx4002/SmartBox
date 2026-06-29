@@ -5,7 +5,7 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 
-from screens.base import BaseController
+from screens.base import BaseController, run_in_thread
 from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.buttons import PrimaryButton
 from screens.components.header_bar import HeaderBar
@@ -178,23 +178,24 @@ class QRScanController(BaseController):
         self.status_label.setText("Đang xác minh mã QR...")
         print(f"[qr_scan] verifying token len={len(token)}")
 
-        try:
-            rental, compartment = self.api_client.verify_qr(token)
-        except ApiError as error:
-            print(f"[qr_scan] verify failed: {error.message}")
-            self._show_scan_error(error.message)
-            return
-        except Exception as error:
-            print(f"[qr_scan] verify failed: {error}")
-            self._show_scan_error(str(error) or "Không thể xác minh mã QR. Vui lòng thử lại.")
-            return
+        def _fetch():
+            return self.api_client.verify_qr(token)
 
-        print("[qr_scan] verified OK -> /locker-open")
-        self.scanner.stop()
-        self.state.mode = "pickup"
-        self.state.rental_data = rental
-        self.state.compartment_data = compartment
-        self.navigate("/locker-open")
+        def _on_done(result):
+            rental, compartment = result
+            print("[qr_scan] verified OK -> /locker-open")
+            self.scanner.stop()
+            self.state.mode = "pickup"
+            self.state.rental_data = rental
+            self.state.compartment_data = compartment
+            self.navigate("/locker-open")
+
+        def _on_error(exc):
+            msg = exc.message if isinstance(exc, ApiError) else str(exc)
+            print(f"[qr_scan] verify failed: {msg}")
+            self._show_scan_error(msg or "Không thể xác minh mã QR. Vui lòng thử lại.")
+
+        run_in_thread(_fetch, _on_done, _on_error)
 
     def _show_camera_error(self, message: str) -> None:
         self.timer.stop()
