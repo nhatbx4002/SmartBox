@@ -40,7 +40,7 @@ class QRScanController(BaseController):
         root.setStyleSheet(root_style())
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         header = HeaderBar(
@@ -52,8 +52,10 @@ class QRScanController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 24, 24, 0)
-        body.setSpacing(12)
+        body.setContentsMargins(24, 0, 24, 0)
+        body.setSpacing(16)
+
+        body.addStretch(1)
 
         preview_frame = QFrame(root)
         preview_frame.setFixedSize(672, 480)

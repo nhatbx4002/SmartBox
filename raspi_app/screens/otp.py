@@ -9,6 +9,7 @@ from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
 
 from screens.base import BaseController
+from services.api_client import ApiError
 
 
 class OtpController(BaseController):
@@ -46,8 +47,10 @@ class OtpController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(40, 48, 40, 0)
+        body.setContentsMargins(40, 0, 40, 0)
         body.setSpacing(24)
+
+        body.addStretch(1)
 
         instruction = QLabel("Vui lòng nhập mã xác thực", root)
         instruction.setAlignment(Qt.AlignCenter)
@@ -88,38 +91,106 @@ class OtpController(BaseController):
         return root
 
     def on_enter(self, data: dict | None = None) -> None:
+        self.hide_error_dialog()
         self.code = ""
         self._render_code()
+        self._set_confirm_loading(False)
 
     def _append_digit(self, digit: str) -> None:
         if len(self.code) < 6:
             self.code += digit
             self._render_code()
+        self._enable_confirm()
 
     def _backspace(self) -> None:
         self.code = self.code[:-1]
         self._render_code()
+        self._enable_confirm()
 
     def _clear(self) -> None:
         self.code = ""
         self._render_code()
+        self._enable_confirm()
 
     def _render_code(self) -> None:
         visible = self.code + "-" * (6 - len(self.code))
         self.code_label.setText(visible)
 
-    def _confirm(self) -> None:
+    def _enable_confirm(self) -> None:
+        btn = self.optional_child("btnConfirm", QPushButton)
+        if btn:
+            btn.setEnabled(len(self.code) == 6)
 
-        if len(self.code) < 4:
+    def _set_confirm_loading(self, loading: bool) -> None:
+        btn = self.optional_child("btnConfirm", QPushButton)
+        if btn:
+            btn.setEnabled(not loading)
+            btn.setText("ĐANG XỬ LÝ..." if loading else "XÁC NHẬN")
+
+    def _retry(self) -> None:
+        self.hide_error_dialog()
+        self.code = ""
+        self._render_code()
+        self._set_confirm_loading(False)
+
+    def _confirm(self) -> None:
+        if len(self.code) != 6:
             return
-        self.navigate("/payment")
+
+        self._set_confirm_loading(True)
+        try:
+            rental, compartment = self.api_client.verify_pin(self.code, "deposit")
+        except ApiError as error:
+            self._set_confirm_loading(False)
+            self.show_error_dialog(
+                message=error.message or "Mã không đúng, vui lòng thử lại",
+                title="XÁC THỰC THẤT BẠI",
+                on_retry=self._retry,
+            )
+            return
+        except Exception as error:
+            self._set_confirm_loading(False)
+            self.show_error_dialog(
+                message=str(error) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
+                title="LỖI KẾT NỐI",
+                on_retry=self._retry,
+            )
+            return
+
+        self.state.mode = "deposit"
+        self.state.rental_data = rental
+        self.state.compartment_data = compartment
+        self.navigate("/locker-open")
 
 
 class OtpPickupController(OtpController):
     route = "/otp-pickup"
 
     def _confirm(self) -> None:
-        # TODO: nối lại API verify OTP pickup nếu đang dùng.
-        if len(self.code) < 4:
+        if len(self.code) != 6:
             return
+
+        self._set_confirm_loading(True)
+        try:
+            rental, compartment = self.api_client.verify_pin(self.code, "pickup")
+        except ApiError as error:
+            self._set_confirm_loading(False)
+            self.show_error_dialog(
+                message=error.message or "Mã không đúng, vui lòng thử lại",
+                title="XÁC THỰC THẤT BẠI",
+                on_retry=self._retry,
+            )
+            return
+        except Exception as error:
+            self._set_confirm_loading(False)
+            self.show_error_dialog(
+                message=str(error) or "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
+                title="LỖI KẾT NỐI",
+                on_retry=self._retry,
+            )
+            return
+
+        self.state.mode = "pickup"
+        self.state.rental_data = rental
+        self.state.compartment_data = compartment
         self.navigate("/locker-open")
