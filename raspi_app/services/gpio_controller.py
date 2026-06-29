@@ -11,7 +11,7 @@ except ImportError:
 
 
 class GpioController:
-    """Mock-safe GPIO facade for local kiosk development."""
+    """GPIO facade for MCP23017 I2C hardware control."""
 
     _IODIRA = 0x00
     _IODIRB = 0x01
@@ -22,8 +22,7 @@ class GpioController:
     _OLATA = 0x14
     _OLATB = 0x15
 
-    def __init__(self, mock: bool = False, bus: int | None = None, address: int | None = None):
-        self.mock = mock
+    def __init__(self, bus: int | None = None, address: int | None = None):
         self.bus = bus
         self.address = address
         self.lock_state: dict[str, str] = {}
@@ -101,7 +100,7 @@ class GpioController:
                         self.pin_map[key] = pin
                         self.pin_target_map[key] = (bus_number, address, pin)
 
-                if not self.mock and SMBus is not None:
+                if SMBus is not None:
                     try:
                         with SMBus(bus_number) as bus:
                             self._configure_output(bus, address, pin)
@@ -133,11 +132,6 @@ class GpioController:
             self._mcp_device_registry[str(device_id)] = (int(device["bus"]), int(device["address"]))
 
     def unlock(self, compartment_id: str, duration: int = 3) -> bool:
-        if self.mock:
-            self.lock_state[compartment_id] = "UNLOCKED"
-            print(f"[GPIO MOCK] unlock {compartment_id}")
-            return True
-
         if SMBus is None:
             print("[GPIO ERROR] smbus2 is not installed")
             return False
@@ -163,11 +157,6 @@ class GpioController:
             return False
 
     def lock(self, compartment_id: str) -> bool:
-        if self.mock:
-            self.lock_state[compartment_id] = "LOCKED"
-            print(f"[GPIO MOCK] lock {compartment_id}")
-            return True
-
         if SMBus is None:
             print("[GPIO ERROR] smbus2 is not installed")
             return False
@@ -184,9 +173,6 @@ class GpioController:
             return False
 
     def get_door_status(self, compartment_id: str) -> str:
-        if self.mock:
-            return "CLOSED"
-
         if SMBus is None:
             print("[GPIO ERROR] smbus2 is not installed")
             return "UNKNOWN"
@@ -197,7 +183,7 @@ class GpioController:
                 self._configure_input_pullup(bus, address, pin)
                 _iodir_register, _pullup_register, gpio_register, bit = self._input_registers_for_pin(pin)
                 value = bus.read_byte_data(address, gpio_register)
-                return "CLOSED" if value & (1 << bit) else "OPEN"
+                return "CLOSED" if (value >> bit) & 1 else "OPEN"
         except Exception as error:
             print(f"[GPIO ERROR] get door status failed: {error}")
             return "UNKNOWN"
@@ -254,13 +240,6 @@ class GpioController:
             return "dev"
 
     def _scan_i2c_bus(self, bus: int = 1) -> list[int]:
-        if self.mock:
-            provision = self._config.get("provision", {})
-            mock_addresses = provision.get("mock_mcp_addresses", [])
-            if mock_addresses:
-                return [int(address) for address in mock_addresses]
-            return [int(device["address"]) for device in self._config.get("mcp_devices", []) if device.get("address") is not None]
-
         if SMBus is None:
             print("[GPIO ERROR] smbus2 is not installed")
             return []

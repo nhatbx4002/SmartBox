@@ -21,7 +21,12 @@ class RentSizeController(BaseController):
         super().__init__(app, self.route, widget=widget)
         self.card_small = self.child("cardSize1", QWidget)
         self.card_large = self.child("cardSize2", QWidget)
+        self.avail_small = self.child("cardSize1_avail", QLabel)
+        self.avail_large = self.child("cardSize2_avail", QLabel)
         self.continue_button = self.child("btnContinue", QPushButton)
+
+        # None = chưa biết (đang tải / lỗi mạng), int = số tủ trống
+        self.availability: dict[str, int | None] = {"SMALL": None, "LARGE": None}
 
         self.error_banner = InlineError(self.widget)
         self.error_banner.setGeometry(40, 1040, 640, 54)
@@ -49,8 +54,8 @@ class RentSizeController(BaseController):
         layout.addWidget(header)
         # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
-        body.setContentsMargins(24, 32, 24, 32)
-        body.setSpacing(20)
+        body.setContentsMargins(24, 24, 24, 24)
+        body.setSpacing(16)
 
         subtitle = QLabel("Chọn kích thước phù hợp với đồ cần gửi")
         subtitle.setAlignment(Qt.AlignCenter)
@@ -74,6 +79,8 @@ class RentSizeController(BaseController):
         body.addWidget(card1)
         body.addWidget(card2)
 
+        body.addStretch(1)
+
         btn_continue = PrimaryButton(
             "TIẾP TỤC",
             object_name="btnContinue",
@@ -88,45 +95,47 @@ class RentSizeController(BaseController):
     def _size_card(self, obj_name: str, label: str, icon: str, desc: str) -> QFrame:
         card = QFrame()
         card.setObjectName(obj_name)
-        card.setFixedHeight(360)
+        card.setFixedHeight(188)
         card.setCursor(Qt.PointingHandCursor)
-        card.setStyleSheet(
-            f"QFrame#{obj_name} {{"
-            f"  background-color: #1C1B1B; border: 3px solid #2A2A2A; border-radius: 28px;"
-            f"}}"
-            f"QFrame#{obj_name}:hover {{ border: 3px solid #FF6600; }}"
-            f"QLabel {{ background: transparent; }}"
-        )
+        card.setStyleSheet(self._card_css(obj_name, "normal"))
 
         c_layout = QHBoxLayout(card)
-        c_layout.setContentsMargins(40, 28, 40, 28)
-        c_layout.setSpacing(28)
+        c_layout.setContentsMargins(36, 24, 36, 24)
+        c_layout.setSpacing(24)
 
         icon_lbl = QLabel(icon, card)
-        icon_lbl.setFixedSize(104, 104)
+        icon_lbl.setFixedSize(88, 88)
         icon_lbl.setAlignment(Qt.AlignCenter)
-        icon_lbl.setStyleSheet("border: none; font-size: 64px;")
+        icon_lbl.setStyleSheet("border: none; font-size: 56px;")
         c_layout.addWidget(icon_lbl)
 
         text_box = QVBoxLayout()
-        text_box.setSpacing(10)
+        text_box.setSpacing(8)
         text_box.setAlignment(Qt.AlignVCenter)
 
         title_lbl = QLabel(label, card)
         title_lbl.setStyleSheet(
             "border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 30px; font-weight: 900;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 28px; font-weight: 900;"
         )
 
         desc_lbl = QLabel(desc, card)
         desc_lbl.setWordWrap(True)
         desc_lbl.setStyleSheet(
             "border: none; color: #999;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 19px; font-weight: 500;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;"
+        )
+
+        avail_lbl = QLabel("Đang kiểm tra...", card)
+        avail_lbl.setObjectName(f"{obj_name}_avail")
+        avail_lbl.setStyleSheet(
+            "border: none; color: #888;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 17px; font-weight: 700;"
         )
 
         text_box.addWidget(title_lbl)
         text_box.addWidget(desc_lbl)
+        text_box.addWidget(avail_lbl)
         c_layout.addLayout(text_box)
         c_layout.addStretch()
 
@@ -134,62 +143,108 @@ class RentSizeController(BaseController):
 
     def on_enter(self, data: dict | None = None) -> None:
         self.error_banner.clear()
-        reset = data.get("reset", False) if data else False
-        if reset:
-            self.state.selected_size = None
-            self.state.selected_plan = None
-            self.state.selected_plan_group = None
-            self.state.available_plans = []
-            self.state.phone = None
-            self.state.payment_method = None
-            self.state.rental_data = None
-            self.state.compartment_data = None
-        self._apply_selection(self.state.selected_size)
+        # Mỗi lần vào trang đều bỏ lựa chọn cũ để bắt buộc chọn lại
+        self.state.selected_size = None
+        self.state.selected_plan = None
+        self.state.selected_plan_group = None
+        self.state.available_plans = []
+        self.state.phone = None
+        self.state.payment_method = None
+        self.state.rental_data = None
+        self.state.compartment_data = None
 
-    def _select_size(self, size: str) -> None:
-        self.error_banner.clear()
-        self.continue_button.setEnabled(False)
-        self._apply_selection(size)
+        self.availability = {"SMALL": None, "LARGE": None}
+        self.avail_small.setText("Đang kiểm tra...")
+        self.avail_large.setText("Đang kiểm tra...")
+        self._render()
+        self._load_availability()
 
+    def _load_availability(self) -> None:
         def _check():
-            return self.api_client.check_availability(size)
+            return (
+                self.api_client.check_availability("SMALL"),
+                self.api_client.check_availability("LARGE"),
+            )
 
         def _on_done(result):
-            if not result.get("available"):
-                size_label = "Tủ nhỏ" if size == "SMALL" else "Tủ lớn"
-                self.error_banner.show_error(f"Hiện không còn ngăn trống cho {size_label}")
-                return
-            self.state.selected_size = size
-            self.state.selected_plan = None
-            self.state.selected_plan_group = None
-            self.state.available_plans = []
-            self.state.phone = None
-            self.state.payment_method = None
-            self.state.rental_data = None
-            self.state.compartment_data = None
-            self.continue_button.setEnabled(True)
+            small, large = result
+            self.availability["SMALL"] = small.get("count", 0) if small.get("available") else 0
+            self.availability["LARGE"] = large.get("count", 0) if large.get("available") else 0
+            self._render()
 
         def _on_error(_exc):
-            # Không có mạng → cho phép tiếp tục, lỗi sẽ hiện ở bước sau
-            self.state.selected_size = size
-            self.continue_button.setEnabled(True)
+            # Lỗi mạng → coi như chưa biết, cho phép chọn; lỗi thật sẽ hiện ở bước sau
+            self.availability = {"SMALL": None, "LARGE": None}
+            self.avail_small.setText("")
+            self.avail_large.setText("")
+            self._render()
 
         run_in_thread(_check, _on_done, _on_error)
 
-    def _apply_selection(self, size: str | None) -> None:
-        self._style_card(self.card_small, "cardSize1", size == "SMALL")
-        self._style_card(self.card_large, "cardSize2", size == "LARGE")
-        self.continue_button.setEnabled(size in {"SMALL", "LARGE"})
+    def _select_size(self, size: str) -> None:
+        if self._is_sold_out(size):
+            return
+        self.error_banner.clear()
+        self.state.selected_size = size
+        self.state.selected_plan = None
+        self.state.selected_plan_group = None
+        self.state.available_plans = []
+        self.state.phone = None
+        self.state.payment_method = None
+        self.state.rental_data = None
+        self.state.compartment_data = None
+        self._render()
 
-    def _style_card(self, card: QWidget, name: str, selected: bool) -> None:
-        if selected:
-            card.setStyleSheet(
+    def _is_sold_out(self, size: str) -> bool:
+        count = self.availability.get(size)
+        return count is not None and count <= 0
+
+    def _render(self) -> None:
+        self._render_card("SMALL", self.card_small, "cardSize1", self.avail_small)
+        self._render_card("LARGE", self.card_large, "cardSize2", self.avail_large)
+
+        selected = self.state.selected_size
+        self.continue_button.setEnabled(
+            selected in {"SMALL", "LARGE"} and not self._is_sold_out(selected)
+        )
+
+    def _render_card(self, size: str, card: QWidget, name: str, avail_lbl: QLabel) -> None:
+        count = self.availability.get(size)
+
+        if count is None:
+            avail_color = "#888"
+        elif count <= 0:
+            avail_lbl.setText("Hết tủ")
+            avail_color = "#EF4444"
+        else:
+            avail_lbl.setText(f"Còn {count} tủ trống")
+            avail_color = "#00C853"
+        avail_lbl.setStyleSheet(
+            f"border: none; color: {avail_color};"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 17px; font-weight: 700;"
+        )
+
+        if self._is_sold_out(size):
+            state = "disabled"
+        elif self.state.selected_size == size:
+            state = "selected"
+        else:
+            state = "normal"
+        card.setStyleSheet(self._card_css(name, state))
+        card.setCursor(Qt.ForbiddenCursor if state == "disabled" else Qt.PointingHandCursor)
+
+    def _card_css(self, name: str, state: str) -> str:
+        if state == "selected":
+            return (
                 f"QFrame#{name} {{ border: 4px solid #FF6600; background-color: #1C1400; border-radius: 28px; }}"
                 f"QLabel {{ background: transparent; }}"
             )
-        else:
-            card.setStyleSheet(
-                f"QFrame#{name} {{ background-color: #1C1B1B; border: 3px solid #2A2A2A; border-radius: 28px; }}"
-                f"QFrame#{name}:hover {{ border: 3px solid #FF6600; }}"
-                f"QLabel {{ background: transparent; }}"
+        if state == "disabled":
+            return (
+                f"QFrame#{name} {{ background-color: #151515; border: 3px solid #2A2A2A; border-radius: 28px; }}"
+                f"QLabel {{ background: transparent; color: #555; }}"
             )
+        return (
+            f"QFrame#{name} {{ background-color: #1C1B1B; border: 3px solid #2A2A2A; border-radius: 28px; }}"
+            f"QLabel {{ background: transparent; }}"
+        )

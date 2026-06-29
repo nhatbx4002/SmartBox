@@ -253,14 +253,24 @@ class _Worker(QRunnable):
             self._signals.error.emit(exc)
 
 
+_run_in_thread_registry: set[_WorkerSignals] = set()
+
+
 def run_in_thread(
     fn: Callable,
     on_done: Callable[[Any], None],
     on_error: Callable[[Exception], None],
 ) -> None:
     signals = _WorkerSignals()
+    _run_in_thread_registry.add(signals)
     signals.done.connect(on_done)
     signals.error.connect(on_error)
+
+    def _release(*_):
+        _run_in_thread_registry.discard(signals)
+
+    signals.done.connect(_release)
+    signals.error.connect(_release)
     QThreadPool.globalInstance().start(_Worker(fn, signals))
 
 

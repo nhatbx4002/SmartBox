@@ -6,7 +6,7 @@ from services.gpio_controller import GpioController
 
 class GpioControllerProvisioningTests(unittest.TestCase):
     def test_discover_hardware_returns_serial_and_scanned_mcp_devices_only(self):
-        gpio = GpioController(mock=True)
+        gpio = GpioController()
 
         with patch.object(gpio, "_read_cpuinfo_serial", return_value="RPI-123"), patch.object(
             gpio, "_read_firmware_version", return_value="1.2.3"
@@ -48,7 +48,7 @@ class GpioControllerProvisioningTests(unittest.TestCase):
             },
         )()
 
-        gpio = GpioController(mock=True)
+        gpio = GpioController()
         gpio.load_from_backend(api_client, "cabinet-a")
 
         self.assertEqual(gpio.pin_map, {"A1": 0, "B1": 8})
@@ -78,7 +78,7 @@ class GpioControllerProvisioningTests(unittest.TestCase):
             },
         )()
 
-        gpio = GpioController(mock=True)
+        gpio = GpioController()
         gpio.load_from_backend(api_client, "cabinet-a")
 
         self.assertEqual(gpio.pin_map, {"A1": 0, "compartment-db-id": 0})
@@ -107,7 +107,7 @@ class GpioControllerProvisioningTests(unittest.TestCase):
             },
         )()
 
-        gpio = GpioController(mock=True, bus=1, address=0x20)
+        gpio = GpioController(bus=1, address=0x20)
         gpio.load_from_backend(api_client, "cabinet-a")
 
         self.assertEqual(gpio.pin_target_map["A1"], (3, 0x21, 12))
@@ -139,7 +139,7 @@ class GpioControllerMcp23017Tests(unittest.TestCase):
         FakeSMBus.writes = []
 
     def test_unlock_sets_pin_output_then_pulses_olat_high_and_low(self):
-        gpio = GpioController(mock=False)
+        gpio = GpioController()
         gpio.pin_map = {"A1": 0}
         gpio.pin_target_map = {"A1": (1, 0x21, 0)}
 
@@ -156,7 +156,7 @@ class GpioControllerMcp23017Tests(unittest.TestCase):
         )
 
     def test_unlock_uses_port_b_registers_for_pins_8_to_15(self):
-        gpio = GpioController(mock=False)
+        gpio = GpioController()
         gpio.pin_map = {"B1": 8}
         gpio.pin_target_map = {"B1": (1, 0x21, 8)}
 
@@ -173,7 +173,7 @@ class GpioControllerMcp23017Tests(unittest.TestCase):
         )
 
     def test_reload_config_builds_sensor_pin_map(self):
-        gpio = GpioController(mock=True)
+        gpio = GpioController()
         gpio._cache_mcp_devices([{"id": "mcp-sensor", "bus": 1, "address": 0x20}])
 
         gpio.reload_config(
@@ -201,7 +201,7 @@ class GpioControllerMcp23017Tests(unittest.TestCase):
                     return 0x00
                 return 0x00
 
-        gpio = GpioController(mock=False)
+        gpio = GpioController()
         gpio.sensor_target_map = {"A1": (1, 0x20, 12)}
 
         with patch("services.gpio_controller.SMBus", FakeSensorSMBus):
@@ -226,7 +226,7 @@ class GpioControllerMcp23017Tests(unittest.TestCase):
                     return 0x10
                 return 0x00
 
-        gpio = GpioController(mock=False)
+        gpio = GpioController()
         gpio.sensor_target_map = {"A1": (1, 0x20, 12)}
 
         with patch("services.gpio_controller.SMBus", FakeSensorSMBus):

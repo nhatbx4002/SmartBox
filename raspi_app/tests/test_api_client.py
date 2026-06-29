@@ -17,7 +17,7 @@ class ApiClientProvisioningTests(unittest.TestCase):
         }
         post.return_value = response
 
-        client = ApiClient(base_url="http://localhost:3001", timeout=30, mock=False)
+        client = ApiClient(base_url="http://localhost:3001", timeout=30, )
         devices = [{"bus": 1, "address": 32, "name": "MCP"}]
 
         data = client.start_pairing("RPI-001", devices)
@@ -42,7 +42,7 @@ class ApiClientProvisioningTests(unittest.TestCase):
         }
         get.return_value = response
 
-        client = ApiClient(base_url="http://localhost:3001", timeout=7, mock=False)
+        client = ApiClient(base_url="http://localhost:3001", timeout=7, )
         client.jwt_token = "cabinet-token"
         data = client.get_cabinet_config("cabinet-a")
 
@@ -77,7 +77,7 @@ class ApiClientProvisioningTests(unittest.TestCase):
         }
         post.return_value = response
 
-        client = ApiClient(base_url="http://localhost:3000", mock=False)
+        client = ApiClient(base_url="http://localhost:3000", )
         client.create_rental("0909123456", "SMALL", "single-1-day", "CASH", cabinet_id="cabinet-a")
 
         payload = post.call_args.kwargs["json"]
@@ -106,7 +106,7 @@ class ApiClientProvisioningTests(unittest.TestCase):
         }
         post.return_value = response
 
-        client = ApiClient(base_url="http://localhost:3000", mock=False)
+        client = ApiClient(base_url="http://localhost:3000", )
         rental, compartment = client.verify_qr("qr-token")
 
         self.assertEqual(rental.id, "rental-qr-1")

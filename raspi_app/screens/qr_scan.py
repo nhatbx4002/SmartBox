@@ -11,6 +11,8 @@ from services.api_client import ApiError
 from services.config_loader import get_config_value
 from services.qr_camera import QrCameraScanner
 
+NO_DETECT_TIMEOUT_MS = 20000
+
 
 class QRScanController(BaseController):
     route = "/qr-scan"
@@ -33,6 +35,7 @@ class QRScanController(BaseController):
         self.last_token = ""
         self.frame_count = 0
         self.preview_label.setScaledContents(False)
+        self._detect_timeout_count = 0
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
@@ -52,13 +55,11 @@ class QRScanController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(24, 0, 24, 0)
-        body.setSpacing(16)
-
-        body.addStretch(1)
+        body.setContentsMargins(24, 8, 24, 0)
+        body.setSpacing(8)
 
         preview_frame = QFrame(root)
-        preview_frame.setFixedSize(672, 480)
+        preview_frame.setMinimumHeight(600)
         preview_frame.setStyleSheet("QFrame { background-color: #111; border: 2px solid #333; border-radius: 20px; }")
         p_layout = QVBoxLayout(preview_frame)
         p_layout.setAlignment(Qt.AlignCenter)
@@ -67,7 +68,7 @@ class QRScanController(BaseController):
         self.lbl_preview.setObjectName("cameraPreview")
         self.lbl_preview.setAlignment(Qt.AlignCenter)
         self.lbl_preview.setStyleSheet("background: transparent; border: none;")
-        self.lbl_preview.setFixedSize(640, 440)
+        self.lbl_preview.setMinimumSize(640, 560)
         p_layout.addWidget(self.lbl_preview)
         body.addWidget(preview_frame, alignment=Qt.AlignCenter)
 
@@ -102,6 +103,7 @@ class QRScanController(BaseController):
         self.processing = False
         self.last_token = ""
         self.frame_count = 0
+        self._detect_timeout_count = 0
         self.preview_label.clear()
         self.retry_button.hide()
         self.status_label.setText("Đang khởi động camera...")
@@ -127,6 +129,7 @@ class QRScanController(BaseController):
         self.scanner.stop()
         self.processing = False
         self.last_token = ""
+        self._detect_timeout_count = 0
         self._start_camera()
 
     def _poll_camera(self) -> None:
@@ -151,12 +154,19 @@ class QRScanController(BaseController):
             self.preview_label.repaint()
 
             if frame.detected and not frame.token:
+                self._detect_timeout_count = 0
                 print("[qr_scan] QR DETECTED but NOT DECODED (move closer / steady / lighting)")
                 self.status_label.setText("Đã thấy mã QR — giữ yên")
                 self.hint_label.setText("Giữ mã QR gần hơn và đảm bảo đủ sáng")
             elif not frame.detected and not self.processing:
-                self.status_label.setText("Sẵn sàng quét mã QR")
-                self.hint_label.setText("Đặt mã QR vào giữa khung quét")
+                self._detect_timeout_count += 1
+                timeout_ms = self._detect_timeout_count * self.scan_interval_ms
+                if timeout_ms >= NO_DETECT_TIMEOUT_MS and self.retry_button.isHidden():
+                    self.retry_button.show()
+                    self.hint_label.setText("Không tìm thấy mã QR — thử lại hoặc chọn phương thức khác")
+                elif timeout_ms < NO_DETECT_TIMEOUT_MS:
+                    self.status_label.setText("Sẵn sàng quét mã QR")
+                    self.hint_label.setText("Đặt mã QR vào giữa khung quét")
 
         if frame.token:
             print(f"[qr_scan] QR DECODED token='{frame.token}'")

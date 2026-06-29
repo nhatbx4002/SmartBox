@@ -62,9 +62,8 @@ class KioskApp(QWidget):
             self.api_client = ApiClient(
                 base_url=get_config_value(self.config, "api.base_url", "http://localhost:3001"),
                 timeout=get_config_value(self.config, "api.timeout", 10),
-                mock=False,
             )
-            self.gpio_controller = GpioController(mock=False)
+            self.gpio_controller = GpioController()
             self.mqtt_client = MqttClient(self.config, cabinet_id="demo")
             camera_stream_url = str(get_config_value(self.config, "camera.stream_url", "") or "").strip()
             camera_source = (
@@ -96,9 +95,9 @@ class KioskApp(QWidget):
             self.startup_error = error
 
             if not hasattr(self, "api_client"):
-                self.api_client = ApiClient(mock=False)
+                self.api_client = ApiClient()
             if not hasattr(self, "gpio_controller"):
-                self.gpio_controller = GpioController(mock=False)
+                self.gpio_controller = GpioController()
             if not hasattr(self, "mqtt_client"):
                 self.mqtt_client = MqttClient(self.config, cabinet_id="demo")
             if not hasattr(self, "network_monitor"):
