@@ -153,10 +153,15 @@ class RentSizeController(BaseController):
         self.state.rental_data = None
         self.state.compartment_data = None
 
-        self.availability = {"SMALL": None, "LARGE": None}
-        self.avail_small.setText("Đang kiểm tra...")
-        self.avail_large.setText("Đang kiểm tra...")
-        self._render()
+        cached = self.state.cached_availability
+        if cached:
+            self.availability = dict(cached)
+            self._render()
+        else:
+            self.availability = {"SMALL": None, "LARGE": None}
+            self.avail_small.setText("Đang kiểm tra...")
+            self.avail_large.setText("Đang kiểm tra...")
+            self._render()
         self._load_availability()
 
     def _load_availability(self) -> None:
@@ -171,6 +176,7 @@ class RentSizeController(BaseController):
         def _on_done(result):
             self.availability["SMALL"] = result["SMALL"]
             self.availability["LARGE"] = result["LARGE"]
+            self.state.cached_availability = dict(result)
             self._render()
 
         def _on_error(_exc):

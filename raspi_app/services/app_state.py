@@ -52,6 +52,7 @@ class AppState:
     payment_qr_string: Optional[str] = None
     payment_amount: Optional[int] = None
     payment_expires_at: Optional[str] = None   # ISO string or timestamp
+    cached_availability: Optional[dict] = None  # {"SMALL": int, "LARGE": int}
 
     def reset_rent_flow(self) -> None:
         self.selected_size = None

@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.footer_bar import FooterBar
 
-from screens.base import BaseController
+from screens.base import BaseController, run_in_thread
 
 
 class HomeController(BaseController):
@@ -126,6 +126,21 @@ class HomeController(BaseController):
     def on_enter(self, data: dict | None = None) -> None:
         self._footer_bar.set_status(self.network_status)
         self._check_not_configured()
+        self._prefetch_availability()
+
+    def _prefetch_availability(self) -> None:
+        def _fetch():
+            result = self.api_client.check_availability(None)
+            items = result.get("items", [])
+            return {
+                "SMALL": sum(1 for i in items if i.get("size") == "SMALL"),
+                "LARGE": sum(1 for i in items if i.get("size") == "LARGE"),
+            }
+
+        def _on_done(result):
+            self.state.cached_availability = result
+
+        run_in_thread(_fetch, _on_done, lambda _: None)
 
     def on_exit(self) -> None:
         self._hide_overlay()
