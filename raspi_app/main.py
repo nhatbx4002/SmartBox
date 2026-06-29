@@ -301,7 +301,13 @@ class KioskApp(QWidget):
     def _start_paired_runtime(self) -> None:
         self.api_client.jwt_token = self.jwt_token
         self.gpio_controller._config = self.config
-        self.gpio_controller.load_from_backend(self.api_client, self.cabinet_id)
+        # ponytail: run in thread — this is a blocking HTTP call on startup
+        from screens.base import run_in_thread
+        run_in_thread(
+            lambda: self.gpio_controller.load_from_backend(self.api_client, self.cabinet_id),
+            lambda _: None,
+            lambda e: print(f"[GPIO] load_from_backend failed: {e}"),
+        )
 
         if hasattr(self, "mqtt_client") and self.mqtt_client:
             try:
@@ -342,17 +348,21 @@ class KioskApp(QWidget):
         if hasattr(self, "mqtt_client") and self.mqtt_client.connected:
             return
 
-        print(f"[CONFIG POLL] cabinet_id={self.cabinet_id} jwt={self.api_client.jwt_token[:20] if self.api_client.jwt_token else 'NONE'}...")
-        try:
+        from screens.base import run_in_thread
+
+        def _fetch():
+            print(f"[CONFIG POLL] cabinet_id={self.cabinet_id} jwt={self.api_client.jwt_token[:20] if self.api_client.jwt_token else 'NONE'}...")
             current_version = int(self.config.get("config_version", 0) or 0) or None
-            result = self.api_client.get_cabinet_config(self.cabinet_id, version=current_version)
+            return self.api_client.get_cabinet_config(self.cabinet_id, version=current_version)
+
+        def _on_done(result):
             self._on_config_reload(
                 result.get("configVersion"),
                 result.get("compartments", []),
                 cabinet_status=result.get("status"),
             )
-        except Exception as error:
-            print(f"[CONFIG POLL] failed: {error}")
+
+        run_in_thread(_fetch, _on_done, lambda e: print(f"[CONFIG POLL] failed: {e}"))
 
     def _reload_config_from_backend(self) -> bool:
         try:
