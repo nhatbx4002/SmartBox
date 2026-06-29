@@ -95,42 +95,42 @@ class RentSizeController(BaseController):
     def _size_card(self, obj_name: str, label: str, icon: str, desc: str) -> QFrame:
         card = QFrame()
         card.setObjectName(obj_name)
-        card.setFixedHeight(188)
+        card.setFixedHeight(260)
         card.setCursor(Qt.PointingHandCursor)
         card.setStyleSheet(self._card_css(obj_name, "normal"))
 
         c_layout = QHBoxLayout(card)
-        c_layout.setContentsMargins(36, 24, 36, 24)
-        c_layout.setSpacing(24)
+        c_layout.setContentsMargins(36, 28, 36, 28)
+        c_layout.setSpacing(28)
 
         icon_lbl = QLabel(icon, card)
-        icon_lbl.setFixedSize(88, 88)
+        icon_lbl.setFixedSize(100, 100)
         icon_lbl.setAlignment(Qt.AlignCenter)
-        icon_lbl.setStyleSheet("border: none; font-size: 56px;")
+        icon_lbl.setStyleSheet("border: none; font-size: 64px;")
         c_layout.addWidget(icon_lbl)
 
         text_box = QVBoxLayout()
-        text_box.setSpacing(8)
+        text_box.setSpacing(10)
         text_box.setAlignment(Qt.AlignVCenter)
 
         title_lbl = QLabel(label, card)
         title_lbl.setStyleSheet(
             "border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 28px; font-weight: 900;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 32px; font-weight: 900;"
         )
 
         desc_lbl = QLabel(desc, card)
         desc_lbl.setWordWrap(True)
         desc_lbl.setStyleSheet(
             "border: none; color: #999;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 500;"
         )
 
         avail_lbl = QLabel("Đang kiểm tra...", card)
         avail_lbl.setObjectName(f"{obj_name}_avail")
         avail_lbl.setStyleSheet(
             "border: none; color: #888;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 17px; font-weight: 700;"
+            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 700;"
         )
 
         text_box.addWidget(title_lbl)
