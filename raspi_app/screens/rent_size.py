@@ -95,7 +95,7 @@ class RentSizeController(BaseController):
     def _size_card(self, obj_name: str, label: str, icon: str, desc: str) -> QFrame:
         card = QFrame()
         card.setObjectName(obj_name)
-        card.setFixedHeight(260)
+        card.setFixedHeight(380)
         card.setCursor(Qt.PointingHandCursor)
         card.setStyleSheet(self._card_css(obj_name, "normal"))
 

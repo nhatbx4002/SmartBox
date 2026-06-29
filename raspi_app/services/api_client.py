@@ -17,9 +17,10 @@ class ApiClient:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.jwt_token: str | None = None
+        self._session = requests.Session()
 
     def verify_pin(self, code: str, mode: str | None) -> tuple[RentalData, CompartmentData]:
-        response = requests.post(
+        response = self._session.post(
             f"{self.base_url}/api/rentals/verify-pin",
             json={"code": code, "mode": mode},
             timeout=self.timeout,
@@ -28,7 +29,7 @@ class ApiClient:
         return self._rental_from_response(data), self._compartment_from_response(data)
 
     def verify_qr(self, token: str) -> tuple[RentalData, CompartmentData]:
-        response = requests.post(
+        response = self._session.post(
             f"{self.base_url}/api/rentals/verify-qr",
             json={"token": token},
             timeout=self.timeout,
@@ -37,7 +38,7 @@ class ApiClient:
         return self._rental_from_response(data), self._compartment_from_response(data)
 
     def get_plans(self, size: str | None) -> list[Plan]:
-        response = requests.get(f"{self.base_url}/api/lockers/plans", params={"size": size}, timeout=self.timeout)
+        response = self._session.get(f"{self.base_url}/api/lockers/plans", params={"size": size}, timeout=self.timeout)
         data = self._parse_response(response)
         return [
             Plan(
@@ -52,14 +53,14 @@ class ApiClient:
         ]
 
     def check_availability(self, size: str | None) -> dict:
-        response = requests.get(f"{self.base_url}/api/lockers/available", params={"size": size}, timeout=self.timeout)
+        response = self._session.get(f"{self.base_url}/api/lockers/available", params={"size": size}, timeout=self.timeout)
         data = self._parse_response(response)
         if isinstance(data, list):
             return {"available": len(data) > 0, "count": len(data), "size": size, "items": data}
         return data
 
     def start_pairing(self, hardwareSerial: str, discoveredMcpDevices: list[dict]) -> dict:
-        response = requests.post(
+        response = self._session.post(
             f"{self.base_url}/api/pair/start",
             json={
                 "hardwareSerial": hardwareSerial,
@@ -76,7 +77,7 @@ class ApiClient:
         url = f"{self.base_url}/api/cabinets/{cabinet_id}/config"
         headers = self._headers()
         print(f"[API] GET {url} (version={version}) headers={headers}")
-        response = requests.get(
+        response = self._session.get(
             url,
             headers=headers,
             params=params,
@@ -86,7 +87,7 @@ class ApiClient:
         return self._parse_response(response)
 
     def get_pairing_session(self, session_id: str) -> dict:
-        response = requests.get(f"{self.base_url}/api/pair/{session_id}", timeout=self.timeout)
+        response = self._session.get(f"{self.base_url}/api/pair/{session_id}", timeout=self.timeout)
         return self._parse_response(response)
 
     def create_rental(
@@ -97,7 +98,7 @@ class ApiClient:
         payment_method: str | None,
         cabinet_id: str | None = None,
     ) -> tuple[RentalData, CompartmentData]:
-        response = requests.post(
+        response = self._session.post(
             f"{self.base_url}/api/rentals",
             json={
                 "phone": phone,
@@ -112,7 +113,7 @@ class ApiClient:
         return self._rental_from_response(data), self._compartment_from_response(data)
 
     def create_payment(self, rental_id: str, source: str = "KIOSK") -> dict:
-        response = requests.post(
+        response = self._session.post(
             f"{self.base_url}/api/payments",
             json={"rentalId": rental_id, "source": source},
             headers=self._headers(),
@@ -121,7 +122,7 @@ class ApiClient:
         return self._parse_response(response)
 
     def get_payment_status(self, order_code: int) -> dict:
-        response = requests.get(
+        response = self._session.get(
             f"{self.base_url}/api/payments/payment-status",
             params={"orderCode": order_code},
             headers=self._headers(),
@@ -130,7 +131,7 @@ class ApiClient:
         return self._parse_response(response)
 
     def get_payment_result(self, order_code: int) -> dict:
-        response = requests.get(
+        response = self._session.get(
             f"{self.base_url}/api/payments/result/{order_code}",
             headers=self._headers(),
             timeout=self.timeout,
@@ -138,7 +139,7 @@ class ApiClient:
         return self._parse_response(response)
 
     def complete_rental(self, rental_id: str) -> None:
-        response = requests.post(
+        response = self._session.post(
             f"{self.base_url}/api/rentals/{rental_id}/complete",
             timeout=self.timeout,
         )
