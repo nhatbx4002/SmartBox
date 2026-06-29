@@ -80,10 +80,16 @@ class RentPhoneController(BaseController):
         i_layout.addWidget(self.line_input)
         body.addWidget(input_frame)
 
-        keypad = NumericKeypad(parent=root)
+        keypad = NumericKeypad(
+            parent=root,
+            button_width=200,
+            button_height=120,
+            h_spacing=18,
+            v_spacing=16,
+        )
         body.addWidget(keypad)
 
-        body.addStretch(1)
+        body.addSpacing(24)
 
         btn_confirm = PrimaryButton(
             "XÁC NHẬN",

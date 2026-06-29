@@ -87,7 +87,7 @@ class OtpController(BaseController):
         )
         body.addWidget(keypad)
 
-        body.addSpacing(100)
+        body.addSpacing(24)
 
         btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", parent=root, color="orange")
         body.addWidget(BottomActionBar(btn_confirm))

@@ -6,6 +6,8 @@ from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 
 from screens.base import BaseController
+from screens.components.bottom_action_bar import BottomActionBar
+from screens.components.buttons import PrimaryButton
 from screens.components.header_bar import HeaderBar
 from services.api_client import ApiError
 from services.config_loader import get_config_value
@@ -59,7 +61,7 @@ class QRScanController(BaseController):
         body.setSpacing(8)
 
         preview_frame = QFrame(root)
-        preview_frame.setMinimumHeight(600)
+        preview_frame.setMinimumHeight(780)
         preview_frame.setStyleSheet("QFrame { background-color: #111; border: 2px solid #333; border-radius: 20px; }")
         p_layout = QVBoxLayout(preview_frame)
         p_layout.setAlignment(Qt.AlignCenter)
@@ -68,7 +70,7 @@ class QRScanController(BaseController):
         self.lbl_preview.setObjectName("cameraPreview")
         self.lbl_preview.setAlignment(Qt.AlignCenter)
         self.lbl_preview.setStyleSheet("background: transparent; border: none;")
-        self.lbl_preview.setMinimumSize(640, 560)
+        self.lbl_preview.setMinimumSize(672, 720)
         p_layout.addWidget(self.lbl_preview)
         body.addWidget(preview_frame, alignment=Qt.AlignCenter)
 
@@ -84,15 +86,9 @@ class QRScanController(BaseController):
         self.lbl_hint.setStyleSheet("background: transparent; border: none; color: #888; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;")
         body.addWidget(self.lbl_hint)
 
-        self.btn_retry = QPushButton("THỬ LẠI")
-        self.btn_retry.setObjectName("btnRetry")
-        self.btn_retry.setFixedHeight(116)
-        self.btn_retry.setCursor(Qt.PointingHandCursor)
-        self.btn_retry.setStyleSheet(
-            "QPushButton { background-color: #FF6600; color: white; border: none; border-radius: 18px; font-size: 22px; font-weight: 800; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-        )
+        self.btn_retry = PrimaryButton("THỬ LẠI", object_name="btnRetry", color="orange")
         self.btn_retry.hide()
-        body.addWidget(self.btn_retry)
+        body.addWidget(BottomActionBar(self.btn_retry))
 
         body.addStretch()
         layout.addLayout(body)

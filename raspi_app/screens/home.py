@@ -159,12 +159,13 @@ class HomeController(BaseController):
             overlay_status = "Đang đợi cấu hình từ quản trị viên..."
 
         overlay = QWidget(self.widget)
-        overlay.setGeometry(self.widget.rect())
+        overlay_rect = self.widget.rect().adjusted(0, 0, 0, -48)
+        overlay.setGeometry(overlay_rect)
         overlay.setStyleSheet("background-color: rgba(10, 10, 10, 0.97);")
         overlay.setAttribute(Qt.WA_TransparentForMouseEvents, False)
 
-        overlay_width = self.widget.width()
-        overlay_height = self.widget.height()
+        overlay_width = overlay_rect.width()
+        overlay_height = overlay_rect.height()
 
         card_width = min(600, int(overlay_width * 0.86))
         card_height = min(420, int(overlay_height * 0.55))

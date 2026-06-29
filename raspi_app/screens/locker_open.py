@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
+from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.buttons import PrimaryButton
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 
@@ -34,7 +35,7 @@ class LockerOpenController(BaseController):
         root.setStyleSheet(root_style())
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(0, 0, 0, 48)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         header = QFrame(root)
@@ -107,9 +108,9 @@ class LockerOpenController(BaseController):
 
         body.addStretch()
 
-        self.finish = PrimaryButton("HOÀN THÀNH", object_name="btnFinish", parent=root, color="green", height=88, radius=18)
+        self.finish = PrimaryButton("HOÀN THÀNH", object_name="btnFinish", parent=root, color="green")
         self.finish.setEnabled(False)
-        body.addWidget(self.finish)
+        body.addWidget(BottomActionBar(self.finish))
 
         layout.addLayout(body)
         return root
