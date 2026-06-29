@@ -63,7 +63,7 @@ class HomeController(BaseController):
 
         cards = [
             ("SendCard",    "GỬI ĐỒ",   "#FF6600", "Gửi đồ vào tủ an toàn",          None),
-            ("ReceiveCard", "NHẬN ĐỒ",  "#1565C0", "Nhận đồ bằng mã PIN hoặc QR",    None),
+            ("ReceiveCard", "LẤY ĐỒ",  "#1565C0", "Nhận đồ bằng mã PIN hoặc QR",    None),
             ("RentCard",    "THUÊ TỦ",  "#2E7D32", "Thuê ngăn tủ theo nhu cầu",       None),
             ("SupportCard", "HỖ TRỢ",  "#1C1B1B", "Cần hỗ trợ? Liên hệ ngay",       "#3A3A3A"),
         ]

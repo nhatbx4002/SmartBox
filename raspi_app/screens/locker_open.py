@@ -186,7 +186,6 @@ class LockerOpenController(BaseController):
         if door_status == "CLOSED":
             self._update_door_status("Cửa Đang Đóng", "#00C853")
             self.finish_button.setEnabled(True)
-            self.door_poll_timer.stop()
         elif door_status == "OPEN":
             self._update_door_status("Cửa Đang Mở", "#FF6600")
             self.finish_button.setEnabled(False)

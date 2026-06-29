@@ -46,8 +46,8 @@ class OtpController(BaseController):
         layout.addWidget(header)
 
         body = QVBoxLayout()
-        body.setContentsMargins(40, 120, 40, 32)
-        body.setSpacing(28)
+        body.setContentsMargins(40, 48, 40, 0)
+        body.setSpacing(24)
 
         instruction = QLabel("Vui lòng nhập mã xác thực", root)
         instruction.setAlignment(Qt.AlignCenter)

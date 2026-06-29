@@ -1,3 +1,14 @@
+from datetime import datetime
+
+
+def format_expiry(iso_str: str) -> str:
+    try:
+        dt = datetime.fromisoformat(iso_str).astimezone()
+        return dt.strftime("%H:%M - %d/%m/%Y")
+    except (ValueError, TypeError):
+        return iso_str
+
+
 PLAN_GROUPS = {
     "ONCE": {"title": "Gói ngắn hạn", "subtitle": "Phù hợp gửi/lấy trong thời gian ngắn"},
     "DAILY": {"title": "Gói nhiều lượt mở", "subtitle": "Mở tủ nhiều lần trong nhiều ngày"},

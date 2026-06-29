@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget,
+    QFrame, QLabel, QVBoxLayout, QWidget,
 )
 
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
@@ -10,7 +10,7 @@ from screens.components.buttons import PrimaryButton
 from screens.components.bottom_action_bar import BottomActionBar
 
 from screens.base import BaseController
-from services.formatters import format_pin
+from services.formatters import format_expiry, format_pin
 
 
 class RentSuccessController(BaseController):
@@ -109,27 +109,19 @@ class RentSuccessController(BaseController):
 
         body.addStretch()
 
-        # Row nút hành động
-        btn_row_widget = QWidget(root)
-        btn_row = QHBoxLayout(btn_row_widget)
-        btn_row.setContentsMargins(0, 0, 0, 0)
-        btn_row.setSpacing(16)
+        # Col nút hành động
+        btn_col_widget = QWidget(root)
+        btn_col = QVBoxLayout(btn_col_widget)
+        btn_col.setContentsMargins(0, 0, 0, 0)
+        btn_col.setSpacing(16)
 
-        btn_open = PrimaryButton("MỞ NGAY", object_name="btnOpenNow", parent=btn_row_widget, color="green")
-        btn_row.addWidget(btn_open, stretch=1)
+        btn_open = PrimaryButton("MỞ NGAY", object_name="btnOpenNow", parent=btn_col_widget, color="green")
+        btn_col.addWidget(btn_open)
 
-        btn_later = QPushButton("DÙNG SAU")
-        btn_later.setObjectName("btnUseLater")
-        btn_later.setFixedHeight(116)
-        btn_later.setCursor(Qt.PointingHandCursor)
-        btn_later.setStyleSheet(
-            "QPushButton { background-color: #333; color: white; border: 2px solid #666;"
-            " border-radius: 24px; font-size: 26px; font-weight: 700;"
-            " font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-        )
-        btn_row.addWidget(btn_later, stretch=1)
+        btn_later = PrimaryButton("DÙNG SAU", object_name="btnUseLater", parent=btn_col_widget, color="orange")
+        btn_col.addWidget(btn_later)
 
-        body.addWidget(BottomActionBar(btn_row_widget))
+        body.addWidget(BottomActionBar(btn_col_widget))
 
         layout.addLayout(body, 1)
         return root
@@ -146,7 +138,7 @@ class RentSuccessController(BaseController):
         size_text = "Tủ nhỏ" if compartment.size == "SMALL" else "Tủ lớn"
         self.locker_label.setText(f"{self._locker_text()} – {size_text}")
 
-        self.warning_label.setText(f"Mã này chỉ có hiệu lực đến {rental.expires_at}")
+        self.warning_label.setText(f"Mã này chỉ có hiệu lực đến {format_expiry(rental.expires_at)}")
 
     def _locker_text(self) -> str:
         rental = self.state.rental_data
