@@ -1,3 +1,0 @@
-ALTER DATABASE smartbox SET timezone TO 'Asia/Ho_Chi_Minh';
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
