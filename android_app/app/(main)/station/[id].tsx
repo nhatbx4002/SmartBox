@@ -4,7 +4,6 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocationStore } from "../../../src/store/locationStore";
-import { useIsOnline } from "../../../src/hooks/useIsOnline";
 
 let MapView: any = null;
 let Marker: any = null;
@@ -149,6 +148,13 @@ export default function StationDetailScreen() {
                     <Text className="text-caption text-text-secondary mt-two">
                       {cabinet.compartments.filter((item) => item.status === "AVAILABLE").length}/{cabinet.compartments.length} ngăn đang trống
                     </Text>
+                    <Pressable
+                      onPress={() => router.push(`/rent/${id}?cabinetId=${cabinet.id}` as any)}
+                      disabled={!cabinet.isOnline}
+                      className={`mt-three h-10 rounded-input items-center justify-center ${cabinet.isOnline ? "bg-brand" : "bg-text-muted/30"}`}
+                    >
+                      <Text className="text-small-bold text-white">Chọn tủ này</Text>
+                    </Pressable>
                   </View>
                 ))}
               </View>
@@ -160,13 +166,6 @@ export default function StationDetailScreen() {
                 className="flex-1 h-12 bg-background border border-border rounded-input items-center justify-center"
               >
                 <Text className="text-btn text-white">Chỉ đường</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => router.push(`/rent/${id}` as any)}
-                disabled={!isOnline}
-                className={`flex-1 h-12 rounded-input items-center justify-center ${isOnline ? "bg-brand" : "bg-text-muted/30"}`}
-              >
-                <Text className="text-btn text-white">Thuê tủ</Text>
               </Pressable>
             </View>
           </>

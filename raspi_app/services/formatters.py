@@ -31,17 +31,17 @@ def is_valid_local_phone(text: str) -> bool:
 
 
 def normalize_vn_phone(text: str) -> str:
-    return text.strip()
+    text = text.strip()
+    if text.startswith("+84"):
+        text = "0" + text[3:]
+    return text
 
 
 def format_plan_subtitle(rental_type: str, duration_days: int, max_opens: int | None = None) -> str:
     rt = (rental_type or "").upper()
-
     if rt == "MONTHLY":
         return "Không giới hạn lượt mở"
     if rt == "DAILY":
         opens = max_opens or 0
         return f"{opens} lượt / {duration_days} ngày"
-    if rt == "ONCE":
-        return f"Sử dụng trong {duration_days} ngày"
     return f"Sử dụng trong {duration_days} ngày"

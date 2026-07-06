@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget,
-)
-
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
 from screens.components.buttons import PrimaryButton
@@ -24,10 +21,7 @@ class RentSizeController(BaseController):
         self.avail_small = self.child("cardSize1_avail", QLabel)
         self.avail_large = self.child("cardSize2_avail", QLabel)
         self.continue_button = self.child("btnContinue", QPushButton)
-
-        # None = chưa biết (đang tải / lỗi mạng), int = số tủ trống
         self.availability: dict[str, int | None] = {"SMALL": None, "LARGE": None}
-
         self.error_banner = InlineError(self.widget)
         self.error_banner.setGeometry(40, 1040, 640, 54)
 
@@ -44,48 +38,26 @@ class RentSizeController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # ── Header ──────────────────────────────────────────────
-        header = HeaderBar(
-            "Chọn kích thước tủ muốn thuê",
-            on_back=lambda: self.go_home(),
-            parent=root,
-            back_object_name="btnBack",
-        )
+        header = HeaderBar("Chọn kích thước tủ muốn thuê", on_back=lambda: self.go_home(), parent=root, back_object_name="btnBack")
         layout.addWidget(header)
-        # ── Body ────────────────────────────────────────────────
+
         body = QVBoxLayout()
         body.setContentsMargins(24, 24, 24, 24)
         body.setSpacing(16)
 
         subtitle = QLabel("Chọn kích thước phù hợp với đồ cần gửi")
         subtitle.setAlignment(Qt.AlignCenter)
-        subtitle.setStyleSheet(
-            "background: transparent; border: none; color: #888;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;"
-        )
+        subtitle.setStyleSheet("background: transparent; border: none; color: #888;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;")
         body.addWidget(subtitle)
-
         body.addSpacing(8)
 
-        card1 = self._size_card(
-            "cardSize1", "Tủ nhỏ", "📦",
-            "Phù hợp với đồ cá nhân, ví, sạc, phụ kiện nhỏ",
-        )
-        card2 = self._size_card(
-            "cardSize2", "Tủ lớn", "🧳",
-            "Phù hợp với balo, túi xách, hành lý nhỏ",
-        )
-
+        card1 = self._size_card("cardSize1", "Tủ nhỏ", "📦", "Phù hợp với đồ cá nhân, ví, sạc, phụ kiện nhỏ")
+        card2 = self._size_card("cardSize2", "Tủ lớn", "🧳", "Phù hợp với balo, túi xách, hành lý nhỏ")
         body.addWidget(card1)
         body.addWidget(card2)
-
         body.addStretch(1)
 
-        btn_continue = PrimaryButton(
-            "TIẾP TỤC",
-            object_name="btnContinue",
-            color="green",
-        )
+        btn_continue = PrimaryButton("TIẾP TỤC", object_name="btnContinue", color="green")
         btn_continue.setEnabled(False)
         body.addWidget(BottomActionBar(btn_continue))
 
@@ -114,24 +86,15 @@ class RentSizeController(BaseController):
         text_box.setAlignment(Qt.AlignVCenter)
 
         title_lbl = QLabel(label, card)
-        title_lbl.setStyleSheet(
-            "border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 32px; font-weight: 900;"
-        )
+        title_lbl.setStyleSheet("border: none; color: #E8E8E8;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 32px; font-weight: 900;")
 
         desc_lbl = QLabel(desc, card)
         desc_lbl.setWordWrap(True)
-        desc_lbl.setStyleSheet(
-            "border: none; color: #999;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 500;"
-        )
+        desc_lbl.setStyleSheet("border: none; color: #999;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 500;")
 
         avail_lbl = QLabel("Đang kiểm tra...", card)
         avail_lbl.setObjectName(f"{obj_name}_avail")
-        avail_lbl.setStyleSheet(
-            "border: none; color: #888;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 700;"
-        )
+        avail_lbl.setStyleSheet("border: none; color: #888;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 700;")
 
         text_box.addWidget(title_lbl)
         text_box.addWidget(desc_lbl)
@@ -143,35 +106,27 @@ class RentSizeController(BaseController):
 
     def on_enter(self, data: dict | None = None) -> None:
         self.error_banner.clear()
-        # Mỗi lần vào trang đều bỏ lựa chọn cũ để bắt buộc chọn lại
         self.state.selected_size = None
         self.state.selected_plan = None
         self.state.selected_plan_group = None
-        self.state.available_plans = []
+        self.state.available_plans.clear()
         self.state.phone = None
-        self.state.payment_method = None
         self.state.rental_data = None
         self.state.compartment_data = None
 
         cached = self.state.cached_availability
         if cached:
             self.availability = dict(cached)
-            self._render()
         else:
             self.availability = {"SMALL": None, "LARGE": None}
-            self.avail_small.setText("Đang kiểm tra...")
-            self.avail_large.setText("Đang kiểm tra...")
-            self._render()
+        self._render()
         self._load_availability()
 
     def _load_availability(self) -> None:
         def _check():
             result = self.api_client.check_availability(None)
             items = result.get("items", [])
-            return {
-                "SMALL": sum(1 for i in items if i.get("size") == "SMALL"),
-                "LARGE": sum(1 for i in items if i.get("size") == "LARGE"),
-            }
+            return {"SMALL": sum(1 for i in items if i.get("size") == "SMALL"), "LARGE": sum(1 for i in items if i.get("size") == "LARGE")}
 
         def _on_done(result):
             self.availability["SMALL"] = result["SMALL"]
@@ -180,10 +135,7 @@ class RentSizeController(BaseController):
             self._render()
 
         def _on_error(_exc):
-            # Lỗi mạng → coi như chưa biết, cho phép chọn; lỗi thật sẽ hiện ở bước sau
             self.availability = {"SMALL": None, "LARGE": None}
-            self.avail_small.setText("")
-            self.avail_large.setText("")
             self._render()
 
         run_in_thread(_check, _on_done, _on_error)
@@ -195,9 +147,8 @@ class RentSizeController(BaseController):
         self.state.selected_size = size
         self.state.selected_plan = None
         self.state.selected_plan_group = None
-        self.state.available_plans = []
+        self.state.available_plans.clear()
         self.state.phone = None
-        self.state.payment_method = None
         self.state.rental_data = None
         self.state.compartment_data = None
         self._render()
@@ -209,15 +160,11 @@ class RentSizeController(BaseController):
     def _render(self) -> None:
         self._render_card("SMALL", self.card_small, "cardSize1", self.avail_small)
         self._render_card("LARGE", self.card_large, "cardSize2", self.avail_large)
-
         selected = self.state.selected_size
-        self.continue_button.setEnabled(
-            selected in {"SMALL", "LARGE"} and not self._is_sold_out(selected)
-        )
+        self.continue_button.setEnabled(selected in {"SMALL", "LARGE"} and not self._is_sold_out(selected))
 
     def _render_card(self, size: str, card: QWidget, name: str, avail_lbl: QLabel) -> None:
         count = self.availability.get(size)
-
         if count is None:
             avail_color = "#888"
         elif count <= 0:
@@ -226,10 +173,7 @@ class RentSizeController(BaseController):
         else:
             avail_lbl.setText(f"Còn {count} tủ trống")
             avail_color = "#00C853"
-        avail_lbl.setStyleSheet(
-            f"border: none; color: {avail_color};"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 17px; font-weight: 700;"
-        )
+        avail_lbl.setStyleSheet(f"border: none; color: {avail_color};font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 17px; font-weight: 700;")
 
         if self._is_sold_out(size):
             state = "disabled"
@@ -242,16 +186,7 @@ class RentSizeController(BaseController):
 
     def _card_css(self, name: str, state: str) -> str:
         if state == "selected":
-            return (
-                f"QFrame#{name} {{ border: 4px solid #FF6600; background-color: #1C1400; border-radius: 28px; }}"
-                f"QLabel {{ background: transparent; }}"
-            )
+            return f"QFrame#{name} {{ border: 4px solid #FF6600; background-color: #1C1400; border-radius: 28px; }}QLabel {{ background: transparent; }}"
         if state == "disabled":
-            return (
-                f"QFrame#{name} {{ background-color: #151515; border: 3px solid #2A2A2A; border-radius: 28px; }}"
-                f"QLabel {{ background: transparent; color: #555; }}"
-            )
-        return (
-            f"QFrame#{name} {{ background-color: #1C1B1B; border: 3px solid #2A2A2A; border-radius: 28px; }}"
-            f"QLabel {{ background: transparent; }}"
-        )
+            return f"QFrame#{name} {{ background-color: #151515; border: 3px solid #2A2A2A; border-radius: 28px; }}QLabel {{ background: transparent; color: #555; }}"
+        return f"QFrame#{name} {{ background-color: #1C1B1B; border: 3px solid #2A2A2A; border-radius: 28px; }}QLabel {{ background: transparent; }}"

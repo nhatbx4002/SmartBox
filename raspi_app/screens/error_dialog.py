@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Callable
 
 from PySide6.QtCore import QEvent, QObject, Qt
-from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 
@@ -38,12 +37,6 @@ class ErrorDialog(QWidget):
         card_layout.setContentsMargins(32, 28, 32, 28)
         card_layout.setSpacing(12)
         card_layout.setAlignment(Qt.AlignCenter)
-
-        self.lbl_icon = QLabel(self.dialog_card)
-        self.lbl_icon.setAlignment(Qt.AlignCenter)
-        self.lbl_icon.setFixedHeight(80)
-        self.lbl_icon.setStyleSheet("background: transparent; border: none; font-size: 56px;")
-        self.lbl_icon.setObjectName("lblDialogIcon")
 
         self.lbl_title = QLabel(self.dialog_card)
         self.lbl_title.setAlignment(Qt.AlignCenter)
@@ -123,7 +116,6 @@ class ErrorDialog(QWidget):
         btn_layout.addWidget(self.btn_retry, stretch=1)
         btn_layout.addWidget(self.btn_gohome, stretch=1)
 
-        card_layout.addWidget(self.lbl_icon)
         card_layout.addWidget(self.lbl_title)
         card_layout.addWidget(self.lbl_message)
         card_layout.addWidget(self.lbl_hotline)
@@ -136,27 +128,14 @@ class ErrorDialog(QWidget):
         self,
         message: str,
         title: str = "ĐÃ XẢY RA LỖI",
-        icon: str = "⚠️",
         hotline: str = "Hotline: 1900 1234",
     ) -> None:
         self.lbl_title.setText(title.upper())
         self.lbl_message.setText(message)
-
-        if icon.startswith(":/") or icon.endswith(".svg") or icon.endswith(".png"):
-            self.lbl_icon.setPixmap(QPixmap(icon))
-        elif icon == "⚠️":
-            self.lbl_icon.setPixmap(QPixmap(":/assets/warning.svg"))
-        elif icon in ("❌", "error"):
-            self.lbl_icon.setPixmap(QPixmap(":/assets/error.svg"))
-        else:
-            self.lbl_icon.setText(icon)
-
         self.lbl_hotline.setText(hotline)
-
         self.btn_retry.setEnabled(True)
         self.btn_retry.setText("THỬ LẠI")
         self.btn_gohome.setEnabled(True)
-
         self.raise_()
         self.show()
 

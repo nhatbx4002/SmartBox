@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CheckCheck, AlertTriangle, CreditCard, WifiOff, Info } from 'lucide-react'
+import { CheckCheck, AlertTriangle, CreditCard, WifiOff, Bug } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { notificationsApi } from '@/lib/api'
 import { Badge, Tabs } from '@/components/ui'
@@ -10,23 +10,26 @@ import type { Notification, NotificationType } from '@/types'
 
 const typeIcons: Record<NotificationType, React.ElementType> = {
   RENTAL_EXPIRED: AlertTriangle,
+  RENTAL_STARTED: AlertTriangle,
   PAYMENT_SUCCESS: CreditCard,
   CABINET_OFFLINE: WifiOff,
-  SYSTEM: Info,
+  HARDWARE_FAULT: Bug,
 }
 
 const typeColors: Record<NotificationType, string> = {
   RENTAL_EXPIRED: 'text-error',
+  RENTAL_STARTED: 'text-info',
   PAYMENT_SUCCESS: 'text-success',
   CABINET_OFFLINE: 'text-warning',
-  SYSTEM: 'text-info',
+  HARDWARE_FAULT: 'text-error',
 }
 
 const typeBorderColors: Record<NotificationType, string> = {
   RENTAL_EXPIRED: 'border-l-error',
+  RENTAL_STARTED: 'border-l-info',
   PAYMENT_SUCCESS: 'border-l-success',
   CABINET_OFFLINE: 'border-l-warning',
-  SYSTEM: 'border-l-info',
+  HARDWARE_FAULT: 'border-l-error',
 }
 
 export default function NotificationsPage() {

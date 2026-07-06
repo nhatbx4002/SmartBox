@@ -74,7 +74,7 @@ class PairingController(BaseController):
 
         body.addSpacing(32)
 
-        self.title = QLabel("\u0110ANG CH\u1edc DUY\u1ec6T", root)
+        self.title = QLabel("ĐANG CHỜ DUYỆT", root)
         self.title.setObjectName("lblTitle")
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setStyleSheet("background: transparent; border: none; color: #FF6600; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 30px; font-weight: 900;")
@@ -122,7 +122,7 @@ class PairingController(BaseController):
 
         body.addStretch()
 
-        btn_retry = QPushButton("TH\u1eec L\u1ea0I")
+        btn_retry = QPushButton("THỬ LẠI")
         btn_retry.setObjectName("btnRetry")
         btn_retry.setFixedHeight(80)
         btn_retry.setCursor(Qt.PointingHandCursor)
@@ -144,13 +144,13 @@ class PairingController(BaseController):
         self._apply_network_status_display()
 
         if not self._session_id:
-            self._show_error("Kh\xf4ng t\xecm th\u1ea5y phi\xean gh\xe9p.")
+            self._show_error("Không tìm thấy phiên ghép.")
             return
 
-        self.title_label.setText("\u0110ANG CH\u1edc DUY\u1ec6T")
+        self.title_label.setText("ĐANG CHỜ DUYỆT")
         self.code_label.setText(self._pairing_code or "------")
         self.mcp_label.setText(self._format_mcp_devices(mcp_devices))
-        self.status_label.setText("\u0110ang ch\u1edd m\xe1y ch\u1ee7 duy\u1ec7t...")
+        self.status_label.setText("Đang chờ máy chủ duyệt...")
 
         self._tick_countdown()
         self.countdown_timer.start(1000)
@@ -164,29 +164,23 @@ class PairingController(BaseController):
         status = self.network_status.upper()
         color = "#00FF41" if status == "ONLINE" else "#EF4444"
         self.network_label.setText(status)
-        self.network_label.setStyleSheet(
-            "background: transparent; border: none; "
-            f"color: {color}; font-family: 'Be Vietnam Pro', 'Arial', sans-serif; "
-            "font-size: 15px; font-weight: 800;"
-        )
+        self.network_label.setStyleSheet(f"background: transparent; border: none;color: {color}; font-family: 'Be Vietnam Pro', 'Arial', sans-serif;font-size: 15px; font-weight: 800;")
         self.network_dot.setStyleSheet(f"background-color: {color}; border-radius: 7px;")
 
     def _tick_countdown(self) -> None:
         if self._expires_at is None:
-            self.countdown_label.setText("H\u1ebft h\u1ea1n sau: --:--")
+            self.countdown_label.setText("Hết hạn sau: --:--")
             return
-
         remaining = int((self._expires_at - datetime.now(timezone.utc)).total_seconds())
         if remaining <= 0:
-            self.countdown_label.setText("M\xe3 \u0111\xe3 h\u1ebft h\u1ea1n")
-            self.status_label.setText("Phi\xean gh\xe9p \u0111\xe3 h\u1ebft h\u1ea1n.")
+            self.countdown_label.setText("Mã đã hết hạn")
+            self.status_label.setText("Phiên ghép đã hết hạn.")
             self.countdown_timer.stop()
             self.poll_timer.stop()
             self.retry_button.show()
             return
-
         minutes, seconds = divmod(remaining, 60)
-        self.countdown_label.setText(f"H\u1ebft h\u1ea1n sau: {minutes:02d}:{seconds:02d}")
+        self.countdown_label.setText(f"Hết hạn sau: {minutes:02d}:{seconds:02d}")
 
     def _retry(self) -> None:
         self.countdown_timer.stop()
@@ -202,7 +196,7 @@ class PairingController(BaseController):
             self._handle_pairing_status(response)
         except Exception as error:
             print(f"[PAIRING] poll error: {error}")
-            self.status_label.setText(f"L\u1ed7i k\u1ebft n\u1ed1i: {error}")
+            self.status_label.setText(f"Lỗi kết nối: {error}")
             self.poll_timer.stop()
 
     def _handle_pairing_status(self, data: dict) -> None:
@@ -217,7 +211,7 @@ class PairingController(BaseController):
                 print(f"[PAIRING SCREEN] apply_pairing_result warning: {error}")
             self.navigate("/pairing-success", {"cabinetId": data.get("cabinetId", "")}, replace=True)
             return
-        if status in {"EXPIRED", "CANCELLED"}:
+        if status in {"EXPIRED", "REJECTED", "CANCELLED"}:
             self.poll_timer.stop()
             self.countdown_timer.stop()
             self.status_label.setText("Phiên ghép nối đã bị hủy hoặc đã hết hạn.")
@@ -240,7 +234,6 @@ class PairingController(BaseController):
     def _format_mcp_devices(self, devices: list[dict]) -> str:
         if not devices:
             return "Chưa phát hiện thiết bị MCP23017 nào."
-
         lines = [f"Phát hiện {len(devices)} MCP23017:"]
         for device in devices[:4]:
             bus = device.get("bus", "?")

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from collections.abc import Callable
 
 from PySide6.QtCore import Qt
@@ -76,7 +74,6 @@ class HeaderBar(QFrame):
             "font-size: 28px;"
             "font-weight: 900;"
         )
-
         layout.addWidget(self.title_label)
         layout.addStretch()
 

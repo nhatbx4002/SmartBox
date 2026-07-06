@@ -75,8 +75,8 @@ export default function RentalDetailScreen() {
           <>
             <View className="bg-surface border border-border rounded-panel p-five items-center mb-four">
               <Badge
-                label={currentRental.status === "ACTIVE" ? "Đang sử dụng" : currentRental.status}
-                status={currentRental.status === "ACTIVE" ? "active" : "completed"}
+                label={currentRental.status === "ACTIVE" ? "Đang sử dụng" : currentRental.status === "PENDING" ? "Chờ thanh toán" : currentRental.status}
+                status={currentRental.status === "ACTIVE" ? "active" : currentRental.status === "PENDING" ? "warning" : "completed"}
               />
               <Text className="text-h2 text-white font-bold mt-three">
                 {currentRental.compartment.cabinet.name} • {currentRental.compartment.name}

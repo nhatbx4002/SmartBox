@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QLineEdit, QPushButton, QVBoxLayout, QWidget
-
 from screens.components.bottom_action_bar import BottomActionBar
 from screens.components.buttons import PrimaryButton
 from screens.components.numeric_keypad import NumericKeypad
@@ -23,7 +22,6 @@ class RentPhoneController(BaseController):
         self.input = self.child("lineEdit", QLineEdit)
         self.input.setAlignment(Qt.AlignCenter)
         self.confirm_button = self.child("btnConfirm", QPushButton)
-
         self.error_banner = InlineError(self.widget)
         self.error_banner.setGeometry(40, 440, 640, 60)
 
@@ -44,27 +42,17 @@ class RentPhoneController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # ── Header ──────────────────────────────────────────────
-        header = HeaderBar(
-            "Nhập số điện thoại",
-            on_back=lambda: self.navigate("/rent-plan"),
-            parent=root,
-            back_object_name="btnBack",
-        )
+        header = HeaderBar("Nhập số điện thoại", on_back=lambda: self.navigate("/rent-plan"), parent=root, back_object_name="btnBack")
         layout.addWidget(header)
 
-        # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
         body.setContentsMargins(40, 48, 40, 0)
         body.setSpacing(24)
 
-        # Input frame
         input_frame = QFrame(root)
         input_frame.setObjectName("phoneInputFrame")
         input_frame.setFixedHeight(118)
-        input_frame.setStyleSheet(
-            "QFrame#phoneInputFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 22px; }"
-        )
+        input_frame.setStyleSheet("QFrame#phoneInputFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 22px; }")
         i_layout = QVBoxLayout(input_frame)
         i_layout.setAlignment(Qt.AlignCenter)
         i_layout.setContentsMargins(16, 0, 16, 0)
@@ -73,29 +61,15 @@ class RentPhoneController(BaseController):
         self.line_input.setObjectName("lineEdit")
         self.line_input.setAlignment(Qt.AlignCenter)
         self.line_input.setMaxLength(10)
-        self.line_input.setStyleSheet(
-            "QLineEdit { background: transparent; border: none; color: #E8E8E8;"
-            " font-size: 58px; font-weight: 700; font-family: 'Be Vietnam Pro', Arial, sans-serif; }"
-        )
+        self.line_input.setStyleSheet("QLineEdit { background: transparent; border: none; color: #E8E8E8; font-size: 58px; font-weight: 700; font-family: 'Be Vietnam Pro', Arial, sans-serif; }")
         i_layout.addWidget(self.line_input)
         body.addWidget(input_frame)
 
-        keypad = NumericKeypad(
-            parent=root,
-            button_width=200,
-            button_height=120,
-            h_spacing=18,
-            v_spacing=16,
-        )
+        keypad = NumericKeypad(parent=root, button_width=200, button_height=120, h_spacing=18, v_spacing=16)
         body.addWidget(keypad)
-
         body.addSpacing(24)
 
-        btn_confirm = PrimaryButton(
-            "XÁC NHẬN",
-            object_name="btnConfirm",
-            color="green",
-        )
+        btn_confirm = PrimaryButton("XÁC NHẬN", object_name="btnConfirm", color="green")
         btn_confirm.setEnabled(False)
         body.addWidget(BottomActionBar(btn_confirm))
 
@@ -107,9 +81,6 @@ class RentPhoneController(BaseController):
         self.error_banner.clear()
         self._sync_confirm_state()
         self.input.setFocus()
-
-        if hasattr(self, "_position_footer"):
-            self._position_footer()
 
     def _append_digit(self, digit: str) -> None:
         self.error_banner.clear()

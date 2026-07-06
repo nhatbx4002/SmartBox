@@ -1,13 +1,8 @@
 ﻿api:
-  base_url: http://180.93.42.46:3001
+  base_url: http://192.168.1.29:3001
   timeout: 10
 support:
   hotline: "097567890"
-mqtt:
-  broker: 180.93.42.46
-  port: 1883
-  username: nhatnehihi
-  password: 211004
 camera:
   backend: picamera2
   stream_url: ''

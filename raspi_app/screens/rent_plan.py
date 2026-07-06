@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QPushButton, QScrollArea, QVBoxLayout, QWidget
-
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.base import BaseController, run_in_thread
 from screens.components.header_bar import HeaderBar
@@ -29,7 +28,6 @@ class RentPlanController(BaseController):
         self.selected_card: SelectableCard | None = None
         self.selected_group_type: str | None = None
         self.group_cards: dict[str, SelectableCard] = {}
-
         self.continue_button.clicked.connect(self._on_continue)
 
     def _build_ui(self) -> QWidget:
@@ -41,16 +39,9 @@ class RentPlanController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # ── Header ──────────────────────────────────────────────
-        header = HeaderBar(
-            "CHỌN GÓI THUÊ",
-            on_back=lambda: self.navigate("/rent-size"),
-            parent=root,
-            back_object_name="btnBack",
-        )
+        header = HeaderBar("CHỌN GÓI THUÊ", on_back=lambda: self.navigate("/rent-size"), parent=root, back_object_name="btnBack")
         layout.addWidget(header)
 
-        # ── Body ────────────────────────────────────────────────
         body = QVBoxLayout()
         body.setContentsMargins(24, 16, 24, 32)
         body.setSpacing(0)
@@ -58,20 +49,13 @@ class RentPlanController(BaseController):
         self.lbl_size = QLabel("", root)
         self.lbl_size.setObjectName("lblSelectedSize")
         self.lbl_size.setFixedHeight(52)
-        self.lbl_size.setStyleSheet(
-            "background: transparent; border: none; color: #A0A0A0;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 700; padding: 8px 0;"
-        )
+        self.lbl_size.setStyleSheet("background: transparent; border: none; color: #A0A0A0;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 700; padding: 8px 0;")
         body.addWidget(self.lbl_size)
 
-        # Scroll area cho cards
         scroll = QScrollArea(root)
         scroll.setObjectName("scrollArea")
         scroll.setWidgetResizable(True)
-        scroll.setStyleSheet(
-            "QScrollArea { background: transparent; border: none; }"
-            "QScrollBar:vertical { width: 0; }"
-        )
+        scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }QScrollBar:vertical { width: 0; }")
 
         container = QWidget()
         container.setObjectName("plansContainer")
@@ -83,11 +67,7 @@ class RentPlanController(BaseController):
         scroll.setWidget(container)
         body.addWidget(scroll, stretch=1)
 
-        btn_continue = PrimaryButton(
-            "TIẾP TỤC",
-            object_name="btnContinue",
-            color="orange",
-        )
+        btn_continue = PrimaryButton("TIẾP TỤC", object_name="btnContinue", color="orange")
         btn_continue.setEnabled(False)
         body.addWidget(BottomActionBar(btn_continue))
 
@@ -103,12 +83,11 @@ class RentPlanController(BaseController):
         if not self.state.selected_size:
             self.navigate("/rent-size", replace=True)
             return
-
         self.state.selected_plan_group = None
         self.state.selected_plan = None
         self.selected_card = None
         self.selected_group_type = None
-        self.group_cards = {}
+        self.group_cards.clear()
         self.continue_button.setEnabled(False)
         size_text = "Size 1 (Tủ nhỏ)" if self.state.selected_size == "SMALL" else "Size 2 (Tủ lớn)"
         self.selected_size_label.setText(f"Đã chọn: {size_text}")
@@ -126,11 +105,7 @@ class RentPlanController(BaseController):
             self.hide_error_dialog()
 
         def _on_error(exc):
-            self.show_error_dialog(
-                message=str(exc) or "Không thể tải danh sách gói thuê. Vui lòng thử lại.",
-                title="LỖI TẢI GÓI THUÊ",
-                on_retry=self._load_plans,
-            )
+            self.show_error_dialog(message=str(exc) or "Không thể tải danh sách gói thuê. Vui lòng thử lại.", title="LỖI TẢI GÓI THUÊ", on_retry=self._load_plans)
 
         run_in_thread(_fetch, _on_done, _on_error)
 
@@ -145,7 +120,6 @@ class RentPlanController(BaseController):
 
     def _render_plan_groups(self, grouped: dict[str, list[Plan]]) -> None:
         self._clear_layout(self.plans_layout)
-
         if not grouped:
             label = QLabel("Hiện chưa có gói thuê phù hợp với kích thước này")
             label.setAlignment(Qt.AlignCenter)
@@ -157,33 +131,21 @@ class RentPlanController(BaseController):
             card = self._build_group_card(rental_type, plans)
             self.group_cards[rental_type] = card
             self.plans_layout.addWidget(card)
-
         self.plans_layout.addStretch()
 
     def _build_group_card(self, rental_type: str, plans: list[Plan]) -> SelectableCard:
         group_info = PLAN_GROUPS.get(rental_type, {"title": rental_type, "subtitle": ""})
         min_price = min(p.price for p in plans)
-
-        card = SelectableCard(
-            title=group_info["title"],
-            subtitle=group_info["subtitle"],
-            trailing=f"Từ {format_currency(min_price)}",
-            object_name=f"groupCard_{rental_type}",
-            min_height=240,
-            selected_color="orange",
-        )
-
+        card = SelectableCard(title=group_info["title"], subtitle=group_info["subtitle"], trailing=f"Từ {format_currency(min_price)}", object_name=f"groupCard_{rental_type}", min_height=240, selected_color="orange")
         self.set_clickable(card, lambda rt=rental_type: self._select_group(rt))
         return card
 
     def _select_group(self, rental_type: str) -> None:
         if self.selected_card:
             self.selected_card.set_selected(False)
-
         card = self.group_cards.get(rental_type)
         if not card:
             return
-
         card.set_selected(True)
         self.selected_card = card
         self.selected_group_type = rental_type

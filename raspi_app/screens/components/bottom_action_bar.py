@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QVBoxLayout, QWidget
 
@@ -25,16 +23,10 @@ class BottomActionBar(QFrame):
         super().__init__(parent)
         self.setObjectName("bottomActionBar")
         self.setFixedHeight(height)
-        self.setStyleSheet(
-            "QFrame#bottomActionBar {"
-            "background: transparent;"
-            "border: none;"
-            "}"
-        )
+        self.setStyleSheet("QFrame#bottomActionBar {background: transparent;border: none;}")
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(margin_x, padding_top, margin_x, padding_bottom)
         layout.setSpacing(0)
         layout.setAlignment(Qt.AlignBottom)
-
         layout.addWidget(button)

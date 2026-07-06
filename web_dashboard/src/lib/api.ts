@@ -80,7 +80,7 @@ interface BackendLocation {
 
 interface BackendNotification {
   id: string
-  type: NotificationType | 'RENTAL_STARTED' | 'RENTAL_EXPIRING_SOON'
+  type: NotificationType
   title: string
   body: string
   isRead: boolean
@@ -177,7 +177,6 @@ function mapPaymentStatus(status: BackendPaymentStatus): PaymentStatus {
 }
 
 function mapNotificationType(type: BackendNotification['type']): NotificationType {
-  if (type === 'RENTAL_STARTED' || type === 'RENTAL_EXPIRING_SOON') return 'SYSTEM'
   return type
 }
 
@@ -330,30 +329,30 @@ export const cabinetsApi = {
   get: (id: string) =>
     unwrap<BackendCabinet>(api.get(`/admin/cabinets/${id}`)).then(mapCabinet),
   update: (id: string, data: unknown) =>
-    unwrap<BackendCabinet>(api.put(`/admin/cabinets/${id}`, data)).then(mapCabinet),
-  delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/cabinets/${id}`)),
+    unwrap<{ message: string; data: BackendCabinet }>(api.put(`/admin/cabinets/${id}`, data)).then((r) => mapCabinet(r.data)),
+  delete: (id: string) => api.delete(`/admin/cabinets/${id}`).then(() => ({ ok: true })),
   openCompartment: (cabinetId: string, compId: string) =>
-    unwrap<{ ok: boolean }>(api.post(`/admin/cabinets/${cabinetId}/unlock/${compId}`)),
+    api.post(`/admin/cabinets/${cabinetId}/compartments/${compId}/unlock`).then(() => ({ ok: true })),
   activate: (id: string) =>
-    unwrap<{ cabinet: BackendCabinet; configVersion: number }>(api.post(`/admin/cabinets/${id}/activate`)).then(
-      (r) => ({ ...r, cabinet: mapCabinet(r.cabinet) }),
+    unwrap<{ message: string; data: BackendCabinet }>(api.post(`/admin/cabinets/${id}/activate`)).then(
+      (r) => ({ message: r.message, cabinet: mapCabinet(r.data) }),
     ),
   deactivate: (id: string) =>
-    unwrap<{ cabinet: BackendCabinet }>(api.post(`/admin/cabinets/${id}/deactivate`)).then(
-      (r) => ({ ...r, cabinet: mapCabinet(r.cabinet) }),
+    unwrap<{ message: string; data: BackendCabinet }>(api.post(`/admin/cabinets/${id}/deactivate`)).then(
+      (r) => ({ message: r.message, cabinet: mapCabinet(r.data) }),
     ),
   testOpen: (cabinetId: string, compId: string) =>
-    unwrap<{ ok: boolean; compartmentName: string }>(api.post(`/admin/cabinets/${cabinetId}/compartments/${compId}/test-open`)),
+    unwrap<{ cabinetId: string; compartmentId: string; compartmentName: string }>(api.post(`/admin/cabinets/${cabinetId}/compartments/${compId}/test-open`)),
   addCompartment: (cabinetId: string, data: unknown) =>
-    unwrap<{ compartment: BackendCompartment; configVersion: number }>(api.post(`/admin/cabinets/${cabinetId}/compartments`, data)).then(
-      (r) => ({ ...r, compartment: mapCompartment(r.compartment, data && typeof data === 'object' && 'name' in data ? String((data as { name: string }).name) : '') }),
+    unwrap<{ message: string; data: { compartment: BackendCompartment; configVersion: number } }>(api.post(`/admin/cabinets/${cabinetId}/compartments`, data)).then(
+      (r) => ({ ...r.data, compartment: mapCompartment(r.data.compartment, data && typeof data === 'object' && 'name' in data ? String((data as { name: string }).name) : '') }),
     ),
   updateCompartment: (cabinetId: string, compId: string, data: unknown) =>
-    unwrap<{ compartment: BackendCompartment }>(api.put(`/admin/cabinets/${cabinetId}/compartments/${compId}`, data)).then(
-      (r) => ({ ...r, compartment: mapCompartment(r.compartment, '') }),
+    unwrap<{ message: string; data: { compartment: BackendCompartment } }>(api.put(`/admin/cabinets/${cabinetId}/compartments/${compId}`, data)).then(
+      (r) => ({ ...r.data, compartment: mapCompartment(r.data.compartment, '') }),
     ),
   deleteCompartment: (cabinetId: string, compId: string) =>
-    unwrap<{ ok: boolean }>(api.delete(`/admin/cabinets/${cabinetId}/compartments/${compId}`)),
+    api.delete(`/admin/cabinets/${cabinetId}/compartments/${compId}`).then(() => ({ ok: true })),
 }
 
 export const rentalsApi = {
@@ -372,7 +371,7 @@ export const rentalsApi = {
       events: (rental.logs ?? []).map(mapRentalEvent),
     })),
   cancel: (id: string) => unwrap<{ ok: boolean }>(api.put(`/admin/rentals/${id}/cancel`)),
-  unlock: (id: string) => unwrap<BackendRental | undefined>(api.post(`/rentals/${id}/unlock`)),
+  unlock: (id: string) => unwrap<{ ok: boolean }>(api.post(`/admin/rentals/${id}/unlock`)),
 }
 
 export const locationsApi = {

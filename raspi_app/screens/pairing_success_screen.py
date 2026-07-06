@@ -37,13 +37,13 @@ class PairingSuccessController(BaseController):
         body.setSpacing(16)
         body.setAlignment(Qt.AlignTop)
 
-        icon_label = QLabel("\u2705", root)
+        icon_label = QLabel("✅", root)
         icon_label.setAlignment(Qt.AlignCenter)
         icon_label.setFixedHeight(120)
         icon_label.setStyleSheet("background: transparent; border: none; font-size: 100px;")
         body.addWidget(icon_label)
 
-        self.title = QLabel("GH\xc9P T\u1ee6 TH\xc0NH C\xd4NG", root)
+        self.title = QLabel("GHÉP TỦ THÀNH CÔNG", root)
         self.title.setObjectName("lblTitle")
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setStyleSheet("background: transparent; border: none; color: #2E7D32; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 32px; font-weight: 900;")
@@ -63,7 +63,7 @@ class PairingSuccessController(BaseController):
         i_layout.addWidget(self.cabinet)
         body.addWidget(info_card)
 
-        self.message = QLabel("\u0110ang ki\u1ec3m tra k\u1ebft n\u1ed1i MQTT...", root)
+        self.message = QLabel("Đang kiểm tra kết nối MQTT...", root)
         self.message.setObjectName("lblMessage")
         self.message.setAlignment(Qt.AlignCenter)
         self.message.setStyleSheet("background: transparent; border: none; color: #B0B0B0; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;")
@@ -96,7 +96,6 @@ class PairingSuccessController(BaseController):
     def _tick(self) -> None:
         if self._navigated:
             return
-
         if getattr(self.app, "mqtt_client", None) and self.app.mqtt_client.connected:
             self.message_label.setText("Đã kết nối với hệ thống.")
             self.countdown_label.setText("")
@@ -113,6 +112,4 @@ class PairingSuccessController(BaseController):
             self.navigate("/", replace=True)
             return
 
-        self.countdown_label.setText(
-            f"Tự động quay về màn hình chính sau {self.seconds_left} giây"
-        )
+        self.countdown_label.setText(f"Tự động quay về màn hình chính sau {self.seconds_left} giây")

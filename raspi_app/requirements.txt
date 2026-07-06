@@ -3,5 +3,6 @@ paho-mqtt>=2.1.0
 requests>=2.33.0
 PyYAML>=6.0.0
 opencv-python-headless>=4.10.0
-smbus2
+adafruit-circuitpython-mcp230x
 qrcode[pil]>=7.4
+

@@ -50,10 +50,7 @@ class LoadingController(BaseController):
         progress.setRange(0, 100)
         progress.setValue(0)
         progress.setTextVisible(False)
-        progress.setStyleSheet(
-            "QProgressBar { background-color: #1C1B1B; border: none; border-radius: 6px; }"
-            "QProgressBar::chunk { background-color: #FF6600; border-radius: 6px; }"
-        )
+        progress.setStyleSheet("QProgressBar { background-color: #1C1B1B; border: none; border-radius: 6px; }QProgressBar::chunk { background-color: #FF6600; border-radius: 6px; }")
         body.addWidget(progress, alignment=Qt.AlignCenter)
 
         layout.addLayout(body)

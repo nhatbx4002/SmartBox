@@ -12,14 +12,14 @@ const STATUS_LABELS: Record<PairingSessionStatus, string> = {
   PENDING: 'Chờ duyệt',
   APPROVED: 'Đã duyệt',
   EXPIRED: 'Đã hết hạn',
-  CANCELLED: 'Đã hủy',
+  REJECTED: 'Đã hủy',
 }
 
 const STATUS_COLORS: Record<PairingSessionStatus, string> = {
   PENDING: 'warning',
   APPROVED: 'success',
   EXPIRED: 'neutral',
-  CANCELLED: 'error',
+  REJECTED: 'error',
 }
 
 function formatTimeAgo(dateStr: string): string {
@@ -182,7 +182,7 @@ export default function PairingQueuePage() {
     { key: 'PENDING', label: 'Chờ duyệt' },
     { key: 'APPROVED', label: 'Đã duyệt' },
     { key: 'EXPIRED', label: 'Đã hết hạn' },
-    { key: 'CANCELLED', label: 'Đã hủy' },
+    { key: 'REJECTED', label: 'Đã hủy' },
   ]
 
   const locationOptions = locations.map((l) => ({ value: l.id, label: l.name }))
@@ -535,7 +535,7 @@ function EmptyState({ tab, hasSearch, searchCode }: { tab: PairingSessionStatus;
       title: 'Không có yêu cầu hết hạn',
       desc: 'Các yêu cầu hết hạn sau 10 phút sẽ xuất hiện tại đây',
     },
-    CANCELLED: {
+    REJECTED: {
       title: 'Không có yêu cầu bị hủy',
       desc: 'Các yêu cầu bị hủy sẽ xuất hiện tại đây',
     },

@@ -8,7 +8,7 @@ export type JsonObject = {
 
 export type UserStatus = "ACTIVE" | "SUSPENDED";
 export type LocationStatus = "ACTIVE" | "INACTIVE";
-export type CabinetStatus = "ACTIVE" | "INACTIVE" | "OFFLINE";
+export type CabinetStatus = "ACTIVE" | "INACTIVE" | "OFFLINE" | "CONFIGURING";
 export type CompartmentSize = "SMALL" | "LARGE";
 export type CompartmentAvailability =
   | "AVAILABLE"
@@ -18,9 +18,9 @@ export type CompartmentAvailability =
 export type LockStatus = "UNKNOWN" | "LOCKED" | "UNLOCKED" | "FAULTY";
 export type DoorStatus = "CLOSED" | "OPEN" | "UNKNOWN";
 export type RentalType = "ONCE" | "DAILY" | "MONTHLY";
-export type RentalStatus = "ACTIVE" | "COMPLETED" | "CANCELLED" | "EXPIRED";
+export type RentalStatus = "PENDING" | "ACTIVE" | "COMPLETED" | "CANCELLED" | "EXPIRED";
 export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
-export type PaymentMethod = "MOMO" | "ZALOPAY" | "VIETQR" | "CASH" | "NONE" | "PAYOS";
+export type PaymentMethod = "PAYOS";
 export type LockerAction =
   | "OPENED"
   | "CLOSED"
@@ -34,9 +34,7 @@ export type NotificationType =
   | "CABINET_OFFLINE"
   | "RENTAL_STARTED"
   | "PAYMENT_SUCCESS"
-  | "RENTAL_EXPIRING_SOON"
-  | "SYSTEM";
-export type DeviceType = "ANDROID" | "WEB" | "KIOSK";
+  | "HARDWARE_FAULT";
 
 export interface ApiErrorPayload {
   message: string;
@@ -71,7 +69,6 @@ export interface UserSession {
   id: string;
   userId: string;
   socketId: string;
-  deviceType: DeviceType;
   deviceInfo: string | null;
   connectedAt: ISODateString;
   disconnectedAt: ISODateString | null;
@@ -259,7 +256,7 @@ export interface CreateRentalPayload {
   size: CompartmentSize;
   planId: string;
   paymentMethod?: PaymentMethod;
-  cabinetId?: string;
+  cabinetId: string;
 }
 
 export interface ForgotPasswordPayload {

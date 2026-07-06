@@ -11,6 +11,7 @@ import type { Rental } from '@/types'
 
 const statusOptions = [
   { value: '', label: 'All' },
+  { value: 'PENDING', label: 'PENDING' },
   { value: 'ACTIVE', label: 'ACTIVE' },
   { value: 'COMPLETED', label: 'COMPLETED' },
   { value: 'EXPIRED', label: 'EXPIRED' },

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QWidget
 
@@ -9,8 +7,8 @@ from screens.components.theme import (
     COLOR_ONLINE,
     COLOR_SURFACE,
     COLOR_MUTED,
-    FONT_FOOTER,
     FONT_FAMILY,
+    FONT_FOOTER,
     FOOTER_HEIGHT,
 )
 
@@ -64,12 +62,7 @@ class FooterBar(QFrame):
     def set_status(self, status: str) -> None:
         normalized = (status or "OFFLINE").upper()
         color = COLOR_ONLINE if normalized == "ONLINE" else COLOR_ERROR
-
-        self.dot.setStyleSheet(
-            f"background-color: {color};"
-            "border: none;"
-            "border-radius: 4px;"
-        )
+        self.dot.setStyleSheet(f"background-color: {color};border: none;border-radius: 4px;")
         self.status_label.setText(normalized)
         self.status_label.setStyleSheet(
             "background: transparent;"

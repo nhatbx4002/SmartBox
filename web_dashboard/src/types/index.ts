@@ -68,7 +68,7 @@ export interface Cabinet {
   createdAt?: string
 }
 
-export type RentalStatus = 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'EXPIRED'
+export type RentalStatus = 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'EXPIRED'
 
 export type PaymentStatus = 'PAID' | 'UNPAID' | 'REFUNDED'
 
@@ -111,7 +111,7 @@ export interface Location {
   cabinetCount: number
 }
 
-export type NotificationType = 'RENTAL_EXPIRED' | 'PAYMENT_SUCCESS' | 'CABINET_OFFLINE' | 'SYSTEM'
+export type NotificationType = 'RENTAL_EXPIRED' | 'CABINET_OFFLINE' | 'RENTAL_STARTED' | 'PAYMENT_SUCCESS' | 'HARDWARE_FAULT'
 
 export interface Notification {
   id: string
@@ -126,7 +126,9 @@ export interface Notification {
 
 export type AuditAction =
   | 'UNLOCK_COMPARTMENT'
+  | 'CREATE_PRICE_PLAN'
   | 'UPDATE_PRICE_PLAN'
+  | 'DELETE_PRICE_PLAN'
   | 'CREATE_LOCATION'
   | 'UPDATE_LOCATION'
   | 'DELETE_LOCATION'
@@ -134,6 +136,12 @@ export type AuditAction =
   | 'UPDATE_CABINET'
   | 'DELETE_CABINET'
   | 'CANCEL_RENTAL'
+  | 'CREATE_ADMIN'
+  | 'UPDATE_ADMIN'
+  | 'DELETE_ADMIN'
+  | 'ASSIGN_ADMIN_CABINET'
+  | 'UNASSIGN_ADMIN_CABINET'
+  | 'CANCEL_PAIRING'
   | 'LOGIN'
   | 'LOGOUT'
 
@@ -148,7 +156,7 @@ export interface AuditLog {
   success: boolean
 }
 
-export type PairingSessionStatus = 'PENDING' | 'APPROVED' | 'EXPIRED' | 'CANCELLED'
+export type PairingSessionStatus = 'PENDING' | 'APPROVED' | 'EXPIRED' | 'REJECTED'
 
 export interface DiscoveredMcpDevice {
   bus: number

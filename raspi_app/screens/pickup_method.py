@@ -27,24 +27,15 @@ class PickupMethodController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        header = HeaderBar(
-            "CHỌN PHƯƠNG THỨC",
-            on_back=self.go_back,
-            parent=root,
-            back_object_name="btnBack",
-            title_object_name="lblHeaderTitle",
-        )
+        header = HeaderBar("CHỌN PHƯƠNG THỨC", on_back=self.go_back, parent=root, back_object_name="btnBack", title_object_name="lblHeaderTitle")
         layout.addWidget(header)
 
         body = QVBoxLayout()
         body.setContentsMargins(24, 32, 24, 0)
         body.setSpacing(24)
 
-        pin_card = self._make_method_card("pinCard", "Mã PIN", "🔢", "Nhập mã PIN được cung cấp", "#1565C0")
-        qr_card = self._make_method_card("qrCard", "Mã QR", "📱", "Quét mã QR từ điện thoại", "#00897B")
-
-        body.addWidget(pin_card)
-        body.addWidget(qr_card)
+        body.addWidget(self._make_method_card("pinCard", "Mã PIN", "🔢", "Nhập mã PIN được cung cấp", "#1565C0"))
+        body.addWidget(self._make_method_card("qrCard", "Mã QR", "📱", "Quét mã QR từ điện thoại", "#00897B"))
         body.addStretch()
 
         layout.addLayout(body)
@@ -56,14 +47,8 @@ class PickupMethodController(BaseController):
         card.setFixedHeight(300)
         card.setCursor(Qt.PointingHandCursor)
         card.setStyleSheet(
-            f"QFrame#{obj_name} {{"
-            f"  background-color: #111111;"
-            f"  border: 3px solid {accent};"
-            f"  border-radius: 24px;"
-            f"}}"
-            f"QLabel {{ background: transparent; }}"
+            f"QFrame#{obj_name} {{background-color: #111111;border: 3px solid {accent};border-radius: 24px;}}QLabel {{ background: transparent; }}"
         )
-
         c_layout = QVBoxLayout(card)
         c_layout.setContentsMargins(32, 28, 32, 28)
 
@@ -71,19 +56,11 @@ class PickupMethodController(BaseController):
         icon_label.setStyleSheet("border: none; font-size: 48px;")
 
         title = QLabel(label, card)
-        title.setStyleSheet(
-            f"border: none; color: {accent};"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 30px; font-weight: 900;"
-        )
+        title.setStyleSheet(f"border: none; color: {accent};font-family: 'Be Vietnam Pro', Arial, sans-serif;font-size: 30px; font-weight: 900;")
 
         sub = QLabel(desc, card)
         sub.setWordWrap(True)
-        sub.setStyleSheet(
-            "border: none; color: #999;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 18px; font-weight: 500;"
-        )
+        sub.setStyleSheet("border: none; color: #999;font-family: 'Be Vietnam Pro', Arial, sans-serif;font-size: 18px; font-weight: 500;")
 
         c_layout.addWidget(icon_label)
         c_layout.addSpacing(8)
@@ -94,7 +71,6 @@ class PickupMethodController(BaseController):
 
     def on_enter(self, data: dict | None = None) -> None:
         mode = getattr(self.state, "mode", "pickup")
-
         if mode == "deposit":
             self.header_title.setText("CHỌN PHƯƠNG THỨC GỬI ĐỒ")
         else:
@@ -107,8 +83,4 @@ class PickupMethodController(BaseController):
             self.navigate("/otp-pickup")
 
     def _open_qr(self) -> None:
-        if self.state.mode == "deposit":
-            self.navigate("/qr-scan")
-        else:
-            self.navigate("/qr-scan")
-
+        self.navigate("/qr-scan")

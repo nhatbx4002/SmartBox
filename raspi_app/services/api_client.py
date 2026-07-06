@@ -21,7 +21,7 @@ class ApiClient:
 
     def verify_pin(self, code: str, mode: str | None) -> tuple[RentalData, CompartmentData]:
         response = self._session.post(
-            f"{self.base_url}/api/rentals/verify-pin",
+            f"{self.base_url}/api/auth/verify-pin",                              # path mới
             json={"code": code, "mode": mode},
             timeout=self.timeout,
         )
@@ -38,7 +38,11 @@ class ApiClient:
         return self._rental_from_response(data), self._compartment_from_response(data)
 
     def get_plans(self, size: str | None) -> list[Plan]:
-        response = self._session.get(f"{self.base_url}/api/lockers/plans", params={"size": size}, timeout=self.timeout)
+        response = self._session.get(
+            f"{self.base_url}/api/lockers/plans",
+            params={"size": size},
+            timeout=self.timeout,
+        )
         data = self._parse_response(response)
         return [
             Plan(
@@ -47,13 +51,17 @@ class ApiClient:
                 rental_type=str(item.get("rentalType", item.get("rental_type", "ONCE"))).upper(),
                 price=int(item["price"]),
                 duration_days=int(item.get("durationDays", item.get("duration_days", 1))),
-                max_opens=int(item.get("maxOpens") or item.get("max_opens") or 999),
+                max_opens=item.get("maxOpens") or item.get("max_opens") or None,
             )
             for item in data
         ]
 
     def check_availability(self, size: str | None) -> dict:
-        response = self._session.get(f"{self.base_url}/api/lockers/available", params={"size": size}, timeout=self.timeout)
+        response = self._session.get(
+            f"{self.base_url}/api/lockers/available",
+            params={"size": size},
+            timeout=self.timeout,
+        )
         data = self._parse_response(response)
         if isinstance(data, list):
             return {"available": len(data) > 0, "count": len(data), "size": size, "items": data}
@@ -74,20 +82,19 @@ class ApiClient:
         params = {}
         if version is not None:
             params["version"] = version
-        url = f"{self.base_url}/api/cabinets/{cabinet_id}/config"
-        headers = self._headers()
-        print(f"[API] GET {url} (version={version}) headers={headers}")
         response = self._session.get(
-            url,
-            headers=headers,
+            f"{self.base_url}/api/cabinets/{cabinet_id}/config",
+            headers=self._headers(),
             params=params,
             timeout=self.timeout,
         )
-        print(f"[API] Response: {response.status_code} {response.reason}")
         return self._parse_response(response)
 
     def get_pairing_session(self, session_id: str) -> dict:
-        response = self._session.get(f"{self.base_url}/api/pair/{session_id}", timeout=self.timeout)
+        response = self._session.get(
+            f"{self.base_url}/api/pair/{session_id}",
+            timeout=self.timeout,
+        )
         return self._parse_response(response)
 
     def create_rental(
@@ -95,7 +102,6 @@ class ApiClient:
         phone: str | None,
         size: str | None,
         plan_id: str | None,
-        payment_method: str | None,
         cabinet_id: str | None = None,
     ) -> tuple[RentalData, CompartmentData]:
         response = self._session.post(
@@ -104,7 +110,6 @@ class ApiClient:
                 "phone": phone,
                 "size": size,
                 "planId": plan_id,
-                "paymentMethod": payment_method,
                 "cabinetId": cabinet_id,
             },
             timeout=self.timeout,
@@ -130,13 +135,14 @@ class ApiClient:
         )
         return self._parse_response(response)
 
-    def get_payment_result(self, order_code: int) -> dict:
+    def get_payment_result(self, order_code: int) -> tuple[RentalData, CompartmentData]:
         response = self._session.get(
             f"{self.base_url}/api/payments/result/{order_code}",
             headers=self._headers(),
             timeout=self.timeout,
         )
-        return self._parse_response(response)
+        data = self._parse_response(response)
+        return self._rental_from_response(data), self._compartment_from_response(data)
 
     def complete_rental(self, rental_id: str) -> None:
         response = self._session.post(
@@ -145,7 +151,12 @@ class ApiClient:
         )
         if not response.ok:
             data = self._parse_response(response)
-            raise ApiError(data.get("error", {}).get("message", "Không thể kết thúc cho thuê") if isinstance(data, dict) else str(data), response.status_code)
+            raise ApiError(
+                data.get("error", {}).get("message", "Không thể kết thúc cho thuê")
+                if isinstance(data, dict)
+                else str(data),
+                response.status_code,
+            )
 
     def _parse_response(self, response: requests.Response):
         if response.ok:
@@ -177,8 +188,12 @@ class ApiClient:
         return RentalData(
             id=str(rental.get("id", data.get("rentalId", ""))),
             pin=str(data.get("pin", data.get("code", rental.get("code", "")))),
-            compartment_id=str(data.get("compartmentId", rental.get("compartmentId", compartment.get("id", "")))),
-            compartment_name=str(data.get("compartmentName", compartment.get("name", data.get("compartmentId", "")))),
+            compartment_id=str(
+                data.get("compartmentId", rental.get("compartmentId", compartment.get("id", "")))
+            ),
+            compartment_name=str(
+                data.get("compartmentName", compartment.get("name", data.get("compartmentId", "")))
+            ),
             expires_at=str(data.get("expiresAt", rental.get("expiresAt", ""))),
             qr_data=str(data.get("qrData", rental.get("qrToken", ""))),
         )
@@ -186,13 +201,13 @@ class ApiClient:
     def _compartment_from_response(self, data: dict) -> CompartmentData:
         compartment = data.get("compartment", {})
         cabinet = compartment.get("cabinet", {})
-        name = str(data.get("compartmentName", compartment.get("name", data.get("compartmentId", "A1"))))
-        locker_name = str(data.get("lockerName", cabinet.get("name", "Tủ A")))
+        name = str(
+            data.get("compartmentName", compartment.get("name", data.get("compartmentId", "A1")))
+        )
+        cabinet_name = str(data.get("lockerName", cabinet.get("name", "Tủ A")))
         return CompartmentData(
             id=str(data.get("compartmentId", compartment.get("id", name))),
-            name=locker_name + f" - Ngăn {name}",
+            name=cabinet_name + f" - Ngăn {name}",
             size=str(data.get("size", compartment.get("size", "SMALL"))),
-            locker_name=locker_name,
+            cabinet_name=cabinet_name,
         )
-
-

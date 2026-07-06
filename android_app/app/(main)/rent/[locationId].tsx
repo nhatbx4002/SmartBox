@@ -7,7 +7,7 @@ import Button from "../../../src/components/ui/button";
 import Badge from "../../../src/components/ui/badge";
 import SpringPressable from "../../../src/components/ui/spring-pressable";
 import QrCodeDisplay from "../../../src/components/ui/qr-code-display";
-import { PaymentMethod, PricePlan, RentalType, CreatePaymentResult } from "../../../src/types";
+import { PricePlan, RentalType, CreatePaymentResult } from "../../../src/types";
 import { useLocationStore } from "../../../src/store/locationStore";
 import { useRentalStore } from "../../../src/store/rentalStore";
 import { paymentService } from "../../../src/services/payment";
@@ -27,12 +27,12 @@ function formatPlanSubtitle(plan: PricePlan): string {
 
 export default function RentFlowScreen() {
   const router = useRouter();
-  const { locationId } = useLocalSearchParams<{ locationId: string }>();
+  const { locationId, cabinetId: paramCabinetId } = useLocalSearchParams<{ locationId: string; cabinetId?: string }>();
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(1);
   const [selectedSize, setSelectedSize] = useState<"SMALL" | "LARGE" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("VIETQR");
+  const [selectedCabinetId] = useState<string | null>(paramCabinetId ?? null);
   const [createdRentalId, setCreatedRentalId] = useState<string | null>(null);
   const [plansLoading, setPlansLoading] = useState(false);
   const [payment, setPayment] = useState<CreatePaymentResult | null>(null);
@@ -46,6 +46,7 @@ export default function RentFlowScreen() {
   const fetchPlans = useLocationStore((state) => state.fetchPlans);
   const isLocationLoading = useLocationStore((state) => state.isLoading);
   const createRental = useRentalStore((state) => state.createRental);
+  const fetchRentals = useRentalStore((state) => state.fetchRentals);
   const currentRental = useRentalStore((state) => state.currentRental);
   const isRentalLoading = useRentalStore((state) => state.isLoading);
 
@@ -71,11 +72,6 @@ export default function RentFlowScreen() {
     () => sizePlans.find((plan) => plan.id === selectedPlanId) || null,
     [selectedPlanId, sizePlans],
   );
-
-  const activeCabinetId = useMemo(() => {
-    const activeCabinet = selectedLocation?.cabinets.find((cabinet) => cabinet.isOnline);
-    return activeCabinet?.id || selectedLocation?.cabinets[0]?.id;
-  }, [selectedLocation]);
 
   // Đếm ngăn trống theo size trên toàn location (khớp số liệu màn Chi tiết trạm)
   const availability = useMemo(() => {
@@ -121,8 +117,7 @@ export default function RentFlowScreen() {
       const rental = await createRental({
         size: selectedSize,
         planId: selectedPlanId,
-        paymentMethod,
-        cabinetId: activeCabinetId,
+        cabinetId: selectedCabinetId!,
       });
       setCreatedRentalId(rental.id);
       
@@ -180,6 +175,7 @@ export default function RentFlowScreen() {
         const res = await paymentService.getPaymentStatus(payment.orderCode);
         if (res.data.status === 'PAID') {
           clearInterval(interval);
+          fetchRentals();
           setStep(5);
         } else if (res.data.status === 'FAILED') {
           clearInterval(interval);
@@ -358,7 +354,7 @@ export default function RentFlowScreen() {
                   </View>
                   <View className="flex-row justify-between">
                     <Text className="text-small text-text-secondary">Thanh toán</Text>
-                    <Text className="text-small-bold text-white">{paymentMethod === "VIETQR" ? "VietQR (PayOS)" : paymentMethod}</Text>
+                    <Text className="text-small-bold text-white">PayOS</Text>
                   </View>
                   <View className="flex-row justify-between pt-one">
                     <Text className="text-body-bold text-white">Tổng tiền</Text>
@@ -366,19 +362,9 @@ export default function RentFlowScreen() {
                   </View>
                 </View>
 
-                <View className="bg-surface border border-border rounded-panel overflow-hidden">
-                  {(["VIETQR", "MOMO", "ZALOPAY"] as PaymentMethod[]).map((method, index, arr) => (
-                    <Pressable
-                      key={method}
-                      onPress={() => setPaymentMethod(method)}
-                      className={`flex-row justify-between items-center p-four ${index < arr.length - 1 ? "border-b border-border/40" : ""}`}
-                    >
-                      <Text className="text-body text-white">{method}</Text>
-                      <View className={`w-5 h-5 rounded-full border items-center justify-center ${paymentMethod === method ? "border-brand" : "border-border"}`}>
-                        {paymentMethod === method ? <View className="w-3 h-3 rounded-full bg-brand" /> : null}
-                      </View>
-                    </Pressable>
-                  ))}
+                <View className="bg-surface border border-border rounded-panel p-four">
+                  <Text className="text-body text-white">PayOS</Text>
+                  <Text className="text-caption text-text-secondary mt-one">Quét mã QR thanh toán</Text>
                 </View>
 
                 <View className="flex-row gap-three">
@@ -394,7 +380,7 @@ export default function RentFlowScreen() {
 
             {step === 4 && payment && (
               <View className="gap-five items-center pt-four">
-                <Text className="text-h3 text-white font-bold text-center">Quét mã VietQR để thanh toán</Text>
+                <Text className="text-h3 text-white font-bold text-center">Quét mã QR để thanh toán</Text>
                 
                 <QrCodeDisplay
                   value={payment.qrCode}

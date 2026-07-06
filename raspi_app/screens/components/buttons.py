@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QPushButton, QWidget
 
@@ -30,10 +28,8 @@ class PrimaryButton(QPushButton):
         color: str = "orange",
     ):
         super().__init__(text, parent)
-
         if object_name:
             self.setObjectName(object_name)
-
         self.setFixedHeight(height)
         self.setCursor(Qt.PointingHandCursor)
 
@@ -75,10 +71,8 @@ class SecondaryButton(QPushButton):
         radius: int = BUTTON_RADIUS,
     ):
         super().__init__(text, parent)
-
         if object_name:
             self.setObjectName(object_name)
-
         self.setFixedHeight(height)
         self.setCursor(Qt.PointingHandCursor)
         self.setStyleSheet(

@@ -1,15 +1,7 @@
-from __future__ import annotations
-
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QGridLayout, QPushButton, QWidget
 
-from screens.components.theme import (
-    COLOR_BORDER,
-    COLOR_CARD,
-    COLOR_DISABLED_BG,
-    COLOR_TEXT,
-    FONT_FAMILY,
-)
+from screens.components.theme import COLOR_BORDER, COLOR_CARD, COLOR_DISABLED_BG, COLOR_TEXT, FONT_FAMILY
 
 
 class KeypadButton(QPushButton):
@@ -24,10 +16,8 @@ class KeypadButton(QPushButton):
         height: int = 96,
     ):
         super().__init__(text, parent)
-
         if object_name:
             self.setObjectName(object_name)
-
         self.setFixedSize(width, height)
         self.setCursor(Qt.PointingHandCursor)
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable, TypeVar
 
 from PySide6.QtCore import QEvent, QObject, QRunnable, Qt, QThreadPool, Signal, QObject as _QObject
-from PySide6.QtWidgets import QApplication, QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QWidget
 
 from services.config_loader import get_config_value
 
@@ -55,6 +55,17 @@ class BaseController:
     def on_config_updated(self) -> None:
         pass
 
+    def run_bg(self, fn: Callable, on_done: Callable[[Any], None], on_error: Callable[[Exception], None]) -> None:
+        def _guarded_done(result):
+            if self.app.current_route == self.route:
+                on_done(result)
+
+        def _guarded_error(exc):
+            if self.app.current_route == self.route:
+                on_error(exc)
+
+        run_in_thread(fn, _guarded_done, _guarded_error)
+
     def navigate(self, route: str, data: dict | None = None, replace: bool = False) -> None:
         self.app.navigate(route, data=data, replace=replace)
 
@@ -76,7 +87,6 @@ class BaseController:
     def set_clickable(self, widget: QWidget, callback: Callable[[], None]) -> None:
         click_filter = _ClickFilter(callback, widget)
         self._click_filters.append(click_filter)
-
         targets = [widget, *widget.findChildren(QWidget)]
         for target in targets:
             target.setCursor(Qt.PointingHandCursor)
@@ -91,93 +101,11 @@ class BaseController:
         widget.setProperty("selected", "true" if selected else "false")
         self.refresh_style(widget)
 
-    def _make_header(self, title: str, back_fn: Callable[[], None] | None = None) -> QFrame:
-        header = QFrame(self.widget)
-        header.setObjectName("headerFrame")
-        header.setFixedHeight(80)
-        header.setStyleSheet("""
-            QFrame#headerFrame {
-                background-color: #0A0A0A;
-                border: none;
-                border-bottom: 1px solid #222;
-            }
-        """)
-
-        h_layout = QHBoxLayout(header)
-        h_layout.setContentsMargins(16, 0, 16, 0)
-
-        if back_fn is not None:
-            btn_back = QPushButton("\u2190", header)
-            btn_back.setObjectName("btnBack")
-            btn_back.setFixedSize(88, 88)
-            btn_back.setCursor(Qt.PointingHandCursor)
-            btn_back.setStyleSheet("""
-                QPushButton {
-                    background: transparent;
-                    border: none;
-                    color: #E8E8E8;
-                    font-size: 32px;
-                }
-                QPushButton:pressed {
-                    color: #FF6600;
-                }
-            """)
-            btn_back.clicked.connect(back_fn)
-            h_layout.addWidget(btn_back)
-
-        title_label = QLabel(title, header)
-        title_label.setStyleSheet(
-            "background: transparent; border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 26px; font-weight: 900;"
-        )
-        h_layout.addWidget(title_label)
-        h_layout.addStretch()
-
-        return header
-
-    def _make_btn(
-        self, text: str, bg: str = "#FF6600", text_color: str = "#FFF",
-        height: int = 88, radius: int = 18,
-    ) -> QPushButton:
-        btn = QPushButton(text)
-        btn.setFixedHeight(height)
-        btn.setCursor(Qt.PointingHandCursor)
-        btn.setStyleSheet(
-            f"QPushButton {{"
-            f"  background-color: {bg}; color: {text_color};"
-            f"  border: none; border-radius: {radius}px;"
-            f"  font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            f"  font-size: 24px; font-weight: 800;"
-            f"}}"
-            f"QPushButton:disabled {{"
-            f"  background-color: #333; color: #777;"
-            f"}}"
-        )
-        return btn
-
-    def _make_card(
-        self, bg: str = "#1C1B1B", border_color: str | None = None,
-        radius: int = 20, min_height: int = 160,
-    ) -> QFrame:
-        card = QFrame()
-        border = f"border: 3px solid {border_color};" if border_color else "border: 3px solid #2A2A2A;"
-        card.setMinimumHeight(min_height)
-        card.setStyleSheet(
-            f"QFrame {{"
-            f"  background-color: {bg}; {border}"
-            f"  border-radius: {radius}px;"
-            f"}}"
-            f"QLabel {{ background: transparent; }}"
-        )
-        return card
-
     def _bind_network_monitor(self) -> None:
         monitor = getattr(self.app, "network_monitor", None)
         if monitor is None:
             self._apply_network_status(self.network_status)
             return
-
         try:
             monitor.status_changed.connect(self._apply_network_status)
         except Exception:
@@ -214,11 +142,7 @@ class BaseController:
         detail_message = message
         if status == "OFFLINE" and "OFFLINE" not in detail_message.upper():
             detail_message = f"{message}\nTrạng thái mạng: {status}"
-        self._error_dialog.show_error(
-            detail_message,
-            title=title,
-            hotline=f"Hotline: {hotline} \u2022 {status}",
-        )
+        self._error_dialog.show_error(detail_message, title=title, hotline=f"Hotline: {hotline} • {status}")
 
     def hide_error_dialog(self) -> None:
         if hasattr(self, "_error_dialog") and self._error_dialog:

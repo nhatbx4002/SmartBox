@@ -41,6 +41,7 @@ export function Badge({ variant = 'muted', children, className, dot }: BadgeProp
 
 export function getRentalStatusVariant(status: RentalStatus): BadgeVariant {
   const map: Record<RentalStatus, BadgeVariant> = {
+    PENDING: 'warning',
     ACTIVE: 'success',
     COMPLETED: 'muted',
     EXPIRED: 'error',
@@ -73,9 +74,10 @@ export function getCabinetStatusVariant(status: CabinetStatus): BadgeVariant {
 export function getNotificationTypeVariant(type: NotificationType): BadgeVariant {
   const map: Record<NotificationType, BadgeVariant> = {
     RENTAL_EXPIRED: 'error',
+    RENTAL_STARTED: 'info',
     PAYMENT_SUCCESS: 'success',
     CABINET_OFFLINE: 'warning',
-    SYSTEM: 'info',
+    HARDWARE_FAULT: 'error',
   }
   return map[type]
 }

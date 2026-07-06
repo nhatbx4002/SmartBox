@@ -24,14 +24,10 @@ class PaymentController(BaseController):
         self.plan_info_label = self.child("lblPlanInfo", QLabel)
         self.pay_button = self.child("btnPayNow", QPushButton)
         self.pay_button_text = self.pay_button.text()
-        self.payos_card = self.child("btnPaymentPayOS", QPushButton)
-
         self.error_banner = InlineError(self.widget)
         self.error_banner.setGeometry(40, 860, 640, 64)
 
         self.pay_button.clicked.connect(self._pay_now)
-        self.state.payment_method = "PAYOS"
-        self.payos_card.setChecked(True)
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
@@ -42,83 +38,44 @@ class PaymentController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # ── Header ──────────────────────────────────────────────
-        header = HeaderBar(
-            "THANH TOÁN",
-            on_back=lambda: self.navigate("/rent-phone"),
-            parent=root,
-            back_object_name="btnBack",
-        )
+        header = HeaderBar("THANH TOÁN", on_back=lambda: self.navigate("/rent-phone"), parent=root, back_object_name="btnBack")
         layout.addWidget(header)
-        # ── Body ────────────────────────────────────────────────
+
         body = QVBoxLayout()
         body.setContentsMargins(32, 36, 32, 32)
         body.setSpacing(24)
 
-        amount_card = AmountCard(
-            title="Số tiền thanh toán",
-            amount="0đ",
-            parent=root,
-            height=200,
-            radius=24,
-            amount_font_size=80,
-        )
+        amount_card = AmountCard(title="Số tiền thanh toán", amount="0đ", parent=root, height=200, radius=24, amount_font_size=80)
         body.addWidget(amount_card)
 
-        # Thông tin gói
         self.lbl_plan = QLabel("", root)
         self.lbl_plan.setObjectName("lblPlanInfo")
         self.lbl_plan.setAlignment(Qt.AlignCenter)
-        self.lbl_plan.setStyleSheet(
-            "background: transparent; border: none; color: #B0B0B0;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;"
-        )
+        self.lbl_plan.setStyleSheet("background: transparent; border: none; color: #B0B0B0;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 20px; font-weight: 600;")
         body.addWidget(self.lbl_plan)
 
-        # Tiêu đề phương thức
         methods_title = QLabel("Phương thức thanh toán", root)
         methods_title.setAlignment(Qt.AlignCenter)
-        methods_title.setStyleSheet(
-            "background: transparent; border: none; color: #E8E8E8;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 800;"
-        )
+        methods_title.setStyleSheet("background: transparent; border: none; color: #E8E8E8;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 800;")
         body.addWidget(methods_title)
 
-        # Card PayOS duy nhất — lớn, rõ ràng
         payos_card = QPushButton("PayOS", root)
         payos_card.setObjectName("btnPaymentPayOS")
         payos_card.setFixedHeight(180)
         payos_card.setCursor(Qt.PointingHandCursor)
         payos_card.setCheckable(True)
         payos_card.setChecked(True)
-        payos_card.setStyleSheet(
-            "QPushButton {"
-            "  background-color: #1C1B1B; color: #FFFFFF;"
-            "  border: 3px solid #FF6600; border-radius: 28px;"
-            "  font-size: 40px; font-weight: 900;"
-            "  font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "}"
-            "QPushButton:pressed { background-color: #232323; }"
-        )
+        payos_card.setStyleSheet("QPushButton {background-color: #1C1B1B; color: #FFFFFF;border: 3px solid #FF6600; border-radius: 28px;font-size: 40px; font-weight: 900;font-family: 'Be Vietnam Pro', Arial, sans-serif;}QPushButton:pressed { background-color: #232323; }")
         body.addWidget(payos_card)
 
-        # Gợi ý hướng dẫn
         payos_hint = QLabel("Quét mã QR PayOS ở bước tiếp theo để hoàn tất thanh toán", root)
         payos_hint.setAlignment(Qt.AlignCenter)
         payos_hint.setWordWrap(True)
-        payos_hint.setStyleSheet(
-            "background: transparent; border: none; color: #888;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;"
-        )
+        payos_hint.setStyleSheet("background: transparent; border: none; color: #888;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 18px; font-weight: 500;")
         body.addWidget(payos_hint)
         body.addStretch(1)
 
-        # CTA button
-        self.btn_pay = PrimaryButton(
-            "THANH TOÁN NGAY",
-            object_name="btnPayNow",
-            color="orange",
-        )
+        self.btn_pay = PrimaryButton("THANH TOÁN NGAY", object_name="btnPayNow", color="orange")
         body.addWidget(BottomActionBar(self.btn_pay))
 
         layout.addLayout(body, 1)
@@ -128,7 +85,6 @@ class PaymentController(BaseController):
         if not self.state.selected_plan:
             self.navigate("/rent-plan", replace=True)
             return
-
         self.error_banner.clear()
         self.amount_card.set_amount(format_currency(self.state.selected_plan.price))
         size_text = "Size 1" if self.state.selected_size == "SMALL" else "Size 2"
@@ -137,16 +93,12 @@ class PaymentController(BaseController):
         self._apply_selection()
 
     def _apply_selection(self) -> None:
-        self.state.payment_method = "PAYOS"
-        self.payos_card.setChecked(True)
         self.pay_button.setEnabled(True)
 
     def _pay_now(self) -> None:
         self.error_banner.clear()
-        self.state.payment_method = "PAYOS"
         if not self.state.selected_plan:
             return
-
         self.pay_button.setEnabled(False)
         self.pay_button.setText("ĐANG XỬ LÝ...")
 
@@ -156,10 +108,7 @@ class PaymentController(BaseController):
         cabinet_id = getattr(self.app, "cabinet_id", None)
 
         def _fetch():
-            rental, compartment = self.api_client.create_rental(
-                phone=phone, size=size, plan_id=plan_id,
-                payment_method="PAYOS", cabinet_id=cabinet_id,
-            )
+            rental, compartment = self.api_client.create_rental(phone=phone, size=size, plan_id=plan_id, cabinet_id=cabinet_id)
             payment = self.api_client.create_payment(rental.id, source="KIOSK")
             return rental, compartment, payment
 
@@ -192,8 +141,4 @@ class PaymentController(BaseController):
     def _show_payment_error_dialog(self, message: str) -> None:
         self.pay_button.setText(self.pay_button_text)
         self.pay_button.setEnabled(True)
-        self.show_error_dialog(
-            message=message,
-            title="LỖI GIAO DỊCH",
-            on_retry=self._pay_now,
-        )
+        self.show_error_dialog(message=message, title="LỖI GIAO DỊCH", on_retry=self._pay_now)

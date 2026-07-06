@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.footer_bar import FooterBar
 
@@ -29,7 +29,6 @@ class HomeController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # Header vùng logo — 130px
         header = QFrame(root)
         header.setFixedHeight(130)
         header.setStyleSheet("background: transparent; border: none;")
@@ -56,16 +55,15 @@ class HomeController(BaseController):
         h_layout.addWidget(tagline)
         layout.addWidget(header)
 
-        # Body cards — left/right 20px, bottom 68px (để hở footer 48px + buffer 20px)
         body = QVBoxLayout()
         body.setContentsMargins(20, 8, 20, 14)
         body.setSpacing(14)
 
         cards = [
-            ("SendCard",    "GỬI ĐỒ",   "#FF6600", "Gửi đồ vào tủ an toàn",          None),
-            ("ReceiveCard", "LẤY ĐỒ",  "#1565C0", "Nhận đồ bằng mã PIN hoặc QR",    None),
-            ("RentCard",    "THUÊ TỦ",  "#2E7D32", "Thuê ngăn tủ theo nhu cầu",       None),
-            ("SupportCard", "HỖ TRỢ",  "#1C1B1B", "Cần hỗ trợ? Liên hệ ngay",       "#3A3A3A"),
+            ("SendCard", "GỬI ĐỒ", "#FF6600", "Gửi đồ vào tủ an toàn", None),
+            ("ReceiveCard", "LẤY ĐỒ", "#1565C0", "Nhận đồ bằng mã PIN hoặc QR", None),
+            ("RentCard", "THUÊ TỦ", "#2E7D32", "Thuê ngăn tủ theo nhu cầu", None),
+            ("SupportCard", "HỖ TRỢ", "#1C1B1B", "Cần hỗ trợ? Liên hệ ngay", "#3A3A3A"),
         ]
 
         for obj_name, label, bg, subtitle, border_color in cards:
@@ -110,14 +108,11 @@ class HomeController(BaseController):
 
         layout.addLayout(body, 1)
 
-        self._footer_bar = FooterBar(
-            status="OFFLINE",
-            version="Version v1.0",
-            parent=root,
-        )
+        self._footer_bar = FooterBar(status="OFFLINE", version="Version v1.0", parent=root)
         layout.addWidget(self._footer_bar)
 
         return root
+
     def _apply_network_status(self, status: str) -> None:
         super()._apply_network_status(status)
         if hasattr(self, "_footer_bar"):
@@ -132,10 +127,7 @@ class HomeController(BaseController):
         def _fetch():
             result = self.api_client.check_availability(None)
             items = result.get("items", [])
-            return {
-                "SMALL": sum(1 for i in items if i.get("size") == "SMALL"),
-                "LARGE": sum(1 for i in items if i.get("size") == "LARGE"),
-            }
+            return {"SMALL": sum(1 for i in items if i.get("size") == "SMALL"), "LARGE": sum(1 for i in items if i.get("size") == "LARGE")}
 
         def _on_done(result):
             self.state.cached_availability = result
@@ -149,10 +141,9 @@ class HomeController(BaseController):
         self._check_not_configured()
 
     def _is_ready(self) -> bool:
-        has_compartments = len(self.gpio_controller.pin_target_map) > 0
+        has_compartments = len(self.gpio_controller.lock_targets) > 0
         cabinet_status = self.config.get("cabinet_status")
-        return has_compartments and cabinet_status in ("ACTIVE", "OFFLINE")
-
+        return has_compartments and cabinet_status == "ACTIVE"
     def _check_not_configured(self) -> None:
         if self._is_ready():
             self._hide_overlay()
@@ -168,6 +159,10 @@ class HomeController(BaseController):
             overlay_title = "TỦ TẠM NGƯNG"
             overlay_msg = "Tủ đang tạm ngưng hoạt động.\nVui lòng liên hệ quản trị viên."
             overlay_status = "Đang chờ kích hoạt lại..."
+        elif cabinet_status == "OFFLINE":
+            overlay_title = "MẤT KẾT NỐI"
+            overlay_msg = "Tủ đang mất kết nối hệ thống.\nVui lòng thử lại sau hoặc liên hệ hỗ trợ."
+            overlay_status = "Đang chờ kết nối lại..."
         else:
             overlay_title = "CHƯA CẤU HÌNH NGĂN"
             overlay_msg = "Tủ đang trong giai đoạn cấu hình.\nVui lòng liên hệ quản trị viên để thiết lập ngăn tủ."
@@ -187,15 +182,8 @@ class HomeController(BaseController):
 
         card = QFrame(overlay)
         card.setFixedSize(card_width, card_height)
-        card.move(
-            (overlay_width - card_width) // 2,
-            (overlay_height - card_height) // 2,
-        )
-        card.setStyleSheet(
-            "background-color: #1C1C1B;"
-            "border: 2px solid #FF6600;"
-            "border-radius: 20px;"
-        )
+        card.move((overlay_width - card_width) // 2, (overlay_height - card_height) // 2)
+        card.setStyleSheet("background-color: #1C1C1B;border: 2px solid #FF6600;border-radius: 20px;")
 
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(32, 32, 32, 32)
@@ -209,41 +197,23 @@ class HomeController(BaseController):
 
         title = QLabel(overlay_title, card)
         title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet(
-            "background: transparent; border: none; color: #FF6600;"
-            "font-family: 'Be Vietnam Pro', 'Arial', sans-serif;"
-            "font-size: 28px; font-weight: 900;"
-        )
+        title.setStyleSheet("background: transparent; border: none; color: #FF6600;font-family: 'Be Vietnam Pro', 'Arial', sans-serif;font-size: 28px; font-weight: 900;")
         card_layout.addWidget(title)
 
         msg = QLabel(overlay_msg, card)
         msg.setAlignment(Qt.AlignCenter)
         msg.setWordWrap(True)
-        msg.setStyleSheet(
-            "background: transparent; border: none; color: #B0B0B0;"
-            "font-family: 'Be Vietnam Pro', 'Arial', sans-serif;"
-            "font-size: 16px; font-weight: 500;"
-        )
+        msg.setStyleSheet("background: transparent; border: none; color: #B0B0B0;font-family: 'Be Vietnam Pro', 'Arial', sans-serif;font-size: 16px; font-weight: 500;")
         card_layout.addWidget(msg)
 
-        hotline_label = QLabel(
-            f"Hotline: {self.config.get('support', {}).get('hotline', '1900 1234')}", card
-        )
+        hotline_label = QLabel(f"Hotline: {self.config.get('support', {}).get('hotline', '1900 1234')}", card)
         hotline_label.setAlignment(Qt.AlignCenter)
-        hotline_label.setStyleSheet(
-            "background: transparent; border: none; color: #FFFFFF;"
-            "font-family: 'Be Vietnam Pro', 'Arial', sans-serif;"
-            "font-size: 15px; font-weight: 700;"
-        )
+        hotline_label.setStyleSheet("background: transparent; border: none; color: #FFFFFF;font-family: 'Be Vietnam Pro', 'Arial', sans-serif;font-size: 15px; font-weight: 700;")
         card_layout.addWidget(hotline_label)
 
         status_label = QLabel(overlay_status, card)
         status_label.setAlignment(Qt.AlignCenter)
-        status_label.setStyleSheet(
-            "background: transparent; border: none; color: #00FF41;"
-            "font-family: 'Be Vietnam Pro', 'Arial', sans-serif;"
-            "font-size: 13px; font-weight: 600;"
-        )
+        status_label.setStyleSheet("background: transparent; border: none; color: #00FF41;font-family: 'Be Vietnam Pro', 'Arial', sans-serif;font-size: 13px; font-weight: 600;")
         card_layout.addWidget(status_label)
 
         overlay.show()

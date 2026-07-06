@@ -36,7 +36,6 @@ class QRScanController(BaseController):
         self.processing = False
         self.last_token = ""
         self.frame_count = 0
-        self.preview_label.setScaledContents(False)
         self._detect_timeout_count = 0
 
     def _build_ui(self) -> QWidget:
@@ -48,12 +47,7 @@ class QRScanController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        header = HeaderBar(
-            "Quét mã QR",
-            on_back=lambda: self.go_back(),
-            parent=root,
-            back_object_name="btnBack",
-        )
+        header = HeaderBar("Quét mã QR", on_back=lambda: self.go_back(), parent=root, back_object_name="btnBack")
         layout.addWidget(header)
 
         body = QVBoxLayout()
@@ -74,7 +68,7 @@ class QRScanController(BaseController):
         p_layout.addWidget(self.lbl_preview)
         body.addWidget(preview_frame, alignment=Qt.AlignCenter)
 
-        self.lbl_status = QLabel("S\u1eb5n s\u00e0ng qu\u00e9t QR", root)
+        self.lbl_status = QLabel("Sẵn sàng quét QR", root)
         self.lbl_status.setObjectName("statusLabel")
         self.lbl_status.setAlignment(Qt.AlignCenter)
         self.lbl_status.setStyleSheet("background: transparent; border: none; color: #00FF41; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 700;")
@@ -114,8 +108,6 @@ class QRScanController(BaseController):
         if not self.scanner.start():
             self._show_camera_error("Không thể khởi động camera")
             return
-
-        print(f"[qr_scan] camera ready, scanning at {self.scan_interval_ms}ms")
         self.status_label.setText("Sẵn sàng quét QR")
         self.retry_button.hide()
         self.timer.start(self.scan_interval_ms)
@@ -139,19 +131,14 @@ class QRScanController(BaseController):
 
         if frame.image is not None:
             self.frame_count += 1
-            if self.frame_count % 30 == 0:
-                print(f"[qr_scan] streaming frames={self.frame_count}")
             pixmap = QPixmap.fromImage(frame.image).scaled(
-                self.preview_label.size(),
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
+                self.preview_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation,
             )
             self.preview_label.setPixmap(pixmap)
             self.preview_label.repaint()
 
             if frame.detected and not frame.token:
                 self._detect_timeout_count = 0
-                print("[qr_scan] QR DETECTED but NOT DECODED (move closer / steady / lighting)")
                 self.status_label.setText("Đã thấy mã QR — giữ yên")
                 self.hint_label.setText("Giữ mã QR gần hơn và đảm bảo đủ sáng")
             elif not frame.detected and not self.processing:
@@ -165,25 +152,21 @@ class QRScanController(BaseController):
                     self.hint_label.setText("Đặt mã QR vào giữa khung quét")
 
         if frame.token:
-            print(f"[qr_scan] QR DECODED token='{frame.token}'")
             self._handle_scan(frame.token)
 
     def _handle_scan(self, token: str) -> None:
         if self.processing or token == self.last_token:
             return
-
         self.processing = True
         self.last_token = token
         self.timer.stop()
         self.status_label.setText("Đang xác minh mã QR...")
-        print(f"[qr_scan] verifying token len={len(token)}")
 
         def _fetch():
             return self.api_client.verify_qr(token)
 
         def _on_done(result):
             rental, compartment = result
-            print("[qr_scan] verified OK -> /locker-open")
             self.scanner.stop()
             self.state.mode = "pickup"
             self.state.rental_data = rental
@@ -192,7 +175,6 @@ class QRScanController(BaseController):
 
         def _on_error(exc):
             msg = exc.message if isinstance(exc, ApiError) else str(exc)
-            print(f"[qr_scan] verify failed: {msg}")
             self._show_scan_error(msg or "Không thể xác minh mã QR. Vui lòng thử lại.")
 
         run_in_thread(_fetch, _on_done, _on_error)
@@ -208,10 +190,3 @@ class QRScanController(BaseController):
         self.status_label.setText(message or "Mã QR không hợp lệ. Vui lòng thử lại.")
         self.hint_label.setText("Vui lòng đưa mã QR hợp lệ vào khung quét")
         self.retry_button.show()
-
-
-def QHBoxLayout3(parent, left, top, right, bottom):
-    from PySide6.QtWidgets import QHBoxLayout
-    l = QHBoxLayout(parent)
-    l.setContentsMargins(left, top, right, bottom)
-    return l

@@ -15,7 +15,7 @@ class InlineError(QWidget):
         layout.setContentsMargins(12, 0, 12, 0)
         layout.setSpacing(8)
 
-        self.lbl_icon = QLabel("\u26a0\ufe0f")
+        self.lbl_icon = QLabel("⚠️")
         self.lbl_icon.setFixedWidth(28)
         self.lbl_icon.setAlignment(Qt.AlignCenter)
         self.lbl_icon.setObjectName("lblErrorIcon")

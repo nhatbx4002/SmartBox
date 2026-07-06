@@ -191,7 +191,7 @@ export default function LocationsScreen() {
 
                       <View className="flex-row gap-three mt-three">
                         <Pressable
-                          onPress={() => router.push(`/rent/${item.id}` as any)}
+                          onPress={() => router.push(`/station/${item.id}` as any)}
                           className="flex-1 h-10 bg-brand rounded-input items-center justify-center"
                         >
                           <Text className="text-small-bold text-white">Thuê ngay</Text>

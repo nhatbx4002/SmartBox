@@ -41,7 +41,7 @@ class ErrorController(BaseController):
         body.setSpacing(16)
         body.setAlignment(Qt.AlignCenter)
 
-        icon_label = QLabel("\u26a0\ufe0f", root)
+        icon_label = QLabel("⚠️", root)
         icon_label.setAlignment(Qt.AlignCenter)
         icon_label.setFixedHeight(100)
         icon_label.setStyleSheet("background: transparent; border: none; font-size: 80px;")
@@ -74,7 +74,7 @@ class ErrorController(BaseController):
 
         body.addSpacing(32)
 
-        btn_retry = QPushButton("TH\u1eec L\u1ea0I")
+        btn_retry = QPushButton("THỬ LẠI")
         btn_retry.setObjectName("btnRetry")
         btn_retry.setFixedHeight(80)
         btn_retry.setCursor(Qt.PointingHandCursor)
@@ -86,7 +86,7 @@ class ErrorController(BaseController):
 
     def on_enter(self, data: dict | None = None) -> None:
         data = data or {}
-        message = data.get("message", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau..")
+        message = data.get("message", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.")
         title = data.get("title", "ĐÃ XẢY RA LỖI")
         if self.network_status == "OFFLINE" and "OFFLINE" not in message.upper():
             message = f"{message}\nTrạng thái mạng: {self.network_status}"

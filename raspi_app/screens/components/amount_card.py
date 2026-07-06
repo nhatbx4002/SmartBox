@@ -1,16 +1,7 @@
-from __future__ import annotations
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
 
-from screens.components.theme import (
-    COLOR_BORDER,
-    COLOR_CARD,
-    COLOR_MUTED,
-    COLOR_PRIMARY,
-    COLOR_TEXT,
-    FONT_FAMILY,
-)
+from screens.components.theme import COLOR_BORDER, COLOR_CARD, COLOR_MUTED, COLOR_PRIMARY, FONT_FAMILY
 
 
 class AmountCard(QFrame):
@@ -27,7 +18,6 @@ class AmountCard(QFrame):
         amount_font_size: int = 80,
     ):
         super().__init__(parent)
-
         self.setObjectName(object_name)
         self.setFixedHeight(height)
         self.setStyleSheet(
@@ -36,10 +26,7 @@ class AmountCard(QFrame):
             f"border: 2px solid {COLOR_BORDER};"
             f"border-radius: {radius}px;"
             "}"
-            "QLabel {"
-            "background: transparent;"
-            "border: none;"
-            "}"
+            "QLabel {background: transparent;border: none;}"
         )
 
         layout = QVBoxLayout(self)
@@ -51,8 +38,7 @@ class AmountCard(QFrame):
         self.title_label.setStyleSheet(
             f"color: {COLOR_MUTED};"
             f"font-family: {FONT_FAMILY};"
-            "font-size: 18px;"
-            "font-weight: 500;"
+            "font-size: 18px;font-weight: 500;"
         )
 
         self.amount_label = QLabel(amount, self)

@@ -38,12 +38,7 @@ class OtpController(BaseController):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        header = HeaderBar(
-            "Nhập mẫ PIN",
-            on_back=lambda: self.go_back(),
-            parent=root,
-            back_object_name="btnBack",
-        )
+        header = HeaderBar("Nhập mã PIN", on_back=lambda: self.go_back(), parent=root, back_object_name="btnBack")
         layout.addWidget(header)
 
         body = QVBoxLayout()
@@ -52,18 +47,12 @@ class OtpController(BaseController):
 
         instruction = QLabel("Vui lòng nhập mã xác thực", root)
         instruction.setAlignment(Qt.AlignCenter)
-        instruction.setStyleSheet(
-            "background: transparent; border: none; color: #888;"
-            "font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 600;"
-        )
+        instruction.setStyleSheet("background: transparent; border: none; color: #888;font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 22px; font-weight: 600;")
         body.addWidget(instruction)
 
         code_card = QFrame(root)
         code_card.setFixedHeight(120)
-        code_card.setStyleSheet(
-            "QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 24px; }"
-            "QLabel { background: transparent; border: none; }"
-        )
+        code_card.setStyleSheet("QFrame { background-color: #1C1B1B; border: 2px solid #2A2A2A; border-radius: 24px; }QLabel { background: transparent; border: none; }")
 
         code_layout = QVBoxLayout(code_card)
         code_layout.setAlignment(Qt.AlignCenter)
@@ -71,20 +60,11 @@ class OtpController(BaseController):
         lbl_code = QLabel("------", code_card)
         lbl_code.setObjectName("lblCode")
         lbl_code.setAlignment(Qt.AlignCenter)
-        lbl_code.setStyleSheet(
-            "color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif;"
-            "font-size: 52px; font-weight: 900; letter-spacing: 8px;"
-        )
+        lbl_code.setStyleSheet("color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif;font-size: 52px; font-weight: 900; letter-spacing: 8px;")
         code_layout.addWidget(lbl_code)
         body.addWidget(code_card)
 
-        keypad = NumericKeypad(
-            parent=root,
-            button_width=200,
-            button_height=120,
-            h_spacing=18,
-            v_spacing=16,
-        )
+        keypad = NumericKeypad(parent=root, button_width=200, button_height=120, h_spacing=18, v_spacing=16)
         body.addWidget(keypad)
 
         body.addSpacing(24)
@@ -141,7 +121,6 @@ class OtpController(BaseController):
     def _confirm(self) -> None:
         if len(self.code) != 6:
             return
-
         self._set_confirm_loading(True)
         code = self.code
 
@@ -171,7 +150,6 @@ class OtpPickupController(OtpController):
     def _confirm(self) -> None:
         if len(self.code) != 6:
             return
-
         self._set_confirm_loading(True)
         code = self.code
 
