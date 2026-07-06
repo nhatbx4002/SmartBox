@@ -72,6 +72,7 @@ coverage/
 .yarn/
 .pnpm-store/
 .understand-anything/
+backend/src/generated/prisma/
 
 # Ignore all markdown files except README.md
 *.md
