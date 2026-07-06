@@ -46,7 +46,7 @@ class NetworkStatusMonitor(QObject):
             state = (Path("/sys/class/net") / interface / "operstate").read_text(
                 encoding="utf-8"
             ).strip().lower()
-            return state in {"up", "unknown"}
+            return state in {"up", "unknown", "dormant"}
         except OSError:
             return False
 
