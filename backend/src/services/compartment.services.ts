@@ -1,5 +1,5 @@
 import { CompartmentSize, LockerAction } from '../generated/prisma';
-import { NotFoundError } from '../lib/errors';
+import { NotFoundError, BadRequestError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
 import { publishMqtt } from '../lib/mqtt';
 import { emitCompartmentStatus } from '../lib/socket';
@@ -83,6 +83,9 @@ export async function deleteCompartment(
 ) {
     const existing = await prisma.compartment.findUnique({ where: { id: compId } });
     if (!existing) throw new NotFoundError('Compartment not found!');
+
+    const rentalCount = await prisma.rental.count({ where: { compartmentId: compId } });
+    if (rentalCount > 0) throw new BadRequestError('Cannot delete compartment with existing rental history');
 
     const configVersion = await prisma.$transaction(async (tx) =>
     {

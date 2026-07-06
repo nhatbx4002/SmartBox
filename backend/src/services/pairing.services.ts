@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { PairingStatus , CabinetStatus } from '../generated/prisma';
+import { PairingStatus , CabinetStatus, PairingSession } from '../generated/prisma';
 import { NotFoundError, BadRequestError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
 import { signCabinetToken } from '../lib/jwt';
@@ -58,13 +58,7 @@ export async function startPairing(data: {
     };
 }
 
-async function expireIfNeeded(
-    session: {
-        id: string;
-        status: PairingStatus;
-        expiresAt: Date
-    }
-) {
+async function expireIfNeeded(session: PairingSession) {
     if (session.status === PairingStatus.PENDING && session.expiresAt < new Date()) {
         return prisma.pairingSession.update({
             where: { id: session.id },
@@ -77,7 +71,22 @@ async function expireIfNeeded(
 export async function getPairingSession(sessionId: string) {
     const session = await prisma.pairingSession.findUnique({where: { id: sessionId } });
     if (!session) throw new NotFoundError('Pairing session not found!');
-    return expireIfNeeded(session);
+    const current = await expireIfNeeded(session);
+
+    if (current.status === PairingStatus.APPROVED && current.cabinetId) {
+        const cabinet = await prisma.cabinet.findUnique({ where: { id: current.cabinetId } });
+        if (cabinet) {
+            return {
+                ...current,
+                cabinetId: cabinet.id,
+                jwt: signCabinetToken({ cabinetId: cabinet.id }),
+                mqttConfig: getMqttConfig(),
+                configVersion: cabinet.configVersion,
+            };
+        }
+    }
+
+    return current;
 }
 
 export async function getPairingSessionByCode(code: string) {
@@ -88,7 +97,7 @@ export async function getPairingSessionByCode(code: string) {
 
 function getMqttConfig() {
     return {
-        brokerUrl: process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883',
+        brokerUrl: process.env.MQTT_DEVICE_BROKER_URL || 'mqtt://localhost:1883',
         username: process.env.MQTT_USERNAME || '',
         password: process.env.MQTT_PASSWORD || '',
     };

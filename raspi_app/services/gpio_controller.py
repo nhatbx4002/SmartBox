@@ -104,7 +104,7 @@ class GpioController:
             print(f"[GPIO ERROR] get door status failed: {error}")
             return "UNKNOWN"
 
-    def _write_lock(self, compartment_id: str, value: bool) -> bool:
+    def _write_lock(self, compartment_id: str, unlock: bool) -> bool:
         try:
             bus, address, pin_number = self._get_target(
                 self.lock_targets,
@@ -113,8 +113,9 @@ class GpioController:
             )
 
             pin = self._get_mcp(bus, address).get_pin(pin_number)
-            pin.switch_to_output(value=False)
-            pin.value = value
+            # ponytail: active-low relay, unlock kicks pin LOW, idle/locked stays HIGH
+            pin.switch_to_output(value=not unlock)
+            pin.value = not unlock
             return True
         except Exception as error:
             print(f"[GPIO ERROR] write lock failed: {error}")
@@ -123,7 +124,7 @@ class GpioController:
     def _configure_lock_pin(self, bus: int, address: int, pin_number: int) -> None:
         try:
             pin = self._get_mcp(bus, address).get_pin(pin_number)
-            pin.switch_to_output(value=False)
+            pin.switch_to_output(value=True)  # idle HIGH (active-low relay)
         except Exception as error:
             print(f"[GPIO ERROR] configure lock pin failed: {error}")
 

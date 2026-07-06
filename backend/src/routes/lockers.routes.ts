@@ -3,11 +3,14 @@
  * /api/lockers/available:
  *   get:
  *     tags: [Lockers]
- *     summary: List available compartments across all cabinets
+ *     summary: List available compartments, optionally scoped to one cabinet
  *     parameters:
  *       - name: size
  *         in: query
  *         schema: { type: string, enum: [SMALL, LARGE] }
+ *       - name: cabinetId
+ *         in: query
+ *         schema: { type: string }
  *     responses:
  *       200:
  *         description: List of available compartments
@@ -35,17 +38,22 @@ import * as priceplanService from '../services/priceplan.service';
 
 const router = Router();
 
-const querySchema = z.object({ size: z.nativeEnum(CompartmentSize).optional() });
+const querySchema = z.object({
+    size: z.nativeEnum(CompartmentSize).optional(),
+    cabinetId: z.string().optional(),
+});
 
 router.get(
     '/available',
     validate(querySchema, 'query'),
     asyncHandler(async (req, res) => {
         const size = req.query.size as CompartmentSize | undefined;
+        const cabinetId = req.query.cabinetId as string | undefined;
         const compartments = await prisma.compartment.findMany({
             where: {
                 status: CompartmentStatus.AVAILABLE,
                 ...(size ? { size } : {}),
+                ...(cabinetId ? { cabinetId } : {}),
             },
             include: { cabinet: true },
         });

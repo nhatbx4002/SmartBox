@@ -12,7 +12,7 @@ export async function adminLogin(email: string, password: string) {
 
     const payload = {sub: admin.id, email: admin.email, role: admin.role};
     return {
-        admin: {id: admin.id, email: admin.email, name: admin.name},
+        admin: {id: admin.id, email: admin.email, name: admin.name, role: admin.role},
         accessToken: signAccessToken(payload),
         refreshToken: signRefreshToken(payload),
     };

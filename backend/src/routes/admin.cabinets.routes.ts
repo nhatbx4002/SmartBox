@@ -221,8 +221,8 @@ const createCompartmentSchema = z.object({
     size: z.nativeEnum(CompartmentSize),
     mcp23017PinLock: z.number().int(),
     mcp23017PinSensor: z.number().int(),
-    lockMcpDeviceId: z.string().optional(),
-    sensorMcpDeviceId: z.string().optional(),
+    lockMcpDeviceId: z.string().min(1),
+    sensorMcpDeviceId: z.string().min(1),
 });
 
 const updateCompartmentSchema = createCompartmentSchema.partial();

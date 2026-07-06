@@ -125,7 +125,7 @@ class HomeController(BaseController):
 
     def _prefetch_availability(self) -> None:
         def _fetch():
-            result = self.api_client.check_availability(None)
+            result = self.api_client.check_availability(None, cabinet_id=self.app.cabinet_id)
             items = result.get("items", [])
             return {"SMALL": sum(1 for i in items if i.get("size") == "SMALL"), "LARGE": sum(1 for i in items if i.get("size") == "LARGE")}
 

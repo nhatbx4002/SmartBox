@@ -489,9 +489,9 @@ function CompartmentFormModal({
       const payload = {
         name: form.name.trim(),
         size: form.size,
-        lockMcpDeviceId: form.lockMcpDeviceId || null,
+        lockMcpDeviceId: form.lockMcpDeviceId,
         mcp23017PinLock: form.mcp23017PinLock,
-        sensorMcpDeviceId: form.sensorMcpDeviceId || null,
+        sensorMcpDeviceId: form.sensorMcpDeviceId,
         mcp23017PinSensor: form.mcp23017PinSensor,
       }
       if (isEdit && compartment) {
@@ -527,6 +527,10 @@ function CompartmentFormModal({
     }
     if (!form.lockMcpDeviceId) {
       toast.error('Vui lòng chọn MCP device cho khóa')
+      return
+    }
+    if (!form.sensorMcpDeviceId) {
+      toast.error('Vui lòng chọn MCP device cho cảm biến')
       return
     }
     saveMutation.mutate()

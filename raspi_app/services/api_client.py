@@ -56,10 +56,10 @@ class ApiClient:
             for item in data
         ]
 
-    def check_availability(self, size: str | None) -> dict:
+    def check_availability(self, size: str | None, cabinet_id: str | None = None) -> dict:
         response = self._session.get(
             f"{self.base_url}/api/lockers/available",
-            params={"size": size},
+            params={"size": size, "cabinetId": cabinet_id},
             timeout=self.timeout,
         )
         data = self._parse_response(response)

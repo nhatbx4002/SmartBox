@@ -14,7 +14,7 @@ type MqttPayload = Record<string, unknown>;
  *
  */
 function getMqttBrokerUrl(): string {
-    return process.env.MQTT_BROKER_URL || process.env.MQTT_URL || 'mqtt://localhost:1883';
+    return process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883';
 }
 
 /**

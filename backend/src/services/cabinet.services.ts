@@ -1,5 +1,5 @@
 import {CabinetStatus, CompartmentStatus, Prisma} from '../generated/prisma'
-import {NotFoundError} from  '../lib/errors'
+import {NotFoundError, BadRequestError} from  '../lib/errors'
 import {prisma} from '../lib/prisma'
 import {publishMqtt} from '../lib/mqtt'
 import {emitCabinetStatus} from "../lib/socket"
@@ -103,7 +103,13 @@ export async function deleteCabinet(id: string){
     const cabinet = await prisma.cabinet.findUnique({where: {id}});
     if(!cabinet) throw new NotFoundError('Cabinet not found!');
 
-    await prisma.cabinet.delete({where: {id}});
+    const rentalCount = await prisma.rental.count({ where: { compartment: { cabinetId: id } } });
+    if (rentalCount > 0) throw new BadRequestError('Cannot delete cabinet with existing rental history');
+
+    await prisma.$transaction([
+        prisma.compartment.deleteMany({ where: { cabinetId: id } }),
+        prisma.cabinet.delete({ where: { id } }),
+    ]);
     return {ok: true};
 }
 

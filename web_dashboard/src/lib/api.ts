@@ -329,27 +329,27 @@ export const cabinetsApi = {
   get: (id: string) =>
     unwrap<BackendCabinet>(api.get(`/admin/cabinets/${id}`)).then(mapCabinet),
   update: (id: string, data: unknown) =>
-    unwrap<{ message: string; data: BackendCabinet }>(api.put(`/admin/cabinets/${id}`, data)).then((r) => mapCabinet(r.data)),
+    unwrap<BackendCabinet>(api.put(`/admin/cabinets/${id}`, data)).then(mapCabinet),
   delete: (id: string) => api.delete(`/admin/cabinets/${id}`).then(() => ({ ok: true })),
   openCompartment: (cabinetId: string, compId: string) =>
     api.post(`/admin/cabinets/${cabinetId}/compartments/${compId}/unlock`).then(() => ({ ok: true })),
   activate: (id: string) =>
-    unwrap<{ message: string; data: BackendCabinet }>(api.post(`/admin/cabinets/${id}/activate`)).then(
-      (r) => ({ message: r.message, cabinet: mapCabinet(r.data) }),
+    unwrap<BackendCabinet>(api.post(`/admin/cabinets/${id}/activate`)).then(
+      (cabinet) => ({ cabinet: mapCabinet(cabinet) }),
     ),
   deactivate: (id: string) =>
-    unwrap<{ message: string; data: BackendCabinet }>(api.post(`/admin/cabinets/${id}/deactivate`)).then(
-      (r) => ({ message: r.message, cabinet: mapCabinet(r.data) }),
+    unwrap<BackendCabinet>(api.post(`/admin/cabinets/${id}/deactivate`)).then(
+      (cabinet) => ({ cabinet: mapCabinet(cabinet) }),
     ),
   testOpen: (cabinetId: string, compId: string) =>
     unwrap<{ cabinetId: string; compartmentId: string; compartmentName: string }>(api.post(`/admin/cabinets/${cabinetId}/compartments/${compId}/test-open`)),
   addCompartment: (cabinetId: string, data: unknown) =>
-    unwrap<{ message: string; data: { compartment: BackendCompartment; configVersion: number } }>(api.post(`/admin/cabinets/${cabinetId}/compartments`, data)).then(
-      (r) => ({ ...r.data, compartment: mapCompartment(r.data.compartment, data && typeof data === 'object' && 'name' in data ? String((data as { name: string }).name) : '') }),
+    unwrap<{ compartment: BackendCompartment; configVersion: number }>(api.post(`/admin/cabinets/${cabinetId}/compartments`, data)).then(
+      (r) => ({ ...r, compartment: mapCompartment(r.compartment, data && typeof data === 'object' && 'name' in data ? String((data as { name: string }).name) : '') }),
     ),
   updateCompartment: (cabinetId: string, compId: string, data: unknown) =>
-    unwrap<{ message: string; data: { compartment: BackendCompartment } }>(api.put(`/admin/cabinets/${cabinetId}/compartments/${compId}`, data)).then(
-      (r) => ({ ...r.data, compartment: mapCompartment(r.data.compartment, '') }),
+    unwrap<{ compartment: BackendCompartment }>(api.put(`/admin/cabinets/${cabinetId}/compartments/${compId}`, data)).then(
+      (r) => ({ ...r, compartment: mapCompartment(r.compartment, '') }),
     ),
   deleteCompartment: (cabinetId: string, compId: string) =>
     api.delete(`/admin/cabinets/${cabinetId}/compartments/${compId}`).then(() => ({ ok: true })),
