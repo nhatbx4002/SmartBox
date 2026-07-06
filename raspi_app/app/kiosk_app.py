@@ -46,10 +46,11 @@ class KioskApp(QWidget):
 
         try:
             self.config = load_config()
+            raw_ifaces = get_config_value(self.config, "network.interfaces", None)
             self.network_monitor = NetworkStatusMonitor(
                 self,
                 poll_interval_ms=get_config_value(self.config, "network.poll_interval_ms", 5000),
-                interfaces=tuple(get_config_value(self.config, "network.interfaces", ["eth0", "wlan0"])),
+                interfaces=tuple(raw_ifaces) if raw_ifaces else None,
             )
             self.network_monitor.start()
             self.api_client = ApiClient(
