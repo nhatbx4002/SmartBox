@@ -1,25 +1,29 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, RefreshCw, Search, X, Wifi, WifiOff } from 'lucide-react'
+import { Check, Search, X, Wifi, Cpu } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Button, Modal, Input, Select, Badge, LocationMapPicker } from '@/components/ui'
+import { Modal, Input, Select, LocationMapPicker } from '@/components/ui'
 import { locationsApi, pairingApi } from '@/lib/api'
 import { useAuthStore } from '@/store'
+import { cn } from '@/lib/utils'
 import type { PairingSession, PairingSessionStatus } from '@/types'
 
-const STATUS_LABELS: Record<PairingSessionStatus, string> = {
-  PENDING: 'Chờ duyệt',
-  APPROVED: 'Đã duyệt',
-  EXPIRED: 'Đã hết hạn',
-  REJECTED: 'Đã hủy',
-}
-
-const STATUS_COLORS: Record<PairingSessionStatus, string> = {
-  PENDING: 'warning',
-  APPROVED: 'success',
-  EXPIRED: 'neutral',
-  REJECTED: 'error',
+function StatusDot({ status, expired }: { status: PairingSessionStatus; expired?: boolean }) {
+  const colors: Record<string, string> = {
+    PENDING: expired ? 'bg-zinc-600' : 'bg-amber-500',
+    APPROVED: 'bg-emerald-500',
+    EXPIRED: 'bg-zinc-600',
+    REJECTED: 'bg-zinc-600',
+  }
+  return (
+    <span className="relative inline-flex h-2 w-2 shrink-0">
+      {status === 'PENDING' && !expired && (
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500/40" />
+      )}
+      <span className={cn('relative inline-flex h-2 w-2 rounded-sm', colors[status])} />
+    </span>
+  )
 }
 
 function formatTimeAgo(dateStr: string): string {
@@ -59,17 +63,15 @@ export default function PairingQueuePage() {
   const [newLocationForm, setNewLocationForm] = React.useState({ name: '', address: '', lat: '', lng: '' })
   const admin = useAuthStore((s) => s.admin)
 
-  // Fetch locations for approve modal
   const { data: locations = [] } = useQuery({
     queryKey: ['locations'],
     queryFn: () => locationsApi.list({ status: 'ACTIVE' }),
   })
 
-  // Fetch all sessions
-  const { data: sessions = [], isLoading, refetch } = useQuery({
+  const { data: sessions = [], isLoading } = useQuery({
     queryKey: ['pairing-sessions'],
     queryFn: pairingApi.list,
-    refetchInterval: 5000, // poll every 5s
+    refetchInterval: 5000,
   })
 
   const filteredSessions = React.useMemo(() => {
@@ -82,12 +84,8 @@ export default function PairingQueuePage() {
     return sessions.filter((s) => s.status === activeTab)
   }, [sessions, activeTab, searchCode])
 
-  // Search by code
   const handleSearch = React.useCallback(async () => {
-    if (!searchCode.trim()) {
-      setSearchByCodeResult(null)
-      return
-    }
+    if (!searchCode.trim()) { setSearchByCodeResult(null); return }
     try {
       const result = await pairingApi.getByCode(searchCode.trim())
       setSearchByCodeResult(result)
@@ -97,7 +95,6 @@ export default function PairingQueuePage() {
     }
   }, [searchCode])
 
-  // Approve mutation
   const approveMutation = useMutation({
     mutationFn: ({ sessionId, data }: { sessionId: string; data: { locationId: string; cabinetName: string } }) =>
       pairingApi.approve(sessionId, data),
@@ -110,7 +107,6 @@ export default function PairingQueuePage() {
       setApproveForm({ locationId: '', cabinetName: '' })
       setIsCreatingLocation(false)
       setNewLocationForm({ name: '', address: '', lat: '', lng: '' })
-      // Navigate to cabinet detail for configuration
       navigate(`/cabinets/${result.cabinetId}`)
     },
     onError: (err: unknown) => {
@@ -119,7 +115,6 @@ export default function PairingQueuePage() {
     },
   })
 
-  // Cancel mutation
   const cancelMutation = useMutation({
     mutationFn: pairingApi.cancel,
     onSuccess: () => {
@@ -129,7 +124,6 @@ export default function PairingQueuePage() {
     onError: () => toast.error('Không thể hủy ghép tủ'),
   })
 
-  // Open approve modal
   const openApprove = (session: PairingSession) => {
     setApproveForm({
       locationId: locations[0]?.id ?? '',
@@ -142,17 +136,13 @@ export default function PairingQueuePage() {
 
   const handleApprove = async () => {
     if (!approveModal.session) return
-    if (!approveForm.cabinetName.trim()) {
-      toast.error('Vui lòng nhập tên tủ')
-      return
-    }
+    if (!approveForm.cabinetName.trim()) { toast.error('Vui lòng nhập tên tủ'); return }
 
     let locationId = approveForm.locationId
 
     if (isCreatingLocation) {
       if (!newLocationForm.name.trim() || !newLocationForm.address.trim()) {
-        toast.error('Vui lòng nhập tên và địa chỉ địa điểm')
-        return
+        toast.error('Vui lòng nhập tên và địa chỉ'); return
       }
       try {
         const newLocation = await locationsApi.create({
@@ -163,14 +153,8 @@ export default function PairingQueuePage() {
           status: 'ACTIVE',
         })
         locationId = newLocation.id
-      } catch {
-        toast.error('Không thể tạo địa điểm mới')
-        return
-      }
-    } else if (!locationId) {
-      toast.error('Vui lòng chọn địa điểm')
-      return
-    }
+      } catch { toast.error('Không thể tạo địa điểm mới'); return }
+    } else if (!locationId) { toast.error('Vui lòng chọn địa điểm'); return }
 
     approveMutation.mutate({
       sessionId: approveModal.session.id,
@@ -181,7 +165,7 @@ export default function PairingQueuePage() {
   const tabs: { key: PairingSessionStatus; label: string }[] = [
     { key: 'PENDING', label: 'Chờ duyệt' },
     { key: 'APPROVED', label: 'Đã duyệt' },
-    { key: 'EXPIRED', label: 'Đã hết hạn' },
+    { key: 'EXPIRED', label: 'Hết hạn' },
     { key: 'REJECTED', label: 'Đã hủy' },
   ]
 
@@ -189,101 +173,94 @@ export default function PairingQueuePage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-zinc-100">Quản lý ghép tủ</h1>
-          <p className="mt-1 text-sm text-zinc-400">
-            Xem và duyệt các yêu cầu ghép tủ mới từ Raspberry Pi
-          </p>
-        </div>
-        <Button variant="outline" size="sm" onClick={() => refetch()}>
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Làm mới
-        </Button>
-      </div>
-
-      {/* Search by code */}
-      <div className="flex items-center gap-3">
+      {/* Search */}
+      <div className="flex items-center gap-3" style={{ animation: 'enter 0.4s ease-out both' }}>
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" strokeWidth={1.5} />
           <input
             type="text"
             placeholder="Tìm theo mã ghép (VD: A3F7K2)"
             value={searchCode}
-            onChange={(e) => {
-              setSearchCode(e.target.value)
-              if (!e.target.value) setSearchByCodeResult(null)
-            }}
+            onChange={(e) => { setSearchCode(e.target.value); if (!e.target.value) setSearchByCodeResult(null) }}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-full pl-10 pr-4 py-2 bg-surface border border-zinc-700 rounded-lg text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/50"
+            className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-900/60 pl-9 pr-3 text-xs text-zinc-200 placeholder:text-zinc-600 outline-none transition-all duration-200 focus:border-zinc-700 focus:bg-zinc-900"
           />
         </div>
         {searchCode && (
-          <Button variant="ghost" size="sm" onClick={() => { setSearchCode(''); setSearchByCodeResult(null) }}>
-            <X className="mr-1 h-4 w-4" /> Xóa
-          </Button>
+          <button onClick={() => { setSearchCode(''); setSearchByCodeResult(null) }} className="flex h-9 items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 text-xs font-medium text-zinc-400 transition-colors duration-150 hover:bg-zinc-800 hover:text-zinc-200 active:scale-[0.98]">
+            <X className="h-3 w-3" strokeWidth={1.5} /> Xóa
+          </button>
         )}
       </div>
 
       {/* Search result */}
       {searchByCodeResult && (
-        <SearchResultCard
-          session={searchByCodeResult}
-          onApprove={openApprove}
-          onCancel={(id) => cancelMutation.mutate(id)}
-          isPending={cancelMutation.isPending}
-        />
+        <div style={{ animation: 'enter 0.35s ease-out both' }}>
+          <span className="mb-3 block text-xs font-medium tracking-wider text-zinc-500 uppercase">Kết quả tìm kiếm</span>
+          <SessionCard
+            session={searchByCodeResult}
+            onApprove={openApprove}
+            onCancel={(id) => cancelMutation.mutate(id)}
+            isPending={cancelMutation.isPending}
+          />
+        </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex items-center gap-1 border-b border-zinc-800">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.key
-                ? 'border-brand text-brand'
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            {tab.label}
-            {tab.key !== 'PENDING' && (
-              <span className="ml-2 px-1.5 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400">
-                {sessions.filter((s) => s.status === tab.key).length}
-              </span>
-            )}
-            {tab.key === 'PENDING' && (
-              <span className="ml-2 px-1.5 py-0.5 rounded text-xs bg-orange-500/20 text-orange-400">
-                {sessions.filter((s) => s.status === tab.key).length}
-              </span>
-            )}
-          </button>
-        ))}
+      {/* Tab strip */}
+      <div className="flex items-center gap-6 border-b border-zinc-800" style={{ animation: 'enter 0.4s ease-out 0.05s both' }}>
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.key
+          const count = sessions.filter((s) => s.status === tab.key).length
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={cn(
+                'relative pb-2.5 text-xs font-medium tracking-wider uppercase transition-colors duration-150',
+                isActive ? 'text-zinc-200' : 'text-zinc-500 hover:text-zinc-400',
+              )}
+            >
+              {tab.label}
+              <span className={cn('ml-1.5 text-[10px]', isActive ? 'text-zinc-400' : 'text-zinc-600')}>{count}</span>
+              {isActive && (
+                <span className="absolute bottom-0 left-0 right-0 h-px bg-zinc-200" />
+              )}
+            </button>
+          )
+        })}
       </div>
 
       {/* Session list */}
-      {isLoading ? (
-        <div className="py-12 text-center text-zinc-500">
-          <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2" />
-          Đang tải...
-        </div>
-      ) : filteredSessions.length === 0 ? (
-        <EmptyState tab={activeTab} hasSearch={!!searchCode} searchCode={searchCode} />
-      ) : (
-        <div className="space-y-3">
-          {filteredSessions.map((session) => (
-            <SessionCard
-              key={session.id}
-              session={session}
-              onApprove={openApprove}
-              onCancel={(id) => cancelMutation.mutate(id)}
-              isPending={cancelMutation.isPending}
-            />
-          ))}
-        </div>
-      )}
+      <div style={{ animation: 'enter 0.4s ease-out 0.1s both' }}>
+        {isLoading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="animate-pulse rounded-lg border border-zinc-800/50 bg-zinc-900/30 p-5">
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="h-5 w-24 rounded bg-zinc-800" />
+                  <div className="h-4 w-14 rounded bg-zinc-800/60" />
+                </div>
+                <div className="h-3 w-48 rounded bg-zinc-800/60" />
+              </div>
+            ))}
+          </div>
+        ) : filteredSessions.length === 0 ? (
+          <EmptyState tab={activeTab} hasSearch={!!searchCode} searchCode={searchCode} />
+        ) : (
+          <div className="space-y-2">
+            {filteredSessions.map((session, i) => (
+              <div key={session.id} style={{ animation: `enter 0.35s ease-out ${0.15 + i * 0.06}s both` }}>
+                <SessionCard
+                  session={session}
+                  onApprove={openApprove}
+                  onCancel={(id) => cancelMutation.mutate(id)}
+                  isPending={cancelMutation.isPending}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Approve Modal */}
       <Modal
@@ -300,52 +277,42 @@ export default function PairingQueuePage() {
         description="Xác nhận thông tin trước khi tạo tủ mới"
       >
         {approveModal.session && (
-          <div className="space-y-4">
-            {/* Session info */}
-            <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800 space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-400">Serial</span>
+          <div className="space-y-5">
+            <div className="space-y-2.5 rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-zinc-500">Serial</span>
                 <span className="font-mono text-zinc-200">{approveModal.session.hardwareSerial}</span>
               </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-400">MCP Devices</span>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-zinc-500">MCP Devices</span>
                 <div className="flex gap-1.5">
                   {approveModal.session.discoveredMcpDevices.map((mcp, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded bg-zinc-800 text-xs font-mono text-zinc-300">
-                      Bus {mcp.bus} @ 0x{mcp.address.toString(16).toUpperCase().padStart(2, '0')}
+                    <span key={i} className="rounded-sm border border-zinc-800 bg-zinc-900 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                      0x{mcp.address.toString(16).toUpperCase().padStart(2, '0')}
                     </span>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Form */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-text-secondary">Địa điểm</label>
+                <div className="mb-1.5 flex items-center justify-between">
+                  <label className="text-xs font-medium text-zinc-400">Địa điểm</label>
                   {admin?.role === 'SUPER_ADMIN' && (
                     <button
                       type="button"
                       onClick={() => { setIsCreatingLocation(!isCreatingLocation); setNewLocationForm({ name: '', address: '', lat: '', lng: '' }) }}
-                      className="text-xs text-brand hover:text-brand-hover transition-colors cursor-pointer"
+                      className="text-xs text-zinc-500 transition-colors duration-150 hover:text-zinc-300"
                     >
-                      {isCreatingLocation ? '← Chọn địa điểm có sẵn' : '+ Tạo địa điểm mới'}
+                      {isCreatingLocation ? 'Chọn địa điểm có sẵn' : 'Tạo địa điểm mới'}
                     </button>
                   )}
                 </div>
                 {isCreatingLocation ? (
                   <div className="space-y-3">
-                    <Input
-                      value={newLocationForm.name}
-                      onChange={(e) => setNewLocationForm((f) => ({ ...f, name: e.target.value }))}
-                      placeholder="Tên địa điểm"
-                    />
-                    <Input
-                      value={newLocationForm.address}
-                      onChange={(e) => setNewLocationForm((f) => ({ ...f, address: e.target.value }))}
-                      placeholder="Địa chỉ"
-                    />
+                    <Input value={newLocationForm.name} onChange={(e) => setNewLocationForm((f) => ({ ...f, name: e.target.value }))} placeholder="Tên địa điểm" />
+                    <Input value={newLocationForm.address} onChange={(e) => setNewLocationForm((f) => ({ ...f, address: e.target.value }))} placeholder="Địa chỉ" />
                     <LocationMapPicker
                       lat={newLocationForm.lat ? parseFloat(newLocationForm.lat) : undefined}
                       lng={newLocationForm.lng ? parseFloat(newLocationForm.lng) : undefined}
@@ -371,99 +338,83 @@ export default function PairingQueuePage() {
               />
             </div>
 
-            {/* Actions */}
-            <div className="flex justify-end gap-3 pt-2">
-              <Button
-                variant="outline"
+            <div className="flex justify-end gap-3 pt-1">
+              <button
                 onClick={() => {
                   setApproveModal({ open: false, session: null })
                   setApproveForm({ locationId: '', cabinetName: '' })
                   setIsCreatingLocation(false)
                   setNewLocationForm({ name: '', address: '', lat: '', lng: '' })
                 }}
+                className="rounded-md border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-medium text-zinc-400 transition-all duration-150 hover:bg-zinc-800 hover:text-zinc-200 active:scale-[0.98]"
               >
                 Hủy
-              </Button>
-              <Button
-                variant="primary"
+              </button>
+              <button
                 onClick={handleApprove}
-                loading={approveMutation.isPending}
+                disabled={approveMutation.isPending}
+                className="rounded-md bg-zinc-100 px-4 py-2 text-xs font-medium text-zinc-900 transition-all duration-150 hover:bg-zinc-300 active:scale-[0.98] disabled:opacity-50"
               >
-                <Check className="mr-2 h-4 w-4" />
-                Duyệt ghép
-              </Button>
+                {approveMutation.isPending ? 'Đang duyệt...' : 'Duyệt ghép'}
+              </button>
             </div>
           </div>
         )}
       </Modal>
+
+      <style>{`
+        @keyframes enter {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   )
 }
 
 function SessionCard({
-  session,
-  onApprove,
-  onCancel,
-  isPending,
+  session, onApprove, onCancel, isPending,
 }: {
-  session: PairingSession
-  onApprove: (s: PairingSession) => void
-  onCancel: (id: string) => void
-  isPending: boolean
+  session: PairingSession; onApprove: (s: PairingSession) => void; onCancel: (id: string) => void; isPending: boolean
 }) {
   const isExpired = new Date(session.expiresAt) < new Date()
 
   return (
-    <div className="p-5 rounded-xl bg-surface border border-zinc-800 hover:border-zinc-700 transition-colors">
+    <div className="group rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-5 py-4 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-zinc-700/60 hover:bg-zinc-900/50">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
-          {/* Status dot */}
-          <div className={`mt-1 shrink-0 w-3 h-3 rounded-full ${
-            session.status === 'PENDING' ? (isExpired ? 'bg-zinc-500' : 'bg-orange-500 animate-pulse') :
-            session.status === 'APPROVED' ? 'bg-green-500' :
-            'bg-zinc-600'
-          }`} />
+        <div className="flex items-start gap-3.5 min-w-0">
+          <div className="mt-1">
+            <StatusDot status={session.status} expired={isExpired} />
+          </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-lg font-semibold text-zinc-100 tracking-wider">
-                {session.pairingCode}
-              </span>
-              <Badge variant={STATUS_COLORS[session.status] as never}>
-                {STATUS_LABELS[session.status]}
-              </Badge>
-              {session.status === 'PENDING' && isExpired && (
-                <Badge variant="error">Hết hạn</Badge>
-              )}
+              <span className="font-mono text-base font-semibold tracking-tight text-zinc-200">{session.pairingCode}</span>
+              <StatusBadge status={session.status} expired={isExpired} />
             </div>
 
-            <div className="flex items-center gap-4 text-sm text-zinc-400">
-              <span className="font-mono">{session.hardwareSerial}</span>
-              <span className="text-zinc-600">|</span>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500">
+              <span className="font-mono text-zinc-600">{session.hardwareSerial}</span>
+              <span className="text-zinc-700">&middot;</span>
               <span>{formatTimeAgo(session.createdAt)}</span>
               {session.status === 'PENDING' && (
                 <>
-                  <span className="text-zinc-600">|</span>
-                  <span className={isExpired ? 'text-red-400' : 'text-zinc-400'}>
+                  <span className="text-zinc-700">&middot;</span>
+                  <span className={isExpired ? 'text-red-400' : 'text-zinc-500'}>
                     Hết hạn: {formatExpiry(session.expiresAt)}
                   </span>
                 </>
               )}
             </div>
 
-            {/* MCP devices */}
             <div className="flex items-center gap-2">
-              {session.discoveredMcpDevices.length === 1 ? (
-                <Wifi className="h-3.5 w-3.5 text-zinc-500" />
-              ) : (
-                <WifiOff className="h-3.5 w-3.5 text-zinc-500" />
-              )}
-              <span className="text-xs text-zinc-500">
-                {session.discoveredMcpDevices.length} MCP23017
-              </span>
-              <div className="flex gap-1.5 ml-1">
+              <div className="flex items-center gap-1 text-zinc-600">
+                <Cpu className="h-3 w-3" strokeWidth={1.5} />
+                <span className="text-[11px]">{session.discoveredMcpDevices.length} MCP23017</span>
+              </div>
+              <div className="flex gap-1">
                 {session.discoveredMcpDevices.map((mcp, i) => (
-                  <span key={i} className="px-1.5 py-0.5 rounded bg-zinc-800 text-xs font-mono text-zinc-400">
+                  <span key={i} className="rounded-sm border border-zinc-800 bg-zinc-900/80 px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">
                     0x{mcp.address.toString(16).toUpperCase().padStart(2, '0')}
                   </span>
                 ))}
@@ -472,27 +423,22 @@ function SessionCard({
           </div>
         </div>
 
-        {/* Actions */}
         {session.status === 'PENDING' && (
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              variant="outline"
-              size="sm"
+          <div className="flex shrink-0 items-center gap-2">
+            <button
               onClick={() => onCancel(session.id)}
               disabled={isPending}
+              className="rounded-md border border-zinc-800 bg-zinc-900/60 px-3 py-1.5 text-[11px] font-medium text-zinc-400 transition-all duration-150 hover:bg-zinc-800 hover:text-zinc-300 active:scale-[0.97] disabled:opacity-50"
             >
-              <X className="mr-1 h-3.5 w-3.5" />
-              Hủy
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
+              <X className="mr-1 inline h-3 w-3" strokeWidth={1.5} /> Hủy
+            </button>
+            <button
               onClick={() => onApprove(session)}
               disabled={isExpired}
+              className="rounded-md bg-zinc-100 px-3 py-1.5 text-[11px] font-medium text-zinc-900 transition-all duration-150 hover:bg-zinc-300 active:scale-[0.97] disabled:opacity-50"
             >
-              <Check className="mr-1 h-3.5 w-3.5" />
-              Duyệt
-            </Button>
+              <Check className="mr-1 inline h-3 w-3" strokeWidth={2} /> Duyệt
+            </button>
           </div>
         )}
       </div>
@@ -500,62 +446,46 @@ function SessionCard({
   )
 }
 
-function SearchResultCard({
-  session,
-  onApprove,
-  onCancel,
-  isPending,
-}: {
-  session: PairingSession
-  onApprove: (s: PairingSession) => void
-  onCancel: (id: string) => void
-  isPending: boolean
-}) {
+function StatusBadge({ status, expired }: { status: PairingSessionStatus; expired: boolean }) {
+  const cfg: Record<string, { label: string; classes: string }> = {
+    PENDING: { label: 'Chờ duyệt', classes: expired ? 'bg-zinc-800 text-zinc-500' : 'bg-amber-500/10 text-amber-400' },
+    APPROVED: { label: 'Đã duyệt', classes: 'bg-emerald-500/10 text-emerald-400' },
+    EXPIRED: { label: 'Hết hạn', classes: 'bg-zinc-800 text-zinc-500' },
+    REJECTED: { label: 'Đã hủy', classes: 'bg-zinc-800 text-zinc-500' },
+  }
+  const c = cfg[status] ?? cfg.EXPIRED
   return (
-    <div className="rounded-xl bg-brand/5 border border-brand/20 p-4">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-brand">Kết quả tìm kiếm</span>
-      </div>
-      <SessionCard session={session} onApprove={onApprove} onCancel={onCancel} isPending={isPending} />
-    </div>
+    <span className={`rounded-sm px-1.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${c.classes}`}>
+      {c.label}
+    </span>
   )
 }
 
 function EmptyState({ tab, hasSearch, searchCode }: { tab: PairingSessionStatus; hasSearch: boolean; searchCode: string }) {
   const messages: Record<PairingSessionStatus, { title: string; desc: string }> = {
-    PENDING: {
-      title: 'Không có yêu cầu nào',
-      desc: 'Khi Raspberry Pi bắt đầu ghép, yêu cầu sẽ xuất hiện tại đây',
-    },
-    APPROVED: {
-      title: 'Chưa có tủ nào được duyệt',
-      desc: 'Các tủ đã duyệt sẽ xuất hiện tại đây',
-    },
-    EXPIRED: {
-      title: 'Không có yêu cầu hết hạn',
-      desc: 'Các yêu cầu hết hạn sau 10 phút sẽ xuất hiện tại đây',
-    },
-    REJECTED: {
-      title: 'Không có yêu cầu bị hủy',
-      desc: 'Các yêu cầu bị hủy sẽ xuất hiện tại đây',
-    },
-  }
-
-  if (hasSearch) {
-    return (
-      <div className="py-12 text-center">
-        <Search className="h-10 w-10 text-zinc-700 mx-auto mb-3" />
-        <p className="text-zinc-400 text-sm">Không tìm thấy mã ghép "{searchCode}"</p>
-      </div>
-    )
+    PENDING: { title: 'Không có yêu cầu nào', desc: 'Khi Raspberry Pi bắt đầu ghép, yêu cầu sẽ xuất hiện tại đây' },
+    APPROVED: { title: 'Chưa có tủ nào được duyệt', desc: 'Các tủ đã duyệt sẽ xuất hiện tại đây' },
+    EXPIRED: { title: 'Không có yêu cầu hết hạn', desc: 'Các yêu cầu hết hạn sau 10 phút sẽ xuất hiện tại đây' },
+    REJECTED: { title: 'Không có yêu cầu bị hủy', desc: 'Các yêu cầu bị hủy sẽ xuất hiện tại đây' },
   }
 
   return (
-    <div className="py-16 text-center">
-      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-zinc-800 mb-3">
-        <Wifi className="h-5 w-5 text-zinc-600" />
-      </div>
-      <p className="text-zinc-400 text-sm">{messages[tab].desc}</p>
+    <div className="flex flex-col items-center justify-center py-20">
+      {hasSearch ? (
+        <>
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60">
+            <Search className="h-5 w-5 text-zinc-600" strokeWidth={1.5} />
+          </div>
+          <p className="text-sm font-medium text-zinc-500">Không tìm thấy mã ghép "{searchCode}"</p>
+        </>
+      ) : (
+        <>
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60">
+            <Wifi className="h-5 w-5 text-zinc-600" strokeWidth={1.5} />
+          </div>
+          <p className="text-sm font-medium text-zinc-500">{messages[tab].desc}</p>
+        </>
+      )}
     </div>
   )
 }

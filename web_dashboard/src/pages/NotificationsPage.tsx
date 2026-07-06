@@ -70,19 +70,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-text-primary">Thông báo</h2>
-        {unreadCount > 0 && (
-          <button
-            onClick={() => markAllReadMutation.mutate()}
-            className="flex items-center gap-2 text-sm text-brand hover:text-brand-hover cursor-pointer transition-colors"
-          >
-            <CheckCheck className="h-4 w-4" /> Đánh dấu đã đọc ({unreadCount})
-          </button>
-        )}
-      </div>
-
+    <div className="space-y-5 animate-fade-in">
       <Tabs
         tabs={[
           { value: 'all', label: `Tất cả (${allNotifications.length})` },

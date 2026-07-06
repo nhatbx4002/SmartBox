@@ -66,6 +66,7 @@ interface BackendCabinet {
   location?: { name?: string } | null
   mcpDevices?: BackendMcpDevice[]
   compartments?: BackendCompartment[]
+  createdAt?: string
 }
 
 interface BackendLocation {
@@ -239,6 +240,7 @@ function mapCabinet(cabinet: BackendCabinet): Cabinet {
     provisionCodeExpires: cabinet.provisionCodeExpires ?? null,
     hardwareSerial: cabinet.hardwareSerial ?? null,
     compartments: compartments.map((compartment) => mapCompartment(compartment, cabinet.name)),
+    createdAt: cabinet.createdAt ?? undefined,
   }
 }
 
@@ -385,7 +387,8 @@ export const locationsApi = {
     unwrap<BackendLocation>(api.post('/admin/locations', mapLocationInput(data))).then(mapLocation),
   update: (id: string, data: unknown) =>
     unwrap<BackendLocation>(api.put(`/admin/locations/${id}`, mapLocationInput(data))).then(mapLocation),
-  delete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/locations/${id}`)),
+  deactivate: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/locations/${id}`)),
+  hardDelete: (id: string) => unwrap<{ ok: boolean }>(api.delete(`/admin/locations/${id}/hard`)),
 }
 
 export const notificationsApi = {

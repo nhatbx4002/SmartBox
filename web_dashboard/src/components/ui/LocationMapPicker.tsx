@@ -3,15 +3,15 @@ import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-lea
 import L from 'leaflet'
 import { Search } from 'lucide-react'
 import 'leaflet/dist/leaflet.css'
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
-import markerIcon from 'leaflet/dist/images/marker-icon.png'
-import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 
-// ponytail: leaflet's default icon paths break under bundlers; reassign to imported assets
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
+const markerIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
 })
 
 const DEFAULT_CENTER: [number, number] = [10.7769, 106.7009] // TP.HCM
@@ -108,7 +108,7 @@ export function LocationMapPicker({ lat, lng, onChange, className }: LocationMap
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {lat != null && lng != null && <Marker position={[lat, lng]} />}
+          {lat != null && lng != null && <Marker position={[lat, lng]} icon={markerIcon} />}
           <ClickHandler onChange={onChange} />
           <FlyTo lat={lat} lng={lng} />
         </MapContainer>

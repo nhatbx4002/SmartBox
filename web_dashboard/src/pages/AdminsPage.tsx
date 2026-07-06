@@ -165,14 +165,12 @@ export default function AdminsPage() {
   ]
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-text-primary">Quản lý Admin</h2>
-        <Button onClick={() => { resetForm(); setModalOpen(true) }}>
+    <div className="space-y-5 animate-fade-in">
+      <div className="flex items-center justify-end mb-0">
+        <Button onClick={() => { resetForm(); setModalOpen(true) }} size="sm">
           <Plus className="h-4 w-4" /> Add admin
         </Button>
       </div>
-
       <div className="bg-surface rounded-xl border border-border overflow-hidden">
         <DataTable
           columns={columns}

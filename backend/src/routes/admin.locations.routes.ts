@@ -54,7 +54,7 @@
  *         description: Updated location
  *   delete:
  *     tags: [Admin - Locations]
- *     summary: Soft delete location (set status INACTIVE)
+ *     summary: Soft deactivate location (set status INACTIVE, cascade deactivate cabinets)
  *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - name: id
@@ -64,6 +64,20 @@
  *     responses:
  *       200:
  *         description: Location deactivated
+ *
+ * /api/admin/locations/{id}/hard:
+ *   delete:
+ *     tags: [Admin - Locations]
+ *     summary: Permanently delete location and all associated cabinets/compartments/rentals
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Location permanently deleted
  */
 
 import { Router } from 'express';
@@ -74,8 +88,14 @@ import { validate } from '../middleware/validate';
 import { requireAdmin, requireSuperAdmin } from '../middleware/auth';
 import { auditFromRequest } from '../middleware/auditFromRequest';
 import * as locationService from '../services/location.services';
+import { publishCabinetConfigReload } from '../services/cabinet.services';
+import { emitCabinetStatus } from '../lib/socket';
 
 const router = Router();
+
+const listQuerySchema = z.object({
+    status: z.nativeEnum(LocationStatus).optional(),
+});
 
 const createSchema = z.object({
     name: z.string().min(1),
@@ -97,8 +117,10 @@ const updateSchema = z.object({
 router.get(
     '/',
     requireAdmin,
+    validate(listQuerySchema, 'query'),
     asyncHandler(async(req, res) => {
-        const locations = await locationService.listLocation();
+        const status = req.query.status as LocationStatus | undefined;
+        const locations = await locationService.listLocation(status);
         res.json({data: locations});
     })
 )
@@ -129,9 +151,25 @@ router.delete(
     '/:id',
     requireSuperAdmin,
     asyncHandler(async(req, res) => {
-        await locationService.deleteLocation(req.params.id);
+        const result = await locationService.deactivateLocation(req.params.id);
         await auditFromRequest(req,AuditAction.DELETE_LOCATION,'Location',req.params.id, {});
+
+        for (const cabinetId of result.cabinetIds) {
+            publishCabinetConfigReload(cabinetId).catch(() => {});
+            emitCabinetStatus(cabinetId, { status: 'INACTIVE' });
+        }
+
         res.json({data: {ok:true}})
+    })
+)
+
+router.delete(
+    '/:id/hard',
+    requireSuperAdmin,
+    asyncHandler(async(req, res) => {
+        await locationService.hardDeleteLocation(req.params.id);
+        await auditFromRequest(req, AuditAction.DELETE_LOCATION, 'Location', req.params.id, {});
+        res.json({ data: { ok: true } });
     })
 )
 

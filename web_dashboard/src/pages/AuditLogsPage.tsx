@@ -114,11 +114,7 @@ export default function AuditLogsPage() {
   ]
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-text-primary">Audit logs</h2>
-      </div>
-
+    <div className="space-y-5 animate-fade-in">
       <div className="bg-surface rounded-xl border border-border p-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex-1 min-w-48">

@@ -63,8 +63,8 @@ export function AppLayout() {
         )}
       >
         <Header />
-        <main className="px-4 pb-6 lg:px-6 lg:pb-6">
-          <div className="max-w-[1400px] mx-auto pt-4 lg:pt-5">
+        <main className="px-3 pb-4 lg:px-4 lg:pb-4">
+          <div className="mx-auto pt-2 lg:pt-3">
             <Outlet />
           </div>
         </main>

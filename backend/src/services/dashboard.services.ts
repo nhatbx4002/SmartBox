@@ -17,7 +17,7 @@ export async function getDashboardStats() {
         activeRentals,
         todayPayments,
     ] = await Promise.all([
-        prisma.cabinet.count({ where: { status: 'ACTIVE' as any } }),
+        prisma.cabinet.count(),
         prisma.cabinet.count({ where: { lastHeartbeatAt: { gte: onlineThreshold }, status: 'ACTIVE' as any } }),
         prisma.compartment.count(),
         prisma.compartment.count({ where: { status: 'AVAILABLE' as any } }),
