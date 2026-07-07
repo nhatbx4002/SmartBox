@@ -141,15 +141,28 @@ class HomeController(BaseController):
         self._check_not_configured()
 
     def _is_ready(self) -> bool:
-		 cabinet_status = self.config.get("cabinet_status")
-         config_compartments = self.config.get("compartments") or []
-         gpio_targets = getattr(self.gpio_controller, "lock_targets", {})
+        cabinet_status = self.config.get("cabinet_status")
+        compartments = self.config.get("compartments") or []
+        gpio_targets = getattr(self.gpio_controller, "lock_targets", {})
 
-         print("[HOME READY]",
-             "cabinet_status=", cabinet_status,
-             "config_compartments=", len(config_compartments),
-             "gpio_lock_targets=", len(gpio_targets))
-         return has_compartments and cabinet_status == "ACTIVE"
+        print(
+            "[HOME READY]",
+            "cabinet_status=", cabinet_status,
+            "config_compartments=", len(compartments),
+            "gpio_lock_targets=", len(gpio_targets),
+            "network=", self.network_status,
+        )
+
+        if not compartments:
+            return False
+
+        if cabinet_status == "ACTIVE":
+            return True
+
+        if cabinet_status == "OFFLINE" and self.network_status == "ONLINE" and len(gpio_targets) > 0:
+            return True
+
+        return False
     def _check_not_configured(self) -> None:
         if self._is_ready():
             self._hide_overlay()
@@ -159,9 +172,13 @@ class HomeController(BaseController):
     def _show_not_configured_overlay(self) -> None:
         if self._overlay is not None:
             return
-
+        
         cabinet_status = self.config.get("cabinet_status")
-        if cabinet_status == "INACTIVE":
+        if cabinet_status == "OFFLINE" and self.network_status == "ONLINE":
+            overlay_title = "ĐANG ĐỒNG BỘ"
+            overlay_msg = "Tủ đang đồng bộ lại trạng thái với hệ thống.\nVui lòng chờ trong giây lát."
+            overlay_status = "Đang gửi heartbeat..."
+        elif cabinet_status == "INACTIVE":
             overlay_title = "TỦ TẠM NGƯNG"
             overlay_msg = "Tủ đang tạm ngưng hoạt động.\nVui lòng liên hệ quản trị viên."
             overlay_status = "Đang chờ kích hoạt lại..."
