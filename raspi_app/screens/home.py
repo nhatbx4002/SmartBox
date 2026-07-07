@@ -141,15 +141,15 @@ class HomeController(BaseController):
         self._check_not_configured()
 
     def _is_ready(self) -> bool:
-		cabinet_status = self.config.get("cabinet_status")
-        config_compartments = self.config.get("compartments") or []
-        gpio_targets = getattr(self.gpio_controller, "lock_targets", {})
+		 cabinet_status = self.config.get("cabinet_status")
+         config_compartments = self.config.get("compartments") or []
+         gpio_targets = getattr(self.gpio_controller, "lock_targets", {})
 
-        print("[HOME READY]",
-            "cabinet_status=", cabinet_status,
-            "config_compartments=", len(config_compartments),
-            "gpio_lock_targets=", len(gpio_targets))
-        return has_compartments and cabinet_status == "ACTIVE"
+         print("[HOME READY]",
+             "cabinet_status=", cabinet_status,
+             "config_compartments=", len(config_compartments),
+             "gpio_lock_targets=", len(gpio_targets))
+         return has_compartments and cabinet_status == "ACTIVE"
     def _check_not_configured(self) -> None:
         if self._is_ready():
             self._hide_overlay()
