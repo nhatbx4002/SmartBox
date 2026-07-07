@@ -189,15 +189,15 @@ class KioskApp(QWidget):
             self.config_poll_timer = QTimer(self)
             self.config_poll_timer.timeout.connect(self._poll_config)
         self.config_poll_timer.start(30000)
-        self._poll_config()
+        self._poll_config(force=True)
 
     def _handle_payment_paid(self, order_code, payload) -> None:
         controller = self.controllers.get(self.current_route)
         if controller is not None and hasattr(controller, "on_payment_paid"):
             controller.on_payment_paid(order_code, payload)
 
-    def _poll_config(self) -> None:
-        if hasattr(self, "mqtt_client") and self.mqtt_client.connected:
+    def _poll_config(self, force: bool = False) -> None:
+        if not force and hasattr(self, "mqtt_client") and self.mqtt_client.connected:
             return
 
         from screens.base import run_in_thread
