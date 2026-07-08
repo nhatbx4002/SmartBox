@@ -131,9 +131,10 @@ class QRScanController(BaseController):
 
         if frame.image is not None:
             self.frame_count += 1
-            pixmap = QPixmap.fromImage(frame.image).scaled(
-                self.preview_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation,
-            )
+            pixmap = QPixmap.fromImage(frame.image)
+
+            scaled = pixmap.scaled(self.preview_label.size(),Qt.AspectRatioMode.KeepAspectRatioByExpanding,Qt.TransformationMode.SmoothTransformation,)
+            
             x = max(0, (scaled.width() - self.preview_label.width()) // 2)
             y = max(0, (scaled.height() - self.preview_label.height()) // 2)
 
@@ -143,7 +144,7 @@ class QRScanController(BaseController):
                 self.preview_label.width(),
                 self.preview_label.height(),
             )
-            
+
             self.preview_label.setPixmap(pixmap)
             self.preview_label.repaint()
 

@@ -113,9 +113,9 @@ class GpioController:
             )
 
             pin = self._get_mcp(bus, address).get_pin(pin_number)
-            # ponytail: active-low relay, unlock kicks pin LOW, idle/locked stays HIGH
-            pin.switch_to_output(value=not unlock)
-            pin.value = not unlock
+
+            pin.switch_to_output(value=unlock)
+            pin.value = unlock
             return True
         except Exception as error:
             print(f"[GPIO ERROR] write lock failed: {error}")
@@ -124,7 +124,7 @@ class GpioController:
     def _configure_lock_pin(self, bus: int, address: int, pin_number: int) -> None:
         try:
             pin = self._get_mcp(bus, address).get_pin(pin_number)
-            pin.switch_to_output(value=True)  # idle HIGH (active-low relay)
+            pin.switch_to_output(value=False)  # idle HIGH (active-low relay)
         except Exception as error:
             print(f"[GPIO ERROR] configure lock pin failed: {error}")
 
