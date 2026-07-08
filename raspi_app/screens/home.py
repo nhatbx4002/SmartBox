@@ -19,6 +19,9 @@ class HomeController(BaseController):
         self.set_clickable(self.child("RentCard"), self._rent)
         self.set_clickable(self.child("SupportCard"), lambda: self.navigate("/support"))
         self._overlay: QWidget | None = None
+        self.app.mqtt_client.connection_changed.connect(
+            lambda _connected: self._check_not_configured()
+        )
 
     def _build_ui(self) -> QWidget:
         root = QWidget()
@@ -142,27 +145,24 @@ class HomeController(BaseController):
 
     def _is_ready(self) -> bool:
         cabinet_status = self.config.get("cabinet_status")
-        compartments = self.config.get("compartments") or []
         gpio_targets = getattr(self.gpio_controller, "lock_targets", {})
 
         print(
             "[HOME READY]",
-            "cabinet_status=", cabinet_status,
-            "config_compartments=", len(compartments),
-            "gpio_lock_targets=", len(gpio_targets),
             "network=", self.network_status,
+            "mqtt=", self.mqtt_client.connected,
+            "gpio_lock_targets=", len(gpio_targets),
+            "admin_status=", cabinet_status,
         )
 
-        if not compartments:
+        if cabinet_status == "INACTIVE":
             return False
 
-        if cabinet_status == "ACTIVE":
-            return True
-
-        if cabinet_status == "OFFLINE" and self.network_status == "ONLINE" and len(gpio_targets) > 0:
-            return True
-
-        return False
+        return (
+            self.network_status == "ONLINE"
+            and self.mqtt_client.connected
+            and len(gpio_targets) > 0
+        )
     def _check_not_configured(self) -> None:
         if self._is_ready():
             self._hide_overlay()
@@ -172,24 +172,26 @@ class HomeController(BaseController):
     def _show_not_configured_overlay(self) -> None:
         if self._overlay is not None:
             return
-        
+
         cabinet_status = self.config.get("cabinet_status")
-        if cabinet_status == "OFFLINE" and self.network_status == "ONLINE":
-            overlay_title = "ĐANG ĐỒNG BỘ"
-            overlay_msg = "Tủ đang đồng bộ lại trạng thái với hệ thống.\nVui lòng chờ trong giây lát."
-            overlay_status = "Đang gửi heartbeat..."
-        elif cabinet_status == "INACTIVE":
+        gpio_targets = getattr(self.gpio_controller, "lock_targets", {})
+
+        if cabinet_status == "INACTIVE":
             overlay_title = "TỦ TẠM NGƯNG"
             overlay_msg = "Tủ đang tạm ngưng hoạt động.\nVui lòng liên hệ quản trị viên."
             overlay_status = "Đang chờ kích hoạt lại..."
-        elif cabinet_status == "OFFLINE":
-            overlay_title = "MẤT KẾT NỐI"
-            overlay_msg = "Tủ đang mất kết nối hệ thống.\nVui lòng thử lại sau hoặc liên hệ hỗ trợ."
-            overlay_status = "Đang chờ kết nối lại..."
-        else:
+        elif not gpio_targets:
             overlay_title = "CHƯA CẤU HÌNH NGĂN"
             overlay_msg = "Tủ đang trong giai đoạn cấu hình.\nVui lòng liên hệ quản trị viên để thiết lập ngăn tủ."
             overlay_status = "Đang đợi cấu hình từ quản trị viên..."
+        elif self.network_status != "ONLINE":
+            overlay_title = "MẤT MẠNG"
+            overlay_msg = "Tủ đang mất kết nối mạng.\nVui lòng thử lại sau hoặc liên hệ hỗ trợ."
+            overlay_status = "Đang chờ kết nối lại..."
+        else:
+            overlay_title = "ĐANG ĐỒNG BỘ"
+            overlay_msg = "Tủ đang kết nối lại hệ thống điều khiển.\nVui lòng chờ trong giây lát."
+            overlay_status = "Đang kết nối MQTT..."
 
         overlay = QWidget(self.widget)
         overlay_rect = self.widget.rect().adjusted(0, 0, 0, -48)

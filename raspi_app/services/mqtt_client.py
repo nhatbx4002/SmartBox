@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 
 import paho.mqtt.client as mqtt
 from PySide6.QtCore import QObject, Signal
@@ -10,6 +11,7 @@ class MqttClient(QObject):
     payment_received = Signal(object, object)
     unlock_requested = Signal(str)
     config_reload_requested = Signal(object, object, object, object)
+    connection_changed = Signal(bool)
 
     def __init__(self, config: dict, cabinet_id: str):
         super().__init__()
@@ -41,6 +43,14 @@ class MqttClient(QObject):
 
         broker = self.config.get("mqtt", {}).get("broker", "localhost")
         port = int(self.config.get("mqtt", {}).get("port", 1883))
+
+        status_topic = f"omnibox/{self.cabinet_id}/evt/status"
+        self._client.will_set(
+            status_topic,
+            json.dumps({"status": "offline", "ts": int(time.time() * 1000)}),
+            qos=1, retain=True,
+        )
+
         self._client.connect(broker, port, keepalive=60)
         self._client.loop_start()
 
@@ -48,11 +58,18 @@ class MqttClient(QObject):
         if reason_code == 0:
             self.connected = True
             self._subscribe_all()
+            topic = f"omnibox/{self.cabinet_id}/evt/status"
+            self._client.publish(
+                topic, json.dumps({"status": "online", "ts": int(time.time() * 1000)}),
+                qos=1, retain=True,
+            )
+            self.connection_changed.emit(True)
         else:
             print(f"[MQTT] Connection failed: {reason_code}")
 
     def _on_disconnect(self, client, userdata, reason_code, properties) -> None:
         self.connected = False
+        self.connection_changed.emit(False)
 
     def _on_message(self, client, userdata, msg) -> None:
         topic = msg.topic
@@ -139,6 +156,15 @@ class MqttClient(QObject):
 
     def disconnect(self) -> None:
         if self._client:
+            try:
+                info = self._client.publish(
+                    f"omnibox/{self.cabinet_id}/evt/status",
+                    json.dumps({"status": "offline", "ts": int(time.time() * 1000)}),
+                    qos=1, retain=True,
+                )
+                info.wait_for_publish(timeout=1)
+            except Exception:
+                pass
             self._client.loop_stop()
             self._client.disconnect()
             self.connected = False
