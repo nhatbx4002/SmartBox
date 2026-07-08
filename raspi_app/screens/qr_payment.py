@@ -9,7 +9,9 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
-from screens.base import BaseController
+from screens.components.buttons import SecondaryButton
+from screens.components.bottom_action_bar import BottomActionBar
+from screens.base import BaseController, run_in_thread
 from services.formatters import format_currency
 
 _POLL_INTERVAL_MS = 5000
@@ -28,6 +30,8 @@ class QRPaymentController(BaseController):
         self.amount_label = self.child("lblAmountValue", QLabel)
         self.qr_label = self.child("lblQrImage", QLabel)
         self.child("btnBack", QPushButton).clicked.connect(lambda: self.navigate("/payment"))
+        self.btn_cancel_payment = self.child("btnCancelPayment", SecondaryButton)
+        self.btn_cancel_payment.clicked.connect(self._cancel_payment)
 
         self.timer = QTimer(self.widget)
         self.timer.timeout.connect(self._tick)
@@ -92,6 +96,10 @@ class QRPaymentController(BaseController):
         body.addWidget(note)
 
         body.addStretch()
+
+        self.btn_cancel = SecondaryButton("HỦY THANH TOÁN", object_name="btnCancelPayment")
+        body.addWidget(BottomActionBar(self.btn_cancel))
+
         layout.addLayout(body, 1)
         return root
 
@@ -134,6 +142,34 @@ class QRPaymentController(BaseController):
                 self._confirm_paid()
         except Exception as exc:
             print(f"[QRPayment] Poll error (ignored): {exc}")
+
+    def _cancel_payment(self) -> None:
+        order_code = self.state.payment_order_code
+        if not order_code:
+            return
+
+        self.timer.stop()
+        self.poll_timer.stop()
+
+        self.btn_cancel_payment.setEnabled(False)
+        self.btn_cancel_payment.setText("ĐANG HỦY...")
+
+        def task():
+            return self.app.api_client.cancel_payment(order_code)
+
+        def done(_):
+            self.state.reset_rent_flow()
+            self.navigate("/", replace=True)
+
+        def error(err):
+            self.btn_cancel_payment.setEnabled(True)
+            self.btn_cancel_payment.setText("HỦY THANH TOÁN")
+            self.show_error_dialog(
+                message=str(err),
+                on_retry=self._cancel_payment,
+            )
+
+        run_in_thread(task, done, error)
 
     def _confirm_paid(self) -> None:
         self.timer.stop()

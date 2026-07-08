@@ -135,6 +135,14 @@ class ApiClient:
         )
         return self._parse_response(response)
 
+    def cancel_payment(self, order_code: int) -> None:
+        response = self._session.post(
+            f"{self.base_url}/api/payments/{order_code}/cancel",
+            headers=self._headers(),
+            timeout=self.timeout,
+        )
+        self._parse_response(response)
+
     def get_payment_result(self, order_code: int) -> tuple[RentalData, CompartmentData]:
         response = self._session.get(
             f"{self.base_url}/api/payments/result/{order_code}",
