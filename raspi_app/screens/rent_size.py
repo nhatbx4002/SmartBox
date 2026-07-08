@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 from screens.components.theme import SCREEN_WIDTH, SCREEN_HEIGHT, root_style
 from screens.components.header_bar import HeaderBar
@@ -51,8 +52,8 @@ class RentSizeController(BaseController):
         body.addWidget(subtitle)
         body.addSpacing(8)
 
-        card1 = self._size_card("cardSize1", "Tủ nhỏ", "📦", "Phù hợp với đồ cá nhân, ví, sạc, phụ kiện nhỏ")
-        card2 = self._size_card("cardSize2", "Tủ lớn", "🧳", "Phù hợp với balo, túi xách, hành lý nhỏ")
+        card1 = self._size_card("cardSize1", "Tủ nhỏ", "assets/SmallSizeIconCard.png", "Phù hợp với đồ cá nhân, ví, sạc, phụ kiện nhỏ")
+        card2 = self._size_card("cardSize2", "Tủ lớn", "assets/LargeSizeIconCard.png", "Phù hợp với balo, túi xách, hành lý nhỏ")
         body.addWidget(card1)
         body.addWidget(card2)
         body.addStretch(1)
@@ -75,11 +76,21 @@ class RentSizeController(BaseController):
         c_layout.setContentsMargins(36, 28, 36, 28)
         c_layout.setSpacing(28)
 
-        icon_lbl = QLabel(icon, card)
-        icon_lbl.setFixedSize(100, 100)
-        icon_lbl.setAlignment(Qt.AlignCenter)
-        icon_lbl.setStyleSheet("border: none; font-size: 64px;")
-        c_layout.addWidget(icon_lbl)
+        img_lbl = QLabel(card)
+        img_lbl.setFixedSize(150, 150)
+        img_lbl.setAlignment(Qt.AlignCenter)
+        img_lbl.setStyleSheet("border: none; background: transparent;")
+        pixmap = QPixmap(image_path)
+
+        img_lbl.setPixmap(
+                pixmap.scaled(
+                    150,
+                    150,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation,
+          )
+        )
+        c_layout.addWidget(img_lbl)
 
         text_box = QVBoxLayout()
         text_box.setSpacing(10)
