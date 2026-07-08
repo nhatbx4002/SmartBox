@@ -34,6 +34,7 @@ class LockerOpenController(BaseController):
         self.door_poll_timer = QTimer(self.widget)
         self.door_poll_timer.timeout.connect(self._poll_door_status)
         self.compartment_id = ""
+        self.backend_compartment_id = ""
         self.finished = False
         self._door_open_reported = False
 
@@ -130,6 +131,7 @@ class LockerOpenController(BaseController):
             return
 
         self.compartment_id = self._compartment_key()
+        self.backend_compartment_id = compartment.id
         self.finished = False
         self._door_open_reported = False
         self.finish_button.setEnabled(False)
@@ -180,7 +182,7 @@ class LockerOpenController(BaseController):
             if not self._door_open_reported:
                 self._door_open_reported = True
                 rental_id = self.state.rental_data.id if self.state.rental_data else None
-                self.mqtt_client.publish_door_opened(self.compartment_id, rental_id)
+                self.mqtt_client.publish_door_opened(self.backend_compartment_id, rental_id)
         elif door_status == "CLOSED":
             self._update_door_status("Cửa Đang Đóng", "#00C853")
             self.finish_button.setEnabled(True)
