@@ -65,7 +65,7 @@ class RentSizeController(BaseController):
         layout.addLayout(body, 1)
         return root
 
-    def _size_card(self, obj_name: str, label: str, icon: str, desc: str) -> QFrame:
+    def _size_card(self, obj_name: str, label: str, image_path: str, desc: str) -> QFrame:
         card = QFrame()
         card.setObjectName(obj_name)
         card.setFixedHeight(380)

@@ -51,7 +51,7 @@ class PairingController(BaseController):
         body.setSpacing(12)
         body.setAlignment(Qt.AlignTop)
 
-        logo = QLabel("SmartBox", root)
+        logo = QLabel("OmniBox", root)
         logo.setAlignment(Qt.AlignCenter)
         logo.setStyleSheet("background: transparent; border: none; color: #E8E8E8; font-family: 'Be Vietnam Pro', Arial, sans-serif; font-size: 48px; font-weight: 900;")
         body.addWidget(logo)
