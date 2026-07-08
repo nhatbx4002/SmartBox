@@ -18,7 +18,7 @@ class QrScanFrame:
 class QrCameraScanner:
     def __init__(
         self,
-        size: tuple[int, int] = (1640, 1232),
+        size: tuple[int, int] = (1280, 720),
         fps: int = 30,
         qr_every_n_frames: int = 3,
         stream_url: str | None = None,
@@ -93,6 +93,7 @@ class QrCameraScanner:
     def _scan_qr(self, frame) -> tuple[str | None, bool]:
         small = cv2.resize(frame, None, fx=0.5, fy=0.5)
         gray = cv2.cvtColor(small, cv2.COLOR_RGB2GRAY)
+
         token, points, _ = self._detector.detectAndDecode(gray)
         clean_token = token.strip() if token and token.strip() else None
         detected = points is not None
@@ -103,6 +104,8 @@ class QrCameraScanner:
             frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
         elif frame.shape[2] == 4:
             frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2RGB)
+
+        frame = cv2.flip(frame, 1);
         if not frame.flags["C_CONTIGUOUS"]:
             frame = frame.copy()
         return frame

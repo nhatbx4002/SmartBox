@@ -93,7 +93,7 @@ class RentSuccessController(BaseController):
         btn_later = PrimaryButton("DÙNG SAU", object_name="btnUseLater", parent=btn_col_widget, color="orange")
         btn_col.addWidget(btn_later)
 
-        body.addWidget(BottomActionBar(btn_col_widget))
+        body.addWidget(BottomActionBar(btn_col_widget, height=300))
         layout.addLayout(body, 1)
         return root
 
@@ -117,4 +117,4 @@ class RentSuccessController(BaseController):
         compartment_name = rental.compartment_name if rental and rental.compartment_name else compartment.name
         if "Ngăn" in compartment_name or compartment.cabinet_name in compartment_name:
             return compartment_name
-        return f"{compartment.cabinet_name} – Ngăn {compartment_name}"
+        return f"Tủ {compartment.cabinet_name} – Ngăn {compartment_name}"
