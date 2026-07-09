@@ -21,7 +21,6 @@ export default function QrCodeDisplay({ value, code, size = 200, label = "Quét 
         />
       </View>
       <Text className="text-small text-text-secondary mt-three">{label}</Text>
-      <Text className="text-small-bold text-white mt-one font-mono">{code}</Text>
     </View>
   );
 }

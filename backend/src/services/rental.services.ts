@@ -67,16 +67,20 @@ async function createRentalRecord(
             },
         });
 
-        const compartment = await tx.compartment.findUnique({
-            where: { id: compartmentId },
+        const fullRental = await tx.rental.findUnique({
+            where: { id: rental.id },
+            include: {
+                compartment: { include: { cabinet: true } },
+                pricePlan: true,
+            },
         });
 
-        if (!compartment) throw new NotFoundError('Compartment not found!');
+        if (!fullRental) throw new NotFoundError('Rental not found after creation!');
 
         return {
-            rental: updatedRental,
+            rental: fullRental,
             code,
-            compartment,
+            compartment: fullRental.compartment,
         };
     });
 }
@@ -127,6 +131,7 @@ export async function createRental(input: {
             cabinetId: input.cabinetId,
             size: input.size,
             status: CompartmentStatus.AVAILABLE,
+            deletedAt: null,
         },
         orderBy: { name: 'asc' },
     });

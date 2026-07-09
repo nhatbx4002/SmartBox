@@ -2,6 +2,7 @@ import mqtt, { MqttClient, IClientOptions, IClientPublishOptions } from 'mqtt';
 
 let client: MqttClient | null = null;
 let connectPromise: Promise<MqttClient> | null = null;
+let onReconnectCallback: (() => void) | null = null;
 
 type MqttPayload = Record<string, unknown>;
 
@@ -71,6 +72,12 @@ export function connectMqtt(): Promise<MqttClient> {
             clearTimeout(connectTimeout);
             console.log('[MQTT] connected');
             resolve(mqttClient);
+        });
+
+        mqttClient.on('connect', () => {
+            if (connectPromise) return; // initial connect đã resolve
+            console.log('[MQTT] reconnected, re-subscribing...');
+            if (onReconnectCallback) onReconnectCallback();
         });
 
         mqttClient.once('error', (error) => {
@@ -252,4 +259,8 @@ function topicMatches(pattern: string, topic: string): boolean {
     }
 
     return patternParts.length === topicParts.length;
+}
+
+export function setMqttReconnectHandler(cb: () => void): void {
+    onReconnectCallback = cb;
 }

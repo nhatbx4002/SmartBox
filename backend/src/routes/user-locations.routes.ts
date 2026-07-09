@@ -35,7 +35,9 @@ router.get(
     '/',
     requireUser,
     asyncHandler(async (req, res) => {
-        const locations = await locationService.getPublicLocations();
+        const lat = req.query.lat ? Number(req.query.lat) : undefined;
+        const lng = req.query.lng ? Number(req.query.lng) : undefined;
+        const locations = await locationService.getPublicLocations(lat, lng);
         res.json({ data: locations });
     })
 );

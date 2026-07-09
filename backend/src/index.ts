@@ -6,7 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import { AppError } from './lib/errors';
 import { requestLogger } from './middleware/requestLogger';
 import { openapiSpec } from './lib/openapi';
-import { connectMqtt } from './lib/mqtt';
+import { connectMqtt, setMqttReconnectHandler } from './lib/mqtt';
 import { setupMqttHandlers } from './mqtt/handlers';
 import { initSocket } from './lib/socket';
 import { startExpiryChecker } from './jobs/expiryChecker';
@@ -93,6 +93,10 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 initSocket(httpServer);
+
+setMqttReconnectHandler(() => {
+    setupMqttHandlers();
+});
 
 connectMqtt()
     .then(() => {

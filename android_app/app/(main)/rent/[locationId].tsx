@@ -48,6 +48,7 @@ export default function RentFlowScreen() {
   const createRental = useRentalStore((state) => state.createRental);
   const fetchRentals = useRentalStore((state) => state.fetchRentals);
   const currentRental = useRentalStore((state) => state.currentRental);
+  const fetchRentalDetail = useRentalStore((state) => state.fetchRentalDetail);
   const isRentalLoading = useRentalStore((state) => state.isLoading);
 
   useEffect(() => {
@@ -112,12 +113,16 @@ export default function RentFlowScreen() {
 
   const handlePayment = async () => {
     if (!selectedSize || !selectedPlanId) return;
+    if (!selectedCabinetId) {
+      Alert.alert("Thieu thong tin", "Vui long chon tu truoc khi thanh toan.");
+      return;
+    }
 
     try {
       const rental = await createRental({
         size: selectedSize,
         planId: selectedPlanId,
-        cabinetId: selectedCabinetId!,
+        cabinetId: selectedCabinetId,
       });
       setCreatedRentalId(rental.id);
       
@@ -175,8 +180,9 @@ export default function RentFlowScreen() {
         const res = await paymentService.getPaymentStatus(payment.orderCode);
         if (res.data.status === 'PAID') {
           clearInterval(interval);
-          fetchRentals();
           setStep(5);
+          try { await fetchRentalDetail(createdRentalId || currentRental?.id || ''); } catch {}
+          fetchRentals();
         } else if (res.data.status === 'FAILED') {
           clearInterval(interval);
           Alert.alert('Thanh toán hết hạn', 'Phiên thanh toán đã hết hạn, vui lòng thử lại.');
@@ -210,7 +216,7 @@ export default function RentFlowScreen() {
 
       <ScrollView
         className="flex-1 px-four"
-        contentContainerStyle={{ paddingBottom: insets.bottom + 24, paddingTop: 16 }}
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       >
         {loading && step !== 5 ? (
@@ -257,16 +263,11 @@ export default function RentFlowScreen() {
                     </SpringPressable>
                   );
                 })}
-                <Button
-                  title="Tiếp tục"
-                  disabled={!selectedSize || availability[selectedSize] === 0}
-                  onPress={handleNextStep}
-                />
               </View>
             )}
 
             {step === 2 && (
-              <View className="gap-four">
+              <View className="gap-four flex-1">
                 {plansLoading ? (
                   <View className="items-center py-eight">
                     <ActivityIndicator color="#FF6600" />
@@ -301,13 +302,6 @@ export default function RentFlowScreen() {
                   </>
                 ) : (
                   <>
-                    <Pressable
-                      onPress={() => { setSelectedPlanGroup(null); setSelectedPlanId(null); }}
-                      className="flex-row items-center gap-two"
-                    >
-                      <Ionicons name="arrow-back" size={16} color="#FF6600" />
-                      <Text className="text-small-bold text-brand">{PLAN_GROUPS[selectedPlanGroup].title}</Text>
-                    </Pressable>
                     {(groupedPlans[selectedPlanGroup] ?? []).map((plan) => (
                       <SpringPressable
                         key={plan.id}
@@ -323,14 +317,6 @@ export default function RentFlowScreen() {
                         </View>
                       </SpringPressable>
                     ))}
-                    <View className="flex-row gap-three">
-                      <View className="flex-1">
-                        <Button title="Quay lại" variant="secondary" onPress={() => { setSelectedPlanGroup(null); setSelectedPlanId(null); }} />
-                      </View>
-                      <View className="flex-1">
-                        <Button title="Tiếp tục" disabled={!selectedPlanId} onPress={handleNextStep} />
-                      </View>
-                    </View>
                   </>
                 )}
               </View>
@@ -367,14 +353,6 @@ export default function RentFlowScreen() {
                   <Text className="text-caption text-text-secondary mt-one">Quét mã QR thanh toán</Text>
                 </View>
 
-                <View className="flex-row gap-three">
-                  <View className="flex-1">
-                    <Button title="Quay lại" variant="secondary" onPress={() => setStep(2)} />
-                  </View>
-                  <View className="flex-1">
-                    <Button title="Thanh toán" onPress={handlePayment} disabled={!isOnline} />
-                  </View>
-                </View>
               </View>
             )}
 
@@ -391,13 +369,7 @@ export default function RentFlowScreen() {
                 <Text className="text-h3 text-brand font-bold">{formatCurrency(payment.amount)}</Text>
                 <Text className="text-small text-text-secondary">Thời gian còn lại: {countdownText}</Text>
                 
-                <View className="w-full mt-four">
-                  <Button
-                    title="Hủy thanh toán"
-                    variant="secondary"
-                    onPress={() => setStep(3)}
-                  />
-                </View>
+
               </View>
             )}
 
@@ -422,11 +394,11 @@ export default function RentFlowScreen() {
                 <View className="bg-surface border border-border rounded-panel p-four w-full gap-two">
                   <View className="flex-row justify-between items-center">
                     <Text className="text-small text-text-secondary">Cabinet</Text>
-                    <Text className="text-small-bold text-white">{currentRental.compartment.cabinet.name}</Text>
+                    <Text className="text-small-bold text-white">{currentRental.compartment?.cabinet?.name ?? "--"}</Text>
                   </View>
                   <View className="flex-row justify-between items-center">
                     <Text className="text-small text-text-secondary">Ngăn</Text>
-                    <Text className="text-small-bold text-white">{currentRental.compartment.name}</Text>
+                    <Text className="text-small-bold text-white">{currentRental.compartment?.name ?? "--"}</Text>
                   </View>
                   <View className="flex-row justify-between items-center">
                     <Text className="text-small text-text-secondary">Phiên thuê</Text>
@@ -445,6 +417,44 @@ export default function RentFlowScreen() {
           </>
         )}
       </ScrollView>
+      {step === 1 && (
+          <View className="px-four pt-three bg-background" style={{ paddingBottom: insets.bottom + 16 }}>
+            <Button
+                title="Tiếp tục"
+                disabled={!selectedSize || availability[selectedSize] === 0}
+                onPress={handleNextStep}
+            />
+          </View>
+      )}
+
+      {step === 2 && selectedPlanGroup !== null && (
+          <View className="flex-row gap-three px-four pt-three bg-background" style={{ paddingBottom: insets.bottom + 16 }}>
+            <View className="flex-1">
+              <Button
+                  title="Quay lại"
+                  variant="secondary"
+                  onPress={() => {
+                    setSelectedPlanGroup(null);
+                    setSelectedPlanId(null);
+                  }}
+              />
+            </View>
+            <View className="flex-1">
+              <Button title="Tiếp tục" disabled={!selectedPlanId} onPress={handleNextStep} />
+            </View>
+          </View>
+      )}
+
+      {step === 3 && selectedPlan && (
+          <View className="flex-row gap-three px-four pt-three bg-background" style={{ paddingBottom: insets.bottom + 16 }}>
+            <View className="flex-1">
+              <Button title="Quay lại" variant="secondary" onPress={() => setStep(2)} />
+            </View>
+            <View className="flex-1">
+              <Button title="Thanh toán" onPress={handlePayment} disabled={!isOnline} />
+            </View>
+          </View>
+      )}
     </View>
   );
 }

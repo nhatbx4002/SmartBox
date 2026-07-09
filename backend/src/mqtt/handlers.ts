@@ -20,6 +20,11 @@ type ErrorPayload = {
     timestamp?: string;
 };
 
+type StatusPayload = {
+    status?: 'online' | 'offline';
+    ts?: number;
+};
+
 function extractCabinetId(topic: string): string | null {
     const parts = topic.split('/');
     return parts.length >= 2 ? parts[1] : null;
@@ -83,6 +88,21 @@ export function setupMqttHandlers(): void {
             emitHardwareError(cabinetId, payload.compartmentId ?? '', payload.errorType, payload.message);
         } catch (error) {
             console.error(`[MQTT] error handler failed (${cabinetId}):`, error);
+        }
+    });
+
+    subscribeMqtt<StatusPayload>('omnibox/+/evt/status', async (topic, payload) => {
+        const cabinetId = extractCabinetId(topic);
+        if (!cabinetId) return;
+
+        try {
+            if (payload.status === 'offline') {
+                await systemService.markOffline(cabinetId);
+            } else if (payload.status === 'online') {
+                await systemService.markOnline(cabinetId);
+            }
+        } catch (error) {
+            console.error(`[MQTT] status handler failed (${cabinetId}):`, error);
         }
     });
 }

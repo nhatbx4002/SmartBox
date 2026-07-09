@@ -54,7 +54,7 @@ export function requireUser(req: Request, _res: Response, next: NextFunction) {
 
     try {
         const payload = verifyAccessToken(auth.slice(7));
-        if (!payload.sub || !payload.phone || payload.role) {
+        if (!payload.sub || !payload.phone) {
             return next(new UnauthorizedError('Invalid token'));
         }
         req.user = {

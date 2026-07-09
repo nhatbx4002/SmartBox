@@ -203,7 +203,7 @@ export default function LocationsPage() {
                 {deleteConfirm.hard ? (
                   <>
                     <p className="text-sm font-medium text-zinc-200">Xóa vĩnh viễn <strong>{deleteConfirm.location.name}</strong>?</p>
-                    <p className="mt-1 text-xs leading-relaxed text-zinc-500">Hành động này sẽ xóa vĩnh viễn tất cả tủ, ngăn và lịch sử thuê thuộc địa điểm này. Không thể hoàn tác.</p>
+                    <p className="mt-1 text-xs leading-relaxed text-zinc-500">Hành động này sẽ xóa vĩnh viễn địa điểm, tất cả tủ và ngăn thuộc địa điểm này. Không thể hoàn tác.</p>
                   </>
                 ) : (
                   <>

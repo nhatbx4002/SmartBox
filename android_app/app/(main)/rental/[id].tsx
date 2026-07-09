@@ -69,7 +69,7 @@ export default function RentalDetailScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 24, paddingTop: 16 }}
         showsVerticalScrollIndicator={false}
       >
-        {isLoading || !currentRental ? (
+        {isLoading || !currentRental || !currentRental.pricePlan ? (
           <RentalDetailSkeleton />
         ) : (
           <>
@@ -79,7 +79,7 @@ export default function RentalDetailScreen() {
                 status={currentRental.status === "ACTIVE" ? "active" : currentRental.status === "PENDING" ? "warning" : "completed"}
               />
               <Text className="text-h2 text-white font-bold mt-three">
-                {currentRental.compartment.cabinet.name} • {currentRental.compartment.name}
+                {currentRental.compartment?.cabinet?.name ?? "--"} - {currentRental.compartment?.name ?? "--"}
               </Text>
               <Text className="text-caption text-text-secondary mt-one">{currentRental.pricePlan.name}</Text>
               <Text className="text-small text-text-secondary mt-three">Mã truy cập</Text>

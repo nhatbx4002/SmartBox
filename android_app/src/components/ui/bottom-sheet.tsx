@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import {
   View,
-  StyleSheet,
   useWindowDimensions,
   StyleProp,
   ViewStyle,
   AccessibilityInfo,
 } from "react-native";
 import {
-  GestureHandlerRootView,
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
@@ -44,8 +42,8 @@ export default function BottomSheet({
 
   // Bottom Sheet Dimensions
   const expandedHeight = screenHeight - 120;
-  const halfHeight = 360;
-  const collapsedHeight = 88;
+  const halfHeight = 320;
+  const collapsedHeight = 64;
 
   // Snap Y positions (translateY from fully expanded top)
   const expandedY = 0;
@@ -172,32 +170,29 @@ export default function BottomSheet({
   });
 
   return (
-    <GestureHandlerRootView style={StyleSheet.absoluteFillObject} pointerEvents="box-none">
       <Animated.View
-        style={[
-          sheetAnimatedStyle,
-          {
-            height: expandedHeight,
-            top: screenHeight - expandedHeight,
-          },
-          style,
-        ]}
-        className="absolute left-0 right-0 bg-surface-glass border border-border rounded-t-sheet"
+          pointerEvents="box-none"
+          style={[
+            sheetAnimatedStyle,
+            {
+              height: expandedHeight,
+              top: screenHeight - expandedHeight,
+            },
+            style,
+          ]}
+          className="absolute left-0 right-0 bg-surface-glass border border-border rounded-t-sheet"
       >
-        {/* Grab Handle Header */}
         <GestureDetector gesture={panGesture}>
-          <View className="items-center py-three cursor-pointer w-full" hitSlop={{ top: 20, bottom: 20, left: 0, right: 0 }}>
+          <View className="items-center py-three w-full" hitSlop={{ top: 20, bottom: 20, left: 0, right: 0 }}>
             <Animated.View
-              style={[{ width: 48, height: 6, borderRadius: 3 }, handleAnimatedStyle]}
+                style={[{ width: 48, height: 6, borderRadius: 3 }, handleAnimatedStyle]}
             />
           </View>
         </GestureDetector>
 
-        {/* Content Container */}
         <View className="flex-1 px-four">
           {children}
         </View>
       </Animated.View>
-    </GestureHandlerRootView>
   );
 }

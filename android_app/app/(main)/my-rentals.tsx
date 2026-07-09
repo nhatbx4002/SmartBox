@@ -77,7 +77,7 @@ export default function MyRentalsScreen() {
               >
                 <View className="flex-row justify-between items-center mb-two">
                   <Text className="text-body-bold text-white">
-                    {rental.compartment.cabinet.name} • {rental.compartment.name}
+                    {rental.compartment?.cabinet?.name ?? "--"} - {rental.compartment?.name ?? "--"}
                   </Text>
                   <Badge label="Đang thuê" status="active" />
                 </View>
@@ -85,7 +85,7 @@ export default function MyRentalsScreen() {
                   Mã truy cập: {rental.code}
                 </Text>
                 <Text className="text-caption text-text-secondary mt-one">
-                  Gói: {rental.pricePlan.name}
+                  Gói: {rental.pricePlan?.name}
                 </Text>
                 <View className="flex-row justify-between items-center mt-three">
                   <Text className="text-small text-text-secondary">

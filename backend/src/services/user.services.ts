@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import {BadRequestError, NotFoundError, UnauthorizedError} from '../lib/errors'
 import {signAccessToken, signRefreshToken, verifyRefreshToken , signResetPasswordToken , verifyResetPasswordToken} from '../lib/jwt'
 import { prisma } from  '../lib/prisma'
+import { UserStatus } from '../generated/prisma'
 
 
 //---- OTP store -- ---
@@ -24,29 +25,23 @@ function cleanupExpiredOtp() {
 }
 
 //-- register
-export async function register(phone: string, password: string){
-    const existing = await prisma.user.findUnique({where: {phone}});
-    if(existing) throw new BadRequestError("Phone already registered!");
+export async function register(phone: string, password: string) {
+    const existing = await prisma.user.findUnique({ where: { phone } });
+    if (existing?.passwordHash) throw new BadRequestError('Số điện thoại đã được đăng ký');
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-        data: {phone, passwordHash},
-        select: {
-            id: true,
-            phone: true,
-            name: true,
-            email: true,
-            status: true,
-            createdAt: true,
-        }
-    });
+    const select = { id: true, phone: true, name: true, email: true, status: true, createdAt: true } as const;
 
-    const payload = {sub: user.id, phone: user.phone, role: 'USER'};
+    const user = existing
+        ? await prisma.user.update({ where: { phone }, data: { passwordHash, status: UserStatus.ACTIVE }, select })
+        : await prisma.user.create({ data: { phone, passwordHash, status: UserStatus.ACTIVE }, select });
+
+    const payload = { sub: user.id, phone: user.phone, role: 'USER' };
     return {
         user,
         accessToken: signAccessToken(payload),
         refreshToken: signRefreshToken(payload),
-    }
+    };
 }
 
 // ----- login -----
@@ -60,7 +55,7 @@ export async function login(phone: string, password: string){
     const valid = await bcrypt.compare(password,user.passwordHash);
     if(!valid) throw new UnauthorizedError('Invalid phone or password!');
 
-    const payload = {sub: user.id, email: user.phone, role: 'USER'};
+    const payload = {sub: user.id, phone: user.phone, role: 'USER'};
     return {
         user: {
             id: user.id,
@@ -83,7 +78,7 @@ export async function refreshUserToken(token:string){
     if(!user) throw new UnauthorizedError('User not found!');
 
     return {
-        accessToken: signAccessToken({sub: user.id, email: user.phone , role: 'USER'})
+        accessToken: signAccessToken({sub: user.id, phone: user.phone , role: 'USER'})
     }
 }
 
@@ -164,9 +159,7 @@ export async function sendForgotPasswordOtp(phone: string) {
     otpStore.set(phone, { otp, userId: user.id, expiresAt: Date.
         now() + OTP_TTL, requestedAt: Date.now(), attemptedCount: 0 });
 
-    if (process.env.NODE_ENV !== 'production') {
         console.log(`[OTP] Phone: ${phone}, OTP: ${otp}`);
-    }
 
     return { ok: true };
 }

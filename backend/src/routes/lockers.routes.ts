@@ -52,6 +52,7 @@ router.get(
         const compartments = await prisma.compartment.findMany({
             where: {
                 status: CompartmentStatus.AVAILABLE,
+                deletedAt: null,
                 ...(size ? { size } : {}),
                 ...(cabinetId ? { cabinetId } : {}),
             },

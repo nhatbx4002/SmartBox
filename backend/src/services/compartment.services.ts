@@ -1,4 +1,4 @@
-import { CompartmentSize, LockerAction } from '../generated/prisma';
+import { CompartmentSize, LockerAction, RentalStatus } from '../generated/prisma';
 import { NotFoundError, BadRequestError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
 import { publishMqtt } from '../lib/mqtt';
@@ -58,6 +58,7 @@ export async function updateCompartment(
 ) {
     const existing = await prisma.compartment.findUnique({ where: { id: compId } });
     if (!existing) throw new NotFoundError('Compartment not found!');
+    if (existing.deletedAt) throw new BadRequestError('Ngăn tủ đã bị xóa');
 
     const result = await prisma.$transaction(async (tx) => {
         const comp = await tx.compartment.update({
@@ -83,13 +84,22 @@ export async function deleteCompartment(
 ) {
     const existing = await prisma.compartment.findUnique({ where: { id: compId } });
     if (!existing) throw new NotFoundError('Compartment not found!');
+    if (existing.deletedAt) throw new BadRequestError('Ngăn tủ đã bị xóa');
 
-    const rentalCount = await prisma.rental.count({ where: { compartmentId: compId } });
-    if (rentalCount > 0) throw new BadRequestError('Cannot delete compartment with existing rental history');
+    const activeCount = await prisma.rental.count({
+        where: { compartmentId: compId, status: { in: [RentalStatus.PENDING, RentalStatus.ACTIVE] } },
+    });
+    if (activeCount > 0) throw new BadRequestError('Còn đơn thuê đang hoạt động, không thể xóa ngăn tủ này.');
+
+    const totalCount = await prisma.rental.count({ where: { compartmentId: compId } });
 
     const configVersion = await prisma.$transaction(async (tx) =>
     {
-        await tx.compartment.delete({ where: { id: compId } });
+        if (totalCount > 0) {
+            await tx.compartment.update({ where: { id: compId }, data: { deletedAt: new Date() } });
+        } else {
+            await tx.compartment.delete({ where: { id: compId } });
+        }
         const cabinet = await tx.cabinet.update({
             where: { id: cabinetId },
             data: { configVersion: { increment: 1 } },
@@ -111,6 +121,7 @@ export async function unlockCompartment(
         include: { cabinet: true },
     });
     if (!compartment) throw new NotFoundError('Compartment not found!');
+    if (compartment.deletedAt) throw new BadRequestError('Ngăn tủ đã bị xóa');
 
     await publishUnlockCommand(cabinetId, compartment.name);
 
@@ -130,6 +141,7 @@ export async function testOpenCompartment(
         include: { cabinet: true },
     });
     if (!compartment) throw new NotFoundError('Compartment not found!');
+    if (compartment.deletedAt) throw new BadRequestError('Ngăn tủ đã bị xóa');
 
     await publishUnlockCommand(cabinetId, compartment.name);
 

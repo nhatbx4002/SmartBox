@@ -2,6 +2,7 @@ import { LockerAction, RentalStatus, CompartmentStatus } from '../generated/pris
 import { NotFoundError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
 import { updateHeartbeat } from './cabinet.services';
+export { markOnline, markOffline } from './cabinet.services';
 import { emitCompartmentStatus } from '../lib/socket';
 
 export async function heartbeat(cabinetId: string) {
@@ -88,7 +89,7 @@ export async function getSystemStatus() {
             select: { id: true, name: true, status: true, lastHeartbeatAt: true },
         }),
         prisma.rental.count({ where: { status: RentalStatus.ACTIVE } }),
-        prisma.compartment.count({ where: { status: CompartmentStatus.AVAILABLE } }),
+        prisma.compartment.count({ where: { status: CompartmentStatus.AVAILABLE, deletedAt: null } }),
     ]);
 
     return {

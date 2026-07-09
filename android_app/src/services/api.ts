@@ -125,7 +125,13 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
               let errData: any = null;
               try {
                 const errJson = await retryResponse.json();
-                errMessage = errJson.message || errJson.error || errMessage;
+                if (typeof errJson?.error === 'object' && errJson.error?.message) {
+                  errMessage = errJson.error.message;
+                } else if (typeof errJson?.error === 'string') {
+                  errMessage = errJson.error;
+                } else if (errJson?.message) {
+                  errMessage = errJson.message;
+                }
                 errData = errJson;
               } catch {}
               reject(new ApiError(errMessage, retryResponse.status, errData));
@@ -142,7 +148,14 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   let errorData: any = null;
   try {
     const errorJson = await response.json();
-    errorMessage = errorJson.message || errorJson.error || errorMessage;
+    // backend trả { error: { code, message } } hoặc { message }
+    if (typeof errorJson?.error === 'object' && errorJson.error?.message) {
+      errorMessage = errorJson.error.message;
+    } else if (typeof errorJson?.error === 'string') {
+      errorMessage = errorJson.error;
+    } else if (errorJson?.message) {
+      errorMessage = errorJson.message;
+    }
     errorData = errorJson;
   } catch {
     try {

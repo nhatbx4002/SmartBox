@@ -28,7 +28,6 @@ export default function StationDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const isOnline = useIsOnline();
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const fetchLocationDetail = useLocationStore((state) => state.fetchLocationDetail);
   const isLoading = useLocationStore((state) => state.isLoading);
@@ -55,7 +54,7 @@ export default function StationDetailScreen() {
   }, [selectedLocation]);
 
   const handleDirections = () => {
-    if (!selectedLocation?.latitude || !selectedLocation?.longitude) return;
+    if (selectedLocation?.latitude == null || selectedLocation?.longitude == null) return;
     const url = Platform.select({
       ios: `maps://app?daddr=${selectedLocation.latitude},${selectedLocation.longitude}&label=${encodeURIComponent(selectedLocation.name)}`,
       android: `geo:0,0?q=${selectedLocation.latitude},${selectedLocation.longitude}(${encodeURIComponent(selectedLocation.name)})`,
@@ -107,7 +106,7 @@ export default function StationDetailScreen() {
                   pitchEnabled={false}
                   rotateEnabled={false}
                 >
-                  {selectedLocation.latitude !== null && selectedLocation.longitude !== null ? (
+                  {selectedLocation.latitude != null && selectedLocation.longitude != null ? (
                     <Marker coordinate={{ latitude: selectedLocation.latitude, longitude: selectedLocation.longitude }}>
                       <View className="bg-brand border border-white px-two py-one rounded-full">
                         <Text className="text-[10px] text-white font-bold">Tủ</Text>
@@ -146,7 +145,7 @@ export default function StationDetailScreen() {
                       </Text>
                     </View>
                     <Text className="text-caption text-text-secondary mt-two">
-                      {cabinet.compartments.filter((item) => item.status === "AVAILABLE").length}/{cabinet.compartments.length} ngăn đang trống
+                      {(cabinet.compartments ?? []).filter((item) => item.status === "AVAILABLE").length}/{(cabinet.compartments ?? []).length} ngăn đang trống
                     </Text>
                     <Pressable
                       onPress={() => router.push(`/rent/${id}?cabinetId=${cabinet.id}` as any)}

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,21 @@ import {
   RefreshControl,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import * as ExpoLocation from "expo-location";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withDelay,
+  withSequence,
+  withTiming,
+  FadeIn,
+  SlideInDown,
+} from "react-native-reanimated";
+
 import OmniBoxIcon from "../../assets/Logos/omnibox-icon-small.svg";
 import Badge from "../../src/components/ui/badge";
 import SpringPressable from "../../src/components/ui/spring-pressable";
@@ -23,6 +34,9 @@ import { userService } from "../../src/services/user";
 import { useAuthStore } from "../../src/store/authStore";
 import { useLocationStore } from "../../src/store/locationStore";
 import { useRentalStore } from "../../src/store/rentalStore";
+
+const SPRING = { damping: 14, stiffness: 100, mass: 1 };
+const STAGGER = 120;
 
 let MapView: any = null;
 let Marker: any = null;
@@ -44,23 +58,100 @@ const mapDarkStyle = [
 ];
 
 function formatDistance(distance: number | null) {
-  if (distance === null) return "--";
+  if (distance == null) return "--";
   return `${distance.toFixed(1)} km`;
 }
 
 function formatCountdown(expiresAt: string, nowMs: number) {
   const seconds = Math.max(0, Math.floor((new Date(expiresAt).getTime() - nowMs) / 1000));
-  if (seconds <= 0) return "Đã hết hạn";
+  if (seconds <= 0) return "Hết hạn";
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  return hours > 0 ? `Còn ${hours}h ${minutes}p` : `Còn ${minutes}p`;
+  return hours > 0 ? `Còn ${hours}giờ ${minutes}phút` : `Còn ${minutes}phút`;
 }
 
 const homeFaqs = [
-  { id: "open-locker", question: "Làm thế nào để nhận tủ và mở cửa tủ?" },
-  { id: "what-is-open-limit", question: "Lượt mở tủ là gì và hoạt động thế nào?" },
-  { id: "forget-otp", question: "Tôi phải làm gì nếu gặp sự cố hoặc quên OTP?" },
+  { id: "open-locker", question: "Làm thế nào để thuê tủ và mở tủ?" },
+  { id: "what-is-open-limit", question: "Lượt mở tủ là gì và hoạt động như thế nào?" },
+  { id: "forget-otp", question: "Tôi phải làm gì nếu quên mã OTP?" },
 ];
+
+// -- Staggered reveal wrapper --
+function Staggered({ index, children }: { index: number; children: React.ReactNode }) {
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(24);
+
+  useEffect(() => {
+    opacity.value = withDelay(index * STAGGER, withSpring(1, { ...SPRING, stiffness: 80 }));
+    translateY.value = withDelay(index * STAGGER, withSpring(0, SPRING));
+  }, []);
+
+  const style = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  return <Animated.View style={style}>{children}</Animated.View>;
+}
+
+// -- Section header --
+function SectionHeader({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) {
+  return (
+    <View className="flex-row justify-between items-center mb-3">
+      <Text className="text-body-bold text-white tracking-tight">{title}</Text>
+      {action && onAction && (
+        <Pressable onPress={onAction} hitSlop={8}>
+          <Text className="text-small-bold text-brand">{action}</Text>
+        </Pressable>
+      )}
+    </View>
+  );
+}
+
+// -- Glass card wrapper --
+function GlassCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <View
+      className={`overflow-hidden rounded-2xl border border-white/10 ${className ?? ""}`}
+      style={{ backgroundColor: "rgba(28, 28, 27, 0.85)" }}
+    >
+      <View className="p-4">
+        {children}
+      </View>
+    </View>
+  );
+}
+
+// -- Live status dot --
+function StatusDot({ online }: { online: boolean }) {
+  const pulse = useSharedValue(1);
+
+  useEffect(() => {
+    if (!online) return;
+    pulse.value = withSequence(
+      withTiming(0.4, { duration: 1200 }),
+      withTiming(1, { duration: 1200 }),
+    );
+    const interval = setInterval(() => {
+      pulse.value = withSequence(
+        withTiming(0.4, { duration: 1200 }),
+        withTiming(1, { duration: 1200 }),
+      );
+    }, 2400);
+    return () => clearInterval(interval);
+  }, [online]);
+
+  const dotStyle = useAnimatedStyle(() => ({
+    opacity: online ? pulse.value : 0.5,
+  }));
+
+  return (
+    <Animated.View
+      style={dotStyle}
+      className={`w-2 h-2 rounded-full ${online ? "bg-success" : "bg-text-muted"}`}
+    />
+  );
+}
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -75,7 +166,7 @@ export default function HomeScreen() {
   const rentalsLoading = useRentalStore((state) => state.isLoading);
   const rentalsHydrated = useRentalStore((state) => state._hasHydrated);
   const [locationError, setLocationError] = useState<string | null>(null);
-  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [now, setNow] = useState(Date.now());
   const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -87,10 +178,7 @@ export default function HomeScreen() {
       if (permission.status === "granted") {
         const current = await ExpoLocation.getCurrentPositionAsync({});
         if (mounted) {
-          setUserCoords({
-            latitude: current.coords.latitude,
-            longitude: current.coords.longitude,
-          });
+          setUserCoords({ latitude: current.coords.latitude, longitude: current.coords.longitude });
           await fetchLocations(current.coords.latitude, current.coords.longitude);
         }
       } else {
@@ -98,7 +186,7 @@ export default function HomeScreen() {
       }
     } catch {
       if (mounted) {
-        setLocationError("Không thể lấy vị trí hiện tại.");
+        setLocationError("Không thể lấy vị trí người dùng hiện tại.");
         await fetchLocations();
       }
     }
@@ -107,10 +195,8 @@ export default function HomeScreen() {
   const loadNotifications = useCallback(async (mountedRef?: { current: boolean }) => {
     const mounted = mountedRef?.current ?? true;
     try {
-      const notifications = await userService.getNotifications();
-      if (mounted) {
-        setHasUnreadNotifications(notifications.data.some((item) => !item.isRead));
-      }
+      const result = await userService.getNotifications();
+      if (mounted) setUnreadCount(result.data.filter((item) => !item.isRead).length);
     } catch {}
   }, []);
 
@@ -119,19 +205,14 @@ export default function HomeScreen() {
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     await Promise.all([loadLocations(), loadNotifications(), loadRentals()]);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setRefreshing(false);
   }, [loadLocations, loadNotifications, loadRentals]);
 
   useEffect(() => {
-    let mounted = true;
     const mountedRef = { current: true };
-
     Promise.all([loadLocations(mountedRef), loadNotifications(mountedRef), loadRentals()]);
-
-    return () => {
-      mounted = false;
-      mountedRef.current = false;
-    };
+    return () => { mountedRef.current = false; };
   }, [loadLocations, loadNotifications, loadRentals]);
 
   useEffect(() => {
@@ -153,10 +234,10 @@ export default function HomeScreen() {
   }, [nearbyStations, userCoords]);
 
   const handleCallHotline = () => {
-    Linking.openURL("tel:1900123456").catch(() => {
-      alert("Thiết bị không hỗ trợ cuộc gọi.");
-    });
+    Linking.openURL("tel:1900123456").catch(() => {});
   };
+
+  const userInitial = (user?.name || user?.phone || "U").trim().charAt(0).toUpperCase();
 
   if (!locationsHydrated || !rentalsHydrated) {
     return (
@@ -170,226 +251,246 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
-      <ScrollView
+
+      <Animated.ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FF6600" colors={["#FF6600"]} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FF6600" colors={["#FF6600"]} />
+        }
+        entering={FadeIn.duration(500)}
       >
-        <View className="px-four py-four">
-          <View className="flex-row justify-between items-start mb-five">
-            <View className="flex-1 pr-three">
-              <View className="flex-row items-start">
-                <View className="w-8 h-8 mr-two mt-one">
-                  <OmniBoxIcon width={32} height={32} />
+        <View className="px-4 pt-4 pb-6">
+          {/* ===== HEADER ===== */}
+          <Staggered index={0}>
+            <View className="flex-row justify-between items-start mb-6">
+              <View className="flex-row items-center gap-3">
+                <View className="w-10 h-10 rounded-xl bg-brand items-center justify-center shadow-brand-glow">
+                  <OmniBoxIcon width={22} height={22} />
                 </View>
-                <View className="flex-1">
-                  <Text className="text-[12px] leading-4 text-[#A0A0A0]">OmniBox Station</Text>
-                  <Text className="text-[34px] leading-[38px] font-bold text-white mt-one">
-                    Hello, {user?.name || user?.phone || "bạn"}
+                <View>
+                  <Text className="text-caption text-text-muted tracking-wider uppercase">
+                    OmniBox
+                  </Text>
+                  <Text className="text-h2 text-white font-bold tracking-tight mt-0.5">
+                    {user?.name || user?.phone || "ban"}
                   </Text>
                 </View>
               </View>
-            </View>
 
-            <View className="flex-row gap-three">
-              <Pressable
-                onPress={() => router.push("/notifications")}
-                className="w-10 h-10 rounded-full bg-surface items-center justify-center border border-border"
-              >
-                <MaterialCommunityIcons name="bell-outline" size={20} color="#FFFFFF" />
-                {hasUnreadNotifications ? (
-                  <View className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-error border border-background" />
-                ) : null}
-              </Pressable>
-              <Pressable
-                onPress={() => router.push("/profile")}
-                className="w-10 h-10 rounded-full bg-surface items-center justify-center border border-border overflow-hidden"
-              >
-                <Text className="text-small-bold text-white">
-                  {(user?.name || user?.phone || "U").trim().charAt(0).toUpperCase()}
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-
-          <View className="bg-surface border border-border rounded-panel overflow-hidden mb-five">
-            <View className="flex-row justify-between items-center px-four pt-four pb-three">
-              <Text className="text-body-bold text-white">Vị trí tủ gần bạn</Text>
-              <Pressable onPress={() => router.push("/locations")}>
-                <Text className="text-small-bold text-brand">Xem bản đồ</Text>
-              </Pressable>
-            </View>
-
-            <View className="h-52 bg-background">
-              {Platform.OS === "web" || !MapView ? (
-                <View className="flex-1 items-center justify-center">
-                  <Text className="text-caption text-text-secondary">Bản đồ chỉ hiển thị trên app mobile.</Text>
-                </View>
-              ) : (
-                <MapView
-                  style={{ width: "100%", height: "100%" }}
-                  region={mapRegion}
-                  customMapStyle={mapDarkStyle}
-                  scrollEnabled={false}
-                  zoomEnabled={false}
-                  pitchEnabled={false}
-                  rotateEnabled={false}
+              <View className="flex-row gap-2">
+                <Pressable
+                  onPress={() => router.push("/notifications")}
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 items-center justify-center"
                 >
-                  {userCoords ? (
-                    <Marker coordinate={userCoords}>
-                      <View className="w-3.5 h-3.5 rounded-full bg-brand border-2 border-white" />
-                    </Marker>
-                  ) : null}
-
-                  {nearbyStations.map((station) =>
-                    station.latitude !== null && station.longitude !== null ? (
-                      <Marker
-                        key={station.id}
-                        coordinate={{ latitude: station.latitude, longitude: station.longitude }}
-                        onPress={() => router.push(`/station/${station.id}` as any)}
-                      >
-                        <View className={`border border-white px-two py-one rounded-full ${station.status === 'online' ? 'bg-brand' : 'bg-surface'}`}>
-                          <Text className="text-[10px] text-white font-bold">
-                            {station.status === 'online' ? station.availableCount : '—'}
-                          </Text>
-                        </View>
-                      </Marker>
-                    ) : null,
+                  <Ionicons name="notifications-outline" size={20} color="#FFFFFF" />
+                  {unreadCount > 0 && (
+                    <View className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-error rounded-full items-center justify-center px-1">
+                      <Text className="text-[10px] text-white font-bold">{unreadCount > 99 ? "99+" : unreadCount}</Text>
+                    </View>
                   )}
-                </MapView>
-              )}
+                </Pressable>
+                <Pressable
+                  onPress={() => router.push("/profile")}
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 items-center justify-center"
+                >
+                  <Text className="text-small-bold text-white">{userInitial}</Text>
+                </Pressable>
+              </View>
             </View>
+          </Staggered>
 
-            <View className="p-four gap-three">
-              {locationsLoading ? (
-                <StationListSkeleton />
-              ) : nearbyStations.length > 0 ? (
-                nearbyStations.map((station) => (
-                  <SpringPressable
-                    key={station.id}
-                    onPress={() => router.push(`/station/${station.id}` as any)}
-                    className="bg-background border border-border rounded-panel p-three"
-                    glowOnPress
+          {/* ===== MAP + STATIONS ===== */}
+          <Staggered index={1}>
+            <GlassCard className="mb-5">
+              <View className="flex-row justify-between items-center mb-3">
+                <Text className="text-body-bold text-white tracking-tight">Vị trí tủ gần bạn</Text>
+                <Pressable onPress={() => router.push("/locations")} hitSlop={8}>
+                  <Text className="text-small-bold text-brand">Xem bản đồ</Text>
+                </Pressable>
+              </View>
+
+              {/* Mini map */}
+              <View className="h-48 rounded-xl overflow-hidden bg-background border border-white/5 mb-3">
+                {Platform.OS === "web" || !MapView ? (
+                  <View className="flex-1 items-center justify-center">
+                    <Text className="text-caption text-text-muted">Bản đồ chỉ hiển trị trên app mobile.</Text>
+                  </View>
+                ) : (
+                  <MapView
+                    style={{ width: "100%", height: "100%" }}
+                    region={mapRegion}
+                    customMapStyle={mapDarkStyle}
+                    scrollEnabled={false}
+                    zoomEnabled={false}
+                    pitchEnabled={false}
+                    rotateEnabled={false}
                   >
-                    <View className="flex-row justify-between items-start">
-                      <View className="flex-1 pr-three">
-                        <Text className="text-body-bold text-white">{station.name}</Text>
-                        <Text className="text-caption text-text-secondary mt-one">{station.address}</Text>
-                      </View>
-                      <Badge
-                        label={
-                          station.status !== 'online'
-                            ? "Offline"
-                            : station.availableCount > 0
-                            ? `Còn ${station.availableCount}`
-                            : "Hết chỗ"
-                        }
-                        status={
-                          station.status !== 'online'
-                            ? "completed"
-                            : station.availableCount > 0
-                            ? "active"
-                            : "expired"
-                        }
-                      />
-                    </View>
-                    <View className="flex-row items-center justify-between mt-three">
-                      <Text className="text-small text-text-secondary">{formatDistance(station.distance)}</Text>
-                      <Text className="text-small text-text-secondary">
-                        S:{station.availableSmall}/{station.totalSmall} • L:{station.availableLarge}/{station.totalLarge}
-                      </Text>
-                    </View>
-                  </SpringPressable>
-                ))
-              ) : (
-                <Text className="text-caption text-text-secondary">Chưa có dữ liệu trạm tủ.</Text>
-              )}
+                    {userCoords && (
+                      <Marker coordinate={userCoords}>
+                        <View className="w-3.5 h-3.5 rounded-full bg-brand border-2 border-white" />
+                      </Marker>
+                    )}
+                    {nearbyStations.map((station) =>
+                      station.latitude != null && station.longitude != null ? (
+                        <Marker
+                          key={station.id}
+                          coordinate={{ latitude: station.latitude, longitude: station.longitude }}
+                          onPress={() => router.push(`/station/${station.id}` as any)}
+                        >
+                          <View className={`border border-white px-2 py-0.5 rounded-full ${station.status === "online" ? "bg-brand" : "bg-surface"}`}>
+                            <Text className="text-[10px] text-white font-bold">
+                              {station.status === "online" ? station.availableCount : "—"}
+                            </Text>
+                          </View>
+                        </Marker>
+                      ) : null,
+                    )}
+                  </MapView>
+                )}
+              </View>
 
-              {locationError ? <Text className="text-small text-warning">{locationError}</Text> : null}
-            </View>
-          </View>
-
-          <View className="mb-five">
-            <View className="flex-row justify-between items-center mb-three">
-              <Text className="text-body-bold text-white">Tủ đang sử dụng</Text>
-              <Pressable onPress={() => router.push("/my-rentals")}>
-                <Text className="text-small-bold text-brand">Xem tất cả</Text>
-              </Pressable>
-            </View>
-
-            <View className="bg-surface border border-border rounded-panel p-four">
-              {rentalsLoading ? (
-                <ActiveRentalSkeleton />
-              ) : activeRentals.length > 0 ? (
-                <View className="gap-three">
-                  {activeRentals.slice(0, 2).map((rental) => (
-                    <Pressable
-                      key={rental.id}
-                      onPress={() => router.push(`/rental/${rental.id}` as any)}
-                      className="bg-background border border-border rounded-panel p-three"
+              {/* Station list */}
+              <View className="gap-2">
+                {locationsLoading ? (
+                  <StationListSkeleton />
+                ) : nearbyStations.length > 0 ? (
+                  nearbyStations.map((station) => (
+                    <SpringPressable
+                      key={station.id}
+                      onPress={() => router.push(`/station/${station.id}` as any)}
+                      className="bg-white/5 border border-white/10 rounded-xl p-3"
+                      glowOnPress
                     >
-                      <View className="flex-row justify-between items-start">
-                        <View className="flex-1 pr-three">
-                          <Text className="text-body-bold text-white">
-                            {rental.compartment.cabinet.name} • {rental.compartment.name}
-                          </Text>
-                          <Text className="text-caption text-text-secondary mt-one">
-                            Mã truy cập: {rental.code}
-                          </Text>
+                      <View className="flex-row items-start justify-between">
+                        <View className="flex-1 pr-3">
+                          <View className="flex-row items-center gap-2 mb-1">
+                            <StatusDot online={station.status === "online"} />
+                            <Text className="text-body-bold text-white">{station.name}</Text>
+                          </View>
+                          <Text className="text-caption text-text-muted">{station.address}</Text>
                         </View>
-                        <Badge label={formatCountdown(rental.expiresAt, now)} status="active" />
+                        <Badge
+                          label={
+                            station.status !== "online"
+                              ? "Offline"
+                              : station.availableCount > 0
+                              ? `Còn ${station.availableCount}`
+                              : "Hết chỗ"
+                          }
+                          status={
+                            station.status !== "online"
+                              ? "completed"
+                              : station.availableCount > 0
+                              ? "active"
+                              : "expired"
+                          }
+                        />
                       </View>
-                    </Pressable>
-                  ))}
-                </View>
-              ) : (
-                <Text className="text-caption text-text-secondary">
-                  Bạn chưa có tủ nào đang hoạt động.
-                </Text>
-              )}
-            </View>
-          </View>
+                      <View className="flex-row items-center justify-between mt-2">
+                        <Text className="text-small text-text-muted">{formatDistance(station.distance)}</Text>
+                        <Text className="text-small text-text-muted">
+                          Nhỏ:{station.availableSmall}/{station.totalSmall}  Lớn:{station.availableLarge}/{station.totalLarge}
+                        </Text>
+                      </View>
+                    </SpringPressable>
+                  ))
+                ) : (
+                  <Text className="text-caption text-text-muted">Chưa có dữ liệu trạm tủ ở gần. Đợi chút nhé.</Text>
+                )}
+                {locationError && <Text className="text-small text-warning mt-1">{locationError}</Text>}
+              </View>
+            </GlassCard>
+          </Staggered>
 
-          <View className="bg-surface border border-border rounded-panel overflow-hidden mb-five">
-            <View className="flex-row justify-between items-center px-four pt-four pb-three">
-              <Text className="text-body-bold text-white">Câu hỏi thường gặp</Text>
-              <Pressable onPress={() => router.push("/faq")}>
-                <Text className="text-small-bold text-brand">Xem tất cả</Text>
-              </Pressable>
+          {/* ===== ACTIVE RENTALS ===== */}
+          <Staggered index={2}>
+            <View className="mb-5">
+              <SectionHeader title="Đơn thuê đang hoạt động" action="Xem tất cả" onAction={() => router.push("/my-rentals")} />
+              <GlassCard>
+                {rentalsLoading ? (
+                  <ActiveRentalSkeleton />
+                ) : activeRentals.length > 0 ? (
+                  <View className="gap-2">
+                    {activeRentals.slice(0, 2).map((rental) => (
+                      <SpringPressable
+                        key={rental.id}
+                        onPress={() => router.push(`/rental/${rental.id}` as any)}
+                        className="bg-white/5 border border-white/10 rounded-xl p-3"
+                        glowOnPress
+                      >
+                        <View className="flex-row justify-between items-start">
+                          <View className="flex-1 pr-3">
+                            <Text className="text-body-bold text-white">
+                              {rental.compartment?.cabinet?.name ?? "--"} - Ngăn {rental.compartment?.name ?? "--"}
+                            </Text>
+                          </View>
+                          <View className="items-end">
+                            <Badge label={formatCountdown(rental.expiresAt, now)} status="active" />
+                          </View>
+                        </View>
+                      </SpringPressable>
+                    ))}
+                  </View>
+                ) : (
+                  <View className="items-center py-4">
+                    <View className="w-10 h-10 rounded-full bg-white/5 border border-white/10 items-center justify-center mb-2">
+                      <Ionicons name="cube-outline" size={20} color="#999" />
+                    </View>
+                    <Text className="text-caption text-text-muted text-center">
+                      Bạn chưa có đơn thuê nào. Hãy thuê ngay nào!
+                    </Text>
+                  </View>
+                )}
+              </GlassCard>
             </View>
+          </Staggered>
 
-            {homeFaqs.map((faq, index) => (
+          {/* ===== FAQ ===== */}
+          <Staggered index={3}>
+            <GlassCard className="mb-5">
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-body-bold text-white tracking-tight">Câu hỏi thường gặp</Text>
+                <Pressable onPress={() => router.push("/faq")} hitSlop={8}>
+                  <Text className="text-small-bold text-brand">Xem tất cả</Text>
+                </Pressable>
+              </View>
+              <View className="divide-y divide-white/5">
+                {homeFaqs.map((faq, index) => (
+                  <Pressable
+                    key={faq.id}
+                    onPress={() => router.push(`/faq/${faq.id}` as any)}
+                    className={`flex-row items-center justify-between py-3 ${index > 0 ? "border-t border-white/5" : ""}`}
+                  >
+                    <Text className="text-small text-white flex-1 pr-3 leading-relaxed">{faq.question}</Text>
+                    <Ionicons name="chevron-forward" size={16} color="#999" />
+                  </Pressable>
+                ))}
+              </View>
+            </GlassCard>
+          </Staggered>
+
+          {/* ===== HOTLINE ===== */}
+          <Staggered index={4}>
+            <View className="flex-row items-center justify-between bg-white/5 border border-white/10 rounded-xl p-4">
+              <View>
+                <Text className="text-caption text-text-muted">Hotline hỗ trợ 24/7</Text>
+                <Text className="text-body-bold text-brand tracking-tight mt-0.5">1900 1234 56</Text>
+              </View>
               <Pressable
-                key={faq.id}
-                onPress={() => router.push(`/faq/${faq.id}` as any)}
-                className={`flex-row items-center justify-between px-four py-four ${index < homeFaqs.length - 1 ? "border-b border-border/40" : ""}`}
+                onPress={() => {
+                  if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  handleCallHotline();
+                }}
+                className="w-11 h-11 rounded-xl bg-brand/10 border border-brand/20 items-center justify-center"
               >
-                <Text className="text-small-bold text-white flex-1 pr-four">{faq.question}</Text>
-                <Ionicons name="chevron-forward" size={18} color="#A1A1A0" />
+                <Ionicons name="call" size={20} color="#FF6600" />
               </Pressable>
-            ))}
-          </View>
-
-          <View className="flex-row justify-between items-center border-t border-border/80 pt-four">
-            <View>
-              <Text className="text-small text-text-secondary">Hotline hỗ trợ 24/7</Text>
-              <Text className="text-body-bold text-brand">1900 1234 56</Text>
             </View>
-            <Pressable
-              onPress={() => {
-                if (Platform.OS !== "web") {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                }
-                handleCallHotline();
-              }}
-              className="w-11 h-11 bg-surface-glass border border-border rounded-full items-center justify-center"
-            >
-              <MaterialCommunityIcons name="phone" size={20} color="#FF6600" />
-            </Pressable>
-          </View>
+          </Staggered>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 }

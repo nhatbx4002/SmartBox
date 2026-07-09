@@ -19,6 +19,7 @@ export interface Compartment {
   name: string
   size: CompartmentSize
   status: CompartmentStatus
+  deletedAt?: string | null
   cabinetId: string
   cabinetName: string
   currentRentalId?: string
@@ -153,7 +154,7 @@ export interface AuditLog {
   action: AuditAction
   target: string
   ipAddress: string
-  success: boolean
+  details?: Record<string, unknown>
 }
 
 export type PairingSessionStatus = 'PENDING' | 'APPROVED' | 'EXPIRED' | 'REJECTED'

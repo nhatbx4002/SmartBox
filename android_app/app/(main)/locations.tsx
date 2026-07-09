@@ -8,6 +8,7 @@ import BottomSheet from "../../src/components/ui/bottom-sheet";
 import Input from "../../src/components/ui/input";
 import SpringPressable from "../../src/components/ui/spring-pressable";
 import { useLocationStore } from "../../src/store/locationStore";
+import StationMarker from "../../src/components/ui/marker";
 
 let MapView: any = null;
 let Marker: any = null;
@@ -29,7 +30,7 @@ const mapDarkStyle = [
 ];
 
 function distanceLabel(distance: number | null) {
-  return distance === null ? "--" : `${distance.toFixed(1)} km`;
+  return distance == null ? "--" : `${distance.toFixed(1)} km`;
 }
 
 export default function LocationsScreen() {
@@ -81,7 +82,7 @@ export default function LocationsScreen() {
   }, [filteredLocations, userCoords]);
 
   const openDirections = (latitude: number | null, longitude: number | null, label: string) => {
-    if (latitude === null || longitude === null) return;
+    if (latitude == null || longitude == null) return;
     const url = Platform.select({
       ios: `maps://app?daddr=${latitude},${longitude}&label=${encodeURIComponent(label)}`,
       android: `geo:0,0?q=${latitude},${longitude}(${encodeURIComponent(label)})`,
@@ -112,34 +113,37 @@ export default function LocationsScreen() {
       ) : (
         <View className="flex-1">
           <MapView
-            style={{ width: "100%", height: "100%" }}
-            region={mapRegion}
-            customMapStyle={mapDarkStyle}
-            showsUserLocation={false}
-            showsMyLocationButton={false}
+              style={{ width: "100%", height: "100%" }}
+              initialRegion={mapRegion}
+              customMapStyle={mapDarkStyle}
+              zoomEnabled
+              scrollEnabled
+              rotateEnabled
+              pitchEnabled
           >
             {userCoords ? (
               <Marker coordinate={userCoords}>
-                <View className="w-3.5 h-3.5 rounded-full bg-brand border-2 border-white" />
+                <View className="w-4 h-4 rounded-full bg-blue-500 border-2 border-white" />
               </Marker>
             ) : null}
 
             {filteredLocations.map((item) =>
-              item.latitude !== null && item.longitude !== null ? (
+              item.latitude != null && item.longitude != null ? (
                 <Marker
                   key={item.id}
                   coordinate={{ latitude: item.latitude, longitude: item.longitude }}
                   onPress={() => router.push(`/station/${item.id}` as any)}
                 >
-                  <View className="bg-brand border border-white px-two py-one rounded-full">
-                    <Text className="text-[10px] text-white font-bold">{item.availableCount}</Text>
-                  </View>
+                  <StationMarker
+                      availableCount={item.availableCount}
+                      status={item.status}
+                  />
                 </Marker>
               ) : null,
             )}
           </MapView>
 
-          <BottomSheet initialSnap="half">
+          <BottomSheet initialSnap="collapsed">
             <ScrollView
               className="flex-1"
               nestedScrollEnabled
@@ -158,7 +162,7 @@ export default function LocationsScreen() {
 
               <View className="flex-row items-center justify-between mb-three">
                 <Text className="text-body-bold text-white">Trạm gần bạn</Text>
-                <Text className="text-small text-text-secondary">{filteredLocations.length} kết quả</Text>
+                <Text className="text-small text-text-secondary">{filteredLocations.length} Kết quả</Text>
               </View>
 
               {isLoading ? (
@@ -232,7 +236,6 @@ export default function LocationsScreen() {
                 <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
               </Pressable>
               <View className="flex-1">
-                <Text className="text-small text-text-secondary">OmniBox Station</Text>
                 <Text className="text-h3 text-white font-bold">Vị trí tủ</Text>
               </View>
             </View>

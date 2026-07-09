@@ -31,7 +31,7 @@ export const useRentalStore = create<RentalState>()(
     set({ isLoading: true, error: null });
     try {
       const response = await rentalService.getUserRentals(params);
-      set({ rentals: response.data, isLoading: false });
+      set({ rentals: response.data ?? [], isLoading: false });
     } catch (err: any) {
       set({ error: err.message || 'Failed to fetch rentals', isLoading: false });
     }

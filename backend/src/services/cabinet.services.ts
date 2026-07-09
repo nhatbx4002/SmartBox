@@ -1,13 +1,14 @@
-import {CabinetStatus, CompartmentStatus, Prisma} from '../generated/prisma'
+import {CabinetStatus, CompartmentStatus, Prisma, NotificationType} from '../generated/prisma'
 import {NotFoundError, BadRequestError} from  '../lib/errors'
 import {prisma} from '../lib/prisma'
 import {publishMqtt} from '../lib/mqtt'
 import {emitCabinetStatus} from "../lib/socket"
+import * as notificationService from './notification.services'
 
 const cabinetInclude = {
     location: true,
     mcpDevices: true,
-    compartments: true,
+    compartments: { where: { deletedAt: null } },
 } as const;
 
 export async function listCabinets(adminId?: string, role?: string){
@@ -26,7 +27,7 @@ export async function listCabinets(adminId?: string, role?: string){
                 ...cabinetInclude,
                 _count: {
                     select: {
-                        compartments: true,
+                        compartments: { where: { deletedAt: null } },
                     }
                 }
             },
@@ -38,7 +39,7 @@ export async function listCabinets(adminId?: string, role?: string){
         include: {
             ...cabinetInclude,
             _count: {
-                select: { compartments: true },
+                select: { compartments: { where: { deletedAt: null } } },
             }
         },
         orderBy: {createdAt: 'desc'},
@@ -52,6 +53,7 @@ export async function getCabinet(id: string){
             location: true,
             mcpDevices: true,
             compartments: {
+                where: { deletedAt: null },
                 include: {
                     lockMcpDevice: true,
                     sensorMcpDevice: true,
@@ -67,7 +69,7 @@ export async function getCabinet(id: string){
 export async function getCabinetConfig(cabinetId: string) {
     const cabinet = await prisma.cabinet.findUnique({
         where: { id: cabinetId },
-        include: { compartments: true, mcpDevices: true },
+        include: { compartments: { where: { deletedAt: null } }, mcpDevices: true },
     });
     if (!cabinet) return null;
 
@@ -104,7 +106,7 @@ export async function deleteCabinet(id: string){
     if(!cabinet) throw new NotFoundError('Cabinet not found!');
 
     const rentalCount = await prisma.rental.count({ where: { compartment: { cabinetId: id } } });
-    if (rentalCount > 0) throw new BadRequestError('Cannot delete cabinet with existing rental history');
+    if (rentalCount > 0) throw new BadRequestError('Cabinet đã có lịch sử thuê, chỉ có thể ngưng hoạt động');
 
     await prisma.$transaction([
         prisma.compartment.deleteMany({ where: { cabinetId: id } }),
@@ -184,10 +186,51 @@ export async function updateHeartbeat(cabinetId: string) {
     return updated;
 }
 
+export async function markOnline(cabinetId: string) {
+    const cabinet = await prisma.cabinet.findUnique({ where: { id: cabinetId } });
+    if (!cabinet || cabinet.status !== CabinetStatus.OFFLINE) return null;
+
+    const updated = await prisma.cabinet.update({
+        where: { id: cabinetId },
+        data: { status: CabinetStatus.ACTIVE, lastHeartbeatAt: new Date() },
+    });
+
+    emitCabinetStatus(cabinetId, {
+        status: updated.status,
+        lastHeartbeatAt: updated.lastHeartbeatAt,
+    });
+
+    return updated;
+}
+
+export async function markOffline(cabinetId: string) {
+    const cabinet = await prisma.cabinet.findUnique({ where: { id: cabinetId } });
+    if (!cabinet || cabinet.status !== CabinetStatus.ACTIVE) return null;
+
+    const updated = await prisma.cabinet.update({
+        where: { id: cabinetId },
+        data: { status: CabinetStatus.OFFLINE },
+    });
+
+    emitCabinetStatus(cabinetId, {
+        status: updated.status,
+        lastHeartbeatAt: updated.lastHeartbeatAt,
+    });
+
+    notificationService.createNotification({
+        type: NotificationType.CABINET_OFFLINE,
+        title: 'Tủ mất kết nối',
+        body: `Tủ ${cabinet.name || cabinetId} đã chuyển sang trạng thái OFFLINE`,
+        data: { cabinetId },
+    }).catch((err) => console.error('[markOffline] createNotification failed:', err));
+
+    return updated;
+}
+
 export async function listAvailableCompartments(cabinetId: string)
 {
     return prisma.compartment.findMany({
-        where: { cabinetId, status: CompartmentStatus.AVAILABLE },
+        where: { cabinetId, status: CompartmentStatus.AVAILABLE, deletedAt: null },
     });
 }
 
@@ -195,7 +238,7 @@ export async function publishCabinetConfigReload(cabinetId:
                                                  string) {
     const cabinet = await prisma.cabinet.findUnique({
         where: { id: cabinetId },
-        include: { compartments: true, mcpDevices: true },
+        include: { compartments: { where: { deletedAt: null } }, mcpDevices: true },
     });
     if (!cabinet) return;
 

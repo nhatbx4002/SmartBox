@@ -95,7 +95,7 @@ export default function CabinetDetailPage() {
   const testOpen = useMutation({
     mutationFn: (compId: string) => cabinetsApi.testOpen(id!, compId),
     onSuccess: (result) => { toast.success(`Test open: ${result.compartmentName}`) },
-    onError: () => { toast.error('Test open failed') },
+    onError: (err) => { toast.error(err instanceof Error ? err.message : 'Test open failed') },
     onSettled: () => setTestLoading(null),
   })
 
@@ -306,7 +306,7 @@ export default function CabinetDetailPage() {
                             <button onClick={() => setEditCompartment(comp)} className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-all duration-200 hover:bg-zinc-800 hover:text-zinc-200 active:scale-90">
                               <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} />
                             </button>
-                            <button onClick={() => { if (confirm(`Delete "${comp.name}"?`)) deleteCompartment.mutate(comp.id) }} className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-all duration-200 hover:bg-red-500/10 hover:text-red-400 active:scale-90">
+                            <button onClick={() => { if (confirm(`Xóa ngăn "${comp.name}"?`)) deleteCompartment.mutate(comp.id) }} className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-all duration-200 hover:bg-red-500/10 hover:text-red-400 active:scale-90">
                               <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
                             </button>
                           </>

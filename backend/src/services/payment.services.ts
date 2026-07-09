@@ -1,8 +1,9 @@
-import { PaymentStatus, PaymentSource, RentalStatus, CompartmentStatus } from '../generated/prisma';
+import { PaymentStatus, PaymentSource, RentalStatus, CompartmentStatus, NotificationType } from '../generated/prisma';
 import { BadRequestError, NotFoundError } from '../lib/errors';
 import { prisma } from '../lib/prisma';
 import { createPayosPayment, cancelPayosPayment, verifyPayosWebhook } from '../lib/payos';
 import { publishMqtt } from '../lib/mqtt';
+import * as notificationService from '../services/notification.services';
 
 const PAYMENT_TTL_SECONDS = 5 * 60;
 
@@ -130,6 +131,23 @@ export async function handleWebhook(body: unknown) {
             code: payment.rental.code,
         });
     }
+
+    const userId = payment.rental.userId ?? undefined;
+    notificationService.createNotification({
+        userId,
+        type: NotificationType.PAYMENT_SUCCESS,
+        title: 'Thanh toán thành công',
+        body: `Đơn thuê ${payment.rental.code} đã được thanh toán`,
+        data: { rentalId: payment.rentalId, orderCode: payment.orderCode },
+    }).catch((err) => console.error('[handleWebhook] PAYMENT_SUCCESS notification failed:', err));
+
+    notificationService.createNotification({
+        userId,
+        type: NotificationType.RENTAL_STARTED,
+        title: 'Đơn thuê đã kích hoạt',
+        body: `Đơn thuê ${payment.rental.code} đã bắt đầu. Mở tủ tại quầy ${payment.rental.compartment.name || payment.rental.compartmentId}`,
+        data: { rentalId: payment.rentalId, compartmentId: payment.rental.compartmentId },
+    }).catch((err) => console.error('[handleWebhook] RENTAL_STARTED notification failed:', err));
 
     return { code: '00', desc: 'success' };
 }

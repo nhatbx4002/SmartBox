@@ -46,7 +46,7 @@ export default function Badge({
       className={`px-two py-half rounded-badge items-center justify-center ${bgClass} ${className || ""}`}
       style={[
         {
-          borderRadius: 6, // 6px per border radius specification
+          borderRadius: 6,
           alignSelf: "flex-start",
         },
         customStyle,

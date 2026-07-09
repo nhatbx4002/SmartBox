@@ -32,7 +32,7 @@ export const useLocationStore = create<LocationState>()(
     set({ isLoading: true, error: null });
     try {
       const response = await locationService.getLocations(lat, lng);
-      set({ locations: response.data, isLoading: false });
+      set({ locations: response.data ?? [], isLoading: false });
     } catch (err: any) {
       set({ error: err.message || 'Failed to fetch locations', isLoading: false });
     }

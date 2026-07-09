@@ -8,14 +8,23 @@ export async function listAuditLogs(filters: {
     startDate?: string;
     endDate?: string;
     page?: number;
+    limit?: number;
+    q?: string;
 }) {
-    const page = filters.page ?? 1;
-    const limit = 20;
+    const page = Math.max(1, Number(filters.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(filters.limit) || 20));
 
     const where: Prisma.AuditLogWhereInput = {};
     if (filters.adminId) where.adminId = filters.adminId;
     if (filters.action) where.action = filters.action as any;
     if (filters.resource) where.resource = filters.resource;
+    if (filters.q) {
+        where.OR = [
+            { resource: { contains: filters.q, mode: 'insensitive' } },
+            { admin: { name: { contains: filters.q, mode: 'insensitive' } } },
+            { admin: { email: { contains: filters.q, mode: 'insensitive' } } },
+        ];
+    }
     if (filters.startDate || filters.endDate) {
         where.createdAt = {};
         if (filters.startDate) where.createdAt.gte = new Date(filters.startDate);

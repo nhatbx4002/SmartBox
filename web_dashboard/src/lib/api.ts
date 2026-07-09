@@ -33,6 +33,7 @@ interface BackendCompartment {
   name: string
   size: Compartment['size']
   status: Compartment['status']
+  deletedAt?: string | null
   cabinetId: string
   mcp23017PinLock?: number
   mcp23017PinSensor?: number | null
@@ -131,6 +132,7 @@ interface BackendAuditLog {
   resourceId?: string | null
   ipAddress?: string | null
   createdAt: string
+  details?: Record<string, unknown> | null
   admin?: { name?: string; email?: string } | null
 }
 
@@ -310,7 +312,7 @@ function mapAuditLog(log: BackendAuditLog): AuditLog {
     action: log.action,
     target: [log.resource, log.resourceId].filter(Boolean).join(' #'),
     ipAddress: log.ipAddress ?? '',
-    success: true,
+    details: log.details ?? undefined,
   }
 }
 
@@ -419,8 +421,9 @@ export const auditApi = {
     endDate?: string
     page?: number
     limit?: number
+    q?: string
   }) =>
-    unwrap<{ items: BackendAuditLog[]; page: number; limit: number; total: number }>(
+    unwrap<{ items: BackendAuditLog[]; page: number; limit: number; total: number; pages: number }>(
       api.get('/audit-logs', { params }),
     ).then((result) => ({
       ...result,

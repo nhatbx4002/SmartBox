@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "OmniBox",
-    "slug": "OmniBox-app",
+    "slug": "android-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/AppLogo.png",
@@ -18,10 +18,11 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "permission": [
+      "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "package": "com.nhatnehihi.androidapp"
     },
     "web": {
       "output": "static",
@@ -45,7 +46,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "e49be4fa-e39c-47bf-83c0-caaab24ecaf5"
+        "projectId": "0a2aef58-c3fb-4342-be62-5431d2e4b15c"
       }
     },
     "owner": "nhatnehihi"

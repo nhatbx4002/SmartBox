@@ -1,7 +1,7 @@
 import cron from 'node-cron';
 import { CabinetStatus } from '../generated/prisma';
 import { prisma } from '../lib/prisma';
-import { emitCabinetStatus } from '../lib/socket';
+import { markOffline } from '../services/cabinet.services';
 
 const OFFLINE_THRESHOLD_SECONDS = 60;
 
@@ -25,12 +25,7 @@ export async function checkOfflineCabinets(): Promise<void> {
     });
 
     for (const cabinet of offline) {
-        const updated = await prisma.cabinet.update({
-            where: { id: cabinet.id },
-            data: { status: CabinetStatus.OFFLINE },
-        });
-
-        emitCabinetStatus(cabinet.id, { status: updated.status });
+        await markOffline(cabinet.id);
     }
 
     if (offline.length > 0) {
