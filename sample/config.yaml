@@ -1,0 +1,23 @@
+# ============================================================
+# SmartBox Pi - Sample Config (Fresh Start)
+# ============================================================
+# Copy to raspi_app/config.yaml before first run.
+# After pairing approved, Pi will automatically update this file.
+# DO NOT edit provision.* keys — new flow uses /api/pair/* endpoints.
+# ============================================================
+
+api:
+  base_url: "http://192.168.1.29:3001"   # Backend server URL
+  timeout: 10
+
+mqtt:
+  broker: "192.168.1.29"                  # MQTT broker host
+  port: 1883
+  username: ""                             # Set by Pi after pairing approved
+  password: ""                             # Set by Pi after pairing approved
+
+# DO NOT ADD these keys — they are no longer used:
+# provision:
+#   key: "..."       # OLD: removed, use /api/pair/start instead
+#   secret: "..."
+#   code: "..."

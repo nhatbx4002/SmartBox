@@ -1,0 +1,17 @@
+﻿api:
+  base_url: http://192.168.1.29:3001
+  timeout: 10
+support:
+  hotline: "097567890"
+camera:
+  backend: picamera2
+  stream_url: ''
+  device_index: 0
+  preview_width: 1280
+  preview_height: 720
+  scan_interval_ms: 80
+  fps: 30
+provision:
+  key: smartbox-24-prod
+discovered_mcp_devices:
+
