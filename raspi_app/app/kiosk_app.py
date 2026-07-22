@@ -109,7 +109,7 @@ class KioskApp(QWidget):
         width = get_config_value(self.config, "app.screen_width", 720)
         height = get_config_value(self.config, "app.screen_height", 1280)
         self.setFixedSize(width, height)
-        self.setWindowTitle("SmartBox Kiosk")
+        self.setWindowTitle("OMNIBOX Kiosk")
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
